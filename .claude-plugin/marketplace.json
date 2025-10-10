@@ -13,7 +13,7 @@
     {
       "name": "development-utilities",
       "source": "./",
-      "description": "Essential development utilities including containerization, prompt writing, and code reflection tools",
+      "description": "Dev tools: Docker, prompts, code reflection",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -36,7 +36,7 @@
     {
       "name": "planning-tools",
       "source": "./",
-      "description": "Advanced planning and thinking tools for complex problem-solving and systematic planning",
+      "description": "Advanced planning and thinking tools",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -59,7 +59,7 @@
     {
       "name": "parallel-execution",
       "source": "./",
-      "description": "Tools for preparing and executing tasks in parallel for improved efficiency",
+      "description": "Execute tasks in parallel for efficiency",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -79,7 +79,7 @@
     {
       "name": "fullstack-developer",
       "source": "./",
-      "description": "Full-stack development specialist agent covering frontend, backend, and database technologies",
+      "description": "Full-stack development agent",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -96,7 +96,7 @@
     {
       "name": "documentation-manager",
       "source": "./",
-      "description": "Expert documentation specialist for maintaining comprehensive technical documentation",
+      "description": "Documentation specialist agent",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -113,7 +113,7 @@
     {
       "name": "validation-gates",
       "source": "./",
-      "description": "Testing and validation specialist that proactively runs tests and ensures quality gates are met",
+      "description": "Testing and validation agent",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -130,7 +130,7 @@
     {
       "name": "tool-usage-logger",
       "source": "./",
-      "description": "PostToolUse hook that logs all tool usage for tracking and debugging purposes",
+      "description": "Hook for logging tool usage",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -159,7 +159,7 @@
     {
       "name": "mcp-essentials",
       "source": "./",
-      "description": "Essential MCP servers for web fetching, time operations, and IDE integration",
+      "description": "MCP: Web fetch, time, IDE integration",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -189,7 +189,7 @@
     {
       "name": "mcp-ai-tools",
       "source": "./",
-      "description": "AI-powered MCP servers including Serena planning assistant and Gemini bridge",
+      "description": "MCP: AI tools (Serena, Gemini)",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -213,7 +213,7 @@
     {
       "name": "mcp-data-sources",
       "source": "./",
-      "description": "Data and API MCP servers for weather, crypto, stocks, and workspace integration",
+      "description": "MCP: Weather, crypto, stocks, workspace APIs",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -279,7 +279,7 @@
     {
       "name": "mcp-dev-tools",
       "source": "./",
-      "description": "Development and automation tools including Chrome DevTools, n8n, and network management",
+      "description": "MCP: DevTools, automation, network tools",
       "version": "1.0.0",
       "author": {
         "name": "Henrik Soederlund",

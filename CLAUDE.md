@@ -54,33 +54,30 @@ Since there's no build step, changes are immediate. Testing workflow:
 ### Directory Structure
 
 ```
-.claude-plugin/
-├── marketplace.json              # Central registry of all plugins
-├── README.md                      # User-facing documentation
-├── ARCHITECTURE.md                # Detailed architecture guide
-├── USAGE.md                       # Usage examples and workflows
-└── plugins/
-    ├── development-utilities/     # Slash commands for dev tasks
-    │   ├── plugin.json
-    │   └── commands/
-    │       ├── containerize.md
-    │       ├── prompt_writer.md
-    │       └── ...
-    ├── planning-tools/            # Advanced planning commands
-    │   ├── plugin.json
-    │   └── commands/
-    ├── parallel-execution/        # Parallel task execution
-    ├── agents/                    # Specialized AI agents
-    │   ├── fullstack-developer/
-    │   ├── documentation-manager/
-    │   └── validation-gates/
-    ├── hooks/                     # Hook scripts for tool interception
-    │   └── tool-logger/
-    └── mcp-collections/           # Bundled MCP server configs
-        ├── essentials/
-        ├── ai-tools/
-        ├── data-sources/
-        └── dev-tools/
+Repository Root/
+├── .claude-plugin/
+│   ├── marketplace.json          # Central registry of all plugins
+│   ├── README.md                  # User-facing documentation
+│   ├── ARCHITECTURE.md            # Detailed architecture guide
+│   ├── USAGE.md                   # Usage examples and workflows
+│   ├── commands/                  # All slash commands
+│   │   ├── containerize.md
+│   │   ├── prompt_writer.md
+│   │   ├── planning.md
+│   │   ├── ultra-think.md
+│   │   └── ...
+│   ├── agents/                    # Specialized AI agents
+│   │   ├── fullstack-developer/
+│   │   │   └── fullstack-developer.md
+│   │   ├── documentation-manager/
+│   │   │   └── documentation-manager.md
+│   │   └── validation-gates/
+│   │       └── validation-gates.md
+│   └── hooks/                     # Hook scripts for tool interception
+│       └── tool-logger/
+│           └── log-tool-usage.sh
+├── CLAUDE.md                      # This file
+└── README.md                      # Repository overview
 ```
 
 ### Plugin Types and Components
@@ -89,19 +86,22 @@ Since there's no build step, changes are immediate. Testing workflow:
 
 Provide slash commands like `/containerize`, `/ultra-think`. Commands are Markdown files with prompt content.
 
-**Path convention:** `plugins/<plugin-name>/commands/<command-name>.md`
+**Path convention:** `.claude-plugin/commands/<command-name>.md`
+**Reference in marketplace.json:** `"./commands/<command-name>.md"`
 
 #### 2. Agent Plugins
 
 Specialized AI agents invoked proactively. Agents are Markdown files defining behavior and expertise.
 
-**Path convention:** `plugins/agents/<agent-name>/<agent-name>.md`
+**Path convention:** `.claude-plugin/agents/<agent-name>/<agent-name>.md`
+**Reference in marketplace.json:** `"./agents/<agent-name>/<agent-name>.md"`
 
 #### 3. Hook Plugins
 
 Scripts that intercept tool usage for logging/monitoring. Currently only PostToolUse hooks.
 
-**Path convention:** `plugins/hooks/<hook-name>/<script-name>.sh`
+**Path convention:** `.claude-plugin/hooks/<hook-name>/<script-name>.sh`
+**Reference in marketplace.json:** `"./hooks/<hook-name>/<script-name>.sh"`
 
 #### 4. MCP Collection Plugins
 
@@ -121,64 +121,120 @@ The single source of truth for the marketplace. Contains:
 - MCP server configurations
 - Command/agent/hook definitions
 
-**Key Design Decision:** Uses `strict: false` which means plugins don't need individual `plugin.json` files if the marketplace.json entry is complete. This reduces duplication for MCP collection plugins.
+**Key Design Decision:** Uses `strict: false` which means plugins don't need individual `plugin.json` files if the marketplace.json entry is complete. This reduces duplication and simplifies the structure.
 
-**Environment Variable Resolution:** Uses `${CLAUDE_PLUGIN_ROOT}` for path resolution within plugin configurations and `${VAR_NAME}` for user-provided environment variables.
+**Path Resolution:**
+- All plugins use `"source": "./"` which points to the `.claude-plugin/` directory (where marketplace.json is located)
+- All file paths in plugin configurations are relative to this source directory
+- Example: `"./commands/containerize.md"` resolves to `.claude-plugin/commands/containerize.md`
+- Environment variables: Use `${VAR_NAME}` syntax for user-provided environment variables
 
 ## Adding New Plugins
 
+### Key Path Resolution Rules
+
+1. **Source Directory:** All plugins use `"source": "./"` which means the `.claude-plugin/` directory
+2. **File Paths:** All paths are relative to the source (e.g., `"./commands/foo.md"` → `.claude-plugin/commands/foo.md`)
+3. **No plugin.json Required:** With `strict: false`, all metadata lives in marketplace.json
+4. **Flat Structure:** All commands, agents, and hooks live directly under `.claude-plugin/`
+
 ### Adding a Command Plugin
 
-1. Create plugin directory: `.claude-plugin/plugins/<plugin-name>/`
-2. Create `plugin.json`:
+1. Create command file: `.claude-plugin/commands/<command-name>.md`
+2. Add entry to `marketplace.json` plugins array:
 
 ```json
 {
-  "name": "plugin-name",
-  "version": "1.0.0",
+  "name": "my-plugin",
+  "source": "./",
   "description": "Plugin description",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Name",
+    "email": "your-email@example.com"
+  },
+  "homepage": "https://github.com/username/repo",
+  "repository": "https://github.com/username/repo",
+  "license": "MIT",
+  "keywords": ["keyword1", "keyword2"],
   "category": "productivity",
-  "commands": ["${CLAUDE_PLUGIN_ROOT}/commands/command-name.md"]
+  "commands": [
+    "./commands/<command-name>.md"
+  ],
+  "strict": false
 }
 ```
 
-3. Create command files in `commands/` directory
-4. Add entry to `marketplace.json` plugins array
-5. Test locally
+3. Test locally with `/plugin marketplace add .`
 
 ### Adding an Agent Plugin
 
-1. Create directory: `.claude-plugin/plugins/agents/<agent-name>/`
-2. Create agent definition: `<agent-name>.md`
-3. Create `plugin.json` with `agents` field
-4. Add to marketplace.json
-5. Test locally
-
-### Adding an MCP Collection Plugin
-
-For MCP collections, you can skip creating plugin.json entirely:
-
-1. Add entry directly to `marketplace.json` with `mcpServers` configuration
-2. Use `strict: false` in the entry
-3. Set source path (even if empty, e.g., `./plugins/mcp-collections/<name>`)
-4. Define all MCP servers in the `mcpServers` object
-
-Example:
+1. Create directory and agent file: `.claude-plugin/agents/<agent-name>/<agent-name>.md`
+2. Add entry to `marketplace.json`:
 
 ```json
 {
-  "name": "mcp-essentials",
-  "source": "./plugins/mcp-collections/essentials",
-  "description": "Essential MCP servers",
+  "name": "my-agent",
+  "source": "./",
+  "description": "Agent description",
+  "version": "1.0.0",
+  "category": "agents",
+  "agents": ["./agents/<agent-name>/<agent-name>.md"],
+  "strict": false
+}
+```
+
+3. Test locally
+
+### Adding a Hook Plugin
+
+1. Create directory and script: `.claude-plugin/hooks/<hook-name>/<script-name>.sh`
+2. Add entry to `marketplace.json`:
+
+```json
+{
+  "name": "my-hook",
+  "source": "./",
+  "description": "Hook description",
+  "version": "1.0.0",
+  "category": "monitoring",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/<hook-name>/<script-name>.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "strict": false
+}
+```
+
+3. Test locally
+
+### Adding an MCP Collection Plugin
+
+No files needed - configuration lives entirely in marketplace.json:
+
+```json
+{
+  "name": "mcp-my-collection",
+  "source": "./",
+  "description": "MCP server collection description",
   "version": "1.0.0",
   "category": "mcp-servers",
-  "strict": false,
   "mcpServers": {
-    "fetch": {
+    "server-name": {
       "command": "uvx",
-      "args": ["mcp-server-fetch"]
+      "args": ["package-name"]
     }
-  }
+  },
+  "strict": false
 }
 ```
 
@@ -236,10 +292,12 @@ When team members trust the repository, plugins install automatically.
 ## Important Constraints
 
 1. **No Build Process**: This is a pure marketplace - no compilation or build steps
-2. **Relative Paths**: All plugin sources use relative paths from marketplace root
-3. **Environment Variable Security**: Never commit API keys or secrets to the repository
-4. **Markdown Format**: Commands and agents are Markdown files, not code
-5. **Plugin Isolation**: Each plugin should be independent and self-contained
+2. **Flattened Structure**: All content lives directly under `.claude-plugin/` (no nested `plugins/` subdirectories)
+3. **Single Source of Truth**: marketplace.json is the only configuration file (no individual plugin.json files)
+4. **Relative Path Convention**: All plugins use `"source": "./"` and paths are relative to `.claude-plugin/`
+5. **Environment Variable Security**: Never commit API keys or secrets to the repository
+6. **Markdown Format**: Commands and agents are Markdown files, not code
+7. **Plugin Isolation**: Each plugin should be independent and self-contained
 
 ## Documentation Files
 

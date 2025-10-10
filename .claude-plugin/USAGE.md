@@ -402,7 +402,7 @@ cat .claude/logs/tool-usage.log
 # Edit .claude/settings.json
 
 # Test hook manually
-bash .claude-plugin/plugins/hooks/tool-logger/log-tool-usage.sh
+bash .claude-plugin/hooks/tool-logger/log-tool-usage.sh
 ```
 
 ## Best Practices
@@ -470,13 +470,17 @@ Based on marketplace plugins:
 # Clone marketplace
 git clone https://github.com/henkisdabro/claudecode-marketplace
 
-# Create custom plugin
-mkdir .claude-plugin/plugins/my-custom-plugin
-cp .claude-plugin/plugins/development-utilities/plugin.json .claude-plugin/plugins/my-custom-plugin/
+# Create custom command
+mkdir -p .claude-plugin/commands
+# Create your command markdown file
+touch .claude-plugin/commands/my-command.md
 
-# Edit and test locally
+# Add entry to marketplace.json
+# Edit marketplace.json and add your plugin entry
+
+# Test locally
 /plugin marketplace add ./claudecode-marketplace
-/plugin install my-custom-plugin@claudecode-marketplace
+/plugin install my-plugin@claudecode-marketplace
 ```
 
 ### Combining Plugins

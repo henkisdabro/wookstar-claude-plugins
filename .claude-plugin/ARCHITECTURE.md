@@ -10,13 +10,16 @@ This document explains the architecture and design decisions behind the Claude C
 
 ```
 Repository Root/
-├── README.md          # User-facing documentation
-├── ARCHITECTURE.md    # This file (architecture documentation)
-├── USAGE.md           # Usage guide and examples
-├── CLAUDE.md          # Guidance for Claude Code instances
-└── .claude-plugin/
-    ├── marketplace.json    # Marketplace manifest (registry of all plugins)
-    └── plugins/           # Plugin packages
+├── .claude-plugin/
+│   ├── marketplace.json       # Marketplace manifest (registry of all plugins)
+│   ├── README.md              # User-facing documentation
+│   ├── ARCHITECTURE.md        # This file (architecture documentation)
+│   ├── USAGE.md               # Usage guide and examples
+│   ├── commands/              # All slash commands
+│   ├── agents/                # All specialized agents
+│   └── hooks/                 # All hook scripts
+├── CLAUDE.md                  # Guidance for Claude Code instances
+└── README.md                  # Repository overview
 ```
 
 ### marketplace.json
@@ -31,9 +34,10 @@ The central registry that defines:
 **Key Features:**
 
 - Uses `strict: false` for flexibility (marketplace entries serve as complete manifests)
-- Supports relative paths for plugin sources
+- All plugins use `"source": "./"` which points to the `.claude-plugin/` directory
+- File paths are relative to the source (e.g., `"./commands/foo.md"` → `.claude-plugin/commands/foo.md`)
 - Includes comprehensive metadata for discoverability
-- Uses `${CLAUDE_PLUGIN_ROOT}` environment variable for path resolution
+- Uses `${VAR_NAME}` syntax for user-provided environment variables
 
 ## Plugin Organization
 
@@ -48,46 +52,75 @@ Plugins are organized into logical categories:
 
 ### Plugin Types
 
+All plugin content lives directly under `.claude-plugin/` in a flat structure. No individual `plugin.json` files are needed - all configuration lives in `marketplace.json`.
+
 #### Command Plugins
 
 Plugins that provide slash commands (e.g., `/containerize`, `/ultra-think`):
 
 ```
-development-utilities/
-├── plugin.json
+.claude-plugin/
 └── commands/
     ├── containerize.md
     ├── prompt_writer.md
+    ├── planning.md
+    ├── ultra-think.md
     └── ...
 ```
+
+**marketplace.json reference:** `"commands": ["./commands/containerize.md"]`
 
 #### Agent Plugins
 
 Plugins that provide specialized agents:
 
 ```
-agents/fullstack-developer/
-├── plugin.json
-└── fullstack-developer.md
+.claude-plugin/
+└── agents/
+    ├── fullstack-developer/
+    │   └── fullstack-developer.md
+    ├── documentation-manager/
+    │   └── documentation-manager.md
+    └── validation-gates/
+        └── validation-gates.md
 ```
+
+**marketplace.json reference:** `"agents": ["./agents/fullstack-developer/fullstack-developer.md"]`
 
 #### Hook Plugins
 
 Plugins that provide hooks for tool interception:
 
 ```
-hooks/tool-logger/
-├── plugin.json
-└── log-tool-usage.sh
+.claude-plugin/
+└── hooks/
+    └── tool-logger/
+        └── log-tool-usage.sh
+```
+
+**marketplace.json reference:**
+```json
+"hooks": {
+  "PostToolUse": [{
+    "matcher": "*",
+    "hooks": [{"type": "command", "command": "./hooks/tool-logger/log-tool-usage.sh"}]
+  }]
+}
 ```
 
 #### MCP Collection Plugins
 
-Plugins that bundle MCP server configurations:
+Plugins that bundle MCP server configurations. No files needed - configuration lives entirely in marketplace.json:
 
-```
-mcp-collections/essentials/
-└── plugin.json  # Contains mcpServers configuration
+**marketplace.json example:**
+```json
+{
+  "name": "mcp-essentials",
+  "source": "./",
+  "mcpServers": {
+    "fetch": {"command": "uvx", "args": ["mcp-server-fetch"]}
+  }
+}
 ```
 
 ## Design Principles
@@ -259,21 +292,25 @@ Users should create a `.env` file in their project root with required values.
 
 ## Plugin Source Types
 
-### Relative Paths
+### Relative Paths (This Marketplace)
 
-Used for plugins in the same repository:
+All plugins in this marketplace use the same source pattern:
 
 ```json
 {
-  "source": "./plugins/plugin-name"
+  "source": "./"
 }
 ```
+
+This points to the `.claude-plugin/` directory (where marketplace.json is located). All file paths are then relative to this source.
 
 **Benefits:**
 
 - Single repository for marketplace and plugins
 - Simplified version management
 - Easy local testing
+- Consistent path resolution
+- No nested plugin directories needed
 
 ### GitHub Repositories
 
