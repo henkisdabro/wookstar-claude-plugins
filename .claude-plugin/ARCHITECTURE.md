@@ -176,13 +176,7 @@ All plugins include:
 ```json
 {
   "name": "plugin-name",
-  "version": "1.0.0",
   "description": "Plugin description",
-  "author": {
-    "name": "Author Name",
-    "email": "email@example.com"
-  },
-  "license": "MIT",
   "keywords": ["tag1", "tag2"],
   "category": "category-name"
 }

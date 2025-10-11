@@ -148,14 +148,6 @@ The single source of truth for the marketplace. Contains:
   "name": "my-plugin",
   "source": "./",
   "description": "Plugin description",
-  "version": "1.0.0",
-  "author": {
-    "name": "Your Name",
-    "email": "your-email@example.com"
-  },
-  "homepage": "https://github.com/username/repo",
-  "repository": "https://github.com/username/repo",
-  "license": "MIT",
   "keywords": ["keyword1", "keyword2"],
   "category": "productivity",
   "commands": [
@@ -177,7 +169,6 @@ The single source of truth for the marketplace. Contains:
   "name": "my-agent",
   "source": "./",
   "description": "Agent description",
-  "version": "1.0.0",
   "category": "agents",
   "agents": ["./agents/<agent-name>/<agent-name>.md"],
   "strict": false
@@ -196,7 +187,6 @@ The single source of truth for the marketplace. Contains:
   "name": "my-hook",
   "source": "./",
   "description": "Hook description",
-  "version": "1.0.0",
   "category": "monitoring",
   "hooks": {
     "PostToolUse": [
@@ -226,7 +216,6 @@ No files needed - configuration lives entirely in marketplace.json:
   "name": "mcp-my-collection",
   "source": "./",
   "description": "MCP server collection description",
-  "version": "1.0.0",
   "category": "mcp-servers",
   "mcpServers": {
     "server-name": {
@@ -249,12 +238,9 @@ See README.md for complete list of required environment variables.
 All plugins must include:
 
 - `name`: kebab-case identifier
-- `version`: Semantic versioning (major.minor.patch)
 - `description`: Clear, concise description
-- `author`: Name and email
 - `category`: One of: productivity, agents, monitoring, mcp-servers
 - `keywords`: Array of searchable tags
-- `license`: "MIT" (or appropriate license)
 
 ## Version Management
 

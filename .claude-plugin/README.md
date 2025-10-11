@@ -549,7 +549,7 @@ CF_ACCESS_CLIENT_SECRET=your_client_secret
 
 ## Version
 
-**Marketplace Version:** 1.0.0
+**Marketplace Version:** 1.1.0
 
 All plugins use semantic versioning. Check individual plugin manifests for specific versions.
 

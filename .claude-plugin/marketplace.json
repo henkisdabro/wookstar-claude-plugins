@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A comprehensive collection of Claude Code plugins including development utilities, planning tools, agents, hooks, and MCP server configurations",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "homepage": "https://github.com/henkisdabro/claudecode-marketplace"
   },
   "plugins": [
@@ -117,27 +117,6 @@
       "keywords": ["testing", "validation", "quality", "agent"],
       "category": "agents",
       "agents": ["./agents/validation-gates.md"],
-      "strict": false
-    },
-    {
-      "name": "tool-usage-logger",
-      "source": "./",
-      "description": "Hook for logging tool usage",
-      "keywords": ["logging", "monitoring", "debugging", "hook"],
-      "category": "hooks",
-      "hooks": {
-        "PostToolUse": [
-          {
-            "matcher": "*",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "./hooks/tool-logger/log-tool-usage.sh"
-              }
-            ]
-          }
-        ]
-      },
       "strict": false
     },
     {
