@@ -381,6 +381,23 @@
       "strict": false
     },
     {
+      "name": "mcp-perplexity",
+      "source": "./",
+      "description": "Ai-powered search and information retrieval",
+      "keywords": ["mcp", "ai", "information", "search"],
+      "category": "mcpServers",
+      "mcpServers": {
+        "perplexity": {
+          "command": "npx",
+          "args": ["-y", "@perplexity-ai/mcp-server"],
+          "env": {
+            "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+          }
+        }
+      },
+      "strict": false
+    },
+    {
       "name": "mcp-playwright",
       "source": "./",
       "description": "Browser automation with Playwright",
