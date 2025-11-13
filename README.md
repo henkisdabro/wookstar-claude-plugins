@@ -1,6 +1,4 @@
-# Wookstar Claude Code Marketplace
-
-**Version 3.0** - Thematic Toolkits Architecture
+# Wookstar Claude Code Plugins
 
 A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing specialized toolkits for productivity, development, documents, analytics, e-commerce, and AI integrations - now featuring complete GTM, GA4, Shopify, and Google Automation suites!
 
@@ -36,22 +34,6 @@ Then install the toolkits you need:
 # For Google Workspace & Ads automation
 /plugin install google-apps-ads-script@wookstar
 ```
-
-## 📦 What's New in V3.0
-
-**Thematic Bundles**: Components are now organized into focused toolkits that bundle related agents, commands, skills, and MCP servers together.
-
-**Better Organization**: Install complete toolsets in one command instead of managing dozens of individual plugins.
-
-**Clear Categories**: Productivity, Development, Documents, Analytics, E-commerce, Automation, Finance, AI, and more.
-
-**New Production Suites**:
-- ✨ **GTM Suite** - 10 specialized Google Tag Manager skills
-- ✨ **GA Suite** - 15 comprehensive Google Analytics 4 skills
-- ✨ **Shopify Developer** - 6 professional Shopify development skills
-- ✨ **Google Apps & Ads Script** - 2 automation skills for Workspace and Ads
-
-See [MIGRATION_V3.md](./MIGRATION_V3.md) for complete migration details from v2.x.
 
 ---
 
@@ -170,7 +152,7 @@ PERPLEXITY_API_KEY=your_key
 ---
 
 ### 📊 GTM Suite ✨ NEW!
-**Complete Google Tag Manager expertise (v1.0.0 - Production Ready)**
+**Complete Google Tag Manager expertise (v1.0.0)**
 
 **Includes:**
 - 10 specialized skills covering all aspects of GTM
@@ -191,7 +173,7 @@ PERPLEXITY_API_KEY=your_key
 ---
 
 ### 📈 GA Suite ✨ NEW!
-**Comprehensive Google Analytics 4 expertise (v1.0.0 - Production Ready)**
+**Comprehensive Google Analytics 4 expertise (v1.0.0)**
 
 **Includes:**
 - 15 specialized skills organized into 5 progressive tiers
@@ -212,7 +194,7 @@ PERPLEXITY_API_KEY=your_key
 ---
 
 ### 🛍️ Shopify Developer ✨ NEW!
-**Professional Shopify development toolkit (v1.0.0 - Production Ready)**
+**Professional Shopify development toolkit (v1.0.0)**
 
 **Includes:**
 - 6 specialized skills for Shopify development
@@ -233,7 +215,7 @@ PERPLEXITY_API_KEY=your_key
 ---
 
 ### 🔄 Google Apps & Ads Script ✨ NEW!
-**Automation toolkit for Workspace and Ads (v1.0.0 - Production Ready)**
+**Automation toolkit for Workspace and Ads (v1.0.0)**
 
 **Includes:**
 - 2 comprehensive automation skills
@@ -400,33 +382,6 @@ Standalone integrations available separately:
   - [Productivity Toolkit](./productivity-toolkit/README.md)
   - [Developer Toolkit](./developer-toolkit/README.md)
   - [Documents Toolkit](./documents-toolkit/README.md)
-
----
-
-## 🎓 For Teams
-
-Configure automatic installation in your repository's `.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "wookstar": {
-      "source": {
-        "source": "github",
-        "repo": "henkisdabro/wookstar-claude-code-plugins"
-      }
-    }
-  },
-  "enabledPlugins": [
-    "productivity-toolkit@wookstar",
-    "developer-toolkit@wookstar",
-    "gtm-suite@wookstar",
-    "ga-suite@wookstar"
-  ]
-}
-```
-
-When team members trust the repository, Claude Code automatically installs these toolkits.
 
 ---
 
