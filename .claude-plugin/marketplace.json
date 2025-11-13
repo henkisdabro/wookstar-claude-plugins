@@ -5,391 +5,248 @@
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
-    "description": "A comprehensive collection of Claude Code plugins including development utilities, planning tools, agents, hooks, and MCP server configurations",
-    "version": "2.0.0",
+    "description": "Comprehensive Claude Code marketplace with specialized toolkits for productivity, development, analytics, documents, and AI integrations",
+    "version": "3.0.0",
     "homepage": "https://github.com/henkisdabro/claudecode-marketplace"
   },
   "plugins": [
     {
-      "name": "essential-toolkit",
-      "source": "./",
-      "description": "commands, agents for all Claude Code work",
-      "keywords": ["essential", "productivity", "agents", "planning", "development", "workflows", "automation", "toolkit"]
-    },
-    {
-      "name": "mcp-alphavantage",
-      "source": "./.claude-plugin",
-      "description": "Stock market data",
-      "keywords": ["mcp", "stocks", "market-data", "finance"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "alphavantage": {
-          "type": "http",
-          "url": "https://mcp.alphavantage.co/mcp?apikey=${ALPHAVANTAGEAPIKEY}"
-        }
+      "name": "productivity-toolkit",
+      "source": "./productivity-toolkit",
+      "description": "Essential productivity suite with planning and workflow tools: 1 documentation agent + 11 powerful commands (ultra-think, planning, PRPs, containerize, etc.) + 2 utility skills (PRP generator, timezone tools)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "productivity",
+        "planning",
+        "workflows",
+        "documentation",
+        "prp",
+        "commands",
+        "thinking",
+        "timezone"
+      ],
+      "category": "productivity",
       "strict": false
     },
     {
-      "name": "mcp-chrome-devtools",
-      "source": "./.claude-plugin",
-      "description": "Chrome DevTools integration",
-      "keywords": ["mcp", "chrome", "devtools", "debugging"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "chrome-devtools": {
-          "command": "npx",
-          "args": ["chrome-devtools-mcp@latest"]
-        }
+      "name": "developer-toolkit",
+      "source": "./developer-toolkit",
+      "description": "Complete development toolkit: 2 expert agents (fullstack developer, validation gates) + 2 skills (git commit helper, webapp testing) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "development",
+        "fullstack",
+        "testing",
+        "validation",
+        "git",
+        "playwright",
+        "devtools",
+        "debugging"
+      ],
+      "category": "development",
       "strict": false
     },
     {
-      "name": "mcp-cloudflare-docs",
-      "source": "./.claude-plugin",
-      "description": "Cloudflare documentation access",
-      "keywords": ["mcp", "cloudflare", "documentation", "docs"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "cloudflare-docs": {
-          "command": "npx",
-          "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
-        }
+      "name": "documents-toolkit",
+      "source": "./documents-toolkit",
+      "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyze, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "documents",
+        "docx",
+        "word",
+        "excel",
+        "xlsx",
+        "pdf",
+        "spreadsheet",
+        "forms",
+        "ocr",
+        "office"
+      ],
+      "category": "documents",
       "strict": false
     },
     {
-      "name": "mcp-coingecko",
-      "source": "./.claude-plugin",
-      "description": "Cryptocurrency market data",
-      "keywords": ["mcp", "cryptocurrency", "crypto", "market-data"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "coingecko_api": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@coingecko/coingecko-mcp",
-            "--client=claude-code",
-            "--resource=coins,global,search,simple*",
-            "--operation=read"
-          ],
-          "env": {
-            "COINGECKO_DEMO_API_KEY": "${COINGECKO_DEMO_API_KEY}",
-            "COINGECKO_ENVIRONMENT": "demo"
-          }
-        }
+      "name": "claudecode-toolkit",
+      "source": "./claudecode-toolkit",
+      "description": "Meta toolkit for Claude Code itself: skill-creator guide helps you build effective skills and extend Claude's capabilities",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "claude-code",
+        "skills",
+        "development",
+        "meta",
+        "creation",
+        "guide"
+      ],
+      "category": "meta",
       "strict": false
     },
     {
-      "name": "mcp-context7",
-      "source": "./.claude-plugin",
-      "description": "Context-aware code understanding",
-      "keywords": ["mcp", "context", "code-analysis", "upstash"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "context7": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@upstash/context7-mcp",
-            "--api-key",
-            "${CONTEXT7_API_KEY}"
-          ]
-        }
+      "name": "finance-toolkit",
+      "source": "./finance-toolkit",
+      "description": "Financial market data integrations: 2 MCP servers providing real-time stock market data (AlphaVantage) and cryptocurrency data (CoinGecko)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "finance",
+        "stocks",
+        "cryptocurrency",
+        "crypto",
+        "market-data",
+        "trading",
+        "alphavantage",
+        "coingecko"
+      ],
+      "category": "data",
+      "strict": false
+    },
+    {
+      "name": "ai-toolkit",
+      "source": "./ai-toolkit",
+      "description": "AI integration toolkit: 2 MCP servers connecting to Gemini AI and Perplexity for enhanced AI capabilities and search",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "ai",
+        "gemini",
+        "perplexity",
+        "search",
+        "intelligence",
+        "integration"
+      ],
+      "category": "ai",
+      "strict": false
+    },
+    {
+      "name": "gtm-suite",
+      "source": "./gtm-suite",
+      "description": "Complete Google Tag Manager suite with specialized agents, commands, skills, and MCP integrations (COMING SOON - placeholder structure ready for your additions)",
+      "version": "0.1.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "gtm",
+        "google-tag-manager",
+        "tracking",
+        "analytics",
+        "tags",
+        "containers",
+        "events",
+        "marketing"
+      ],
+      "category": "analytics",
+      "strict": false
+    },
+    {
+      "name": "ga-suite",
+      "source": "./ga-suite",
+      "description": "Comprehensive Google Analytics 4 suite with specialized agents, commands, skills, and MCP integrations (COMING SOON - placeholder structure ready for your additions)",
+      "version": "0.1.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/claudecode-marketplace",
+      "keywords": [
+        "ga",
+        "ga4",
+        "google-analytics",
+        "analytics",
+        "reporting",
+        "metrics",
+        "conversions",
+        "audiences"
+      ],
+      "category": "analytics",
       "strict": false
     },
     {
       "name": "mcp-currency-conversion",
-      "source": "./.claude-plugin",
-      "description": "Currency exchange rates",
+      "source": "./mcp-servers/currency-conversion",
+      "description": "Currency exchange rates and conversion",
       "keywords": ["mcp", "currency", "exchange", "forex"],
       "category": "mcpServers",
-      "mcpServers": {
-        "currency-conversion": {
-          "command": "npx",
-          "args": ["mcp-remote", "https://currency-mcp.wesbos.com/sse"]
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-fetch",
-      "source": "./.claude-plugin",
-      "description": "Web content fetching",
+      "source": "./mcp-servers/fetch",
+      "description": "Web content fetching and HTTP requests",
       "keywords": ["mcp", "fetch", "web", "http"],
       "category": "mcpServers",
-      "mcpServers": {
-        "fetch": {
-          "command": "uvx",
-          "args": ["mcp-server-fetch"]
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-firecrawl",
-      "source": "./.claude-plugin",
-      "description": "Web crawling and scraping",
-      "keywords": ["mcp", "crawling", "scraping", "web"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "firecrawl": {
-          "command": "npx",
-          "args": ["-y", "firecrawl-mcp"],
-          "env": {
-            "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
-          }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-gemini-bridge",
-      "source": "./.claude-plugin",
-      "description": "Gemini AI integration",
-      "keywords": ["mcp", "gemini", "ai", "google"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "gemini-bridge": {
-          "type": "stdio",
-          "command": "uvx",
-          "args": ["gemini-bridge"],
-          "env": {}
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-google-workspace",
-      "source": "./.claude-plugin",
-      "description": "Google Workspace integration",
+      "source": "./mcp-servers/google-workspace",
+      "description": "Google Workspace integration (Gmail, Drive, Calendar)",
       "keywords": ["mcp", "google", "workspace", "gmail", "drive"],
       "category": "mcpServers",
-      "mcpServers": {
-        "google_workspace": {
-          "command": "uvx",
-          "args": ["workspace-mcp"],
-          "env": {
-            "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
-            "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}",
-            "OAUTHLIB_INSECURE_TRANSPORT": "1"
-          }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-microsoft-docs",
-      "source": "./.claude-plugin",
-      "description": "Microsoft documentation access",
-      "keywords": ["mcp", "microsoft", "documentation", "docs"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "microsoft_docs": {
-          "type": "http",
-          "url": "https://learn.microsoft.com/api/mcp"
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-mikrotik",
-      "source": "./.claude-plugin",
-      "description": "MikroTik router management",
+      "source": "./mcp-servers/mikrotik",
+      "description": "MikroTik router management and network automation",
       "keywords": ["mcp", "mikrotik", "router", "network"],
       "category": "mcpServers",
-      "mcpServers": {
-        "mikrotik": {
-          "command": "uvx",
-          "args": [
-            "mcp-server-mikrotik",
-            "--host",
-            "${MIKROTIK_HOST}",
-            "--username",
-            "${MIKROTIK_USER}",
-            "--password",
-            "${MIKROTIK_PASSWORD}",
-            "--port",
-            "2200"
-          ]
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-n8n",
-      "source": "./.claude-plugin",
-      "description": "n8n workflow automation",
+      "source": "./mcp-servers/n8n",
+      "description": "n8n workflow automation integration",
       "keywords": ["mcp", "n8n", "automation", "workflows"],
       "category": "mcpServers",
-      "mcpServers": {
-        "n8n-mcp": {
-          "command": "npx",
-          "args": ["n8n-mcp"],
-          "env": {
-            "MCP_MODE": "stdio",
-            "LOG_LEVEL": "error",
-            "DISABLE_CONSOLE_OUTPUT": "true",
-            "N8N_API_URL": "https://n8n.wookstar.com/",
-            "N8N_API_KEY": "${N8N_API_KEY}"
-          }
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-notion",
-      "source": "./.claude-plugin",
-      "description": "Notion workspace integration",
+      "source": "./mcp-servers/notion",
+      "description": "Notion workspace and database integration",
       "keywords": ["mcp", "notion", "workspace", "notes"],
       "category": "mcpServers",
-      "mcpServers": {
-        "notion": {
-          "type": "http",
-          "url": "https://mcp.notion.com/mcp"
-        }
-      },
       "strict": false
     },
     {
       "name": "mcp-open-meteo",
-      "source": "./.claude-plugin",
-      "description": "Weather and climate data",
+      "source": "./mcp-servers/open-meteo",
+      "description": "Weather and climate data (no API key required)",
       "keywords": ["mcp", "weather", "climate", "forecast"],
       "category": "mcpServers",
-      "mcpServers": {
-        "open-meteo": {
-          "command": "npx",
-          "args": ["open-meteo-mcp-server"],
-          "env": {
-            "OPEN_METEO_API_URL": "https://api.open-meteo.com",
-            "OPEN_METEO_AIR_QUALITY_API_URL": "https://air-quality-api.open-meteo.com",
-            "OPEN_METEO_MARINE_API_URL": "https://marine-api.open-meteo.com",
-            "OPEN_METEO_ARCHIVE_API_URL": "https://archive-api.open-meteo.com",
-            "OPEN_METEO_SEASONAL_API_URL": "https://seasonal-api.open-meteo.com",
-            "OPEN_METEO_ENSEMBLE_API_URL": "https://ensemble-api.open-meteo.com",
-            "OPEN_METEO_GEOCODING_API_URL": "https://geocoding-api.open-meteo.com"
-          }
-        }
-      },
       "strict": false
-    },
-    {
-      "name": "mcp-perplexity",
-      "source": "./.claude-plugin",
-      "description": "Ai-powered search and information retrieval",
-      "keywords": ["mcp", "ai", "information", "search"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "perplexity": {
-          "command": "npx",
-          "args": ["-y", "@perplexity-ai/mcp-server"],
-          "env": {
-            "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
-          }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-playwright",
-      "source": "./.claude-plugin",
-      "description": "Browser automation with Playwright",
-      "keywords": ["mcp", "playwright", "browser", "automation"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "playwright": {
-          "command": "npx",
-          "args": ["@playwright/mcp@latest"]
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-serena",
-      "source": "./.claude-plugin",
-      "description": "AI planning and task management",
-      "keywords": ["mcp", "ai", "planning", "tasks"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "serena": {
-          "type": "stdio",
-          "command": "uvx",
-          "args": [
-            "--from",
-            "git+https://github.com/oraios/serena",
-            "serena",
-            "start-mcp-server",
-            "--context",
-            "ide-assistant",
-            "--mode",
-            "planning",
-            "--enable-web-dashboard",
-            "FALSE"
-          ],
-          "env": {}
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "docx",
-      "source": "./skills/docx",
-      "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction",
-      "keywords": ["documents", "docx", "word", "editing", "formatting"],
-      "category": "skills"
-    },
-    {
-      "name": "git-commit-helper",
-      "source": "./skills/git-commit-helper",
-      "description": "Generate descriptive commit messages by analyzing git diffs",
-      "keywords": ["git", "commit", "version-control", "messages"],
-      "category": "skills"
-    },
-    {
-      "name": "pdf-processing-pro",
-      "source": "./skills/pdf-processing-pro",
-      "description": "Production-ready PDF processing with forms, tables, OCR, validation, and batch operations",
-      "keywords": ["pdf", "processing", "forms", "ocr", "documents"],
-      "category": "skills"
-    },
-    {
-      "name": "prp-generator",
-      "source": "./skills/prp-generator",
-      "description": "Generate comprehensive Product Requirement Plans (PRPs) for feature implementation",
-      "keywords": ["prp", "prd", "requirements", "planning", "documentation"],
-      "category": "skills"
-    },
-    {
-      "name": "skill-creator",
-      "source": "./skills/skill-creator",
-      "description": "Guide for creating effective skills that extend Claude's capabilities",
-      "keywords": ["skills", "creation", "development", "guide"],
-      "category": "skills"
-    },
-    {
-      "name": "timezone-tools",
-      "source": "./skills/timezone-tools",
-      "description": "Get current time in any timezone and convert times between timezones",
-      "keywords": ["timezone", "time", "date", "scheduling", "conversion"],
-      "category": "skills"
-    },
-    {
-      "name": "webapp-testing",
-      "source": "./skills/webapp-testing",
-      "description": "Toolkit for testing local web applications using Playwright",
-      "keywords": ["testing", "playwright", "webapp", "ui", "automation"],
-      "category": "skills"
-    },
-    {
-      "name": "xlsx",
-      "source": "./skills/xlsx",
-      "description": "Comprehensive spreadsheet creation, editing, and analysis with formulas and formatting",
-      "keywords": ["spreadsheet", "xlsx", "excel", "formulas", "data-analysis"],
-      "category": "skills"
     }
   ]
 }
