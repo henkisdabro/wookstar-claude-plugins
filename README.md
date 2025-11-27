@@ -7,7 +7,7 @@ A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing 
 Add this marketplace to Claude Code:
 
 ```bash
-/plugin marketplace add github:henkisdabro/wookstar-claude-code-plugins
+/plugin marketplace add henkisdabro/wookstar-claude-code-plugins
 ```
 
 Then install the toolkits you need:
