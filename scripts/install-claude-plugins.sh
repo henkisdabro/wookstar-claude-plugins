@@ -89,8 +89,10 @@ MARKETPLACES=(
 # Plugins to enable after installation
 # Format: "plugin_name@marketplace_name"
 #
-# NOTE: Some plugins from claude-skills have bugs (missing skill files)
-# These are commented out but left for reference
+# NOTE: The claude-skills marketplace (jezweb) is currently broken.
+# It only offers bundled plugins that reference non-existent skill files.
+# Individual plugins no longer exist - only bundles with missing paths.
+# All claude-skills plugins are disabled until the maintainer fixes them.
 
 PLUGINS_TO_ENABLE=(
     # =========================================================================
@@ -106,7 +108,7 @@ PLUGINS_TO_ENABLE=(
     # =========================================================================
     # Wookstar Plugins (wookstar-claude-code-plugins)
     # =========================================================================
-    # Toolkits (set to false by default - enable as needed)
+    # Toolkits (disabled by default - enable as needed)
     # "productivity-toolkit@wookstar-claude-code-plugins"
     # "developer-toolkit@wookstar-claude-code-plugins"
     # "documents-toolkit@wookstar-claude-code-plugins"
@@ -133,61 +135,16 @@ PLUGINS_TO_ENABLE=(
 
     # =========================================================================
     # Claude Skills (claude-skills) - jezweb/claude-skills
-    # NOTE: Some bundled plugins have missing skills - individual plugins work
+    # STATUS: BROKEN - All bundles reference non-existent skill paths
+    # Individual plugins no longer exist, only bundles which have bugs
+    # Check https://github.com/jezweb/claude-skills for updates
     # =========================================================================
-
-    # Working individual plugins (not bundles)
-    "cloudflare-worker-base@claude-skills"
-    "cloudflare-d1@claude-skills"
-    "cloudflare-r2@claude-skills"
-    "cloudflare-kv@claude-skills"
-    "cloudflare-workers-ai@claude-skills"
-    "cloudflare-vectorize@claude-skills"
-    "cloudflare-queues@claude-skills"
-    "cloudflare-workflows@claude-skills"
-    "cloudflare-durable-objects@claude-skills"
-    "cloudflare-agents@claude-skills"
-    "cloudflare-mcp-server@claude-skills"
-    "cloudflare-hyperdrive@claude-skills"
-    "cloudflare-images@claude-skills"
-    "cloudflare-browser-rendering@claude-skills"
-    "cloudflare-turnstile@claude-skills"
-
-    # Frontend & UI
-    "tailwind-v4-shadcn@claude-skills"
-    "react-hook-form-zod@claude-skills"
-    "tanstack-query@claude-skills"
-    "zustand-state-management@claude-skills"
-    "nextjs@claude-skills"
-    "hono-routing@claude-skills"
-
-    # AI & LLM
-    "claude-api@claude-skills"
-    "claude-agent-sdk@claude-skills"
-
-    # Auth
-    "clerk-auth@claude-skills"
-    "better-auth@claude-skills"
-
-    # CMS
-    "tinacms@claude-skills"
-    "sveltia-cms@claude-skills"
-
-    # Tooling
-    "fastmcp@claude-skills"
-    "project-planning@claude-skills"
-    "project-session-management@claude-skills"
-
-    # -------------------------------------------------------------------------
-    # BUGGY BUNDLES (marketplace.json references non-existent skills)
-    # These cause "skills path not found" errors
-    # Uncomment if/when the marketplace author fixes them
-    # -------------------------------------------------------------------------
-    # "cloudflare-skills@claude-skills"      # Missing: cloudflare-sandbox, etc.
-    # "frontend-skills@claude-skills"        # Missing: firecrawl-scraper
-    # "tooling-skills@claude-skills"         # Missing: gemini-cli, hugo, etc.
-    # "ai-skills@claude-skills"              # May have issues
-    # "auth-skills@claude-skills"            # May have issues
+    # "cloudflare-skills@claude-skills"   # BROKEN: Missing cloudflare-sandbox, etc.
+    # "ai-skills@claude-skills"           # BROKEN: Missing thesys-generative-ui, etc.
+    # "frontend-skills@claude-skills"     # BROKEN: Missing firecrawl-scraper
+    # "auth-skills@claude-skills"         # BROKEN: May have issues
+    # "cms-skills@claude-skills"          # BROKEN: May have issues
+    # "tooling-skills@claude-skills"      # BROKEN: Missing gemini-cli, hugo, etc.
 )
 
 # ============================================================================
@@ -246,10 +203,10 @@ show_summary() {
     echo "  claude plugin marketplace update <marketplace-name>"
     echo ""
 
-    print_warning "Note: Some plugins from 'claude-skills' marketplace have bugs"
-    echo "      (missing skill files). Avoid bundled plugins like:"
-    echo "      - cloudflare-skills, frontend-skills, tooling-skills"
-    echo "      Use individual plugins instead."
+    print_warning "Note: The 'claude-skills' marketplace (jezweb) is currently broken"
+    echo "      All bundles reference non-existent skill files."
+    echo "      The marketplace is installed but no plugins are enabled."
+    echo "      Check https://github.com/jezweb/claude-skills for updates."
 }
 
 # ============================================================================
