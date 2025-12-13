@@ -154,19 +154,12 @@ wookstar-claude-code-plugins/        # Repository root
 │   ├── skills/                      # 15 GA4 skills
 │   └── .mcp.json                    # Analytics MCP server
 │
-├── mcp-servers/                     # Individual MCP server plugins
-│   ├── fetch/
-│   │   └── .mcp.json
-│   ├── google-workspace/
-│   │   └── .mcp.json
-│   ├── mikrotik/
-│   │   └── .mcp.json
-│   ├── n8n/
-│   │   └── .mcp.json
-│   ├── notion/
-│   │   └── .mcp.json
-│   └── open-meteo/
-│       └── .mcp.json
+├── mcp-servers/                     # Individual MCP server plugins (configs inlined in marketplace.json)
+│   └── README.md                    # Documentation only
+│
+├── scripts/                         # Utility scripts (personal use)
+│   ├── README.md
+│   └── install-claude-plugins.sh    # Automated plugin installation
 │
 ├── CLAUDE.md                        # This file
 ├── README.md                        # Repository overview
@@ -407,24 +400,7 @@ Each toolkit includes its own README.md documenting:
 
 ### Adding Individual MCP Server
 
-1. Create MCP directory: `mcp-servers/<server-name>/`
-2. Create MCP config file: `mcp-servers/<server-name>/.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "my-server": {
-      "command": "npx",
-      "args": ["my-mcp-package"],
-      "env": {
-        "API_KEY": "${MY_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-3. Add entry to root `.claude-plugin/marketplace.json` with **inline** `mcpServers`:
+Add entry directly to root `.claude-plugin/marketplace.json` with **inline** `mcpServers`:
 
 ```json
 {
@@ -448,7 +424,7 @@ Each toolkit includes its own README.md documenting:
 
 4. Test locally with `/plugin install mcp-my-server@wookstar`
 
-**Note:** For individual MCP servers, the `mcpServers` configuration is inlined directly in the root marketplace.json entry (not referenced via path). The `.mcp.json` file in the server directory serves as documentation and backup.
+**Note:** For individual MCP servers, the `mcpServers` configuration is inlined directly in the root marketplace.json entry. No separate directory or `.mcp.json` file is required - the configuration lives entirely in marketplace.json.
 
 ## Environment Variables
 

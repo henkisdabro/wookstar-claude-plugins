@@ -73,12 +73,13 @@ ensure_claude_dir() {
 # ============================================================================
 
 # Define marketplaces to install
-# Format: "marketplace_name|source_type|source_value"
+# Format: "marketplace_name|source"
+# Source can be: owner/repo (GitHub) or full URL (git)
 MARKETPLACES=(
-    "claude-code-plugins|github|anthropics/claude-code"
-    "wookstar-claude-code-plugins|github|henkisdabro/wookstar-claude-code-plugins"
-    "claude-scientific-skills|github|K-Dense-AI/claude-scientific-skills"
-    "claude-skills|git|https://github.com/jezweb/claude-skills.git"
+    "claude-code-plugins|anthropics/claude-code"
+    "wookstar-claude-code-plugins|henkisdabro/wookstar-claude-code-plugins"
+    "claude-scientific-skills|K-Dense-AI/claude-scientific-skills"
+    "claude-skills|https://github.com/jezweb/claude-skills.git"
 )
 
 # ============================================================================
@@ -197,7 +198,7 @@ install_marketplaces() {
     print_header "Installing Marketplaces"
 
     for marketplace_def in "${MARKETPLACES[@]}"; do
-        IFS='|' read -r name source_type source_value <<< "$marketplace_def"
+        IFS='|' read -r name source <<< "$marketplace_def"
 
         print_info "Adding marketplace: $name"
 
@@ -206,22 +207,12 @@ install_marketplaces() {
             print_warning "Marketplace '$name' already exists, updating..."
             claude plugin marketplace update "$name" 2>/dev/null || true
         else
-            # Add marketplace based on source type
-            case "$source_type" in
-                github)
-                    claude plugin marketplace add "github:$source_value" 2>/dev/null && \
-                        print_success "Added marketplace: $name" || \
-                        print_error "Failed to add marketplace: $name"
-                    ;;
-                git)
-                    claude plugin marketplace add "$source_value" 2>/dev/null && \
-                        print_success "Added marketplace: $name" || \
-                        print_error "Failed to add marketplace: $name"
-                    ;;
-                *)
-                    print_error "Unknown source type: $source_type"
-                    ;;
-            esac
+            # Add marketplace (source can be owner/repo or full URL)
+            if claude plugin marketplace add "$source" 2>/dev/null; then
+                print_success "Added marketplace: $name"
+            else
+                print_error "Failed to add marketplace: $name"
+            fi
         fi
     done
 }

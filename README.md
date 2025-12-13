@@ -387,6 +387,25 @@ Standalone integrations available separately:
 
 ## 🛠️ Development
 
+### Fresh Installation Script (Personal Use)
+
+> **Note:** This script is a personal utility for the maintainer's development environment. It installs plugins from multiple marketplaces and represents personal preferences - not intended for general redistribution.
+
+For new Linux machines, the automated installation script sets up a complete Claude Code environment:
+
+```bash
+# Clone and run
+git clone https://github.com/henkisdabro/wookstar-claude-code-plugins.git
+cd wookstar-claude-code-plugins
+./scripts/install-claude-plugins.sh
+```
+
+The script installs:
+- **4 marketplaces:** claude-code-plugins (Anthropic), wookstar, claude-scientific-skills, claude-skills
+- **Working plugins** from each marketplace (avoiding known buggy bundles)
+
+See [scripts/README.md](./scripts/README.md) for full documentation and customisation options.
+
 ### Local Testing
 
 ```bash
