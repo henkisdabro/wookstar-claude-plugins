@@ -118,8 +118,7 @@ wookstar-claude-code-plugins/        # Repository root
 │   │   │   └── SKILL.md
 │   │   └── webapp-testing/
 │   │       └── SKILL.md
-│   └── .claude-plugin/              # Embedded MCP servers
-│       └── marketplace.json         # Developer-specific MCPs
+│   └── .mcp.json                    # Embedded MCP servers (7 servers)
 │
 ├── documents-toolkit/               # Document processing toolkit (v1.0.0)
 │   ├── README.md
@@ -128,7 +127,7 @@ wookstar-claude-code-plugins/        # Repository root
 │       │   └── SKILL.md
 │       ├── xlsx/
 │       │   └── SKILL.md
-│       └── pdf/
+│       └── pdf-processing-pro/
 │           └── SKILL.md
 │
 ├── claudecode-toolkit/              # Meta toolkit (v1.0.0)
@@ -139,52 +138,35 @@ wookstar-claude-code-plugins/        # Repository root
 │
 ├── finance-toolkit/                 # Financial data toolkit (v1.0.0)
 │   ├── README.md
-│   └── .claude-plugin/              # Embedded MCP servers
-│       └── marketplace.json         # Finance-specific MCPs (AlphaVantage, CoinGecko)
+│   └── .mcp.json                    # Finance MCPs (AlphaVantage, CoinGecko, Currency)
 │
 ├── ai-toolkit/                      # AI integrations toolkit (v1.0.0)
 │   ├── README.md
-│   └── .claude-plugin/              # Embedded MCP servers
-│       └── marketplace.json         # AI-specific MCPs (Gemini, Perplexity)
+│   └── .mcp.json                    # AI MCPs (Gemini, Perplexity)
 │
-├── gtm-suite/                       # Google Tag Manager suite (v0.1.0 - PLACEHOLDER)
+├── gtm-suite/                       # Google Tag Manager suite (v1.0.0)
 │   ├── README.md
-│   ├── agents/                      # Placeholder directories
-│   ├── commands/
-│   ├── skills/
-│   └── .claude-plugin/
-│       └── marketplace.json
+│   ├── skills/                      # 10 GTM skills
+│   └── .mcp.json                    # GTM MCP server
 │
-├── ga-suite/                        # Google Analytics 4 suite (v0.1.0 - PLACEHOLDER)
+├── ga-suite/                        # Google Analytics 4 suite (v1.0.0)
 │   ├── README.md
-│   ├── agents/                      # Placeholder directories
-│   ├── commands/
-│   ├── skills/
-│   └── .claude-plugin/
-│       └── marketplace.json
+│   ├── skills/                      # 15 GA4 skills
+│   └── .mcp.json                    # Analytics MCP server
 │
 ├── mcp-servers/                     # Individual MCP server plugins
-│   ├── currency-conversion/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
 │   ├── fetch/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
+│   │   └── .mcp.json
 │   ├── google-workspace/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
+│   │   └── .mcp.json
 │   ├── mikrotik/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
+│   │   └── .mcp.json
 │   ├── n8n/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
+│   │   └── .mcp.json
 │   ├── notion/
-│   │   └── .claude-plugin/
-│   │       └── marketplace.json
+│   │   └── .mcp.json
 │   └── open-meteo/
-│       └── .claude-plugin/
-│           └── marketplace.json
+│       └── .mcp.json
 │
 ├── CLAUDE.md                        # This file
 ├── README.md                        # Repository overview
@@ -205,15 +187,14 @@ Each toolkit follows a consistent internal structure:
 ├── skills/                          # Optional: Skills
 │   └── <skill-name>/
 │       └── SKILL.md
-└── .claude-plugin/                  # Optional: Embedded MCP servers
-    └── marketplace.json             # MCP server configurations
+└── .mcp.json                        # Optional: Embedded MCP servers
 ```
 
 **Auto-Loading Behavior:**
 - All `.md` files in `agents/` are auto-loaded as agents
 - All `.md` files in `commands/` are auto-loaded as commands
 - All directories with `SKILL.md` in `skills/` are auto-loaded as skills
-- MCP servers in embedded `marketplace.json` are loaded when toolkit is installed
+- MCP servers defined in `.mcp.json` are loaded when toolkit is installed (via `mcpServers` reference in marketplace.json)
 
 **No plugin.json Required:**
 - Toolkits use `strict: false` in marketplace.json
@@ -270,16 +251,17 @@ Agent Skills that extend Claude's capabilities within toolkits.
 
 MCP servers bundled within toolkits for domain-specific integrations.
 
-**Location:** `<toolkit-name>/.claude-plugin/marketplace.json`
-**Configuration:** Inline in toolkit's marketplace.json
+**Location:** `<toolkit-name>/.mcp.json`
+**Configuration:** JSON file with `mcpServers` object
+**Referenced:** Via `"mcpServers": "./.mcp.json"` in root marketplace.json plugin entry
 **Loaded:** Automatically when toolkit is installed
 
 #### 6. Individual MCP Servers
 
 Standalone MCP server plugins for general-purpose integrations.
 
-**Location:** `mcp-servers/<server-name>/.claude-plugin/marketplace.json`
-**Configuration:** Inline in server's marketplace.json
+**Location:** `mcp-servers/<server-name>/.mcp.json`
+**Configuration:** JSON file with `mcpServers` object (inlined in root marketplace.json)
 **Installation:** `/plugin install mcp-<server-name>@wookstar`
 
 **Available Individual MCPs:**
@@ -311,20 +293,21 @@ The main marketplace manifest at `.claude-plugin/marketplace.json`. Contains:
 **Path Resolution:**
 - Toolkit source: `"./productivity-toolkit"` → Toolkit root
 - Components auto-loaded from: `agents/`, `commands/`, `skills/` within toolkit
-- Embedded MCPs: Defined in `<toolkit>/.claude-plugin/marketplace.json`
+- Embedded MCPs: Defined in `<toolkit>/.mcp.json`, referenced via `"mcpServers": "./.mcp.json"` in marketplace.json
 
-#### marketplace.json (Embedded in Toolkits)
+#### .mcp.json (Embedded in Toolkits)
 
-Optional marketplace.json files within toolkits for embedded MCP servers.
+Optional `.mcp.json` files within toolkits for embedded MCP servers.
 
-**Location:** `<toolkit-name>/.claude-plugin/marketplace.json`
+**Location:** `<toolkit-name>/.mcp.json`
 **Purpose:** Define MCP servers specific to the toolkit domain
-**Format:** Same as root marketplace.json but only contains MCP plugins
+**Format:** JSON with `mcpServers` object containing server configurations
+**Referenced:** Via `"mcpServers": "./.mcp.json"` in the toolkit's entry in root marketplace.json
 
 **Example toolkits with embedded MCPs:**
-- `developer-toolkit/.claude-plugin/marketplace.json`: Chrome DevTools, Playwright, etc.
-- `finance-toolkit/.claude-plugin/marketplace.json`: AlphaVantage, CoinGecko
-- `ai-toolkit/.claude-plugin/marketplace.json`: Gemini, Perplexity
+- `developer-toolkit/.mcp.json`: Chrome DevTools, Playwright, Cloudflare docs, etc.
+- `finance-toolkit/.mcp.json`: AlphaVantage, CoinGecko, Currency Conversion
+- `ai-toolkit/.mcp.json`: Gemini, Perplexity
 
 #### README.md Files
 
@@ -392,62 +375,56 @@ Each toolkit includes its own README.md documenting:
 
 #### Adding Embedded MCP Server to Toolkit
 
-1. Create toolkit MCP manifest: `<toolkit-name>/.claude-plugin/marketplace.json`
+1. Create or edit the toolkit's MCP config file: `<toolkit-name>/.mcp.json`
 2. Add MCP server configuration:
 
 ```json
 {
-  "plugins": [
-    {
-      "name": "mcp-my-server",
-      "source": "./.claude-plugin",
-      "description": "MCP server description",
-      "keywords": ["mcp", "integration"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "my-server": {
-          "command": "npx",
-          "args": ["my-mcp-package"]
-        }
-      },
-      "strict": false
+  "mcpServers": {
+    "my-server": {
+      "command": "npx",
+      "args": ["my-mcp-package"],
+      "env": {
+        "API_KEY": "${MY_API_KEY}"
+      }
     }
-  ]
+  }
 }
 ```
 
-3. Test locally by reinstalling toolkit: `/plugin install <toolkit-name>@wookstar`
+3. Add `mcpServers` reference to the toolkit entry in root `.claude-plugin/marketplace.json`:
+
+```json
+{
+  "name": "my-toolkit",
+  "source": "./my-toolkit",
+  "mcpServers": "./.mcp.json",
+  "strict": false
+}
+```
+
+4. Test locally by reinstalling toolkit: `/plugin install <toolkit-name>@wookstar`
 
 ### Adding Individual MCP Server
 
 1. Create MCP directory: `mcp-servers/<server-name>/`
-2. Create MCP manifest: `mcp-servers/<server-name>/.claude-plugin/marketplace.json`:
+2. Create MCP config file: `mcp-servers/<server-name>/.mcp.json`:
 
 ```json
 {
-  "plugins": [
-    {
-      "name": "mcp-my-server",
-      "source": "./.claude-plugin",
-      "description": "MCP server description",
-      "keywords": ["mcp", "integration"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "my-server": {
-          "command": "npx",
-          "args": ["my-mcp-package"],
-          "env": {
-            "API_KEY": "${MY_API_KEY}"
-          }
-        }
-      },
-      "strict": false
+  "mcpServers": {
+    "my-server": {
+      "command": "npx",
+      "args": ["my-mcp-package"],
+      "env": {
+        "API_KEY": "${MY_API_KEY}"
+      }
     }
-  ]
+  }
 }
 ```
 
-3. Add entry to root `.claude-plugin/marketplace.json`:
+3. Add entry to root `.claude-plugin/marketplace.json` with **inline** `mcpServers`:
 
 ```json
 {
@@ -456,11 +433,22 @@ Each toolkit includes its own README.md documenting:
   "description": "MCP server description",
   "keywords": ["mcp", "integration"],
   "category": "mcpServers",
+  "mcpServers": {
+    "my-server": {
+      "command": "npx",
+      "args": ["my-mcp-package"],
+      "env": {
+        "API_KEY": "${MY_API_KEY}"
+      }
+    }
+  },
   "strict": false
 }
 ```
 
 4. Test locally with `/plugin install mcp-my-server@wookstar`
+
+**Note:** For individual MCP servers, the `mcpServers` configuration is inlined directly in the root marketplace.json entry (not referenced via path). The `.mcp.json` file in the server directory serves as documentation and backup.
 
 ## Environment Variables
 
