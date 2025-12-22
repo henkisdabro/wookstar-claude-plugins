@@ -54,7 +54,57 @@
         "debugging"
       ],
       "category": "development",
-      "mcpServers": "./.mcp.json",
+      "mcpServers": {
+        "chrome-devtools": {
+          "command": "npx",
+          "args": ["chrome-devtools-mcp@latest"]
+        },
+        "cloudflare-docs": {
+          "command": "npx",
+          "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
+        },
+        "context7": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@upstash/context7-mcp",
+            "--api-key",
+            "${CONTEXT7_API_KEY}"
+          ]
+        },
+        "firecrawl": {
+          "command": "npx",
+          "args": ["-y", "firecrawl-mcp"],
+          "env": {
+            "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+          }
+        },
+        "microsoft-docs": {
+          "type": "http",
+          "url": "https://learn.microsoft.com/api/mcp"
+        },
+        "playwright": {
+          "command": "npx",
+          "args": ["@playwright/mcp@latest"]
+        },
+        "serena": {
+          "type": "stdio",
+          "command": "uvx",
+          "args": [
+            "--from",
+            "git+https://github.com/oraios/serena",
+            "serena",
+            "start-mcp-server",
+            "--context",
+            "ide-assistant",
+            "--mode",
+            "planning",
+            "--enable-web-dashboard",
+            "FALSE"
+          ],
+          "env": {}
+        }
+      },
       "strict": false
     },
     {
@@ -174,7 +224,16 @@
         "debugging"
       ],
       "category": "analytics",
-      "mcpServers": "./.mcp.json",
+      "mcpServers": {
+        "gtm-mcp-server": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "mcp-remote",
+            "https://gtm-mcp.stape.ai/mcp"
+          ]
+        }
+      },
       "strict": false
     },
     {
@@ -203,7 +262,19 @@
         "gtm"
       ],
       "category": "analytics",
-      "mcpServers": "./.mcp.json",
+      "mcpServers": {
+        "analytics-mcp": {
+          "command": "pipx",
+          "args": [
+            "run",
+            "analytics-mcp"
+          ],
+          "env": {
+            "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}",
+            "GOOGLE_PROJECT_ID": "${GOOGLE_PROJECT_ID}"
+          }
+        }
+      },
       "strict": false
     },
     {
