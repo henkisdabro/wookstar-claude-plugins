@@ -36,8 +36,8 @@
     {
       "name": "developer-toolkit",
       "source": "./developer-toolkit",
-      "description": "Complete development toolkit: 2 expert agents (fullstack developer, validation gates) + 2 skills (git commit helper, webapp testing) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
-      "version": "1.0.0",
+      "description": "Complete development toolkit: 2 expert agents (fullstack developer, validation gates) + 3 skills (git commit helper, webapp testing, devtools setup) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -54,57 +54,7 @@
         "debugging"
       ],
       "category": "development",
-      "mcpServers": {
-        "chrome-devtools": {
-          "command": "npx",
-          "args": ["chrome-devtools-mcp@latest"]
-        },
-        "cloudflare-docs": {
-          "command": "npx",
-          "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
-        },
-        "context7": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@upstash/context7-mcp",
-            "--api-key",
-            "${CONTEXT7_API_KEY}"
-          ]
-        },
-        "firecrawl": {
-          "command": "npx",
-          "args": ["-y", "firecrawl-mcp"],
-          "env": {
-            "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
-          }
-        },
-        "microsoft-docs": {
-          "type": "http",
-          "url": "https://learn.microsoft.com/api/mcp"
-        },
-        "playwright": {
-          "command": "npx",
-          "args": ["@playwright/mcp@latest"]
-        },
-        "serena": {
-          "type": "stdio",
-          "command": "uvx",
-          "args": [
-            "--from",
-            "git+https://github.com/oraios/serena",
-            "serena",
-            "start-mcp-server",
-            "--context",
-            "ide-assistant",
-            "--mode",
-            "planning",
-            "--enable-web-dashboard",
-            "FALSE"
-          ],
-          "env": {}
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -442,29 +392,6 @@
             "OPEN_METEO_ENSEMBLE_API_URL": "https://ensemble-api.open-meteo.com",
             "OPEN_METEO_GEOCODING_API_URL": "https://geocoding-api.open-meteo.com"
           }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "mcp-test-file-ref",
-      "source": "./mcp-test-file-ref",
-      "description": "TEST: MCP via .mcp.json file reference - delete after testing",
-      "keywords": ["test", "mcp"],
-      "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
-    },
-    {
-      "name": "mcp-test-inline",
-      "source": "./mcp-test-inline",
-      "description": "TEST: MCP via inline config - delete after testing",
-      "keywords": ["test", "mcp"],
-      "category": "mcpServers",
-      "mcpServers": {
-        "open-meteo-test-inline": {
-          "command": "npx",
-          "args": ["open-meteo-mcp-server"]
         }
       },
       "strict": false

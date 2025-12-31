@@ -8,9 +8,10 @@ Complete development toolkit with expert agents, testing skills, and powerful MC
 - **fullstack-developer** - Expert in frontend (React, TypeScript, Vue) and backend (Node.js, FastAPI, databases)
 - **validation-gates** - Testing and quality assurance specialist (unit tests, integration tests, coverage)
 
-### Skills (2)
+### Skills (3)
 - **git-commit-helper** - Generate descriptive commit messages from git diffs
 - **webapp-testing** - Web application testing toolkit with Playwright
+- **devtools** - Chrome DevTools MCP setup guide for browser debugging and automation
 
 ### MCP Servers (7)
 - **chrome-devtools** - Chrome DevTools Protocol integration
