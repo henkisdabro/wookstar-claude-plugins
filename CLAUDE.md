@@ -154,7 +154,7 @@ wookstar-claude-code-plugins/        # Repository root
 │   ├── skills/                      # 15 GA4 skills
 │   └── .mcp.json                    # Analytics MCP server
 │
-├── mcp-servers/                     # Individual MCP server plugins (configs inlined in marketplace.json)
+├── mcp-servers/                     # Individual MCP server plugins (each with .mcp.json)
 │   └── README.md                    # Documentation only
 │
 ├── scripts/                         # Utility scripts (personal use)
@@ -206,7 +206,7 @@ Each toolkit follows a consistent internal structure:
 
 **Available Toolkits:**
 - **productivity-toolkit** (v1.0.0): Planning, workflows, documentation tools
-- **developer-toolkit** (v1.0.0): Development agents, testing skills, dev MCPs
+- **developer-toolkit** (v1.1.0): Development agents, testing skills (3), dev MCPs
 - **documents-toolkit** (v1.0.0): Word, Excel, PDF processing skills
 - **claudecode-toolkit** (v1.0.0): Meta tools for extending Claude Code
 - **finance-toolkit** (v1.0.0): Financial market data MCPs
@@ -254,7 +254,8 @@ MCP servers bundled within toolkits for domain-specific integrations.
 Standalone MCP server plugins for general-purpose integrations.
 
 **Location:** `mcp-servers/<server-name>/.mcp.json`
-**Configuration:** JSON file with `mcpServers` object (inlined in root marketplace.json)
+**Configuration:** JSON file with `mcpServers` object
+**Referenced:** Via `"mcpServers": "./.mcp.json"` in root marketplace.json plugin entry
 **Installation:** `/plugin install mcp-<server-name>@wookstar`
 
 **Available Individual MCPs:**
@@ -400,15 +401,11 @@ Each toolkit includes its own README.md documenting:
 
 ### Adding Individual MCP Server
 
-Add entry directly to root `.claude-plugin/marketplace.json` with **inline** `mcpServers`:
+1. Create the server directory: `mcp-servers/<server-name>/`
+2. Create the MCP config file: `mcp-servers/<server-name>/.mcp.json`:
 
 ```json
 {
-  "name": "mcp-my-server",
-  "source": "./mcp-servers/my-server",
-  "description": "MCP server description",
-  "keywords": ["mcp", "integration"],
-  "category": "mcpServers",
   "mcpServers": {
     "my-server": {
       "command": "npx",
@@ -417,14 +414,27 @@ Add entry directly to root `.claude-plugin/marketplace.json` with **inline** `mc
         "API_KEY": "${MY_API_KEY}"
       }
     }
-  },
+  }
+}
+```
+
+3. Add entry to root `.claude-plugin/marketplace.json` with file reference:
+
+```json
+{
+  "name": "mcp-my-server",
+  "source": "./mcp-servers/my-server",
+  "description": "MCP server description",
+  "keywords": ["mcp", "integration"],
+  "category": "mcpServers",
+  "mcpServers": "./.mcp.json",
   "strict": false
 }
 ```
 
 4. Test locally with `/plugin install mcp-my-server@wookstar`
 
-**Note:** For individual MCP servers, the `mcpServers` configuration is inlined directly in the root marketplace.json entry. No separate directory or `.mcp.json` file is required - the configuration lives entirely in marketplace.json.
+**Note:** All MCP servers use file references (`./.mcp.json`) for consistent architecture and easier maintenance.
 
 ## Environment Variables
 
