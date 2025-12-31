@@ -205,16 +205,16 @@ Each toolkit follows a consistent internal structure:
 **Installation:** `/plugin install <toolkit-name>@wookstar`
 
 **Available Toolkits:**
-- **productivity-toolkit** (v1.0.0): Planning, workflows, documentation tools
+- **productivity-toolkit** (v1.1.0): Planning, workflows, documentation tools
 - **developer-toolkit** (v1.1.0): Development agents, testing skills (3), dev MCPs
-- **documents-toolkit** (v1.0.0): Word, Excel, PDF processing skills
-- **claudecode-toolkit** (v1.0.0): Meta tools for extending Claude Code
-- **finance-toolkit** (v1.0.0): Financial market data MCPs
-- **ai-toolkit** (v1.0.0): AI integration MCPs (Gemini, Perplexity)
-- **gtm-suite** (v1.0.0): Google Tag Manager (10 skills) - PRODUCTION READY
-- **ga-suite** (v1.0.0): Google Analytics 4 (15 skills) - PRODUCTION READY
-- **shopify-developer** (v1.0.0): Shopify development (6 skills) - PRODUCTION READY
-- **google-apps-ads-script** (v1.0.0): Google Workspace & Ads automation (2 skills) - PRODUCTION READY
+- **documents-toolkit** (v1.1.0): Word, Excel, PDF processing skills
+- **claudecode-toolkit** (v1.1.0): Meta tools for extending Claude Code
+- **finance-toolkit** (v1.1.0): Financial market data MCPs
+- **ai-toolkit** (v1.1.0): AI integration MCPs (Gemini, Perplexity)
+- **gtm-suite** (v1.1.0): Google Tag Manager (10 skills)
+- **ga-suite** (v1.1.0): Google Analytics 4 (15 skills)
+- **shopify-developer** (v1.1.0): Shopify development (6 skills)
+- **google-apps-ads-script** (v1.1.0): Google Workspace & Ads automation (2 skills)
 
 #### 2. Commands
 
@@ -459,9 +459,50 @@ All toolkits and plugins must include:
 - `version`: Semantic version (MAJOR.MINOR.PATCH)
 - `strict`: Set to `false` for flexibility
 
+## MCP Configuration Rules
+
+**IMPORTANT:** All MCP servers MUST use file references, not inline configurations.
+
+### The Rule
+
+```json
+// ✓ CORRECT - File reference
+"mcpServers": "./.mcp.json"
+
+// ✗ WRONG - Inline configuration (DO NOT USE)
+"mcpServers": {
+  "server-name": { "command": "..." }
+}
+```
+
+### Why File References?
+
+1. **Atomic ownership** - Each toolkit owns its MCP configuration
+2. **Easier maintenance** - Modify MCPs directly in toolkit folders without editing marketplace.json
+3. **Cleaner marketplace.json** - No massive inline blocks cluttering the manifest
+4. **Consistent architecture** - Same pattern everywhere, no exceptions
+5. **Better diffs** - Changes to MCPs are isolated to their toolkit's .mcp.json
+
+### Structure
+
+Every toolkit or MCP plugin with servers MUST have:
+
+```
+<plugin-directory>/
+└── .mcp.json          # Required for all MCP configurations
+```
+
+### Validation Checklist
+
+Before committing MCP changes:
+- [ ] `.mcp.json` file exists in the plugin directory
+- [ ] marketplace.json entry uses `"mcpServers": "./.mcp.json"`
+- [ ] No inline `mcpServers` objects in marketplace.json
+- [ ] Run `claude plugin validate .` passes
+
 ## Version Management
 
-**Current Version:** v3.0.0
+**Current Version:** v3.1.0
 
 Follow semantic versioning strictly:
 
@@ -473,14 +514,12 @@ Follow semantic versioning strictly:
   - Example: Fixing command bugs, updating documentation
 
 **Versioning Strategy:**
-- **Marketplace version**: Updated for architectural changes (currently 3.0.0)
-- **Toolkit versions**: Independent semantic versioning per toolkit
-- **Placeholder toolkits**: Start at v0.1.0 until production-ready
+- **Marketplace version**: Updated for architectural changes (currently 3.1.0)
+- **Toolkit versions**: Independent semantic versioning per toolkit (currently all at v1.1.0)
 - **Production toolkits**: v1.0.0 and above
 
 **Version Status:**
-- Production toolkits (v1.0.0): productivity, developer, documents, claudecode, finance, ai, gtm-suite, ga-suite, shopify-developer, google-apps-ads-script
-- All toolkits are now production-ready!
+- All toolkits at v1.1.0: productivity, developer, documents, claudecode, finance, ai, gtm-suite, ga-suite, shopify-developer, google-apps-ads-script
 
 Update versions when:
 1. Adding significant features to a toolkit (MINOR bump)

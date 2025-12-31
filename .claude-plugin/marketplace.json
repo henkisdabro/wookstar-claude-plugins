@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialized toolkits for productivity, development, analytics, documents, e-commerce, and AI integrations - now featuring complete GTM, GA4, Shopify, and Google Automation suites",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins"
   },
   "plugins": [
@@ -14,7 +14,7 @@
       "name": "productivity-toolkit",
       "source": "./productivity-toolkit",
       "description": "Essential productivity suite with planning and workflow tools: 1 documentation agent + 11 powerful commands (ultra-think, planning, PRPs, containerize, etc.) + 2 utility skills (PRP generator, timezone tools)",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -61,7 +61,7 @@
       "name": "documents-toolkit",
       "source": "./documents-toolkit",
       "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyze, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -86,7 +86,7 @@
       "name": "claudecode-toolkit",
       "source": "./claudecode-toolkit",
       "description": "Meta toolkit for Claude Code itself: skill-creator guide helps you build effective skills and extend Claude's capabilities",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -107,7 +107,7 @@
       "name": "finance-toolkit",
       "source": "./finance-toolkit",
       "description": "Financial market data integrations: 2 MCP servers providing real-time stock market data (AlphaVantage) and cryptocurrency data (CoinGecko)",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -131,7 +131,7 @@
       "name": "ai-toolkit",
       "source": "./ai-toolkit",
       "description": "AI integration toolkit: 2 MCP servers connecting to Gemini AI and Perplexity for enhanced AI capabilities and search",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -153,7 +153,7 @@
       "name": "gtm-suite",
       "source": "./gtm-suite",
       "description": "Complete Google Tag Manager suite with 10 specialized skills covering setup, configuration, implementation, debugging, and best practices. Includes GTM fundamentals, tags, triggers, variables, data layer architecture, debugging tools, custom templates, and API automation for comprehensive GTM mastery.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -181,7 +181,7 @@
       "name": "ga-suite",
       "source": "./ga-suite",
       "description": "Comprehensive Google Analytics 4 suite with 15 specialized skills covering complete GA4 implementation from property setup to BigQuery integration. Includes events, user tracking, e-commerce, custom dimensions, audiences, privacy compliance, reporting, Measurement Protocol, and GTM integration for full GA4 expertise.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -210,7 +210,7 @@
       "name": "shopify-developer",
       "source": "./shopify-developer",
       "description": "Professional Shopify development toolkit with 6 specialized skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimization, and debugging. Complete solution for building custom themes, headless storefronts, and Shopify apps.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -237,7 +237,7 @@
       "name": "google-apps-ads-script",
       "source": "./google-apps-ads-script",
       "description": "Comprehensive automation toolkit with 2 specialized skills: Google Apps Script for Workspace automation (Sheets, Docs, Gmail, Drive, Calendar) and Google Ads Scripts for campaign automation, bidding strategies, and reporting. Perfect for marketers and automation engineers.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"

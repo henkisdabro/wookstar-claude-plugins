@@ -57,11 +57,11 @@ Then install the toolkits you need:
 ---
 
 ### 💻 Developer Toolkit
-**Complete full-stack development suite**
+**Complete full-stack development suite (v1.1.0)**
 
 **Includes:**
 - 2 agents: fullstack-developer, validation-gates
-- 2 skills: git-commit-helper, webapp-testing
+- 3 skills: git-commit-helper, webapp-testing, devtools (Chrome DevTools setup)
 - 7 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena
 
 **Installation:**
@@ -451,11 +451,29 @@ vi skills/new-skill/SKILL.md
 
 ## 📊 Marketplace Stats
 
-- **Version:** 3.0.0
+- **Version:** 3.1.0
 - **Total Plugins:** 16 (10 toolkits + 6 individual MCPs)
-- **Components:** 3 agents, 11 commands, 41 skills, 20 MCP servers
+- **Components:** 3 agents, 11 commands, 42 skills, 20 MCP servers
 - **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Automation
-- **New in v3.0:** GTM Suite (10 skills + 1 MCP), GA Suite (15 skills + 1 MCP), Shopify Developer (6 skills), Google Apps & Ads Script (2 skills)
+- **New in v3.1:** All toolkits updated to v1.1.0, standardised MCP architecture using file references (.mcp.json)
+
+## 🏗️ Architecture
+
+All MCP servers are configured using **file references** (`.mcp.json`) rather than inline configurations:
+
+```
+<toolkit>/
+├── .mcp.json          # MCP server configuration
+├── agents/            # Agent definitions
+├── commands/          # Slash commands
+└── skills/            # Skills
+```
+
+Benefits:
+- **Atomic ownership** - each toolkit owns its MCP config
+- **Easier maintenance** - modify MCPs directly in toolkit folders
+- **Cleaner marketplace.json** - no massive inline blocks
+- **Consistent architecture** - same pattern everywhere
 
 ---
 
