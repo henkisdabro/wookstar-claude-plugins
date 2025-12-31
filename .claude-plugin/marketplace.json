@@ -174,16 +174,7 @@
         "debugging"
       ],
       "category": "analytics",
-      "mcpServers": {
-        "gtm-mcp-server": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "mcp-remote",
-            "https://gtm-mcp.stape.ai/mcp"
-          ]
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -212,19 +203,7 @@
         "gtm"
       ],
       "category": "analytics",
-      "mcpServers": {
-        "analytics-mcp": {
-          "command": "pipx",
-          "args": [
-            "run",
-            "analytics-mcp"
-          ],
-          "env": {
-            "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}",
-            "GOOGLE_PROJECT_ID": "${GOOGLE_PROJECT_ID}"
-          }
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -287,12 +266,7 @@
       "description": "Web content fetching and HTTP requests",
       "keywords": ["mcp", "fetch", "web", "http"],
       "category": "mcpServers",
-      "mcpServers": {
-        "fetch": {
-          "command": "uvx",
-          "args": ["mcp-server-fetch"]
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -301,17 +275,7 @@
       "description": "Google Workspace integration (Gmail, Drive, Calendar)",
       "keywords": ["mcp", "google", "workspace", "gmail", "drive"],
       "category": "mcpServers",
-      "mcpServers": {
-        "google-workspace": {
-          "command": "uvx",
-          "args": ["workspace-mcp"],
-          "env": {
-            "GOOGLE_OAUTH_CLIENT_ID": "${GOOGLE_OAUTH_CLIENT_ID}",
-            "GOOGLE_OAUTH_CLIENT_SECRET": "${GOOGLE_OAUTH_CLIENT_SECRET}",
-            "OAUTHLIB_INSECURE_TRANSPORT": "1"
-          }
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -320,22 +284,7 @@
       "description": "MikroTik router management and network automation",
       "keywords": ["mcp", "mikrotik", "router", "network"],
       "category": "mcpServers",
-      "mcpServers": {
-        "mikrotik": {
-          "command": "uvx",
-          "args": [
-            "mcp-server-mikrotik",
-            "--host",
-            "${MIKROTIK_HOST}",
-            "--username",
-            "${MIKROTIK_USER}",
-            "--password",
-            "${MIKROTIK_PASSWORD}",
-            "--port",
-            "2200"
-          ]
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -344,19 +293,7 @@
       "description": "n8n workflow automation integration",
       "keywords": ["mcp", "n8n", "automation", "workflows"],
       "category": "mcpServers",
-      "mcpServers": {
-        "n8n": {
-          "command": "npx",
-          "args": ["n8n-mcp"],
-          "env": {
-            "MCP_MODE": "stdio",
-            "LOG_LEVEL": "error",
-            "DISABLE_CONSOLE_OUTPUT": "true",
-            "N8N_API_URL": "https://n8n.wookstar.com/",
-            "N8N_API_KEY": "${N8N_API_KEY}"
-          }
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -365,12 +302,7 @@
       "description": "Notion workspace and database integration",
       "keywords": ["mcp", "notion", "workspace", "notes"],
       "category": "mcpServers",
-      "mcpServers": {
-        "notion": {
-          "type": "http",
-          "url": "https://mcp.notion.com/mcp"
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
@@ -379,21 +311,7 @@
       "description": "Weather and climate data (no API key required)",
       "keywords": ["mcp", "weather", "climate", "forecast"],
       "category": "mcpServers",
-      "mcpServers": {
-        "open-meteo": {
-          "command": "npx",
-          "args": ["open-meteo-mcp-server"],
-          "env": {
-            "OPEN_METEO_API_URL": "https://api.open-meteo.com",
-            "OPEN_METEO_AIR_QUALITY_API_URL": "https://air-quality-api.open-meteo.com",
-            "OPEN_METEO_MARINE_API_URL": "https://marine-api.open-meteo.com",
-            "OPEN_METEO_ARCHIVE_API_URL": "https://archive-api.open-meteo.com",
-            "OPEN_METEO_SEASONAL_API_URL": "https://seasonal-api.open-meteo.com",
-            "OPEN_METEO_ENSEMBLE_API_URL": "https://ensemble-api.open-meteo.com",
-            "OPEN_METEO_GEOCODING_API_URL": "https://geocoding-api.open-meteo.com"
-          }
-        }
-      },
+      "mcpServers": "./.mcp.json",
       "strict": false
     }
   ]

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "open-meteo": {
+      "command": "npx",
+      "args": ["open-meteo-mcp-server"],
+      "env": {
+        "OPEN_METEO_API_URL": "https://api.open-meteo.com",
+        "OPEN_METEO_AIR_QUALITY_API_URL": "https://air-quality-api.open-meteo.com",
+        "OPEN_METEO_MARINE_API_URL": "https://marine-api.open-meteo.com",
+        "OPEN_METEO_ARCHIVE_API_URL": "https://archive-api.open-meteo.com",
+        "OPEN_METEO_SEASONAL_API_URL": "https://seasonal-api.open-meteo.com",
+        "OPEN_METEO_ENSEMBLE_API_URL": "https://ensemble-api.open-meteo.com",
+        "OPEN_METEO_GEOCODING_API_URL": "https://geocoding-api.open-meteo.com"
+      }
+    }
+  }
+}
