@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "open-meteo-test-fileref": {
+      "command": "npx",
+      "args": ["open-meteo-mcp-server"]
+    }
+  }
+}

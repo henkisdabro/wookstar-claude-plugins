@@ -445,6 +445,29 @@
         }
       },
       "strict": false
+    },
+    {
+      "name": "mcp-test-file-ref",
+      "source": "./mcp-test-file-ref",
+      "description": "TEST: MCP via .mcp.json file reference - delete after testing",
+      "keywords": ["test", "mcp"],
+      "category": "mcpServers",
+      "mcpServers": "./.mcp.json",
+      "strict": false
+    },
+    {
+      "name": "mcp-test-inline",
+      "source": "./mcp-test-inline",
+      "description": "TEST: MCP via inline config - delete after testing",
+      "keywords": ["test", "mcp"],
+      "category": "mcpServers",
+      "mcpServers": {
+        "open-meteo-test-inline": {
+          "command": "npx",
+          "args": ["open-meteo-mcp-server"]
+        }
+      },
+      "strict": false
     }
   ]
 }
