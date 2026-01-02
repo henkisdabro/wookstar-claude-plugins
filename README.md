@@ -1,8 +1,8 @@
 # Wookstar Claude Code Plugins
 
-A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing specialized toolkits for productivity, development, documents, analytics, e-commerce, and AI integrations - now featuring complete GTM, GA4, Shopify, and Google Automation suites!
+A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing specialised toolkits for productivity, development, documents, marketing analytics, e-commerce, and AI integrations - featuring consolidated GTM, GA4, and Shopify skills.
 
-## 🚀 Quick Start
+## Quick Start
 
 Add this marketplace to Claude Code:
 
@@ -14,64 +14,79 @@ Then install the toolkits you need:
 
 ```bash
 # For productivity and planning
-/plugin install productivity-toolkit@wookstar
+/plugin install productivity@wookstar
 
 # For full-stack development
-/plugin install developer-toolkit@wookstar
+/plugin install developer@wookstar
 
 # For document processing
-/plugin install documents-toolkit@wookstar
+/plugin install documents@wookstar
 
-# For Google Tag Manager expertise
-/plugin install gtm-suite@wookstar
-
-# For Google Analytics 4 expertise
-/plugin install ga-suite@wookstar
+# For marketing analytics (GTM + GA4 + Google Ads Scripts)
+/plugin install marketing@wookstar
 
 # For Shopify development
 /plugin install shopify-developer@wookstar
 
-# For Google Workspace & Ads automation
-/plugin install google-apps-ads-script@wookstar
+# For utility tools
+/plugin install utilities@wookstar
+```
+
+Or install individual MCP servers without the full toolkits:
+
+```bash
+/plugin install mcp-fetch@wookstar           # Web content fetching
+/plugin install mcp-google-workspace@wookstar # Gmail, Drive, Calendar
+/plugin install mcp-mikrotik@wookstar        # MikroTik router management
+/plugin install mcp-n8n@wookstar             # n8n workflow automation
+/plugin install mcp-notion@wookstar          # Notion integration
+/plugin install mcp-open-meteo@wookstar      # Weather data (no API key)
 ```
 
 ---
 
-## 🎯 Available Toolkits
+## Available Toolkits
 
-### 📊 Productivity Toolkit
-**Essential planning and workflow tools**
+### Productivity
+
+**Workflow orchestration and automation**
 
 **Includes:**
-- 1 agent: documentation-manager
-- 11 commands: /ultra-think, /planning, /containerize, /generate-prp, /execute-prp, and more
-- 2 skills: prp-generator, timezone-tools
+
+- 4 commands: /planning, /prep-parallel, /execute-parallel, /primer
+- 1 skill: google-apps-script (Workspace automation)
 
 **Installation:**
+
 ```bash
-/plugin install productivity-toolkit@wookstar
+/plugin install productivity@wookstar
 ```
 
-**Use Cases:** Project planning, deep analysis, containerization, timezone management
+**Use Cases:** Project planning, parallel task execution, Google Workspace automation
 
 ---
 
-### 💻 Developer Toolkit
-**Complete full-stack development suite (v1.1.0)**
+### Developer
+
+**Complete full-stack development suite**
 
 **Includes:**
-- 2 agents: fullstack-developer, validation-gates
-- 3 skills: git-commit-helper, webapp-testing, devtools (Chrome DevTools setup)
+
+- 3 agents: fullstack-developer, validation-gates, documentation-manager
+- 3 commands: /containerize, /generate-prp, /execute-prp
+- 5 skills: git-commit-helper, webapp-testing, devtools, prp-generator, fifteen-factor-app
 - 7 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena
 
 **Installation:**
+
 ```bash
-/plugin install developer-toolkit@wookstar
+/plugin install developer@wookstar
 ```
 
-**Use Cases:** Web development, testing, browser automation, technical documentation
+**Use Cases:** Web development, testing, browser automation, technical documentation, architecture design
 
 **Required Environment Variables:**
+
 ```bash
 CONTEXT7_API_KEY=your_key          # Optional
 FIRECRAWL_API_KEY=your_key         # Optional
@@ -79,165 +94,162 @@ FIRECRAWL_API_KEY=your_key         # Optional
 
 ---
 
-### 📄 Documents Toolkit
+### Documents
+
 **Professional document processing**
 
 **Includes:**
+
 - 3 skills: docx (Word), xlsx (Excel), pdf-processing-pro
 
 **Installation:**
+
 ```bash
-/plugin install documents-toolkit@wookstar
+/plugin install documents@wookstar
 ```
 
 **Use Cases:** Word docs with tracked changes, Excel spreadsheets with formulas, PDF forms and OCR
 
 ---
 
-### 🔧 Claude Code Toolkit
+### Claude Code
+
 **Meta tools for extending Claude Code**
 
 **Includes:**
+
+- 4 commands: /ultra-think, /infinite, /reflection, /prompt_writer
 - 1 skill: skill-creator (comprehensive skill development guide)
 
 **Installation:**
+
 ```bash
-/plugin install claudecode-toolkit@wookstar
+/plugin install claudecode@wookstar
 ```
 
-**Use Cases:** Creating new skills, understanding skill architecture, extending Claude's capabilities
+**Use Cases:** Deep reasoning, creating new skills, extending Claude's capabilities
 
 ---
 
-### 💰 Finance Toolkit
+### Utilities
+
+**General-purpose utility tools**
+
+**Includes:**
+
+- 1 skill: timezone-tools (IANA timezone conversion)
+
+**Installation:**
+
+```bash
+/plugin install utilities@wookstar
+```
+
+**Use Cases:** Timezone conversions, scheduling across regions
+
+---
+
+### Finance
+
 **Real-time market data**
 
 **Includes:**
+
 - 3 MCP servers: AlphaVantage (stocks), CoinGecko (crypto), Currency Conversion
 
 **Installation:**
+
 ```bash
-/plugin install finance-toolkit@wookstar
+/plugin install finance@wookstar
 ```
 
-**Use Cases:** Stock prices, cryptocurrency data, currency exchange rates, financial analysis
+**Use Cases:** Stock prices, cryptocurrency data, currency exchange rates
 
 **Required Environment Variables:**
+
 ```bash
 ALPHAVANTAGEAPIKEY=your_key
 COINGECKO_DEMO_API_KEY=your_key
-# Note: Currency conversion requires no API key
 ```
 
 ---
 
-### 🤖 AI Toolkit
+### AI
+
 **Enhanced AI capabilities**
 
 **Includes:**
+
 - 2 MCP servers: Gemini Bridge, Perplexity
 
 **Installation:**
+
 ```bash
-/plugin install ai-toolkit@wookstar
+/plugin install ai@wookstar
 ```
 
 **Use Cases:** AI-powered search, multi-modal tasks, research
 
 **Required Environment Variables:**
+
 ```bash
 PERPLEXITY_API_KEY=your_key
 ```
 
 ---
 
-### 📊 GTM Suite ✨ NEW!
-**Complete Google Tag Manager expertise (v1.0.0)**
+### Marketing
+
+**Complete marketing analytics suite**
 
 **Includes:**
-- 10 specialized skills covering all aspects of GTM
 
-**Skills:** gtm-general (fundamentals), gtm-setup, gtm-tags, gtm-triggers, gtm-variables, gtm-datalayer, gtm-debugging, gtm-best-practices, gtm-custom-templates, gtm-api
+- 3 comprehensive skills:
+  - **ga4** - Google Analytics 4 with 15 reference guides
+  - **gtm** - Google Tag Manager with 9 reference guides
+  - **google-ads-scripts** - Campaign automation
+- 2 MCP servers: Analytics API, GTM API
 
 **Installation:**
+
 ```bash
-/plugin install gtm-suite@wookstar
+/plugin install marketing@wookstar
 ```
 
-**Use Cases:** GTM implementation, data layer architecture, debugging, SPA tracking, e-commerce tracking, custom templates, API automation
+**Use Cases:** GTM implementation, GA4 tracking, e-commerce analytics, BigQuery analysis, privacy compliance, Google Ads automation
 
-**Perfect for:** Digital marketers, analytics engineers, web developers implementing tracking
+**Required Environment Variables:**
 
-[View Full GTM Suite Documentation](./gtm-suite/README.md)
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+GOOGLE_PROJECT_ID=your-project-id
+```
+
+[View Marketing Toolkit Documentation](./marketing/README.md)
 
 ---
 
-### 📈 GA Suite ✨ NEW!
-**Comprehensive Google Analytics 4 expertise (v1.0.0)**
+### Shopify Developer
+
+**Professional Shopify development toolkit**
 
 **Includes:**
-- 15 specialized skills organized into 5 progressive tiers
 
-**Skills:** ga4-setup, ga4-events-fundamentals, ga4-gtag-implementation, ga4-recommended-events, ga4-custom-events, ga4-user-tracking, ga4-custom-dimensions, ga4-audiences, ga4-debugview, ga4-gtm-integration, ga4-measurement-protocol, ga4-privacy-compliance, ga4-reporting, ga4-bigquery, ga4-data-management
-
-**Installation:**
-```bash
-/plugin install ga-suite@wookstar
-```
-
-**Use Cases:** GA4 implementation, e-commerce tracking, BigQuery analysis, privacy compliance (GDPR/Consent Mode v2), server-side tracking, custom reporting
-
-**Perfect for:** Data analysts, marketing teams, analytics engineers, enterprise analytics
-
-[View Full GA Suite Documentation](./ga-suite/README.md)
-
----
-
-### 🛍️ Shopify Developer ✨ NEW!
-**Professional Shopify development toolkit (v1.0.0)**
-
-**Includes:**
-- 6 specialized skills for Shopify development
-
-**Skills:** shopify-liquid (templating), shopify-theme-dev, shopify-api (GraphQL/REST), shopify-app-dev, shopify-performance, shopify-debugging
+- 6 skills: shopify-liquid, shopify-theme-dev, shopify-api, shopify-app-dev, shopify-performance, shopify-debugging
 
 **Installation:**
+
 ```bash
 /plugin install shopify-developer@wookstar
 ```
 
-**Use Cases:** Custom theme development, Liquid templating, headless storefronts, custom app development, performance optimization, API integration
+**Use Cases:** Custom theme development, Liquid templating, headless storefronts, app development
 
-**Perfect for:** Shopify developers, e-commerce agencies, theme customizers, app developers
-
-[View Full Shopify Developer Documentation](./shopify-developer/README.md)
+[View Shopify Developer Documentation](./shopify-developer/README.md)
 
 ---
 
-### 🔄 Google Apps & Ads Script ✨ NEW!
-**Automation toolkit for Workspace and Ads (v1.0.0)**
-
-**Includes:**
-- 2 comprehensive automation skills
-
-**Skills:** google-apps-script (Workspace automation), google-ads-scripts (campaign automation)
-
-**Installation:**
-```bash
-/plugin install google-apps-ads-script@wookstar
-```
-
-**Use Cases:**
-- **Apps Script:** Sheets automation, Gmail automation, Drive management, Calendar automation, Document generation, Workspace add-ons
-- **Ads Scripts:** Campaign automation, bidding strategies, performance reports, keyword management, automated alerts
-
-**Perfect for:** Marketing automation engineers, data analysts, PPC managers, Workspace power users
-
-[View Full Google Apps & Ads Script Documentation](./google-apps-ads-script/README.md)
-
----
-
-## 🔌 Individual MCP Servers
+## Individual MCP Servers
 
 Standalone integrations available separately:
 
@@ -252,7 +264,7 @@ Standalone integrations available separately:
 
 ---
 
-## 💡 Usage Examples
+## Usage Examples
 
 ### Planning a Complex Feature
 
@@ -280,36 +292,19 @@ Standalone integrations available separately:
 "Generate a commit message for these changes"
 ```
 
-### Google Tag Manager Implementation
+### Marketing Analytics
 
 ```bash
-# Get GTM fundamentals
-"Explain how GTM data layer works for SPAs"
-
-# Setup guidance
+# GTM implementation
 "Help me install GTM on my React website"
-
-# Debug tracking
 "My form submission tag isn't firing, help me debug"
 
-# E-commerce tracking
-"Implement GA4 e-commerce tracking via GTM"
-```
-
-### Google Analytics 4 Setup
-
-```bash
-# Initial setup
-"Help me create a GA4 property and install tracking"
-
-# E-commerce tracking
+# GA4 tracking
 "Implement purchase event tracking for my checkout"
-
-# BigQuery analysis
 "Write SQL to analyze GA4 conversion funnels in BigQuery"
 
-# Privacy compliance
-"Implement Google Consent Mode v2 for GDPR"
+# Google Ads automation
+"Write a script to pause low-performing keywords automatically"
 ```
 
 ### Shopify Development
@@ -323,25 +318,6 @@ Standalone integrations available separately:
 
 # API integration
 "Use Storefront API to build a headless checkout"
-
-# Performance optimization
-"Optimize my Shopify theme for Core Web Vitals"
-```
-
-### Google Workspace Automation
-
-```bash
-# Sheets automation
-"Create an automated weekly report that emails stakeholders"
-
-# Gmail automation
-"Build an auto-responder for specific email addresses"
-
-# Google Ads Scripts
-"Write a script to pause low-performing keywords automatically"
-
-# Document generation
-"Generate personalized contracts from a template"
 ```
 
 ### Document Processing
@@ -357,54 +333,22 @@ Standalone integrations available separately:
 "Extract all tables from this PDF report"
 ```
 
-### Research and Analysis
-
-```bash
-# Use AI toolkit for research
-"Search for the latest developments in quantum computing"
-
-# Get market data with finance toolkit
-"What's Tesla's stock performance this month?"
-"Show me Bitcoin vs Ethereum price trends"
-```
-
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[CLAUDE.md](./CLAUDE.md)** - Developer guide for working with this marketplace
-- **[MIGRATION_V3.md](./MIGRATION_V3.md)** - Migration guide from v2.x
 - **Toolkit READMEs** - Detailed documentation for each toolkit:
-  - [GTM Suite](./gtm-suite/README.md)
-  - [GA Suite](./ga-suite/README.md)
+  - [Marketing](./marketing/README.md)
   - [Shopify Developer](./shopify-developer/README.md)
-  - [Google Apps & Ads Script](./google-apps-ads-script/README.md)
-  - [Productivity Toolkit](./productivity-toolkit/README.md)
-  - [Developer Toolkit](./developer-toolkit/README.md)
-  - [Documents Toolkit](./documents-toolkit/README.md)
+  - [Productivity](./productivity/README.md)
+  - [Developer](./developer/README.md)
+  - [Documents](./documents/README.md)
+  - [Utilities](./utilities/README.md)
 
 ---
 
-## 🛠️ Development
-
-### Fresh Installation Script (Personal Use)
-
-> **Note:** This script is a personal utility for the maintainer's development environment. It installs plugins from multiple marketplaces and represents personal preferences - not intended for general redistribution.
-
-For new Linux machines, the automated installation script sets up a complete Claude Code environment:
-
-```bash
-# Clone and run
-git clone https://github.com/henkisdabro/wookstar-claude-code-plugins.git
-cd wookstar-claude-code-plugins
-./scripts/install-claude-plugins.sh
-```
-
-The script installs:
-- **4 marketplaces:** claude-code-plugins (Anthropic), wookstar, claude-scientific-skills, claude-skills
-- **Working plugins** from each marketplace (avoiding known buggy bundles)
-
-See [scripts/README.md](./scripts/README.md) for full documentation and customisation options.
+## Development
 
 ### Local Testing
 
@@ -417,49 +361,33 @@ cd wookstar-claude-code-plugins
 /plugin marketplace add .
 
 # Install a toolkit for testing
-/plugin install productivity-toolkit@wookstar
-
-# Test your changes
-/ultra-think "Test the toolkit"
+/plugin install productivity@wookstar
 
 # Update marketplace after changes
 /plugin marketplace update wookstar
 ```
 
-### Contributing to Suites
-
-All suites are now ready for community contributions:
+### Validation
 
 ```bash
-# Navigate to a suite
-cd gtm-suite  # or ga-suite, shopify-developer, etc.
-
-# Add agents (if suite supports agents)
-vi agents/new-agent.md
-
-# Add commands (if suite supports commands)
-vi commands/new-command.md
-
-# Add skills
-mkdir skills/new-skill
-vi skills/new-skill/SKILL.md
-
-# See suite READMEs for detailed structure guidance
+# Validate marketplace structure
+claude plugin validate .
 ```
 
 ---
 
-## 📊 Marketplace Stats
+## Marketplace Stats
 
-- **Version:** 3.1.0
-- **Total Plugins:** 16 (10 toolkits + 6 individual MCPs)
-- **Components:** 3 agents, 11 commands, 42 skills, 20 MCP servers
-- **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Automation
-- **New in v3.1:** All toolkits updated to v1.1.0, standardised MCP architecture using file references (.mcp.json)
+- **Version:** 4.0.0
+- **Total Plugins:** 15 (9 toolkits + 6 individual MCPs)
+- **Components:** 3 agents, 11 commands, 21 skills, 14 MCP servers
+- **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Utilities
 
-## 🏗️ Architecture
+---
 
-All MCP servers are configured using **file references** (`.mcp.json`) rather than inline configurations:
+## Architecture
+
+All toolkits use **file references** (`.mcp.json`) for MCP configurations:
 
 ```
 <toolkit>/
@@ -469,15 +397,36 @@ All MCP servers are configured using **file references** (`.mcp.json`) rather th
 └── skills/            # Skills
 ```
 
-Benefits:
-- **Atomic ownership** - each toolkit owns its MCP config
-- **Easier maintenance** - modify MCPs directly in toolkit folders
-- **Cleaner marketplace.json** - no massive inline blocks
-- **Consistent architecture** - same pattern everywhere
+---
+
+## Team Configuration
+
+For teams, add to `.claude/settings.json` to auto-enable toolkits:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "wookstar": {
+      "source": {
+        "source": "github",
+        "repo": "henkisdabro/wookstar-claude-code-plugins"
+      }
+    }
+  },
+  "enabledPlugins": [
+    "productivity@wookstar",
+    "developer@wookstar",
+    "documents@wookstar",
+    "marketing@wookstar"
+  ]
+}
+```
+
+When team members trust the repository, enabled toolkits install automatically.
 
 ---
 
-## 🆘 Support
+## Support
 
 - **Issues:** [GitHub Issues](https://github.com/henkisdabro/wookstar-claude-code-plugins/issues)
 - **Email:** whom-wealthy.2z@icloud.com
@@ -485,20 +434,18 @@ Benefits:
 
 ---
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](./LICENSE) for details
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built for the Claude Code community. Special thanks to:
+
 - Anthropic for creating Claude Code and the plugin system
 - [Simo Ahava](https://www.simoahava.com/) for GTM and GA4 expertise
 - The open-source community for MCP server integrations
-- All contributors to this marketplace
 
----
-
-**Happy coding with Claude Code!** 🚀
+**Happy coding with Claude Code!**

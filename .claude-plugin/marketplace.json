@@ -5,16 +5,16 @@
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
-    "description": "Comprehensive Claude Code marketplace with specialized toolkits for productivity, development, analytics, documents, e-commerce, and AI integrations - now featuring complete GTM, GA4, Shopify, and Google Automation suites",
-    "version": "3.1.0",
+    "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and AI integrations - featuring consolidated GTM, GA4, and Shopify skills",
+    "version": "4.0.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins"
   },
   "plugins": [
     {
-      "name": "productivity-toolkit",
-      "source": "./productivity-toolkit",
-      "description": "Essential productivity suite with planning and workflow tools: 1 documentation agent + 11 powerful commands (ultra-think, planning, PRPs, containerize, etc.) + 2 utility skills (PRP generator, timezone tools)",
-      "version": "1.1.0",
+      "name": "productivity",
+      "source": "./productivity",
+      "description": "Workflow orchestration suite: 4 commands for planning, parallel task execution, and session priming + Google Apps Script skill for Workspace automation",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -24,20 +24,19 @@
         "productivity",
         "planning",
         "workflows",
-        "documentation",
-        "prp",
-        "commands",
-        "thinking",
-        "timezone"
+        "parallel",
+        "orchestration",
+        "google-apps-script",
+        "workspace"
       ],
       "category": "productivity",
       "strict": false
     },
     {
-      "name": "developer-toolkit",
-      "source": "./developer-toolkit",
-      "description": "Complete development toolkit: 2 expert agents (fullstack developer, validation gates) + 3 skills (git commit helper, webapp testing, devtools setup) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
-      "version": "1.1.0",
+      "name": "developer",
+      "source": "./developer",
+      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -51,16 +50,20 @@
         "git",
         "playwright",
         "devtools",
-        "debugging"
+        "debugging",
+        "docker",
+        "prp",
+        "fifteen-factor",
+        "architecture"
       ],
       "category": "development",
       "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
-      "name": "documents-toolkit",
-      "source": "./documents-toolkit",
-      "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyze, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
+      "name": "documents",
+      "source": "./documents",
+      "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
       "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -83,10 +86,10 @@
       "strict": false
     },
     {
-      "name": "claudecode-toolkit",
-      "source": "./claudecode-toolkit",
-      "description": "Meta toolkit for Claude Code itself: skill-creator guide helps you build effective skills and extend Claude's capabilities",
-      "version": "1.1.0",
+      "name": "claudecode",
+      "source": "./claudecode",
+      "description": "Claude Code power tools: 4 thinking/reasoning commands (ultra-think, infinite, reflection, prompt writer) + skill-creator guide for building effective skills and extending Claude's capabilities",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -98,15 +101,38 @@
         "development",
         "meta",
         "creation",
-        "guide"
+        "guide",
+        "thinking",
+        "reasoning",
+        "prompts"
       ],
       "category": "meta",
       "strict": false
     },
     {
-      "name": "finance-toolkit",
-      "source": "./finance-toolkit",
-      "description": "Financial market data integrations: 2 MCP servers providing real-time stock market data (AlphaVantage) and cryptocurrency data (CoinGecko)",
+      "name": "utilities",
+      "source": "./utilities",
+      "description": "General utility tools: timezone conversion and time queries across IANA timezones",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins",
+      "keywords": [
+        "utilities",
+        "timezone",
+        "time",
+        "conversion",
+        "tools"
+      ],
+      "category": "utilities",
+      "strict": false
+    },
+    {
+      "name": "finance",
+      "source": "./finance",
+      "description": "Financial market data integrations: 3 MCP servers providing real-time stock market data (AlphaVantage), cryptocurrency data (CoinGecko), and currency conversion rates",
       "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -121,16 +147,17 @@
         "market-data",
         "trading",
         "alphavantage",
-        "coingecko"
+        "coingecko",
+        "currency"
       ],
       "category": "data",
       "mcpServers": "./.mcp.json",
       "strict": false
     },
     {
-      "name": "ai-toolkit",
-      "source": "./ai-toolkit",
-      "description": "AI integration toolkit: 2 MCP servers connecting to Gemini AI and Perplexity for enhanced AI capabilities and search",
+      "name": "ai",
+      "source": "./ai",
+      "description": "AI integration bundle: 2 MCP servers connecting to Gemini AI and Perplexity for enhanced AI capabilities and search",
       "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -150,10 +177,10 @@
       "strict": false
     },
     {
-      "name": "gtm-suite",
-      "source": "./gtm-suite",
-      "description": "Complete Google Tag Manager suite with 10 specialized skills covering setup, configuration, implementation, debugging, and best practices. Includes GTM fundamentals, tags, triggers, variables, data layer architecture, debugging tools, custom templates, and API automation for comprehensive GTM mastery.",
-      "version": "1.1.0",
+      "name": "marketing",
+      "source": "./marketing",
+      "description": "Complete marketing analytics suite: comprehensive GTM skill (9 reference guides for tags, triggers, variables, data layer, debugging, custom templates, API), comprehensive GA4 skill (15 reference guides for setup, events, ecommerce, BigQuery, Measurement Protocol, privacy compliance), and Google Ads Scripts skill for campaign automation. Includes MCP integrations for Analytics and GTM APIs.",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -162,14 +189,19 @@
       "keywords": [
         "gtm",
         "google-tag-manager",
-        "tracking",
+        "ga4",
+        "google-analytics",
         "analytics",
+        "tracking",
         "tags",
         "triggers",
         "variables",
         "datalayer",
-        "containers",
         "events",
+        "ecommerce",
+        "bigquery",
+        "measurement-protocol",
+        "google-ads-scripts",
         "marketing",
         "debugging"
       ],
@@ -178,38 +210,9 @@
       "strict": false
     },
     {
-      "name": "ga-suite",
-      "source": "./ga-suite",
-      "description": "Comprehensive Google Analytics 4 suite with 15 specialized skills covering complete GA4 implementation from property setup to BigQuery integration. Includes events, user tracking, e-commerce, custom dimensions, audiences, privacy compliance, reporting, Measurement Protocol, and GTM integration for full GA4 expertise.",
-      "version": "1.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins",
-      "keywords": [
-        "ga",
-        "ga4",
-        "google-analytics",
-        "analytics",
-        "reporting",
-        "metrics",
-        "conversions",
-        "audiences",
-        "events",
-        "ecommerce",
-        "bigquery",
-        "measurement-protocol",
-        "gtm"
-      ],
-      "category": "analytics",
-      "mcpServers": "./.mcp.json",
-      "strict": false
-    },
-    {
       "name": "shopify-developer",
       "source": "./shopify-developer",
-      "description": "Professional Shopify development toolkit with 6 specialized skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimization, and debugging. Complete solution for building custom themes, headless storefronts, and Shopify apps.",
+      "description": "Professional Shopify development suite with 6 specialised skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimisation, and debugging. Complete solution for building custom themes, headless storefronts, and Shopify apps.",
       "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
@@ -231,33 +234,6 @@
         "storefront"
       ],
       "category": "development",
-      "strict": false
-    },
-    {
-      "name": "google-apps-ads-script",
-      "source": "./google-apps-ads-script",
-      "description": "Comprehensive automation toolkit with 2 specialized skills: Google Apps Script for Workspace automation (Sheets, Docs, Gmail, Drive, Calendar) and Google Ads Scripts for campaign automation, bidding strategies, and reporting. Perfect for marketers and automation engineers.",
-      "version": "1.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins",
-      "keywords": [
-        "google-apps-script",
-        "google-ads-scripts",
-        "automation",
-        "workspace",
-        "sheets",
-        "gmail",
-        "drive",
-        "calendar",
-        "ads",
-        "marketing",
-        "reporting",
-        "campaign-management"
-      ],
-      "category": "automation",
       "strict": false
     },
     {
