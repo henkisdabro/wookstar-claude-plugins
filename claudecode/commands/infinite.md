@@ -1,3 +1,8 @@
+---
+description: Generate infinite agentic loop for continuous iterative task execution
+argument-hint: [spec-file] [output-dir] [count|infinite]
+---
+
 **INFINITE AGENTIC LOOP COMMAND**
 
 Think deeply about this infinite generation task. You are about to embark on a sophisticated iterative creation process.

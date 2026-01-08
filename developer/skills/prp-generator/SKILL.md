@@ -1,6 +1,8 @@
 ---
 name: prp-generator
 description: Generate comprehensive Product Requirement Plans (PRPs) for feature implementation with thorough codebase analysis and external research. Use when the user requests a PRP, PRD, or detailed implementation plan for a new feature. Conducts systematic research, identifies patterns, and creates executable validation gates for one-pass implementation success.
+context: fork
+agent: Plan
 ---
 
 # PRP Generator

@@ -1,8 +1,14 @@
 ---
-allowed-tools: Read, Write, Edit, Bash
-argument-hint: [application-type] | --node | --python | --java | --go | --multi-stage
 description: Containerize application with optimized Docker configuration, security, and multi-stage builds
+argument-hint: [application-type] | --node | --python | --java | --go | --multi-stage
 model: claude-sonnet-4-5
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash(docker *)
+  - Bash(docker-compose *)
+  - Bash(podman *)
 ---
 
 # Application Containerization

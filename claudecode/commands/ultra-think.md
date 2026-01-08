@@ -1,3 +1,8 @@
+---
+description: Engage deep analysis mode with extended multi-perspective reasoning
+argument-hint: [problem or question to analyse]
+---
+
 # Deep Analysis and Problem Solving Mode
 
 Deep analysis and problem solving mode

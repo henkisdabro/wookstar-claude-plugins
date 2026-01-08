@@ -1,6 +1,7 @@
 ---
 name: fifteen-factor-app
-description: This skill should be used when planning SaaS application architecture, creating PRPs or PRDs, designing cloud-native applications, evaluating application designs against best practices, or discussing microservices architecture. Provides the Fifteen-Factor App methodology - an extension of the original Twelve-Factor App principles with three additional factors for modern cloud-native applications (API First, Telemetry, Security). Trigger when users mention "fifteen factor", "12 factor", "SaaS architecture", "cloud-native design", "application architecture", "microservices best practices", or are in a planning/architecture session.
+description: The Fifteen-Factor App methodology for modern cloud-native SaaS applications. This skill should be automatically invoked when planning SaaS tools, product software architecture, microservices design, PRPs/PRDs, or cloud-native application development. Extends the original Twelve-Factor App principles with three additional factors (API First, Telemetry, Security). Trigger keywords include "fifteen factor", "12 factor", "SaaS architecture", "cloud-native design", "application architecture", "microservices best practices", or when in a planning/architecture session.
+user-invocable: false
 ---
 
 # Fifteen-Factor App Methodology

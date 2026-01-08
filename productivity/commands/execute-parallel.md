@@ -1,3 +1,8 @@
+---
+description: Execute multiple tasks in parallel using git worktrees
+argument-hint: [feature-name] [plan-file] [number-of-worktrees]
+---
+
 # Parallel Task Version Execution
 
 ## Variables

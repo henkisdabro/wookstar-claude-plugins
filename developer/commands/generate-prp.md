@@ -1,3 +1,15 @@
+---
+description: Generate a comprehensive Product Requirement Plan for a feature
+argument-hint: [feature description or file]
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - WebSearch
+  - WebFetch
+  - Write
+---
+
 # Create PRP
 
 ## Feature file: $ARGUMENTS

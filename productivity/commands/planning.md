@@ -1,3 +1,8 @@
+---
+description: Create detailed project plans with research and collaboration
+argument-hint: [project objective or feature]
+---
+
 Please create a detailed plan to implement a project objective or feature according to the user's task which is as follows:  $ARGUMENTS.
 
 - You will ask followup questions and clarification prompts to the user until you are clear how to approach the plan.

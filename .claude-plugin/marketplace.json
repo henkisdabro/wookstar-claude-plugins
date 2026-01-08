@@ -14,7 +14,7 @@
       "name": "productivity",
       "source": "./productivity",
       "description": "Workflow orchestration suite: 4 commands for planning, parallel task execution, and session priming + Google Apps Script skill for Workspace automation",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -36,7 +36,7 @@
       "name": "developer",
       "source": "./developer",
       "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -89,7 +89,7 @@
       "name": "claudecode",
       "source": "./claudecode",
       "description": "Claude Code power tools: 4 thinking/reasoning commands (ultra-think, infinite, reflection, prompt writer) + skill-creator guide for building effective skills and extending Claude's capabilities",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"

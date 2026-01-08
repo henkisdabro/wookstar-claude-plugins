@@ -1,3 +1,16 @@
+---
+description: Execute a Product Requirement Plan step by step
+argument-hint: [PRP file path]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash(npm *)|Bash(pnpm *)|Bash(python *)|Bash(go *)|Bash(pytest *)|Bash(jest *)
+  - Grep
+  - Glob
+  - TodoWrite
+---
+
 # Execute BASE PRP
 
 Implement a feature using using the PRP file.

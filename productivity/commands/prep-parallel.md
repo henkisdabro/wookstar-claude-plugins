@@ -1,3 +1,8 @@
+---
+description: Prepare git worktree directories for parallel task execution
+argument-hint: [feature-name] [number-of-worktrees]
+---
+
 # Initialize parallel git worktree directories for parallel Claude Code agents
 
 ## Variables

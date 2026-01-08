@@ -1,3 +1,7 @@
+---
+description: Prime the session with project context and objectives
+---
+
 # Prime Context for Claude Code
 
 Use the command `tree` to get an understanding of the project structure.
