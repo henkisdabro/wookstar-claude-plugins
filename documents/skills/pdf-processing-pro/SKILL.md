@@ -22,21 +22,21 @@ with pdfplumber.open("document.pdf") as pdf:
 ### Analyze PDF form (using included script)
 
 ```bash
-python scripts/analyze_form.py input.pdf --output fields.json
+python scripts/analyze_form.py" input.pdf --output fields.json
 # Returns: JSON with all form fields, types, and positions
 ```
 
 ### Fill PDF form with validation
 
 ```bash
-python scripts/fill_form.py input.pdf data.json output.pdf
+python scripts/fill_form.py" input.pdf data.json output.pdf
 # Validates all fields before filling, includes error reporting
 ```
 
 ### Extract tables from PDF
 
 ```bash
-python scripts/extract_tables.py report.pdf --output tables.csv
+python scripts/extract_tables.py" report.pdf --output tables.csv
 # Extracts all tables with automatic column detection
 ```
 
@@ -101,48 +101,48 @@ See [OCR.md](OCR.md)
 
 **analyze_form.py** - Extract form field information
 ```bash
-python scripts/analyze_form.py input.pdf [--output fields.json] [--verbose]
+python scripts/analyze_form.py" input.pdf [--output fields.json] [--verbose]
 ```
 
 **fill_form.py** - Fill PDF forms with data
 ```bash
-python scripts/fill_form.py input.pdf data.json output.pdf [--validate]
+python scripts/fill_form.py" input.pdf data.json output.pdf [--validate]
 ```
 
 **validate_form.py** - Validate form data before filling
 ```bash
-python scripts/validate_form.py data.json schema.json
+python scripts/validate_form.py" data.json schema.json
 ```
 
 ### Table extraction
 
 **extract_tables.py** - Extract tables to CSV/Excel
 ```bash
-python scripts/extract_tables.py input.pdf [--output tables.csv] [--format csv|excel]
+python scripts/extract_tables.py" input.pdf [--output tables.csv] [--format csv|excel]
 ```
 
 ### Text extraction
 
 **extract_text.py** - Extract text with formatting preservation
 ```bash
-python scripts/extract_text.py input.pdf [--output text.txt] [--preserve-formatting]
+python scripts/extract_text.py" input.pdf [--output text.txt] [--preserve-formatting]
 ```
 
 ### Utilities
 
 **merge_pdfs.py** - Merge multiple PDFs
 ```bash
-python scripts/merge_pdfs.py file1.pdf file2.pdf file3.pdf --output merged.pdf
+python scripts/merge_pdfs.py" file1.pdf file2.pdf file3.pdf --output merged.pdf
 ```
 
 **split_pdf.py** - Split PDF into individual pages
 ```bash
-python scripts/split_pdf.py input.pdf --output-dir pages/
+python scripts/split_pdf.py" input.pdf --output-dir pages/
 ```
 
 **validate_pdf.py** - Validate PDF integrity
 ```bash
-python scripts/validate_pdf.py input.pdf
+python scripts/validate_pdf.py" input.pdf
 ```
 
 ## Common workflows
@@ -151,26 +151,26 @@ python scripts/validate_pdf.py input.pdf
 
 ```bash
 # 1. Analyze form structure
-python scripts/analyze_form.py template.pdf --output schema.json
+python scripts/analyze_form.py" template.pdf --output schema.json
 
 # 2. Validate submission data
-python scripts/validate_form.py submission.json schema.json
+python scripts/validate_form.py" submission.json schema.json
 
 # 3. Fill form
-python scripts/fill_form.py template.pdf submission.json completed.pdf
+python scripts/fill_form.py" template.pdf submission.json completed.pdf
 
 # 4. Validate output
-python scripts/validate_pdf.py completed.pdf
+python scripts/validate_pdf.py" completed.pdf
 ```
 
 ### Workflow 2: Extract data from reports
 
 ```bash
 # 1. Extract tables
-python scripts/extract_tables.py monthly_report.pdf --output data.csv
+python scripts/extract_tables.py" monthly_report.pdf --output data.csv
 
 # 2. Extract text for analysis
-python scripts/extract_text.py monthly_report.pdf --output report.txt
+python scripts/extract_text.py" monthly_report.pdf --output report.txt
 ```
 
 ### Workflow 3: Batch processing
@@ -286,8 +286,8 @@ chmod +x scripts/*.py
 All scripts support `--help`:
 
 ```bash
-python scripts/analyze_form.py --help
-python scripts/extract_tables.py --help
+python scripts/analyze_form.py" --help
+python scripts/extract_tables.py" --help
 ```
 
 For detailed documentation on specific topics, see:

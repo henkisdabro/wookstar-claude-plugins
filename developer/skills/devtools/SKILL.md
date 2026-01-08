@@ -40,7 +40,7 @@ Execute these steps in order:
 Run the environment detection script to determine the platform:
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/detect_environment.sh
+bash scripts/detect_environment.sh
 ```
 
 The script returns one of: `windows`, `linux`, or `wsl2`
@@ -50,7 +50,7 @@ The script returns one of: `windows`, `linux`, or `wsl2`
 Run the Chrome check script with the detected environment:
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/check_chrome.sh <environment>
+bash scripts/check_chrome.sh <environment>
 ```
 
 The script outputs `status:installed` or `status:not_installed`. If Chrome is not installed, the script provides detailed installation instructions. See the **Chrome Installation** section below for manual installation options.
@@ -76,7 +76,7 @@ claude mcp add chrome-devtools -- npx chrome-devtools-mcp@latest --browserUrl ht
 Check for running dev servers on common ports:
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/detect_dev_server.sh
+bash scripts/detect_dev_server.sh
 ```
 
 This checks ports 5173, 5174, 5175, 3000, 3001, 8080, and 8000.
@@ -91,7 +91,7 @@ If no dev server is running and one is needed, offer to start it:
 Launch Chrome with remote debugging enabled:
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/launch_chrome.sh <environment> <url> [headed]
+bash scripts/launch_chrome.sh <environment> <url> [headed]
 ```
 
 **Arguments:**
@@ -102,10 +102,10 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/launch_chrome.sh <environment
 **Examples:**
 ```bash
 # Headless (default)
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/launch_chrome.sh wsl2 http://localhost:5173
+bash scripts/launch_chrome.sh wsl2 http://localhost:5173
 
 # Headed (visible browser)
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/launch_chrome.sh wsl2 http://localhost:5173 headed
+bash scripts/launch_chrome.sh wsl2 http://localhost:5173 headed
 ```
 
 ## Platform-Specific Commands
@@ -188,7 +188,7 @@ Remove-Item $installer
 
 After installation, verify with:
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/devtools/scripts/check_chrome.sh <environment>
+bash scripts/check_chrome.sh <environment>
 ```
 
 ## MCP Configuration

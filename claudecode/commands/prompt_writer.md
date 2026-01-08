@@ -2,7 +2,7 @@
 allowed-tools: Read, Write, Edit,
 argument-hint: [Your initial draft idea of a prompt to be improved] 
 description: Helps to craft an improved prompt based on your brief, following Anthropic's latest prompt engineering guides
-model: claude-sonnet-4-5
+model: sonnet
 ---
 You're a Principal prompt engineer with equity stake in the company you're being asked to write prompts for. 
 

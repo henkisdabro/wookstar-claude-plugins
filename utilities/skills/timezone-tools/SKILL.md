@@ -12,19 +12,19 @@ Get current time in any timezone and convert times between different timezones u
 ### Get current time in a timezone
 
 ```bash
-python scripts/get_time.py "America/New_York"
+python scripts/get_time.py" "America/New_York"
 ```
 
 ### Convert time between timezones
 
 ```bash
-python scripts/convert_time.py "America/New_York" "14:30" "Australia/Perth"
+python scripts/convert_time.py" "America/New_York" "14:30" "Australia/Perth"
 ```
 
 ### Search for timezone names
 
 ```bash
-python scripts/list_timezones.py "perth"
+python scripts/list_timezones.py" "perth"
 ```
 
 ## Instructions
@@ -32,17 +32,17 @@ python scripts/list_timezones.py "perth"
 When the user asks about time or timezones:
 
 1. **For current time queries** (e.g., "What time is it in Tokyo?"):
-   - Use `get_time.py` with IANA timezone name
+   - Use `scripts/get_time.py` with IANA timezone name
    - If unsure of timezone name, search first with `list_timezones.py`
    - Script outputs: timezone, datetime, day of week, DST status
 
 2. **For time conversions** (e.g., "What's 2pm EST in Perth time?"):
-   - Use `convert_time.py` with source timezone, time (HH:MM 24-hour), target timezone
+   - Use `scripts/convert_time.py` with source timezone, time (HH:MM 24-hour), target timezone
    - Script shows source time, target time, and time difference
    - Automatically handles DST changes
 
 3. **For timezone searches**:
-   - Use `list_timezones.py` with city/country name
+   - Use `scripts/list_timezones.py` with city/country name
    - Returns matching IANA timezone names
 
 ## Common Timezones Reference
@@ -58,10 +58,10 @@ For quick reference, see [data/common_timezones.json](data/common_timezones.json
 User: "What time is it in Perth?"
 
 ```bash
-python scripts/list_timezones.py "perth"
+python scripts/list_timezones.py" "perth"
 # Output: Australia/Perth
 
-python scripts/get_time.py "Australia/Perth"
+python scripts/get_time.py" "Australia/Perth"
 # Output:
 # Timezone: Australia/Perth
 # Current time: 2025-11-07T15:30:45
@@ -74,7 +74,7 @@ python scripts/get_time.py "Australia/Perth"
 User: "I have a meeting at 2pm New York time, what time is that in Perth?"
 
 ```bash
-python scripts/convert_time.py "America/New_York" "14:00" "Australia/Perth"
+python scripts/convert_time.py" "America/New_York" "14:00" "Australia/Perth"
 # Output:
 # Source: America/New_York - 2025-11-07T14:00:00 (Thursday, DST: No)
 # Target: Australia/Perth - 2025-11-08T03:00:00 (Friday, DST: No)
@@ -86,9 +86,9 @@ python scripts/convert_time.py "America/New_York" "14:00" "Australia/Perth"
 User: "What are the timezone codes for London, Tokyo, and Sydney?"
 
 ```bash
-python scripts/list_timezones.py "london"
-python scripts/list_timezones.py "tokyo"
-python scripts/list_timezones.py "sydney"
+python scripts/list_timezones.py" "london"
+python scripts/list_timezones.py" "tokyo"
+python scripts/list_timezones.py" "sydney"
 # Outputs:
 # Europe/London
 # Asia/Tokyo

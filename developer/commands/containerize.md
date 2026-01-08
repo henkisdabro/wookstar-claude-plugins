@@ -1,7 +1,7 @@
 ---
 description: Containerize application with optimized Docker configuration, security, and multi-stage builds
 argument-hint: [application-type] | --node | --python | --java | --go | --multi-stage
-model: claude-sonnet-4-5
+model: sonnet
 allowed-tools:
   - Read
   - Write
