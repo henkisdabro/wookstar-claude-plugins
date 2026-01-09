@@ -14,7 +14,7 @@ JSON and configuration templates for creating new marketplace components.
     "name": "Your Name",
     "email": "your.email@example.com"
   },
-  "homepage": "https://github.com/henkisdabro/wookstar-claude-code-plugins",
+  "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
   "keywords": ["keyword1", "keyword2", "keyword3"],
   "category": "appropriate-category",
   "strict": false

@@ -6,7 +6,7 @@ A comprehensive plugin providing productivity-enhancing commands, specialized AI
 
 ```bash
 # Add the marketplace
-/plugin marketplace add github:henkisdabro/wookstar-claude-code-plugins
+/plugin marketplace add github:henkisdabro/wookstar-claude-plugins
 
 # Install the main plugin
 /plugin install claudecode-marketplace@claudecode-marketplace
@@ -380,7 +380,7 @@ MIKROTIK_PASSWORD=your_password
 
 ## Support
 
-- **GitHub Issues:** [Report bugs or request features](https://github.com/henkisdabro/wookstar-claude-code-plugins/issues)
+- **GitHub Issues:** [Report bugs or request features](https://github.com/henkisdabro/wookstar-claude-plugins/issues)
 - **Email:** whom-wealthy.2z@icloud.com
 - **Claude Code Docs:** [docs.claude.com/claude-code](https://docs.claude.com/en/docs/claude-code)
 

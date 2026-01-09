@@ -1,6 +1,6 @@
 # Scripts
 
-This directory contains utility scripts that are **personal tools** and not part of the wookstar-claude-code-plugins marketplace itself.
+This directory contains utility scripts that are **personal tools** and not part of the wookstar-claude-plugins marketplace itself.
 
 ## install-claude-plugins.sh
 
@@ -12,7 +12,7 @@ This directory contains utility scripts that are **personal tools** and not part
 
 **Marketplaces:**
 - `claude-code-plugins` - Official Anthropic plugins
-- `wookstar-claude-code-plugins` - This marketplace
+- `wookstar-claude-plugins` - This marketplace
 - `claude-scientific-skills` - K-Dense AI scientific skills
 - `claude-skills` - jezweb community skills
 

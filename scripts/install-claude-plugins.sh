@@ -4,14 +4,14 @@
 # Automatically installs all marketplaces and plugins for fresh Linux installations
 #
 # Author: Henrik Soederlund
-# Repository: https://github.com/henkisdabro/wookstar-claude-code-plugins
+# Repository: https://github.com/henkisdabro/wookstar-claude-plugins
 #
 # Usage:
 #   chmod +x install-claude-plugins.sh
 #   ./install-claude-plugins.sh
 #
 # Or run directly:
-#   curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-code-plugins/main/scripts/install-claude-plugins.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/install-claude-plugins.sh | bash
 #
 
 set -e
@@ -77,7 +77,7 @@ ensure_claude_dir() {
 # Source can be: owner/repo (GitHub) or full URL (git)
 MARKETPLACES=(
     "claude-code-plugins|anthropics/claude-code"
-    "wookstar-claude-code-plugins|henkisdabro/wookstar-claude-code-plugins"
+    "wookstar-claude-plugins|henkisdabro/wookstar-claude-plugins"
     "claude-scientific-skills|K-Dense-AI/claude-scientific-skills"
     "claude-skills|https://github.com/jezweb/claude-skills.git"
 )
@@ -106,27 +106,27 @@ PLUGINS_TO_ENABLE=(
     "security-guidance@claude-code-plugins"
 
     # =========================================================================
-    # Wookstar Plugins (wookstar-claude-code-plugins)
+    # Wookstar Plugins (wookstar-claude-plugins)
     # =========================================================================
     # Toolkits (disabled by default - enable as needed)
-    # "productivity-toolkit@wookstar-claude-code-plugins"
-    # "developer-toolkit@wookstar-claude-code-plugins"
-    # "documents-toolkit@wookstar-claude-code-plugins"
-    # "claudecode-toolkit@wookstar-claude-code-plugins"
-    # "finance-toolkit@wookstar-claude-code-plugins"
-    # "ai-toolkit@wookstar-claude-code-plugins"
-    # "gtm-suite@wookstar-claude-code-plugins"
-    # "ga-suite@wookstar-claude-code-plugins"
-    # "shopify-developer@wookstar-claude-code-plugins"
-    # "google-apps-ads-script@wookstar-claude-code-plugins"
+    # "productivity-toolkit@wookstar-claude-plugins"
+    # "developer-toolkit@wookstar-claude-plugins"
+    # "documents-toolkit@wookstar-claude-plugins"
+    # "claudecode-toolkit@wookstar-claude-plugins"
+    # "finance-toolkit@wookstar-claude-plugins"
+    # "ai-toolkit@wookstar-claude-plugins"
+    # "gtm-suite@wookstar-claude-plugins"
+    # "ga-suite@wookstar-claude-plugins"
+    # "shopify-developer@wookstar-claude-plugins"
+    # "google-apps-ads-script@wookstar-claude-plugins"
 
     # Individual MCP servers
-    "mcp-fetch@wookstar-claude-code-plugins"
-    # "mcp-google-workspace@wookstar-claude-code-plugins"
-    # "mcp-mikrotik@wookstar-claude-code-plugins"
-    # "mcp-n8n@wookstar-claude-code-plugins"
-    # "mcp-notion@wookstar-claude-code-plugins"
-    # "mcp-open-meteo@wookstar-claude-code-plugins"
+    "mcp-fetch@wookstar-claude-plugins"
+    # "mcp-google-workspace@wookstar-claude-plugins"
+    # "mcp-mikrotik@wookstar-claude-plugins"
+    # "mcp-n8n@wookstar-claude-plugins"
+    # "mcp-notion@wookstar-claude-plugins"
+    # "mcp-open-meteo@wookstar-claude-plugins"
 
     # =========================================================================
     # Scientific Skills (claude-scientific-skills)

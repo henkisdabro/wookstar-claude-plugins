@@ -8,10 +8,10 @@ Practical examples and workflows for using the Claude Code Marketplace.
 
 ```bash
 # From GitHub (recommended for teams)
-/plugin marketplace add henkisdabro/wookstar-claude-code-plugins
+/plugin marketplace add henkisdabro/wookstar-claude-plugins
 
 # From local directory (for development)
-/plugin marketplace add /path/to/wookstar-claude-code-plugins
+/plugin marketplace add /path/to/wookstar-claude-plugins
 ```
 
 ### Step 2: Browse Available Plugins
@@ -31,10 +31,10 @@ Practical examples and workflows for using the Claude Code Marketplace.
 
 ```bash
 # Install a single plugin
-/plugin install development-utilities@wookstar-claude-code-plugins
+/plugin install development-utilities@wookstar-claude-plugins
 
 # Install multiple plugins
-/plugin install development-utilities@wookstar-claude-code-plugins planning-tools@wookstar-claude-code-plugins
+/plugin install development-utilities@wookstar-claude-plugins planning-tools@wookstar-claude-plugins
 ```
 
 ## Common Workflows
@@ -45,9 +45,9 @@ Practical examples and workflows for using the Claude Code Marketplace.
 
 ```bash
 # 1. Install essential plugins
-/plugin install development-utilities@wookstar-claude-code-plugins
-/plugin install fullstack-developer@wookstar-claude-code-plugins
-/plugin install documentation-manager@wookstar-claude-code-plugins
+/plugin install development-utilities@wookstar-claude-plugins
+/plugin install fullstack-developer@wookstar-claude-plugins
+/plugin install documentation-manager@wookstar-claude-plugins
 
 # 2. Use containerize command to set up Docker
 /containerize --node --multi-stage
@@ -62,7 +62,7 @@ Practical examples and workflows for using the Claude Code Marketplace.
 
 ```bash
 # 1. Install planning tools
-/plugin install planning-tools@wookstar-claude-code-plugins
+/plugin install planning-tools@wookstar-claude-plugins
 
 # 2. Start with ultra-think for deep analysis
 /ultra-think "Design a real-time collaboration system with WebSockets and Redis"
@@ -88,16 +88,16 @@ Create `.claude/settings.json`:
     "claudecode-marketplace": {
       "source": {
         "source": "github",
-        "repo": "henkisdabro/wookstar-claude-code-plugins"
+        "repo": "henkisdabro/wookstar-claude-plugins"
       }
     }
   },
   "enabledPlugins": [
-    "development-utilities@wookstar-claude-code-plugins",
-    "planning-tools@wookstar-claude-code-plugins",
-    "fullstack-developer@wookstar-claude-code-plugins",
-    "documentation-manager@wookstar-claude-code-plugins",
-    "validation-gates@wookstar-claude-code-plugins"
+    "development-utilities@wookstar-claude-plugins",
+    "planning-tools@wookstar-claude-plugins",
+    "fullstack-developer@wookstar-claude-plugins",
+    "documentation-manager@wookstar-claude-plugins",
+    "validation-gates@wookstar-claude-plugins"
   ]
 }
 ```
@@ -112,7 +112,7 @@ When team members trust the repository in Claude Code, plugins are automatically
 
 ```bash
 # 1. Install validation tools
-/plugin install validation-gates@wookstar-claude-code-plugins
+/plugin install validation-gates@wookstar-claude-plugins
 
 # 2. The validation-gates agent automatically:
 #    - Runs tests after code changes
@@ -129,10 +129,10 @@ cat .claude/logs/tool-usage.log
 
 ```bash
 # 1. Install individual MCP data servers you need
-/plugin install mcp-coingecko@wookstar-claude-code-plugins
-/plugin install mcp-alphavantage@wookstar-claude-code-plugins
-/plugin install mcp-open-meteo@wookstar-claude-code-plugins
-/plugin install mcp-currency-conversion@wookstar-claude-code-plugins
+/plugin install mcp-coingecko@wookstar-claude-plugins
+/plugin install mcp-alphavantage@wookstar-claude-plugins
+/plugin install mcp-open-meteo@wookstar-claude-plugins
+/plugin install mcp-currency-conversion@wookstar-claude-plugins
 
 # 2. Set up environment variables
 cat > .env << EOF
@@ -374,7 +374,7 @@ CF_ACCESS_CLIENT_SECRET=your_client_secret
 
 # Reinstall plugin
 /plugin uninstall development-utilities
-/plugin install development-utilities@wookstar-claude-code-plugins
+/plugin install development-utilities@wookstar-claude-plugins
 
 # Clear plugin cache
 /plugin cache clear
@@ -412,7 +412,7 @@ bash .claude-plugin/hooks/tool-logger/log-tool-usage.sh
 
 ```bash
 # Install one plugin category at a time
-/plugin install development-utilities@wookstar-claude-code-plugins
+/plugin install development-utilities@wookstar-claude-plugins
 
 # Test thoroughly before adding more
 ```
@@ -425,9 +425,9 @@ cp .env.example .env
 # Edit .env with your credentials
 
 # Then install individual MCP servers you need
-/plugin install mcp-coingecko@wookstar-claude-code-plugins
-/plugin install mcp-alphavantage@wookstar-claude-code-plugins
-/plugin install mcp-firecrawl@wookstar-claude-code-plugins
+/plugin install mcp-coingecko@wookstar-claude-plugins
+/plugin install mcp-alphavantage@wookstar-claude-plugins
+/plugin install mcp-firecrawl@wookstar-claude-plugins
 ```
 
 ### 3. Use Version Pinning for Teams
@@ -435,7 +435,7 @@ cp .env.example .env
 ```json
 {
   "enabledPlugins": [
-    "development-utilities@wookstar-claude-code-plugins#v1.0.0"
+    "development-utilities@wookstar-claude-plugins#v1.0.0"
   ]
 }
 ```
@@ -471,7 +471,7 @@ Based on marketplace plugins:
 
 ```bash
 # Clone marketplace
-git clone https://github.com/henkisdabro/wookstar-claude-code-plugins
+git clone https://github.com/henkisdabro/wookstar-claude-plugins
 
 # Create custom command
 mkdir -p .claude-plugin/commands
@@ -483,7 +483,7 @@ touch .claude-plugin/commands/my-command.md
 
 # Test locally
 /plugin marketplace add ./claudecode-marketplace
-/plugin install my-plugin@wookstar-claude-code-plugins
+/plugin install my-plugin@wookstar-claude-plugins
 ```
 
 ### Combining Plugins
@@ -515,12 +515,12 @@ touch .claude-plugin/commands/my-command.md
 ```bash
 # Install only the MCP servers you need
 # Core utilities (recommended for most projects)
-/plugin install mcp-fetch@wookstar-claude-code-plugins
-/plugin install mcp-time@wookstar-claude-code-plugins
+/plugin install mcp-fetch@wookstar-claude-plugins
+/plugin install mcp-time@wookstar-claude-plugins
 
 # Data sources (install as needed)
-/plugin install mcp-open-meteo@wookstar-claude-code-plugins
-/plugin install mcp-currency-conversion@wookstar-claude-code-plugins
+/plugin install mcp-open-meteo@wookstar-claude-plugins
+/plugin install mcp-currency-conversion@wookstar-claude-plugins
 ```
 
 ### 2. Lazy Loading

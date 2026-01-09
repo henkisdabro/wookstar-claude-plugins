@@ -35,7 +35,7 @@ Components are organised into self-contained toolkits by domain rather than scat
 ### Directory Structure
 
 ```
-wookstar-claude-code-plugins/
+wookstar-claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json         # Root manifest (defines all plugins)
 ├── <toolkit>/                   # Each toolkit at root level
