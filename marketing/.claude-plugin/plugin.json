@@ -1,0 +1,9 @@
+{
+  "name": "marketing",
+  "description": "Complete marketing analytics suite: comprehensive GTM skill (9 reference guides for tags, triggers, variables, data layer, debugging, custom templates, API), comprehensive GA4 skill (15 reference guides for setup, events, ecommerce, BigQuery, Measurement Protocol, privacy compliance), and Google Ads Scripts skill for campaign automation",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "2.0.0"
+}

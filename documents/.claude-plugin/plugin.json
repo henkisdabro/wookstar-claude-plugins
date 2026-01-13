@@ -1,0 +1,9 @@
+{
+  "name": "documents",
+  "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.1.0"
+}

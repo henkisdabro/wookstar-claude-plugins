@@ -1,0 +1,9 @@
+{
+  "name": "productivity",
+  "description": "Workflow orchestration suite: 4 commands for planning, parallel task execution, and session priming + 2 skills (Google Apps Script for Workspace automation, Tampermonkey for browser userscripts)",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "2.1.0"
+}

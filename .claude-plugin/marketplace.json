@@ -33,8 +33,7 @@
         "browser-automation",
         "greasemonkey"
       ],
-      "category": "productivity",
-      "strict": false
+      "category": "productivity"
     },
     {
       "name": "developer",
@@ -61,8 +60,7 @@
         "architecture"
       ],
       "category": "development",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "documents",
@@ -86,8 +84,7 @@
         "ocr",
         "office"
       ],
-      "category": "documents",
-      "strict": false
+      "category": "documents"
     },
     {
       "name": "claudecode",
@@ -110,8 +107,7 @@
         "reasoning",
         "prompts"
       ],
-      "category": "meta",
-      "strict": false
+      "category": "meta"
     },
     {
       "name": "utilities",
@@ -130,8 +126,7 @@
         "conversion",
         "tools"
       ],
-      "category": "utilities",
-      "strict": false
+      "category": "utilities"
     },
     {
       "name": "finance",
@@ -210,8 +205,7 @@
         "debugging"
       ],
       "category": "analytics",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "shopify-developer",
@@ -237,8 +231,7 @@
         "debugging",
         "storefront"
       ],
-      "category": "development",
-      "strict": false
+      "category": "development"
     },
     {
       "name": "mcp-fetch",
