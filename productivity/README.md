@@ -11,9 +11,10 @@ Streamlined workflow orchestration commands for planning and parallel task execu
 - **/execute-parallel** - Execute prepared tasks in parallel
 - **/primer** - Quick project initialisation and context gathering
 
-### Skills (1)
+### Skills (2)
 
 - **google-apps-script** - Google Apps Script expertise for Workspace automation (Sheets, Docs, Gmail, Drive, Calendar, Forms, Slides)
+- **tampermonkey** - Tampermonkey userscript development for browser automation, page modification, and web enhancement
 
 ## Installation
 
@@ -53,6 +54,25 @@ Streamlined workflow orchestration commands for planning and parallel task execu
 
 # Workflow automation
 "Create a script to sync Calendar events with Sheets"
+```
+
+### Tampermonkey
+
+```bash
+# Page modification
+"Write a userscript to add a dark mode toggle to example.com"
+
+# Element hiding
+"Create a script to hide annoying popups on news sites"
+
+# Form automation
+"Build a userscript that auto-fills login forms"
+
+# Data extraction
+"Write a script to extract product prices from a shopping site"
+
+# SPA enhancements
+"Create a userscript that adds keyboard shortcuts to a React app"
 ```
 
 ## Command Details
@@ -116,6 +136,27 @@ Google Apps Script expertise for Workspace automation:
 - External API integration
 - Workspace add-ons
 
+### tampermonkey
+
+Tampermonkey userscript development for browser automation and web enhancement:
+
+**Use Cases:**
+- Browser scripts for page modification
+- Hiding unwanted elements (ads, popups, banners)
+- Form auto-fill and automation
+- Data extraction and scraping
+- Adding custom functionality to websites
+- SPA enhancements (URL change detection, keyboard shortcuts)
+- Cross-origin API requests from browser
+
+**Capabilities:**
+- Complete userscript header syntax (@match, @grant, @require, @run-at)
+- GM_* API functions (storage, HTTP requests, styles, notifications)
+- Common patterns (element waiting, mutation observers, URL detection)
+- Security best practices and sandboxing
+- Cross-browser compatibility (Chrome, Firefox, Edge)
+- 18 reference guides for deep API documentation
+
 ## When to Use
 
 This toolkit is ideal for:
@@ -128,3 +169,6 @@ This toolkit is ideal for:
 - Automating Google Workspace tasks
 - Building custom Sheets functions
 - Creating email and document automation
+- Writing browser userscripts for page modification
+- Automating repetitive browser tasks
+- Enhancing websites with custom functionality

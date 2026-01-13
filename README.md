@@ -54,7 +54,7 @@ Or install individual MCP servers without the full toolkits:
 **Includes:**
 
 - 4 commands: /planning, /prep-parallel, /execute-parallel, /primer
-- 1 skill: google-apps-script (Workspace automation)
+- 2 skills: google-apps-script (Workspace automation), tampermonkey (browser userscripts)
 
 **Installation:**
 
@@ -62,7 +62,7 @@ Or install individual MCP servers without the full toolkits:
 /plugin install productivity@wookstar
 ```
 
-**Use Cases:** Project planning, parallel task execution, Google Workspace automation
+**Use Cases:** Project planning, parallel task execution, Google Workspace automation, browser userscripts, page modification
 
 ---
 
@@ -380,7 +380,7 @@ claude plugin validate .
 
 - **Version:** 4.0.0
 - **Total Plugins:** 15 (9 toolkits + 6 individual MCPs)
-- **Components:** 3 agents, 11 commands, 21 skills, 14 MCP servers
+- **Components:** 3 agents, 11 commands, 22 skills, 14 MCP servers
 - **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Utilities
 
 ---
