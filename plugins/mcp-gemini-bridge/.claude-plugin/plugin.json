@@ -1,0 +1,9 @@
+{
+  "name": "mcp-gemini-bridge",
+  "description": "Google Gemini AI model integration via MCP",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

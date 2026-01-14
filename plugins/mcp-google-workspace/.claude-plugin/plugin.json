@@ -1,0 +1,9 @@
+{
+  "name": "mcp-google-workspace",
+  "description": "Google Workspace integration (Gmail, Drive, Calendar)",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

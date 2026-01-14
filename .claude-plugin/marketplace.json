@@ -5,14 +5,14 @@
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
-    "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and AI integrations - featuring consolidated GTM, GA4, and Shopify skills",
-    "version": "4.0.0",
+    "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and individual MCP server integrations",
+    "version": "5.0.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
     {
       "name": "productivity",
-      "source": "./productivity",
+      "source": "./plugins/productivity",
       "description": "Workflow orchestration suite: 4 commands for planning, parallel task execution, and session priming + 2 skills (Google Apps Script for Workspace automation, Tampermonkey for browser userscripts)",
       "version": "2.1.0",
       "author": {
@@ -37,7 +37,7 @@
     },
     {
       "name": "developer",
-      "source": "./developer",
+      "source": "./plugins/developer",
       "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
       "version": "2.1.0",
       "author": {
@@ -64,7 +64,7 @@
     },
     {
       "name": "documents",
-      "source": "./documents",
+      "source": "./plugins/documents",
       "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
       "version": "1.1.0",
       "author": {
@@ -88,7 +88,7 @@
     },
     {
       "name": "claudecode",
-      "source": "./claudecode",
+      "source": "./plugins/claudecode",
       "description": "Claude Code power tools: 4 thinking/reasoning commands (ultra-think, infinite, reflection, prompt writer) + skill-creator guide for building effective skills and extending Claude's capabilities",
       "version": "2.0.1",
       "author": {
@@ -111,7 +111,7 @@
     },
     {
       "name": "utilities",
-      "source": "./utilities",
+      "source": "./plugins/utilities",
       "description": "General utility tools: timezone conversion and time queries across IANA timezones",
       "version": "1.0.0",
       "author": {
@@ -129,55 +129,8 @@
       "category": "utilities"
     },
     {
-      "name": "finance",
-      "source": "./finance",
-      "description": "Financial market data integrations: 3 MCP servers providing real-time stock market data (AlphaVantage), cryptocurrency data (CoinGecko), and currency conversion rates",
-      "version": "1.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "finance",
-        "stocks",
-        "cryptocurrency",
-        "crypto",
-        "market-data",
-        "trading",
-        "alphavantage",
-        "coingecko",
-        "currency"
-      ],
-      "category": "data",
-      "mcpServers": "./.mcp.json",
-      "strict": false
-    },
-    {
-      "name": "ai",
-      "source": "./ai",
-      "description": "AI integration bundle: 2 MCP servers connecting to Gemini AI and Perplexity for enhanced AI capabilities and search",
-      "version": "1.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "ai",
-        "gemini",
-        "perplexity",
-        "search",
-        "intelligence",
-        "integration"
-      ],
-      "category": "ai",
-      "mcpServers": "./.mcp.json",
-      "strict": false
-    },
-    {
       "name": "marketing",
-      "source": "./marketing",
+      "source": "./plugins/marketing",
       "description": "Complete marketing analytics suite: comprehensive GTM skill (9 reference guides for tags, triggers, variables, data layer, debugging, custom templates, API), comprehensive GA4 skill (15 reference guides for setup, events, ecommerce, BigQuery, Measurement Protocol, privacy compliance), and Google Ads Scripts skill for campaign automation. Includes MCP integrations for Analytics and GTM APIs.",
       "version": "2.0.0",
       "author": {
@@ -209,7 +162,7 @@
     },
     {
       "name": "shopify-developer",
-      "source": "./shopify-developer",
+      "source": "./plugins/shopify-developer",
       "description": "Professional Shopify development suite with 6 specialised skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimisation, and debugging. Complete solution for building custom themes, headless storefronts, and Shopify apps.",
       "version": "1.1.0",
       "author": {
@@ -234,58 +187,147 @@
       "category": "development"
     },
     {
+      "name": "mcp-gemini-bridge",
+      "source": "./plugins/mcp-gemini-bridge",
+      "description": "Google Gemini AI model integration via MCP",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "gemini", "ai", "google"],
+      "category": "ai",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "mcp-perplexity",
+      "source": "./plugins/mcp-perplexity",
+      "description": "Perplexity AI-powered search and information retrieval",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "perplexity", "search", "ai"],
+      "category": "ai",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "mcp-alphavantage",
+      "source": "./plugins/mcp-alphavantage",
+      "description": "Stock market data, company information, and financial indicators via AlphaVantage",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "stocks", "finance", "alphavantage", "market-data"],
+      "category": "data",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "mcp-coingecko",
+      "source": "./plugins/mcp-coingecko",
+      "description": "Cryptocurrency prices, market data, and historical trends via CoinGecko",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "crypto", "cryptocurrency", "coingecko", "market-data"],
+      "category": "data",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "mcp-currency-conversion",
+      "source": "./plugins/mcp-currency-conversion",
+      "description": "Real-time currency exchange rates and conversion (no API key required)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "currency", "forex", "exchange", "conversion"],
+      "category": "data",
+      "mcpServers": "./.mcp.json"
+    },
+    {
       "name": "mcp-fetch",
-      "source": "./mcp-servers/fetch",
+      "source": "./plugins/mcp-fetch",
       "description": "Web content fetching and HTTP requests",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
       "keywords": ["mcp", "fetch", "web", "http"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "mcp-google-workspace",
-      "source": "./mcp-servers/google-workspace",
+      "source": "./plugins/mcp-google-workspace",
       "description": "Google Workspace integration (Gmail, Drive, Calendar)",
-      "keywords": ["mcp", "google", "workspace", "gmail", "drive"],
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "google", "workspace", "gmail", "drive", "calendar"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "mcp-mikrotik",
-      "source": "./mcp-servers/mikrotik",
+      "source": "./plugins/mcp-mikrotik",
       "description": "MikroTik router management and network automation",
-      "keywords": ["mcp", "mikrotik", "router", "network"],
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "mikrotik", "router", "network", "automation"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "mcp-n8n",
-      "source": "./mcp-servers/n8n",
+      "source": "./plugins/mcp-n8n",
       "description": "n8n workflow automation integration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
       "keywords": ["mcp", "n8n", "automation", "workflows"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "mcp-notion",
-      "source": "./mcp-servers/notion",
+      "source": "./plugins/mcp-notion",
       "description": "Notion workspace and database integration",
-      "keywords": ["mcp", "notion", "workspace", "notes"],
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "keywords": ["mcp", "notion", "workspace", "notes", "database"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     },
     {
       "name": "mcp-open-meteo",
-      "source": "./mcp-servers/open-meteo",
+      "source": "./plugins/mcp-open-meteo",
       "description": "Weather and climate data (no API key required)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
       "keywords": ["mcp", "weather", "climate", "forecast"],
       "category": "mcpServers",
-      "mcpServers": "./.mcp.json",
-      "strict": false
+      "mcpServers": "./.mcp.json"
     }
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "name": "mcp-coingecko",
+  "description": "Cryptocurrency prices, market data, and historical trends via CoinGecko",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

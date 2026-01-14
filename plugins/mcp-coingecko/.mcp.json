@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "alphavantage": {
-      "type": "http",
-      "url": "https://mcp.alphavantage.co/mcp?apikey=${ALPHAVANTAGEAPIKEY}"
-    },
     "coingecko": {
       "command": "npx",
       "args": [
@@ -17,10 +13,6 @@
         "COINGECKO_DEMO_API_KEY": "${COINGECKO_DEMO_API_KEY}",
         "COINGECKO_ENVIRONMENT": "demo"
       }
-    },
-    "currency-conversion": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://currency-mcp.wesbos.com/sse"]
     }
   }
 }

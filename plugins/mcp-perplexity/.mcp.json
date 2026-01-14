@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "gemini-bridge": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": ["gemini-bridge"],
-      "env": {}
-    },
     "perplexity": {
       "command": "npx",
       "args": ["-y", "@perplexity-ai/mcp-server"],

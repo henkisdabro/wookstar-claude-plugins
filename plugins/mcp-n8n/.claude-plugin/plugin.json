@@ -1,0 +1,9 @@
+{
+  "name": "mcp-n8n",
+  "description": "n8n workflow automation integration",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

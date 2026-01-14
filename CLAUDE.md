@@ -10,7 +10,7 @@ claude plugin validate .
 
 # Local testing
 /plugin marketplace add .
-/plugin install <toolkit>@wookstar
+/plugin install <plugin>@wookstar
 /plugin marketplace update wookstar
 
 # After changes
@@ -21,16 +21,19 @@ claude plugin validate .
 
 ## Architecture Decisions
 
-### Consolidated Bundles (v4.0)
+### Consolidated Structure (v5.0)
 
-Components are organised into self-contained toolkits by domain rather than scattered individual plugins.
+All plugins live inside the `plugins/` directory for consistent organisation:
+
+- **Full-featured toolkits** - bundles with agents, commands, skills, and optionally MCP servers
+- **MCP-only plugins** - individual MCP server integrations (prefixed with `mcp-`)
 
 **Why this approach:**
 
-- Users install complete toolsets, not individual components
-- Related agents, commands, skills, and MCPs bundled together
-- Consistent structure across all toolkits
-- `strict: false` enables auto-discovery without plugin.json files
+- All plugins in one location for easy discovery
+- Each plugin has its own `.claude-plugin/plugin.json` manifest
+- MCP servers declared in marketplace.json with file references
+- Cross-platform compatible paths (forward slashes)
 
 ### Directory Structure
 
@@ -38,20 +41,42 @@ Components are organised into self-contained toolkits by domain rather than scat
 wookstar-claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json         # Root manifest (defines all plugins)
-├── <toolkit>/                   # Each toolkit at root level
-│   ├── README.md
-│   ├── .mcp.json                # Optional: embedded MCP servers
-│   ├── agents/*.md              # Auto-loaded
-│   ├── commands/*.md            # Auto-loaded
-│   └── skills/<name>/SKILL.md   # Auto-loaded
-├── mcp-servers/                 # Standalone MCP plugins
-│   └── <server>/.mcp.json
+├── plugins/                     # ALL plugins live here
+│   ├── claudecode/              # Full-featured toolkit
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── README.md
+│   │   ├── commands/*.md
+│   │   └── skills/<name>/SKILL.md
+│   ├── developer/               # Toolkit with MCP servers
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── .mcp.json            # MCP server configurations
+│   │   ├── agents/*.md
+│   │   ├── commands/*.md
+│   │   └── skills/<name>/SKILL.md
+│   ├── documents/
+│   ├── marketing/
+│   ├── productivity/
+│   ├── shopify-developer/
+│   ├── utilities/
+│   ├── mcp-alphavantage/        # MCP-only plugins
+│   ├── mcp-coingecko/
+│   ├── mcp-currency-conversion/
+│   ├── mcp-fetch/
+│   ├── mcp-gemini-bridge/
+│   ├── mcp-google-workspace/
+│   ├── mcp-mikrotik/
+│   ├── mcp-n8n/
+│   ├── mcp-notion/
+│   ├── mcp-open-meteo/
+│   └── mcp-perplexity/
 └── docs/                        # Development reference files
 ```
 
 ### Auto-Loading Rules
 
-With `strict: false`, Claude Code auto-discovers:
+Claude Code auto-discovers components within each plugin:
 
 | Directory | File Pattern | Loaded As |
 |-----------|--------------|-----------|
@@ -60,67 +85,67 @@ With `strict: false`, Claude Code auto-discovers:
 | `skills/<name>/` | `SKILL.md` | Skills |
 | Root | `.mcp.json` | MCP Servers |
 
-No individual `plugin.json` files required within toolkits.
-
 ## MCP Configuration Rules
 
-**CRITICAL:** All MCP servers MUST use file references, not inline configurations.
+**CRITICAL:** MCP servers use file references in marketplace.json, NOT in plugin.json.
 
 ```json
-// CORRECT - File reference
+// In marketplace.json entry:
 "mcpServers": "./.mcp.json"
 
-// WRONG - Inline configuration
-"mcpServers": { "server-name": { "command": "..." } }
+// plugin.json does NOT need mcpServers field
 ```
 
-**Why file references:**
+**Why this pattern:**
 
-1. Atomic ownership - each toolkit owns its MCP config
-2. Easier maintenance - modify MCPs without editing marketplace.json
-3. Cleaner diffs - changes isolated to toolkit's .mcp.json
-4. Consistent architecture - same pattern everywhere
+1. Single source of truth - MCP config in one place
+2. Marketplace controls which MCPs are loaded
+3. plugin.json stays minimal (name, description, version, author)
 
 **Validation checklist:**
 
-- [ ] `.mcp.json` exists in plugin directory
+- [ ] `.mcp.json` exists in plugin directory (for MCP plugins)
 - [ ] marketplace.json uses `"mcpServers": "./.mcp.json"`
-- [ ] No inline `mcpServers` objects in marketplace.json
+- [ ] plugin.json does NOT duplicate mcpServers
 - [ ] `claude plugin validate .` passes
 
 ## Adding Components
 
-### New Toolkit
+### New Full-Featured Plugin
 
-1. Create directory: `<toolkit-name>/`
-2. Create `README.md` for documentation
-3. Add component directories: `agents/`, `commands/`, `skills/`
-4. Add entry to `.claude-plugin/marketplace.json` (see [docs/templates.md](docs/templates.md))
-5. Test: `/plugin install <toolkit>@wookstar`
+1. Create directory: `plugins/<plugin-name>/`
+2. Create `.claude-plugin/plugin.json` with name, description, version, author
+3. Create `README.md` for documentation
+4. Add component directories: `agents/`, `commands/`, `skills/`
+5. Add entry to `.claude-plugin/marketplace.json`
+6. Test: `/plugin install <plugin>@wookstar`
 
-### Command/Agent (to existing toolkit)
+### New MCP-Only Plugin
 
-1. Create file: `<toolkit>/commands/<name>.md` or `<toolkit>/agents/<name>.md`
+1. Create directory: `plugins/mcp-<name>/`
+2. Create `.claude-plugin/plugin.json` (without mcpServers)
+3. Create `.mcp.json` with server configuration
+4. Create `README.md` for documentation
+5. Add entry to marketplace.json with `"mcpServers": "./.mcp.json"`
+6. Test: `/plugin install mcp-<name>@wookstar`
+
+### Command/Agent (to existing plugin)
+
+1. Create file: `plugins/<plugin>/commands/<name>.md` or `plugins/<plugin>/agents/<name>.md`
 2. Auto-loaded on marketplace update
 3. Test: `/plugin marketplace update wookstar`
 
-### Skill (to existing toolkit)
+### Skill (to existing plugin)
 
-1. Create: `<toolkit>/skills/<skill-name>/SKILL.md`
+1. Create: `plugins/<plugin>/skills/<skill-name>/SKILL.md`
 2. Optional subdirectories: `assets/`, `references/`, `scripts/`
 3. Auto-loaded on marketplace update
 
 ### MCP Server (embedded in toolkit)
 
-1. Create/edit: `<toolkit>/.mcp.json`
+1. Create/edit: `plugins/<plugin>/.mcp.json`
 2. Add `"mcpServers": "./.mcp.json"` to marketplace.json entry
-3. Test: `/plugin install <toolkit>@wookstar`
-
-### MCP Server (standalone)
-
-1. Create: `mcp-servers/<server>/.mcp.json`
-2. Add entry to marketplace.json with `"category": "mcpServers"`
-3. Test: `/plugin install mcp-<server>@wookstar`
+3. Test: `/plugin install <plugin>@wookstar`
 
 ## Critical Files
 
@@ -130,16 +155,33 @@ Root manifest containing:
 
 - Marketplace metadata (name, version)
 - All plugin definitions with source paths
-- Toolkit metadata (version, description, keywords, category)
+- Plugin metadata (version, description, keywords, category)
+- MCP server file references
 
 **Path resolution:**
 
-- `"source": "./productivity"` - toolkit root
+- `"source": "./plugins/productivity"` - plugin root
 - `"mcpServers": "./.mcp.json"` - relative to plugin source
 
-### <toolkit>/.mcp.json
+### plugins/<plugin>/.claude-plugin/plugin.json
 
-MCP server configurations for the toolkit. Format:
+Plugin manifest (required for each plugin):
+
+```json
+{
+  "name": "plugin-name",
+  "description": "Plugin description",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}
+```
+
+### plugins/<plugin>/.mcp.json
+
+MCP server configurations (for plugins with MCP servers):
 
 ```json
 {
@@ -155,8 +197,8 @@ MCP server configurations for the toolkit. Format:
 
 ## Version Management
 
-**Marketplace version:** Updated for architectural changes (currently 4.0.0)
-**Toolkit versions:** Independent semantic versioning per toolkit
+**Marketplace version:** Updated for architectural changes (currently 5.0.0)
+**Plugin versions:** Independent semantic versioning per plugin
 
 Follow semantic versioning:
 
@@ -167,18 +209,19 @@ Follow semantic versioning:
 ## Constraints
 
 1. **No build process** - pure marketplace, no compilation
-2. **Strict: false** - all toolkits use flexible auto-discovery
-3. **MCP file references** - never inline configurations
-4. **Markdown format** - commands and agents are `.md` files
-5. **No plugin.json in skills** - not required with `strict: false`
-6. **Environment variable security** - never commit secrets
+2. **All plugins in plugins/** - consistent organisation
+3. **MCP file references** - never inline configurations in marketplace.json
+4. **MCP in marketplace only** - plugin.json does not include mcpServers
+5. **Markdown format** - commands and agents are `.md` files
+6. **Forward slashes** - cross-platform path compatibility
+7. **Environment variable security** - never commit secrets
 
 ## Testing Checklist
 
 Before committing:
 
 1. Run `claude plugin validate .`
-2. Install toolkit locally and verify components load
+2. Install plugin locally and verify components load
 3. Test commands, agents, and skills function correctly
-4. Update toolkit version if needed (MAJOR/MINOR/PATCH)
+4. Update plugin version if needed (MAJOR/MINOR/PATCH)
 5. Commit with semantic message

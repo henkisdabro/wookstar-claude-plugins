@@ -1,0 +1,9 @@
+{
+  "name": "mcp-currency-conversion",
+  "description": "Real-time currency exchange rates and conversion (no API key required)",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

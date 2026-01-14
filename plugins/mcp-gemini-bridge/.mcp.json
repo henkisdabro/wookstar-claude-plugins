@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "gemini-bridge": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["gemini-bridge"],
+      "env": {}
+    }
+  }
+}
