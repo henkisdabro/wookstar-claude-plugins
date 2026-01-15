@@ -76,10 +76,11 @@ ensure_claude_dir() {
 # Format: "marketplace_name|source"
 # Source can be: owner/repo (GitHub) or full URL (git)
 MARKETPLACES=(
-    "claude-code-plugins|anthropics/claude-code"
+    "claude-plugins-official|anthropics/claude-plugins-official"
     "wookstar-claude-plugins|henkisdabro/wookstar-claude-plugins"
     "claude-scientific-skills|K-Dense-AI/claude-scientific-skills"
-    "claude-skills|https://github.com/jezweb/claude-skills.git"
+    "claude-skills|secondsky/claude-skills"
+    #"claude-skills|jezweb/claude-skills"
 )
 
 # ============================================================================
@@ -98,12 +99,12 @@ PLUGINS_TO_ENABLE=(
     # =========================================================================
     # Anthropic Official Plugins (claude-code-plugins)
     # =========================================================================
-    "agent-sdk-dev@claude-code-plugins"
-    "commit-commands@claude-code-plugins"
-    "feature-dev@claude-code-plugins"
-    "frontend-design@claude-code-plugins"
-    "code-review@claude-code-plugins"
-    "security-guidance@claude-code-plugins"
+    "agent-sdk-dev@claude-plugins-official"
+    "commit-commands@claude-plugins-official"
+    "feature-dev@claude-plugins-official"
+    "frontend-design@claude-plugins-official"
+    "code-review@claude-plugins-official"
+    "security-guidance@claude-plugins-official"
 
     # =========================================================================
     # Wookstar Plugins (wookstar-claude-plugins)

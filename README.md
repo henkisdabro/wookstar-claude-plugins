@@ -28,6 +28,9 @@ Then install the toolkits you need:
 # For Shopify development
 /plugin install shopify-developer@wookstar
 
+# For Cloudflare AI agents and MCP servers (official)
+/plugin install cloudflare-skills@wookstar
+
 # For utility tools
 /plugin install utilities@wookstar
 ```
@@ -35,12 +38,17 @@ Then install the toolkits you need:
 Or install individual MCP servers without the full toolkits:
 
 ```bash
-/plugin install mcp-fetch@wookstar           # Web content fetching
-/plugin install mcp-google-workspace@wookstar # Gmail, Drive, Calendar
-/plugin install mcp-mikrotik@wookstar        # MikroTik router management
-/plugin install mcp-n8n@wookstar             # n8n workflow automation
-/plugin install mcp-notion@wookstar          # Notion integration
-/plugin install mcp-open-meteo@wookstar      # Weather data (no API key)
+/plugin install mcp-fetch@wookstar             # Web content fetching
+/plugin install mcp-google-workspace@wookstar  # Gmail, Drive, Calendar
+/plugin install mcp-mikrotik@wookstar          # MikroTik router management
+/plugin install mcp-n8n@wookstar               # n8n workflow automation
+/plugin install mcp-notion@wookstar            # Notion integration
+/plugin install mcp-open-meteo@wookstar        # Weather data (no API key)
+/plugin install mcp-gemini-bridge@wookstar     # Google Gemini AI
+/plugin install mcp-perplexity@wookstar        # Perplexity AI search
+/plugin install mcp-alphavantage@wookstar      # Stock market data
+/plugin install mcp-coingecko@wookstar         # Cryptocurrency data
+/plugin install mcp-currency-conversion@wookstar # Currency exchange rates
 ```
 
 ---
@@ -128,6 +136,26 @@ FIRECRAWL_API_KEY=your_key         # Optional
 ```
 
 **Use Cases:** Deep reasoning, creating new skills, extending Claude's capabilities
+
+---
+
+### Cloudflare Skills
+
+**Official Cloudflare development skills** - sourced from [cloudflare/skills](https://github.com/cloudflare/skills)
+
+**Includes:**
+
+- 2 commands: /build-agent, /build-mcp
+- 2 skills: building-ai-agent-on-cloudflare, building-mcp-server-on-cloudflare
+- Reference guides for agent patterns, state management, OAuth setup, and troubleshooting
+
+**Installation:**
+
+```bash
+/plugin install cloudflare-skills@wookstar
+```
+
+**Use Cases:** Building AI agents with Cloudflare Agents SDK, deploying remote MCP servers on Cloudflare Workers, OAuth authentication setup
 
 ---
 
@@ -339,12 +367,13 @@ Standalone integrations available separately:
 
 - **[CLAUDE.md](./CLAUDE.md)** - Developer guide for working with this marketplace
 - **Toolkit READMEs** - Detailed documentation for each toolkit:
-  - [Marketing](./marketing/README.md)
-  - [Shopify Developer](./shopify-developer/README.md)
-  - [Productivity](./productivity/README.md)
-  - [Developer](./developer/README.md)
-  - [Documents](./documents/README.md)
-  - [Utilities](./utilities/README.md)
+  - [Marketing](./plugins/marketing/README.md)
+  - [Shopify Developer](./plugins/shopify-developer/README.md)
+  - [Productivity](./plugins/productivity/README.md)
+  - [Developer](./plugins/developer/README.md)
+  - [Documents](./plugins/documents/README.md)
+  - [Utilities](./plugins/utilities/README.md)
+  - [Cloudflare Skills](./plugins/cloudflare-skills/README.md) (official Cloudflare)
 
 ---
 
@@ -378,9 +407,9 @@ claude plugin validate .
 
 ## Marketplace Stats
 
-- **Version:** 4.0.0
-- **Total Plugins:** 15 (9 toolkits + 6 individual MCPs)
-- **Components:** 3 agents, 11 commands, 22 skills, 14 MCP servers
+- **Version:** 5.1.0
+- **Total Plugins:** 20 (9 toolkits + 1 official Cloudflare plugin + 10 individual MCPs)
+- **Components:** 3 agents, 13 commands, 24 skills, 14 MCP servers
 - **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Utilities
 
 ---
@@ -445,6 +474,7 @@ MIT License - see [LICENSE](./LICENSE) for details
 Built for the Claude Code community. Special thanks to:
 
 - Anthropic for creating Claude Code and the plugin system
+- [Cloudflare](https://github.com/cloudflare/skills) for the official AI agents and MCP server skills
 - [Simo Ahava](https://www.simoahava.com/) for GTM and GA4 expertise
 - The open-source community for MCP server integrations
 

@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and individual MCP server integrations",
-    "version": "5.0.0",
+    "version": "5.1.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -108,6 +108,29 @@
         "prompts"
       ],
       "category": "meta"
+    },
+    {
+      "name": "cloudflare-skills",
+      "source": "./plugins/cloudflare-skills",
+      "description": "Official Cloudflare development skills: 2 commands (build-agent, build-mcp) + 2 comprehensive skills for building AI agents and MCP servers on Cloudflare Workers with reference guides for agent patterns, state management, OAuth setup, and troubleshooting",
+      "version": "1.0.0",
+      "author": {
+        "name": "Cloudflare",
+        "url": "https://github.com/cloudflare"
+      },
+      "homepage": "https://github.com/cloudflare/skills",
+      "keywords": [
+        "cloudflare",
+        "workers",
+        "ai-agents",
+        "mcp",
+        "mcp-server",
+        "serverless",
+        "edge",
+        "oauth",
+        "durable-objects"
+      ],
+      "category": "development"
     },
     {
       "name": "utilities",
