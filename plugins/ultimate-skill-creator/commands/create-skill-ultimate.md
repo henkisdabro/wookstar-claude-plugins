@@ -99,10 +99,26 @@ description: >-
 
 ## Phase 6: Create the Skill
 
-Ask user for skill location preference:
-- Personal: `~/.claude/skills/skill-name/`
-- Project: `.claude/skills/skill-name/`
-- Plugin: Add to existing plugin
+**CRITICAL: Use AskUserQuestion to ask where the skill should be saved.**
+
+Use the AskUserQuestion tool with these options:
+
+```
+Question: "Where should this skill be saved?"
+Header: "Location"
+Options:
+1. Label: "Personal (home folder)"
+   Description: "Save to ~/.claude/skills/<skill-name>/ - Available in all projects for this user"
+2. Label: "Project folder"
+   Description: "Save to .claude/skills/<skill-name>/ in current working directory - Project-specific skill"
+3. Label: "Existing plugin"
+   Description: "Add to an existing plugin in this project - For plugin development"
+```
+
+After the user selects their preference, set the `--path` argument accordingly:
+- **Personal**: `--path ~/.claude/skills`
+- **Project**: `--path .claude/skills` (relative to current working directory)
+- **Plugin**: Ask which plugin, then use `--path plugins/<plugin-name>/skills`
 
 ### Option A: Use init_skill.py (Recommended)
 
