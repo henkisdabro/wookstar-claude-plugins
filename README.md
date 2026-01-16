@@ -53,6 +53,104 @@ Or install individual MCP servers without the full toolkits:
 
 ---
 
+## Environment Variables
+
+Many MCP-powered plugins require API keys or credentials. Set these in your shell profile (`~/.bashrc` or `~/.zshrc`) or a `.env` file.
+
+### Plugins Without API Keys (Ready to Use)
+
+These plugins work immediately without configuration:
+
+- `mcp-fetch` - Web content fetching
+- `mcp-open-meteo` - Weather data
+- `mcp-currency-conversion` - Currency exchange rates
+- `mcp-gemini-bridge` - Uses Google AI Studio (browser auth)
+- `mcp-notion` - Uses Notion's hosted MCP (browser auth)
+
+### Required Environment Variables by Plugin
+
+#### developer
+
+```bash
+# Optional - only needed if using these MCP servers
+export CONTEXT7_API_KEY="your-context7-key"      # https://upstash.com/context7
+export FIRECRAWL_API_KEY="your-firecrawl-key"    # https://firecrawl.dev/
+```
+
+#### marketing
+
+```bash
+# Required for Analytics MCP server
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
+export GOOGLE_PROJECT_ID="your-gcp-project-id"
+# Get credentials: GCP Console → APIs & Services → Credentials → Service Account
+```
+
+#### mcp-google-workspace
+
+```bash
+export GOOGLE_OAUTH_CLIENT_ID="your-client-id"
+export GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
+# Get credentials: GCP Console → APIs & Services → Credentials → OAuth 2.0 Client
+```
+
+#### mcp-mikrotik
+
+```bash
+export MIKROTIK_HOST="your-router-ip"
+export MIKROTIK_USER="your-username"
+export MIKROTIK_PASSWORD="your-password"
+```
+
+#### mcp-n8n
+
+```bash
+export N8N_API_KEY="your-n8n-api-key"
+# Get from: n8n Settings → API → Create API Key
+```
+
+#### mcp-alphavantage
+
+```bash
+export ALPHAVANTAGEAPIKEY="your-alphavantage-key"
+# Free key: https://www.alphavantage.co/support/#api-key
+```
+
+#### mcp-coingecko
+
+```bash
+export COINGECKO_DEMO_API_KEY="your-coingecko-key"
+# Demo key: https://www.coingecko.com/en/api
+```
+
+#### mcp-perplexity
+
+```bash
+export PERPLEXITY_API_KEY="your-perplexity-key"
+# Get from: https://www.perplexity.ai/settings/api
+```
+
+### Applying Changes
+
+After setting environment variables, restart your terminal or run:
+
+```bash
+source ~/.bashrc  # or ~/.zshrc
+```
+
+### Troubleshooting
+
+If you see "Missing environment variables" errors in `claude doctor`, either:
+
+1. **Set the variables** using the examples above
+2. **Uninstall unused plugins** if you don't need the service:
+
+```bash
+/plugin uninstall mcp-perplexity@wookstar
+```
+
+---
+
 ## Available Toolkits
 
 ### Productivity
