@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and individual MCP server integrations",
-    "version": "5.1.0",
+    "version": "5.2.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -89,8 +89,8 @@
     {
       "name": "claudecode",
       "source": "./plugins/claudecode",
-      "description": "Claude Code power tools: 4 thinking/reasoning commands (ultra-think, infinite, reflection, prompt writer) + skill-creator guide for building effective skills and extending Claude's capabilities",
-      "version": "2.0.1",
+      "description": "Claude Code thinking tools: 2 commands (ultra-think for deep analytical reasoning, reflection for improving CLAUDE.md instructions)",
+      "version": "3.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -98,14 +98,34 @@
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
         "claude-code",
-        "skills",
-        "development",
-        "meta",
-        "creation",
-        "guide",
         "thinking",
         "reasoning",
-        "prompts"
+        "analysis",
+        "reflection",
+        "meta"
+      ],
+      "category": "meta"
+    },
+    {
+      "name": "ultimate-skill-creator",
+      "source": "./plugins/ultimate-skill-creator",
+      "description": "Advanced skill development toolkit: 1 agent (skill-architect) + 2 commands (/create-skill-ultimate, /setup-skill-hook) + 1 comprehensive skill (skill-mastery with 4 reference guides and 2 utility scripts) + 1 hook (skill-activation-prompt). Combines official plugin-dev patterns, community best practices, and latest API. Requires plugin-dev@claude-plugins-official for validation agents.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "skills",
+        "skill-creator",
+        "plugin-dev",
+        "development",
+        "best-practices",
+        "meta",
+        "archetypes",
+        "token-efficiency",
+        "progressive-disclosure"
       ],
       "category": "meta"
     },

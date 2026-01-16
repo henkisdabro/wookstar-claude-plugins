@@ -42,12 +42,11 @@ wookstar-claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json         # Root manifest (defines all plugins)
 ├── plugins/                     # ALL plugins live here
-│   ├── claudecode/              # Full-featured toolkit
+│   ├── claudecode/              # Commands-only toolkit
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── README.md
-│   │   ├── commands/*.md
-│   │   └── skills/<name>/SKILL.md
+│   │   └── commands/*.md
 │   ├── developer/               # Toolkit with MCP servers
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
@@ -59,6 +58,7 @@ wookstar-claude-plugins/
 │   ├── marketing/
 │   ├── productivity/
 │   ├── shopify-developer/
+│   ├── ultimate-skill-creator/
 │   ├── utilities/
 │   ├── mcp-alphavantage/        # MCP-only plugins
 │   ├── mcp-coingecko/
@@ -197,7 +197,7 @@ MCP server configurations (for plugins with MCP servers):
 
 ## Version Management
 
-**Marketplace version:** Updated for architectural changes (currently 5.0.0)
+**Marketplace version:** Updated for architectural changes (currently 5.2.0)
 **Plugin versions:** Independent semantic versioning per plugin
 
 Follow semantic versioning:

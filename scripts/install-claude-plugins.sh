@@ -97,7 +97,7 @@ MARKETPLACES=(
 
 PLUGINS_TO_ENABLE=(
     # =========================================================================
-    # Anthropic Official Plugins (claude-code-plugins)
+    # Anthropic Official Plugins (claude-plugins-official)
     # =========================================================================
     "agent-sdk-dev@claude-plugins-official"
     "commit-commands@claude-plugins-official"
@@ -105,21 +105,24 @@ PLUGINS_TO_ENABLE=(
     "frontend-design@claude-plugins-official"
     "code-review@claude-plugins-official"
     "security-guidance@claude-plugins-official"
+    "plugin-dev@claude-plugins-official"  # Required for ultimate-skill-creator
 
     # =========================================================================
     # Wookstar Plugins (wookstar-claude-plugins)
     # =========================================================================
     # Toolkits (disabled by default - enable as needed)
-    # "productivity-toolkit@wookstar-claude-plugins"
-    # "developer-toolkit@wookstar-claude-plugins"
-    # "documents-toolkit@wookstar-claude-plugins"
-    # "claudecode-toolkit@wookstar-claude-plugins"
-    # "finance-toolkit@wookstar-claude-plugins"
-    # "ai-toolkit@wookstar-claude-plugins"
-    # "gtm-suite@wookstar-claude-plugins"
-    # "ga-suite@wookstar-claude-plugins"
+    # "productivity@wookstar-claude-plugins"
+    # "developer@wookstar-claude-plugins"
+    # "documents@wookstar-claude-plugins"
+    # "claudecode@wookstar-claude-plugins"
+    # "marketing@wookstar-claude-plugins"
     # "shopify-developer@wookstar-claude-plugins"
-    # "google-apps-ads-script@wookstar-claude-plugins"
+    # "utilities@wookstar-claude-plugins"
+    # "cloudflare-skills@wookstar-claude-plugins"
+
+    # Ultimate Skill Creator - requires plugin-dev to be installed first
+    # Provides: /create-skill-ultimate, /setup-skill-hook, skill-architect agent
+    # "ultimate-skill-creator@wookstar-claude-plugins"
 
     # Individual MCP servers
     "mcp-fetch@wookstar-claude-plugins"

@@ -122,12 +122,11 @@ FIRECRAWL_API_KEY=your_key         # Optional
 
 ### Claude Code
 
-**Meta tools for extending Claude Code**
+**Thinking and reasoning tools**
 
 **Includes:**
 
-- 4 commands: /ultra-think, /infinite, /reflection, /prompt_writer
-- 1 skill: skill-creator (comprehensive skill development guide)
+- 2 commands: /ultra-think (deep analytical reasoning), /reflection (improve CLAUDE.md)
 
 **Installation:**
 
@@ -135,7 +134,36 @@ FIRECRAWL_API_KEY=your_key         # Optional
 /plugin install claudecode@wookstar
 ```
 
-**Use Cases:** Deep reasoning, creating new skills, extending Claude's capabilities
+**Use Cases:** Complex problem-solving, multi-perspective analysis, improving Claude Code configuration
+
+---
+
+### Ultimate Skill Creator
+
+**Advanced skill development toolkit**
+
+**Requires:** [plugin-dev@claude-plugins-official](https://github.com/anthropics/claude-plugins-official) for validation agents
+
+**Includes:**
+
+- 1 agent: skill-architect (structure design and archetype recommendations)
+- 2 commands: /create-skill-ultimate (guided workflow), /setup-skill-hook (automatic hook setup)
+- 1 skill: skill-mastery (comprehensive development guide with 4 reference guides and 2 utility scripts)
+- 1 hook: skill-activation-prompt (auto-suggest relevant skills)
+
+**Installation:**
+
+```bash
+# Install required dependency first
+/plugin install plugin-dev@claude-plugins-official
+
+# Then install the plugin
+/plugin install ultimate-skill-creator@wookstar
+```
+
+**Optional Hook Setup:** To enable automatic skill suggestions, run `/setup-skill-hook` in your project after installing this plugin. See [Ultimate Skill Creator README](./plugins/ultimate-skill-creator/README.md#hook-setup-optional) for details.
+
+**Use Cases:** Creating professional skills, token-efficient architecture, progressive disclosure design, skill validation
 
 ---
 
@@ -177,55 +205,6 @@ FIRECRAWL_API_KEY=your_key         # Optional
 
 ---
 
-### Finance
-
-**Real-time market data**
-
-**Includes:**
-
-- 3 MCP servers: AlphaVantage (stocks), CoinGecko (crypto), Currency Conversion
-
-**Installation:**
-
-```bash
-/plugin install finance@wookstar
-```
-
-**Use Cases:** Stock prices, cryptocurrency data, currency exchange rates
-
-**Required Environment Variables:**
-
-```bash
-ALPHAVANTAGEAPIKEY=your_key
-COINGECKO_DEMO_API_KEY=your_key
-```
-
----
-
-### AI
-
-**Enhanced AI capabilities**
-
-**Includes:**
-
-- 2 MCP servers: Gemini Bridge, Perplexity
-
-**Installation:**
-
-```bash
-/plugin install ai@wookstar
-```
-
-**Use Cases:** AI-powered search, multi-modal tasks, research
-
-**Required Environment Variables:**
-
-```bash
-PERPLEXITY_API_KEY=your_key
-```
-
----
-
 ### Marketing
 
 **Complete marketing analytics suite**
@@ -253,7 +232,7 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 GOOGLE_PROJECT_ID=your-project-id
 ```
 
-[View Marketing Toolkit Documentation](./marketing/README.md)
+[View Marketing Toolkit Documentation](./plugins/marketing/README.md)
 
 ---
 
@@ -273,22 +252,7 @@ GOOGLE_PROJECT_ID=your-project-id
 
 **Use Cases:** Custom theme development, Liquid templating, headless storefronts, app development
 
-[View Shopify Developer Documentation](./shopify-developer/README.md)
-
----
-
-## Individual MCP Servers
-
-Standalone integrations available separately:
-
-```bash
-/plugin install mcp-fetch@wookstar                # Web fetching
-/plugin install mcp-google-workspace@wookstar     # Gmail, Drive, Calendar
-/plugin install mcp-mikrotik@wookstar             # Router management
-/plugin install mcp-n8n@wookstar                  # Workflow automation
-/plugin install mcp-notion@wookstar               # Notion integration
-/plugin install mcp-open-meteo@wookstar           # Weather data (no API key)
-```
+[View Shopify Developer Documentation](./plugins/shopify-developer/README.md)
 
 ---
 
@@ -372,6 +336,8 @@ Standalone integrations available separately:
   - [Productivity](./plugins/productivity/README.md)
   - [Developer](./plugins/developer/README.md)
   - [Documents](./plugins/documents/README.md)
+  - [Claude Code](./plugins/claudecode/README.md)
+  - [Ultimate Skill Creator](./plugins/ultimate-skill-creator/README.md)
   - [Utilities](./plugins/utilities/README.md)
   - [Cloudflare Skills](./plugins/cloudflare-skills/README.md) (official Cloudflare)
 
@@ -407,10 +373,10 @@ claude plugin validate .
 
 ## Marketplace Stats
 
-- **Version:** 5.1.0
-- **Total Plugins:** 20 (9 toolkits + 1 official Cloudflare plugin + 10 individual MCPs)
-- **Components:** 3 agents, 13 commands, 24 skills, 14 MCP servers
-- **Categories:** Productivity, Development, Documents, Meta, Finance, AI, Analytics, E-commerce, Utilities
+- **Version:** 5.2.0
+- **Total Plugins:** 20 (9 toolkits + 11 individual MCPs)
+- **Components:** 4 agents, 13 commands, 23 skills, 9 embedded MCP servers
+- **Categories:** Productivity, Development, Documents, Meta, Analytics, E-commerce, Utilities
 
 ---
 

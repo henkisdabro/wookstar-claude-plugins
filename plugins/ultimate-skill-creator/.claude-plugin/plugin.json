@@ -1,0 +1,9 @@
+{
+  "name": "ultimate-skill-creator",
+  "version": "1.0.0",
+  "description": "Advanced skill development toolkit combining official plugin-dev patterns, community best practices, and latest API documentation for creating exceptional Claude Code skills",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  }
+}

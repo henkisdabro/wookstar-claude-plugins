@@ -1,9 +1,9 @@
 {
   "name": "claudecode",
-  "description": "Claude Code power tools: 4 thinking/reasoning commands (ultra-think, infinite, reflection, prompt writer) + skill-creator guide for building effective skills and extending Claude's capabilities",
+  "description": "Claude Code power tools: thinking/reasoning commands (ultra-think, reflection)",
   "author": {
     "name": "Henrik Soederlund",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.0.1"
+  "version": "3.1.0"
 }
