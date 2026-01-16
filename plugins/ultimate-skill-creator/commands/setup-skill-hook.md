@@ -88,13 +88,19 @@ Note: Users should customise this with their actual installed skill names.
 
 ## Settings.json Hook Configuration
 
+For `UserPromptSubmit` events, the `matcher` field is omitted (it operates at the conversation level, not on tool names):
+
 ```json
 {
   "hooks": {
     "UserPromptSubmit": [
       {
-        "type": "command",
-        "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/skill-activation-prompt.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/skill-activation-prompt.sh"
+          }
+        ]
       }
     ]
   }
