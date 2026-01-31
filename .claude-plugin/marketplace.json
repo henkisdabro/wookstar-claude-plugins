@@ -110,7 +110,7 @@
       "name": "ultimate-skill-creator",
       "source": "./plugins/ultimate-skill-creator",
       "description": "Advanced skill development toolkit: 1 agent (skill-architect) + 2 commands (/create-skill-ultimate, /setup-skill-hook) + 1 comprehensive skill (skill-mastery with 4 reference guides and 2 utility scripts) + 1 hook (skill-activation-prompt). Combines official plugin-dev patterns, community best practices, and latest API. Requires plugin-dev@claude-plugins-official for validation agents.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -128,29 +128,6 @@
         "progressive-disclosure"
       ],
       "category": "meta"
-    },
-    {
-      "name": "cloudflare-skills",
-      "source": "./plugins/cloudflare-skills",
-      "description": "Official Cloudflare development skills: 2 commands (build-agent, build-mcp) + 2 comprehensive skills for building AI agents and MCP servers on Cloudflare Workers with reference guides for agent patterns, state management, OAuth setup, and troubleshooting",
-      "version": "1.0.0",
-      "author": {
-        "name": "Cloudflare",
-        "url": "https://github.com/cloudflare"
-      },
-      "homepage": "https://github.com/cloudflare/skills",
-      "keywords": [
-        "cloudflare",
-        "workers",
-        "ai-agents",
-        "mcp",
-        "mcp-server",
-        "serverless",
-        "edge",
-        "oauth",
-        "durable-objects"
-      ],
-      "category": "development"
     },
     {
       "name": "utilities",
