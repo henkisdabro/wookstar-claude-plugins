@@ -5,7 +5,7 @@ MikroTik router management and network automation.
 ## Installation
 
 ```bash
-/plugin install mcp-mikrotik@wookstar
+/plugin install mcp-mikrotik@wookstar-claude-plugins
 ```
 
 ## Configuration

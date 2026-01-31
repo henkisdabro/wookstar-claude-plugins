@@ -5,7 +5,7 @@ Weather and climate data from Open-Meteo API.
 ## Installation
 
 ```bash
-/plugin install mcp-open-meteo@wookstar
+/plugin install mcp-open-meteo@wookstar-claude-plugins
 ```
 
 ## Description

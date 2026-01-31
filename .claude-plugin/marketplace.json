@@ -5,36 +5,11 @@
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
-    "description": "Comprehensive Claude Code marketplace with specialised bundles for productivity, development, analytics, documents, e-commerce, and individual MCP server integrations",
-    "version": "5.2.0",
+    "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
+    "version": "6.0.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
-    {
-      "name": "productivity",
-      "source": "./plugins/productivity",
-      "description": "Workflow orchestration suite: 4 commands for planning, parallel task execution, and session priming + 2 skills (Google Apps Script for Workspace automation, Tampermonkey for browser userscripts)",
-      "version": "2.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "productivity",
-        "planning",
-        "workflows",
-        "parallel",
-        "orchestration",
-        "google-apps-script",
-        "workspace",
-        "tampermonkey",
-        "userscript",
-        "browser-automation",
-        "greasemonkey"
-      ],
-      "category": "productivity"
-    },
     {
       "name": "developer",
       "source": "./plugins/developer",
@@ -130,55 +105,23 @@
       "category": "meta"
     },
     {
-      "name": "utilities",
-      "source": "./plugins/utilities",
-      "description": "General utility tools: timezone conversion and time queries across IANA timezones",
-      "version": "1.0.0",
+      "name": "timezone-tools",
+      "source": "./plugins/timezone-tools",
+      "description": "Timezone conversion and time queries across IANA timezones",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
-        "utilities",
         "timezone",
         "time",
         "conversion",
+        "iana",
         "tools"
       ],
       "category": "utilities"
-    },
-    {
-      "name": "marketing",
-      "source": "./plugins/marketing",
-      "description": "Complete marketing analytics suite: comprehensive GTM skill (9 reference guides for tags, triggers, variables, data layer, debugging, custom templates, API), comprehensive GA4 skill (15 reference guides for setup, events, ecommerce, BigQuery, Measurement Protocol, privacy compliance), and Google Ads Scripts skill for campaign automation. Includes MCP integrations for Analytics and GTM APIs.",
-      "version": "2.0.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "gtm",
-        "google-tag-manager",
-        "ga4",
-        "google-analytics",
-        "analytics",
-        "tracking",
-        "tags",
-        "triggers",
-        "variables",
-        "datalayer",
-        "events",
-        "ecommerce",
-        "bigquery",
-        "measurement-protocol",
-        "google-ads-scripts",
-        "marketing",
-        "debugging"
-      ],
-      "category": "analytics",
-      "mcpServers": "./.mcp.json"
     },
     {
       "name": "shopify-developer",
@@ -205,6 +148,149 @@
         "storefront"
       ],
       "category": "development"
+    },
+    {
+      "name": "google-apps-script",
+      "source": "./plugins/google-apps-script",
+      "description": "Comprehensive Google Apps Script development guide covering SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers, and Workspace automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "google-apps-script",
+        "workspace",
+        "automation",
+        "sheets",
+        "docs",
+        "gmail",
+        "drive"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "tampermonkey",
+      "source": "./plugins/tampermonkey",
+      "description": "Write Tampermonkey userscripts for browser automation, page modification, and web enhancement with comprehensive API reference",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "tampermonkey",
+        "userscript",
+        "browser-automation",
+        "greasemonkey",
+        "web-enhancement"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "google-tagmanager",
+      "source": "./plugins/google-tagmanager",
+      "description": "Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and GTM API",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "gtm",
+        "google-tag-manager",
+        "tags",
+        "triggers",
+        "variables",
+        "datalayer",
+        "tracking"
+      ],
+      "category": "analytics",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "google-analytics",
+      "source": "./plugins/google-analytics",
+      "description": "Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, ecommerce, BigQuery, Measurement Protocol, and privacy compliance",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "ga4",
+        "google-analytics",
+        "analytics",
+        "events",
+        "ecommerce",
+        "bigquery",
+        "measurement-protocol"
+      ],
+      "category": "analytics",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "google-ads-scripts",
+      "source": "./plugins/google-ads-scripts",
+      "description": "Expert guidance for Google Ads Script development including AdsApp API, campaign management, ad groups, keywords, reporting, and automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "google-ads",
+        "ads-scripts",
+        "campaign-automation",
+        "reporting",
+        "ppc"
+      ],
+      "category": "analytics"
+    },
+    {
+      "name": "git-worktrees",
+      "source": "./plugins/git-worktrees",
+      "description": "Parallel development workflow using git worktrees - prepare worktree directories and execute tasks across multiple isolated workspaces",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "git",
+        "worktrees",
+        "parallel",
+        "development",
+        "workflow"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "gemini-cli-headless",
+      "source": "./plugins/gemini-cli-headless",
+      "description": "Expert guidance for Gemini CLI headless mode - running prompts programmatically, parsing JSON/streaming output, building automation scripts, and CI/CD integration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "gemini",
+        "cli",
+        "headless",
+        "automation",
+        "scripting",
+        "ci-cd",
+        "json"
+      ],
+      "category": "ai"
     },
     {
       "name": "mcp-gemini-bridge",

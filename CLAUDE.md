@@ -10,7 +10,7 @@ claude plugin validate .
 
 # Local testing
 /plugin marketplace add .
-/plugin install <plugin>@wookstar
+/plugin install <plugin>@wookstar-claude-plugins
 /plugin marketplace update wookstar
 
 # After changes
@@ -21,11 +21,11 @@ claude plugin validate .
 
 ## Architecture Decisions
 
-### Consolidated Structure (v5.0)
+### Consolidated Structure (v6.0)
 
 All plugins live inside the `plugins/` directory for consistent organisation:
 
-- **Full-featured toolkits** - bundles with agents, commands, skills, and optionally MCP servers
+- **Standalone plugins** - focused plugins with skills, agents, commands, and optionally MCP servers
 - **MCP-only plugins** - individual MCP server integrations (prefixed with `mcp-`)
 
 **Why this approach:**
@@ -42,12 +42,12 @@ wookstar-claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json         # Root manifest (defines all plugins)
 ├── plugins/                     # ALL plugins live here
-│   ├── claudecode/              # Commands-only toolkit
+│   ├── claudecode/              # Commands-only plugin
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── README.md
 │   │   └── commands/*.md
-│   ├── developer/               # Toolkit with MCP servers
+│   ├── developer/               # Plugin with MCP servers
 │   │   ├── .claude-plugin/
 │   │   │   └── plugin.json
 │   │   ├── .mcp.json            # MCP server configurations
@@ -55,11 +55,16 @@ wookstar-claude-plugins/
 │   │   ├── commands/*.md
 │   │   └── skills/<name>/SKILL.md
 │   ├── documents/
-│   ├── marketing/
-│   ├── productivity/
 │   ├── shopify-developer/
 │   ├── ultimate-skill-creator/
-│   ├── utilities/
+│   ├── timezone-tools/          # Renamed from utilities
+│   ├── google-apps-script/      # Extracted from productivity
+│   ├── tampermonkey/            # Extracted from productivity
+│   ├── git-worktrees/           # New (from productivity commands)
+│   ├── google-tagmanager/       # Extracted from marketing
+│   ├── google-analytics/        # Extracted from marketing
+│   ├── google-ads-scripts/      # Extracted from marketing
+│   ├── gemini-cli-headless/     # New
 │   ├── mcp-alphavantage/        # MCP-only plugins
 │   ├── mcp-coingecko/
 │   ├── mcp-currency-conversion/
@@ -118,7 +123,7 @@ Claude Code auto-discovers components within each plugin:
 3. Create `README.md` for documentation
 4. Add component directories: `agents/`, `commands/`, `skills/`
 5. Add entry to `.claude-plugin/marketplace.json`
-6. Test: `/plugin install <plugin>@wookstar`
+6. Test: `/plugin install <plugin>@wookstar-claude-plugins`
 
 ### New MCP-Only Plugin
 
@@ -127,7 +132,7 @@ Claude Code auto-discovers components within each plugin:
 3. Create `.mcp.json` with server configuration
 4. Create `README.md` for documentation
 5. Add entry to marketplace.json with `"mcpServers": "./.mcp.json"`
-6. Test: `/plugin install mcp-<name>@wookstar`
+6. Test: `/plugin install mcp-<name>@wookstar-claude-plugins`
 
 ### Command/Agent (to existing plugin)
 
@@ -141,11 +146,11 @@ Claude Code auto-discovers components within each plugin:
 2. Optional subdirectories: `assets/`, `references/`, `scripts/`
 3. Auto-loaded on marketplace update
 
-### MCP Server (embedded in toolkit)
+### MCP Server (embedded in plugin)
 
 1. Create/edit: `plugins/<plugin>/.mcp.json`
 2. Add `"mcpServers": "./.mcp.json"` to marketplace.json entry
-3. Test: `/plugin install <plugin>@wookstar`
+3. Test: `/plugin install <plugin>@wookstar-claude-plugins`
 
 ## Critical Files
 
@@ -160,7 +165,7 @@ Root manifest containing:
 
 **Path resolution:**
 
-- `"source": "./plugins/productivity"` - plugin root
+- `"source": "./plugins/developer"` - plugin root
 - `"mcpServers": "./.mcp.json"` - relative to plugin source
 
 ### plugins/<plugin>/.claude-plugin/plugin.json
@@ -197,7 +202,7 @@ MCP server configurations (for plugins with MCP servers):
 
 ## Version Management
 
-**Marketplace version:** Updated for architectural changes (currently 5.2.0)
+**Marketplace version:** Updated for architectural changes (currently 6.0.0)
 **Plugin versions:** Independent semantic versioning per plugin
 
 Follow semantic versioning:

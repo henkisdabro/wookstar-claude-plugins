@@ -12,7 +12,7 @@ Professional document processing for Word, Excel, and PDF files.
 ## Installation
 
 ```bash
-/plugin install documents-toolkit@wookstar
+/plugin install documents@wookstar-claude-plugins
 ```
 
 ## Usage Examples

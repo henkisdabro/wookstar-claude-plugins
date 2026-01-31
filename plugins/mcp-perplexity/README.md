@@ -5,7 +5,7 @@ Perplexity AI-powered search and information retrieval.
 ## Installation
 
 ```bash
-/plugin install mcp-perplexity@wookstar
+/plugin install mcp-perplexity@wookstar-claude-plugins
 ```
 
 ## Required Environment Variables

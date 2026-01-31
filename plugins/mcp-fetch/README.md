@@ -5,7 +5,7 @@ Web content fetching and HTTP requests.
 ## Installation
 
 ```bash
-/plugin install mcp-fetch@wookstar
+/plugin install mcp-fetch@wookstar-claude-plugins
 ```
 
 ## Description

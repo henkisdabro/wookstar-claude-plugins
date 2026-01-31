@@ -37,7 +37,7 @@ Complete development toolkit with expert agents, commands, testing skills, and p
 ## Installation
 
 ```bash
-/plugin install developer@wookstar
+/plugin install developer@wookstar-claude-plugins
 ```
 
 ## Required Environment Variables

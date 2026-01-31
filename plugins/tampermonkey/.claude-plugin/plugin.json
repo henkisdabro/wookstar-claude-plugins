@@ -1,0 +1,9 @@
+{
+  "name": "tampermonkey",
+  "description": "Write Tampermonkey userscripts for browser automation, page modification, and web enhancement with comprehensive API reference",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

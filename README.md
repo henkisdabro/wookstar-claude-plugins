@@ -1,6 +1,6 @@
 # Wookstar Claude Code Plugins
 
-A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing specialised toolkits for productivity, development, documents, marketing analytics, e-commerce, and AI integrations - featuring consolidated GTM, GA4, and Shopify skills.
+A comprehensive marketplace for [Claude Code](https://claude.ai/code) providing specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP servers.
 
 ## Quick Start
 
@@ -10,45 +10,122 @@ Add this marketplace to Claude Code:
 /plugin marketplace add henkisdabro/wookstar-claude-plugins
 ```
 
-Then install the toolkits you need:
+Then install the plugins you need:
 
 ```bash
-# For productivity and planning
-/plugin install productivity@wookstar
+# Core development
+/plugin install developer@wookstar-claude-plugins
 
-# For full-stack development
-/plugin install developer@wookstar
+# Document processing
+/plugin install documents@wookstar-claude-plugins
 
-# For document processing
-/plugin install documents@wookstar
+# Shopify development
+/plugin install shopify-developer@wookstar-claude-plugins
 
-# For marketing analytics (GTM + GA4 + Google Ads Scripts)
-/plugin install marketing@wookstar
+# Claude Code thinking tools
+/plugin install claudecode@wookstar-claude-plugins
 
-# For Shopify development
-/plugin install shopify-developer@wookstar
+# Skill development
+/plugin install ultimate-skill-creator@wookstar-claude-plugins
 
-# For Cloudflare AI agents and MCP servers (official)
-/plugin install cloudflare-skills@wookstar
+# Analytics (standalone)
+/plugin install google-tagmanager@wookstar-claude-plugins
+/plugin install google-analytics@wookstar-claude-plugins
+/plugin install google-ads-scripts@wookstar-claude-plugins
 
-# For utility tools
-/plugin install utilities@wookstar
+# Automation skills (standalone)
+/plugin install google-apps-script@wookstar-claude-plugins
+/plugin install tampermonkey@wookstar-claude-plugins
+/plugin install git-worktrees@wookstar-claude-plugins
+/plugin install gemini-cli-headless@wookstar-claude-plugins
+
+# Utilities
+/plugin install timezone-tools@wookstar-claude-plugins
 ```
 
 Or install individual MCP servers without the full toolkits:
 
 ```bash
-/plugin install mcp-fetch@wookstar             # Web content fetching
-/plugin install mcp-google-workspace@wookstar  # Gmail, Drive, Calendar
-/plugin install mcp-mikrotik@wookstar          # MikroTik router management
-/plugin install mcp-n8n@wookstar               # n8n workflow automation
-/plugin install mcp-notion@wookstar            # Notion integration
-/plugin install mcp-open-meteo@wookstar        # Weather data (no API key)
-/plugin install mcp-gemini-bridge@wookstar     # Google Gemini AI
-/plugin install mcp-perplexity@wookstar        # Perplexity AI search
-/plugin install mcp-alphavantage@wookstar      # Stock market data
-/plugin install mcp-coingecko@wookstar         # Cryptocurrency data
-/plugin install mcp-currency-conversion@wookstar # Currency exchange rates
+/plugin install mcp-fetch@wookstar-claude-plugins             # Web content fetching
+/plugin install mcp-google-workspace@wookstar-claude-plugins  # Gmail, Drive, Calendar
+/plugin install mcp-mikrotik@wookstar-claude-plugins          # MikroTik router management
+/plugin install mcp-n8n@wookstar-claude-plugins               # n8n workflow automation
+/plugin install mcp-notion@wookstar-claude-plugins            # Notion integration
+/plugin install mcp-open-meteo@wookstar-claude-plugins        # Weather data (no API key)
+/plugin install mcp-gemini-bridge@wookstar-claude-plugins     # Google Gemini AI
+/plugin install mcp-perplexity@wookstar-claude-plugins        # Perplexity AI search
+/plugin install mcp-alphavantage@wookstar-claude-plugins      # Stock market data
+/plugin install mcp-coingecko@wookstar-claude-plugins         # Cryptocurrency data
+/plugin install mcp-currency-conversion@wookstar-claude-plugins # Currency exchange rates
+```
+
+---
+
+## Upgrading from v5.x
+
+If you previously installed productivity, marketing, or utilities plugins:
+
+### Step 1: Uninstall Old Plugins (run in terminal, not in Claude Code)
+
+```bash
+# One-liner: Complete removal and update
+claude plugin uninstall productivity@wookstar-claude-plugins && claude plugin uninstall marketing@wookstar-claude-plugins && claude plugin uninstall utilities@wookstar-claude-plugins && claude plugin marketplace update wookstar-claude-plugins && rm -rf ~/.claude/plugins/productivity ~/.claude/plugins/marketing ~/.claude/plugins/utilities
+```
+
+Or run each step separately:
+
+```bash
+# Uninstall old plugins
+claude plugin uninstall productivity@wookstar-claude-plugins
+claude plugin uninstall marketing@wookstar-claude-plugins
+claude plugin uninstall utilities@wookstar-claude-plugins
+
+# Update marketplace to get v6.0.0
+claude plugin marketplace update wookstar-claude-plugins
+
+# Remove leftover plugin folders
+rm -rf ~/.claude/plugins/productivity ~/.claude/plugins/marketing ~/.claude/plugins/utilities
+```
+
+### Step 2: Clean Up Config Files
+
+Check these files for references to the old plugins and remove/update them:
+
+**User-level settings** (`~/.claude/settings.json`):
+
+```bash
+# Check for old plugin references
+grep -E "productivity|marketing|utilities" ~/.claude/settings.json
+```
+
+Look in `enabledPlugins`, `permissions.allow`, and `permissions.deny` arrays.
+
+**Project-level settings** (`.claude/settings.json` in your projects):
+
+```bash
+# Find project settings with old references
+find ~ -path "*/.claude/settings.json" -exec grep -l -E "productivity|marketing|utilities" {} \; 2>/dev/null
+```
+
+**What to look for and update:**
+
+| Old Reference | Replace With |
+|---------------|--------------|
+| `productivity@wookstar-claude-plugins` | Remove or replace with specific plugins |
+| `marketing@wookstar-claude-plugins` | Remove or replace with `google-tagmanager`, `google-analytics`, `google-ads-scripts` |
+| `utilities@wookstar-claude-plugins` | `timezone-tools@wookstar-claude-plugins` |
+
+### Step 3: Install New Plugins (in Claude Code or terminal)
+
+```bash
+/plugin install timezone-tools@wookstar-claude-plugins        # replaces utilities
+/plugin install google-apps-script@wookstar-claude-plugins    # was in productivity
+/plugin install tampermonkey@wookstar-claude-plugins          # was in productivity
+/plugin install git-worktrees@wookstar-claude-plugins         # was productivity commands
+/plugin install google-tagmanager@wookstar-claude-plugins     # was in marketing
+/plugin install google-analytics@wookstar-claude-plugins      # was in marketing
+/plugin install google-ads-scripts@wookstar-claude-plugins    # was in marketing
+/plugin install gemini-cli-headless@wookstar-claude-plugins   # new
 ```
 
 ---
@@ -66,6 +143,7 @@ These plugins work immediately without configuration:
 - `mcp-currency-conversion` - Currency exchange rates
 - `mcp-gemini-bridge` - Uses Google AI Studio (browser auth)
 - `mcp-notion` - Uses Notion's hosted MCP (browser auth)
+- `google-tagmanager` - GTM MCP via Stape.ai (browser auth)
 
 ### Required Environment Variables by Plugin
 
@@ -77,13 +155,13 @@ export CONTEXT7_API_KEY="your-context7-key"      # https://upstash.com/context7
 export FIRECRAWL_API_KEY="your-firecrawl-key"    # https://firecrawl.dev/
 ```
 
-#### marketing
+#### google-analytics
 
 ```bash
 # Required for Analytics MCP server
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
 export GOOGLE_PROJECT_ID="your-gcp-project-id"
-# Get credentials: GCP Console → APIs & Services → Credentials → Service Account
+# Get credentials: GCP Console > APIs & Services > Credentials > Service Account
 ```
 
 #### mcp-google-workspace
@@ -91,7 +169,7 @@ export GOOGLE_PROJECT_ID="your-gcp-project-id"
 ```bash
 export GOOGLE_OAUTH_CLIENT_ID="your-client-id"
 export GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
-# Get credentials: GCP Console → APIs & Services → Credentials → OAuth 2.0 Client
+# Get credentials: GCP Console > APIs & Services > Credentials > OAuth 2.0 Client
 ```
 
 #### mcp-mikrotik
@@ -106,7 +184,7 @@ export MIKROTIK_PASSWORD="your-password"
 
 ```bash
 export N8N_API_KEY="your-n8n-api-key"
-# Get from: n8n Settings → API → Create API Key
+# Get from: n8n Settings > API > Create API Key
 ```
 
 #### mcp-alphavantage
@@ -143,34 +221,15 @@ source ~/.bashrc  # or ~/.zshrc
 If you see "Missing environment variables" errors in `claude doctor`, either:
 
 1. **Set the variables** using the examples above
-2. **Uninstall unused plugins** if you don't need the service:
+2. **Uninstall unused plugins** if you don't need the service (run in terminal):
 
 ```bash
-/plugin uninstall mcp-perplexity@wookstar
+claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 ```
 
 ---
 
-## Available Toolkits
-
-### Productivity
-
-**Workflow orchestration and automation**
-
-**Includes:**
-
-- 4 commands: /planning, /prep-parallel, /execute-parallel, /primer
-- 2 skills: google-apps-script (Workspace automation), tampermonkey (browser userscripts)
-
-**Installation:**
-
-```bash
-/plugin install productivity@wookstar
-```
-
-**Use Cases:** Project planning, parallel task execution, Google Workspace automation, browser userscripts, page modification
-
----
+## Available Plugins
 
 ### Developer
 
@@ -186,17 +245,10 @@ If you see "Missing environment variables" errors in `claude doctor`, either:
 **Installation:**
 
 ```bash
-/plugin install developer@wookstar
+/plugin install developer@wookstar-claude-plugins
 ```
 
 **Use Cases:** Web development, testing, browser automation, technical documentation, architecture design
-
-**Required Environment Variables:**
-
-```bash
-CONTEXT7_API_KEY=your_key          # Optional
-FIRECRAWL_API_KEY=your_key         # Optional
-```
 
 ---
 
@@ -211,10 +263,30 @@ FIRECRAWL_API_KEY=your_key         # Optional
 **Installation:**
 
 ```bash
-/plugin install documents@wookstar
+/plugin install documents@wookstar-claude-plugins
 ```
 
 **Use Cases:** Word docs with tracked changes, Excel spreadsheets with formulas, PDF forms and OCR
+
+---
+
+### Shopify Developer
+
+**Professional Shopify development toolkit**
+
+**Includes:**
+
+- 6 skills: shopify-liquid, shopify-theme-dev, shopify-api, shopify-app-dev, shopify-performance, shopify-debugging
+
+**Installation:**
+
+```bash
+/plugin install shopify-developer@wookstar-claude-plugins
+```
+
+**Use Cases:** Custom theme development, Liquid templating, headless storefronts, app development
+
+[View Shopify Developer Documentation](./plugins/shopify-developer/README.md)
 
 ---
 
@@ -229,7 +301,7 @@ FIRECRAWL_API_KEY=your_key         # Optional
 **Installation:**
 
 ```bash
-/plugin install claudecode@wookstar
+/plugin install claudecode@wookstar-claude-plugins
 ```
 
 **Use Cases:** Complex problem-solving, multi-perspective analysis, improving Claude Code configuration
@@ -256,72 +328,46 @@ FIRECRAWL_API_KEY=your_key         # Optional
 /plugin install plugin-dev@claude-plugins-official
 
 # Then install the plugin
-/plugin install ultimate-skill-creator@wookstar
+/plugin install ultimate-skill-creator@wookstar-claude-plugins
 ```
 
-**Optional Hook Setup:** To enable automatic skill suggestions, run `/setup-skill-hook` in your project after installing this plugin. See [Ultimate Skill Creator README](./plugins/ultimate-skill-creator/README.md#hook-setup-optional) for details.
-
-**Use Cases:** Creating professional skills, token-efficient architecture, progressive disclosure design, skill validation
+**Use Cases:** Creating professional skills, token-efficient architecture, progressive disclosure design
 
 ---
 
-### Cloudflare Skills
+### Google Tag Manager
 
-**Official Cloudflare development skills** - sourced from [cloudflare/skills](https://github.com/cloudflare/skills)
+**GTM implementation and configuration**
 
 **Includes:**
 
-- 2 commands: /build-agent, /build-mcp
-- 2 skills: building-ai-agent-on-cloudflare, building-mcp-server-on-cloudflare
-- Reference guides for agent patterns, state management, OAuth setup, and troubleshooting
+- 1 skill: google-tagmanager (9 reference guides)
+- 1 MCP server: GTM API via Stape.ai
 
 **Installation:**
 
 ```bash
-/plugin install cloudflare-skills@wookstar
+/plugin install google-tagmanager@wookstar-claude-plugins
 ```
 
-**Use Cases:** Building AI agents with Cloudflare Agents SDK, deploying remote MCP servers on Cloudflare Workers, OAuth authentication setup
+**Use Cases:** Container setup, tags, triggers, variables, data layer, debugging, custom templates
 
 ---
 
-### Utilities
+### Google Analytics
 
-**General-purpose utility tools**
+**GA4 tracking and analysis**
 
 **Includes:**
 
-- 1 skill: timezone-tools (IANA timezone conversion)
+- 1 skill: google-analytics (15 reference guides)
+- 1 MCP server: Analytics API
 
 **Installation:**
 
 ```bash
-/plugin install utilities@wookstar
+/plugin install google-analytics@wookstar-claude-plugins
 ```
-
-**Use Cases:** Timezone conversions, scheduling across regions
-
----
-
-### Marketing
-
-**Complete marketing analytics suite**
-
-**Includes:**
-
-- 3 comprehensive skills:
-  - **ga4** - Google Analytics 4 with 15 reference guides
-  - **gtm** - Google Tag Manager with 9 reference guides
-  - **google-ads-scripts** - Campaign automation
-- 2 MCP servers: Analytics API, GTM API
-
-**Installation:**
-
-```bash
-/plugin install marketing@wookstar
-```
-
-**Use Cases:** GTM implementation, GA4 tracking, e-commerce analytics, BigQuery analysis, privacy compliance, Google Ads automation
 
 **Required Environment Variables:**
 
@@ -330,44 +376,119 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 GOOGLE_PROJECT_ID=your-project-id
 ```
 
-[View Marketing Toolkit Documentation](./plugins/marketing/README.md)
+**Use Cases:** Event tracking, e-commerce, BigQuery analysis, Measurement Protocol, privacy compliance
 
 ---
 
-### Shopify Developer
+### Google Ads Scripts
 
-**Professional Shopify development toolkit**
+**Google Ads automation**
 
 **Includes:**
 
-- 6 skills: shopify-liquid, shopify-theme-dev, shopify-api, shopify-app-dev, shopify-performance, shopify-debugging
+- 1 skill: google-ads-scripts
 
 **Installation:**
 
 ```bash
-/plugin install shopify-developer@wookstar
+/plugin install google-ads-scripts@wookstar-claude-plugins
 ```
 
-**Use Cases:** Custom theme development, Liquid templating, headless storefronts, app development
+**Use Cases:** Campaign automation, bid management, reporting, keyword optimization
 
-[View Shopify Developer Documentation](./plugins/shopify-developer/README.md)
+---
+
+### Google Apps Script
+
+**Google Workspace automation**
+
+**Includes:**
+
+- 1 skill: google-apps-script
+
+**Installation:**
+
+```bash
+/plugin install google-apps-script@wookstar-claude-plugins
+```
+
+**Use Cases:** Sheets automation, Gmail scripts, Drive integration, Calendar automation
+
+---
+
+### Tampermonkey
+
+**Browser userscript development**
+
+**Includes:**
+
+- 1 skill: tampermonkey (18 reference files)
+
+**Installation:**
+
+```bash
+/plugin install tampermonkey@wookstar-claude-plugins
+```
+
+**Use Cases:** Browser automation, page modification, web enhancement, userscripts
+
+---
+
+### Git Worktrees
+
+**Parallel development workflow**
+
+**Includes:**
+
+- 1 skill: git-worktrees
+
+**Installation:**
+
+```bash
+/plugin install git-worktrees@wookstar-claude-plugins
+```
+
+**Use Cases:** Parallel feature development, A/B testing code changes, comparing implementation approaches
+
+---
+
+### Gemini CLI Headless
+
+**Gemini CLI automation expert**
+
+**Includes:**
+
+- 1 agent: gemini-cli-headless
+
+**Installation:**
+
+```bash
+/plugin install gemini-cli-headless@wookstar-claude-plugins
+```
+
+**Use Cases:** Programmatic prompts, JSON/streaming output parsing, CI/CD integration, batch processing
+
+---
+
+### Timezone Tools
+
+**Time utilities**
+
+**Includes:**
+
+- 1 skill: timezone-tools
+
+**Installation:**
+
+```bash
+/plugin install timezone-tools@wookstar-claude-plugins
+```
+
+**Use Cases:** Timezone conversions, scheduling across regions
 
 ---
 
 ## Usage Examples
-
-### Planning a Complex Feature
-
-```bash
-# Use ultra-think for deep analysis
-/ultra-think "Design a real-time collaboration system with WebSockets"
-
-# Generate a comprehensive plan
-/generate-prp "Build user authentication module"
-
-# Execute the plan step-by-step
-/execute-prp
-```
 
 ### Full-Stack Development
 
@@ -382,7 +503,7 @@ GOOGLE_PROJECT_ID=your-project-id
 "Generate a commit message for these changes"
 ```
 
-### Marketing Analytics
+### Analytics Implementation
 
 ```bash
 # GTM implementation
@@ -428,16 +549,20 @@ GOOGLE_PROJECT_ID=your-project-id
 ## Documentation
 
 - **[CLAUDE.md](./CLAUDE.md)** - Developer guide for working with this marketplace
-- **Toolkit READMEs** - Detailed documentation for each toolkit:
-  - [Marketing](./plugins/marketing/README.md)
-  - [Shopify Developer](./plugins/shopify-developer/README.md)
-  - [Productivity](./plugins/productivity/README.md)
+- **Toolkit READMEs** - Detailed documentation for each plugin:
   - [Developer](./plugins/developer/README.md)
   - [Documents](./plugins/documents/README.md)
+  - [Shopify Developer](./plugins/shopify-developer/README.md)
   - [Claude Code](./plugins/claudecode/README.md)
   - [Ultimate Skill Creator](./plugins/ultimate-skill-creator/README.md)
-  - [Utilities](./plugins/utilities/README.md)
-  - [Cloudflare Skills](./plugins/cloudflare-skills/README.md) (official Cloudflare)
+  - [Google Tag Manager](./plugins/google-tagmanager/README.md)
+  - [Google Analytics](./plugins/google-analytics/README.md)
+  - [Google Ads Scripts](./plugins/google-ads-scripts/README.md)
+  - [Google Apps Script](./plugins/google-apps-script/README.md)
+  - [Tampermonkey](./plugins/tampermonkey/README.md)
+  - [Git Worktrees](./plugins/git-worktrees/README.md)
+  - [Gemini CLI Headless](./plugins/gemini-cli-headless/README.md)
+  - [Timezone Tools](./plugins/timezone-tools/README.md)
 
 ---
 
@@ -453,8 +578,8 @@ cd wookstar-claude-plugins
 # Add as local marketplace
 /plugin marketplace add .
 
-# Install a toolkit for testing
-/plugin install productivity@wookstar
+# Install a plugin for testing
+/plugin install developer@wookstar-claude-plugins
 
 # Update marketplace after changes
 /plugin marketplace update wookstar
@@ -471,20 +596,20 @@ claude plugin validate .
 
 ## Marketplace Stats
 
-- **Version:** 5.2.0
-- **Total Plugins:** 20 (9 toolkits + 11 individual MCPs)
-- **Components:** 4 agents, 13 commands, 23 skills, 9 embedded MCP servers
-- **Categories:** Productivity, Development, Documents, Meta, Analytics, E-commerce, Utilities
+- **Version:** 6.0.0
+- **Total Plugins:** 24 (13 toolkits + 11 individual MCPs)
+- **Components:** 4 agents, 9 commands, 25 skills, 10 embedded MCP servers
+- **Categories:** Development, Documents, Analytics, E-commerce, AI, Utilities
 
 ---
 
 ## Architecture
 
-All toolkits use **file references** (`.mcp.json`) for MCP configurations:
+All plugins use **file references** (`.mcp.json`) for MCP configurations:
 
 ```
-<toolkit>/
-├── .mcp.json          # MCP server configuration
+<plugin>/
+├── .mcp.json          # MCP server configuration (if applicable)
 ├── agents/            # Agent definitions
 ├── commands/          # Slash commands
 └── skills/            # Skills
@@ -494,7 +619,7 @@ All toolkits use **file references** (`.mcp.json`) for MCP configurations:
 
 ## Team Configuration
 
-For teams, add to `.claude/settings.json` to auto-enable toolkits:
+For teams, add to `.claude/settings.json` to auto-enable plugins:
 
 ```json
 {
@@ -507,15 +632,15 @@ For teams, add to `.claude/settings.json` to auto-enable toolkits:
     }
   },
   "enabledPlugins": [
-    "productivity@wookstar",
-    "developer@wookstar",
-    "documents@wookstar",
-    "marketing@wookstar"
+    "developer@wookstar-claude-plugins",
+    "documents@wookstar-claude-plugins",
+    "google-tagmanager@wookstar-claude-plugins",
+    "google-analytics@wookstar-claude-plugins"
   ]
 }
 ```
 
-When team members trust the repository, enabled toolkits install automatically.
+When team members trust the repository, enabled plugins install automatically.
 
 ---
 
@@ -538,7 +663,6 @@ MIT License - see [LICENSE](./LICENSE) for details
 Built for the Claude Code community. Special thanks to:
 
 - Anthropic for creating Claude Code and the plugin system
-- [Cloudflare](https://github.com/cloudflare/skills) for the official AI agents and MCP server skills
 - [Simo Ahava](https://www.simoahava.com/) for GTM and GA4 expertise
 - The open-source community for MCP server integrations
 

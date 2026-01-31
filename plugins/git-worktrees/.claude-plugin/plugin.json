@@ -1,0 +1,9 @@
+{
+  "name": "git-worktrees",
+  "description": "Parallel development workflow using git worktrees - prepare worktree directories and execute tasks across multiple isolated workspaces",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

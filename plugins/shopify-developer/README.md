@@ -135,7 +135,7 @@ Debugging tools and techniques for Shopify theme and app development including t
 ## Installation
 
 ```bash
-/plugin install shopify-developer@wookstar
+/plugin install shopify-developer@wookstar-claude-plugins
 ```
 
 This installs all 6 Shopify development skills as a complete toolkit.

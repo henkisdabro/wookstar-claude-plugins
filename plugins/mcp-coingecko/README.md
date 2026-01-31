@@ -5,7 +5,7 @@ Cryptocurrency prices, market data, and historical trends via CoinGecko.
 ## Installation
 
 ```bash
-/plugin install mcp-coingecko@wookstar
+/plugin install mcp-coingecko@wookstar-claude-plugins
 ```
 
 ## Required Environment Variables

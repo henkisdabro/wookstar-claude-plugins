@@ -5,7 +5,7 @@ Google Gemini AI model integration via MCP.
 ## Installation
 
 ```bash
-/plugin install mcp-gemini-bridge@wookstar
+/plugin install mcp-gemini-bridge@wookstar-claude-plugins
 ```
 
 ## Configuration

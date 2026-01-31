@@ -108,17 +108,23 @@ PLUGINS_TO_ENABLE=(
     "plugin-dev@claude-plugins-official"  # Required for ultimate-skill-creator
 
     # =========================================================================
-    # Wookstar Plugins (wookstar-claude-plugins)
+    # Wookstar Plugins (wookstar-claude-plugins) - v6.0.0
     # =========================================================================
-    # Toolkits (disabled by default - enable as needed)
-    # "productivity@wookstar-claude-plugins"
+    # Core toolkits (disabled by default - enable as needed)
     # "developer@wookstar-claude-plugins"
     # "documents@wookstar-claude-plugins"
     # "claudecode@wookstar-claude-plugins"
-    # "marketing@wookstar-claude-plugins"
     # "shopify-developer@wookstar-claude-plugins"
-    # "utilities@wookstar-claude-plugins"
-    # "cloudflare-skills@wookstar-claude-plugins"
+
+    # Standalone plugins (extracted from former productivity/marketing bundles)
+    # "google-apps-script@wookstar-claude-plugins"
+    # "tampermonkey@wookstar-claude-plugins"
+    # "git-worktrees@wookstar-claude-plugins"
+    # "google-tagmanager@wookstar-claude-plugins"
+    # "google-analytics@wookstar-claude-plugins"
+    # "google-ads-scripts@wookstar-claude-plugins"
+    # "gemini-cli-headless@wookstar-claude-plugins"
+    # "timezone-tools@wookstar-claude-plugins"
 
     # Ultimate Skill Creator - requires plugin-dev to be installed first
     # Provides: /create-skill-ultimate, /setup-skill-hook, skill-architect agent
@@ -131,6 +137,11 @@ PLUGINS_TO_ENABLE=(
     # "mcp-n8n@wookstar-claude-plugins"
     # "mcp-notion@wookstar-claude-plugins"
     # "mcp-open-meteo@wookstar-claude-plugins"
+    # "mcp-gemini-bridge@wookstar-claude-plugins"
+    # "mcp-perplexity@wookstar-claude-plugins"
+    # "mcp-alphavantage@wookstar-claude-plugins"
+    # "mcp-coingecko@wookstar-claude-plugins"
+    # "mcp-currency-conversion@wookstar-claude-plugins"
 
     # =========================================================================
     # Scientific Skills (claude-scientific-skills)
@@ -152,8 +163,64 @@ PLUGINS_TO_ENABLE=(
 )
 
 # ============================================================================
+# DEPRECATED PLUGINS (v5.x) - Will be uninstalled during upgrade
+# ============================================================================
+
+DEPRECATED_PLUGINS=(
+    "productivity@wookstar-claude-plugins"
+    "marketing@wookstar-claude-plugins"
+    "utilities@wookstar-claude-plugins"
+)
+
+DEPRECATED_FOLDERS=(
+    "$HOME/.claude/plugins/productivity"
+    "$HOME/.claude/plugins/marketing"
+    "$HOME/.claude/plugins/utilities"
+)
+
+# ============================================================================
 # INSTALLATION FUNCTIONS
 # ============================================================================
+
+# Cleanup deprecated plugins from v5.x
+cleanup_deprecated_plugins() {
+    print_header "Cleaning Up Deprecated Plugins (v5.x → v6.0.0)"
+
+    # Uninstall deprecated plugins
+    for plugin in "${DEPRECATED_PLUGINS[@]}"; do
+        if claude plugin list 2>/dev/null | grep -q "${plugin%%@*}"; then
+            print_info "Uninstalling deprecated plugin: $plugin"
+            claude plugin uninstall "$plugin" 2>/dev/null && \
+                print_success "Uninstalled: $plugin" || \
+                print_warning "Could not uninstall: $plugin (may not exist)"
+        fi
+    done
+
+    # Remove leftover plugin folders
+    for folder in "${DEPRECATED_FOLDERS[@]}"; do
+        if [ -d "$folder" ]; then
+            print_info "Removing leftover folder: $folder"
+            rm -rf "$folder" && \
+                print_success "Removed: $folder" || \
+                print_warning "Could not remove: $folder"
+        fi
+    done
+
+    # Check for old references in user settings
+    local settings_file="$HOME/.claude/settings.json"
+    if [ -f "$settings_file" ]; then
+        if grep -qE "productivity|marketing|utilities" "$settings_file" 2>/dev/null; then
+            print_warning "Found old plugin references in $settings_file"
+            echo "      Please manually remove references to:"
+            echo "        - productivity@wookstar-claude-plugins"
+            echo "        - marketing@wookstar-claude-plugins"
+            echo "        - utilities@wookstar-claude-plugins"
+            echo "      from enabledPlugins, permissions.allow, and permissions.deny arrays."
+        fi
+    fi
+
+    print_success "Cleanup complete"
+}
 
 install_marketplaces() {
     print_header "Installing Marketplaces"
@@ -225,6 +292,9 @@ main() {
     # Pre-flight checks
     check_claude_installed
     ensure_claude_dir
+
+    # Cleanup deprecated v5.x plugins
+    cleanup_deprecated_plugins
 
     # Install
     install_marketplaces

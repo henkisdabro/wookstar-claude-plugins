@@ -1,0 +1,9 @@
+{
+  "name": "timezone-tools",
+  "description": "Timezone conversion and time queries across IANA timezones",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.1.0"
+}

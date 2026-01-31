@@ -5,7 +5,7 @@ Real-time currency exchange rates and conversion.
 ## Installation
 
 ```bash
-/plugin install mcp-currency-conversion@wookstar
+/plugin install mcp-currency-conversion@wookstar-claude-plugins
 ```
 
 ## Configuration

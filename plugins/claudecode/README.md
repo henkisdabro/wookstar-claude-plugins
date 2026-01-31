@@ -12,7 +12,7 @@ Thinking and reasoning tools for Claude Code - enhance analytical capabilities a
 ## Installation
 
 ```bash
-/plugin install claudecode@wookstar
+/plugin install claudecode@wookstar-claude-plugins
 ```
 
 ## Usage Examples
@@ -59,5 +59,5 @@ This toolkit is ideal for:
 For skill creation and development, see the **ultimate-skill-creator** plugin:
 
 ```bash
-/plugin install ultimate-skill-creator@wookstar
+/plugin install ultimate-skill-creator@wookstar-claude-plugins
 ```

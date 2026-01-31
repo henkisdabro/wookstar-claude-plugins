@@ -5,7 +5,7 @@ Stock market data, company information, and financial indicators via AlphaVantag
 ## Installation
 
 ```bash
-/plugin install mcp-alphavantage@wookstar
+/plugin install mcp-alphavantage@wookstar-claude-plugins
 ```
 
 ## Required Environment Variables

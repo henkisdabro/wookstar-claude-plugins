@@ -11,7 +11,7 @@ Advanced skill development toolkit combining three authoritative sources for cre
 /plugin install plugin-dev@claude-plugins-official
 
 # Then install this plugin
-/plugin install ultimate-skill-creator@wookstar
+/plugin install ultimate-skill-creator@wookstar-claude-plugins
 ```
 
 ## What's Included

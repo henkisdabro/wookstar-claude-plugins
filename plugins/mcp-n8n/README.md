@@ -5,7 +5,7 @@ n8n workflow automation integration.
 ## Installation
 
 ```bash
-/plugin install mcp-n8n@wookstar
+/plugin install mcp-n8n@wookstar-claude-plugins
 ```
 
 ## Configuration

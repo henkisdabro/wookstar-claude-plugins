@@ -5,7 +5,7 @@ Google Workspace integration for Gmail, Drive, and Calendar.
 ## Installation
 
 ```bash
-/plugin install mcp-google-workspace@wookstar
+/plugin install mcp-google-workspace@wookstar-claude-plugins
 ```
 
 ## Configuration

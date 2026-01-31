@@ -5,7 +5,7 @@ Notion workspace and database integration.
 ## Installation
 
 ```bash
-/plugin install mcp-notion@wookstar
+/plugin install mcp-notion@wookstar-claude-plugins
 ```
 
 ## Configuration
