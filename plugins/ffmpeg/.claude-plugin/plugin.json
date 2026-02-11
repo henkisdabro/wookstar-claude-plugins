@@ -1,0 +1,9 @@
+{
+  "name": "ffmpeg",
+  "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

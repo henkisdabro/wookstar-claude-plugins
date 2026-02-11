@@ -65,9 +65,11 @@ wookstar-claude-plugins/
 │   ├── google-analytics/        # Extracted from marketing
 │   ├── google-ads-scripts/      # Extracted from marketing
 │   ├── gemini-cli-headless/     # New
+│   ├── ffmpeg/                  # FFmpeg CLI reference
 │   ├── mcp-alphavantage/        # MCP-only plugins
 │   ├── mcp-coingecko/
 │   ├── mcp-currency-conversion/
+│   ├── mcp-excalidraw/
 │   ├── mcp-fetch/
 │   ├── mcp-gemini-bridge/
 │   ├── mcp-google-workspace/

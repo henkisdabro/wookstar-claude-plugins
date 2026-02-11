@@ -319,6 +319,19 @@
       "mcpServers": "./.mcp.json"
     },
     {
+      "name": "mcp-excalidraw",
+      "source": "./plugins/mcp-excalidraw",
+      "description": "Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, and export to excalidraw.com",
+      "version": "1.0.0",
+      "author": {
+        "name": "Anton Pidkuiko",
+        "url": "https://github.com/antonpk1"
+      },
+      "keywords": ["mcp", "excalidraw", "diagrams", "drawing", "visualisation"],
+      "category": "productivity",
+      "mcpServers": "./.mcp.json"
+    },
+    {
       "name": "mcp-alphavantage",
       "source": "./plugins/mcp-alphavantage",
       "description": "Stock market data, company information, and financial indicators via AlphaVantage",
@@ -434,6 +447,30 @@
       "keywords": ["mcp", "weather", "climate", "forecast"],
       "category": "mcpServers",
       "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "ffmpeg",
+      "source": "./plugins/ffmpeg",
+      "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation - covers filters, codecs, GPU acceleration, and common workflows",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "ffmpeg",
+        "video",
+        "audio",
+        "encoding",
+        "media",
+        "conversion",
+        "filters",
+        "h264",
+        "h265",
+        "vp9"
+      ],
+      "category": "media"
     }
   ]
 }
