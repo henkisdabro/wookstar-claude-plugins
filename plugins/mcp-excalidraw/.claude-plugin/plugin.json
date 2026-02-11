@@ -1,0 +1,9 @@
+{
+  "name": "mcp-excalidraw",
+  "description": "Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, and export to excalidraw.com",
+  "author": {
+    "name": "Anton Pidkuiko",
+    "url": "https://github.com/antonpk1"
+  },
+  "version": "1.0.0"
+}
