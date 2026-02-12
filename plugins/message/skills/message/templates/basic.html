@@ -1,0 +1,773 @@
+<!-- DEPRECATED: This template is replaced by the fragment architecture in v2.2.0.
+     Use shell.html + assemble.py instead. See SKILL.md for the new workflow.
+     This file is kept for backward compatibility with existing archived emails. -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Email Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .page-title {
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .page-title span {
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    /* Mode toggle */
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      gap: 0;
+    }
+
+    .mode-btn {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 7px 18px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn:first-child {
+      border-radius: 6px 0 0 6px;
+      border-right: none;
+    }
+
+    .mode-btn:nth-child(2) {
+      border-radius: 0;
+      border-right: none;
+    }
+
+    .mode-btn:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+
+    .mode-btn.active-gmail {
+      background: #1a73e8;
+      color: #fff;
+      border-color: #1a73e8;
+    }
+
+    .mode-btn.active-outlook {
+      background: #0078d4;
+      color: #fff;
+      border-color: #0078d4;
+    }
+
+    .mode-btn.active-whatsapp {
+      background: #25D366;
+      color: #fff;
+      border-color: #25D366;
+    }
+
+    .email-container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 720px;
+      overflow: hidden;
+    }
+
+    .recipient-bar, .subject-bar {
+      background: #fafafa;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .recipient-content, .subject-content {
+      flex: 1;
+    }
+
+    .recipient-label, .subject-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .recipient-text, .subject-text {
+      font-size: 15px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .hidden { display: none !important; }
+
+    .copy-btn {
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    .copy-btn.copied {
+      background: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+    }
+
+    .email-body-wrapper {
+      position: relative;
+      padding: 20px;
+    }
+
+    .email-body-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    /* Default: Outlook rendering (Aptos 11pt) */
+    .email-body {
+      font-family: Aptos, Calibri, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #000000;
+    }
+
+    /* Gmail preview override: simulate Gmail rendering */
+    .gmail-preview .email-body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      line-height: 19.5px;
+      color: rgb(34, 34, 34);
+    }
+
+    .email-body ul, .email-body ol {
+      margin: 8px 0;
+      padding-left: 28px;
+    }
+
+    .email-body li {
+      margin-bottom: 4px;
+    }
+
+    .email-body blockquote.gmail_quote {
+      margin: 0px 0px 0px 0.8ex;
+      border-left: 1px solid rgb(204, 204, 204);
+      padding-left: 1ex;
+    }
+
+    .email-body a {
+      color: rgb(17, 85, 204);
+    }
+
+    .email-body table {
+      margin: 12px 0;
+    }
+
+    /* Gmail actions */
+    .gmail-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .gmail-btn-primary {
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gmail-btn-primary:hover {
+      background: #1557b0;
+    }
+
+    .gmail-btn-primary:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .gmail-btn-primary.copied {
+      background: #188038;
+    }
+
+    .gmail-btn-secondary {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gmail-btn-secondary:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .gmail-btn-secondary:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .gmail-btn-secondary.copied {
+      background: rgba(24,128,56,0.6);
+      border-color: rgba(24,128,56,0.8);
+      color: #fff;
+    }
+
+    .gmail-actions-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Outlook actions */
+    .outlook-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .outlook-btn-primary {
+      background: #0078d4;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .outlook-btn-primary:hover {
+      background: #006cbe;
+    }
+
+    .outlook-btn-primary:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .outlook-btn-primary.copied {
+      background: #188038;
+    }
+
+    .outlook-actions-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      width: 100%;
+      text-align: center;
+    }
+
+    /* WhatsApp actions */
+    .whatsapp-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .whatsapp-btn-primary {
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .whatsapp-btn-primary:hover {
+      background: #1da851;
+    }
+
+    .whatsapp-btn-primary:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .whatsapp-btn-primary.copied {
+      background: #188038;
+    }
+
+    .whatsapp-actions-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      width: 100%;
+      text-align: center;
+    }
+
+    /* WhatsApp preview: message styling */
+    .whatsapp-preview .email-body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #111b21;
+      background: #e9efed;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .whatsapp-preview .email-body p {
+      margin: 0 0 8px 0;
+    }
+
+    .whatsapp-preview .email-body ul,
+    .whatsapp-preview .email-body ol {
+      margin: 4px 0 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-title"><span>HTML Email Preview</span></div>
+
+<div class="mode-toggle">
+  <button class="mode-btn active-gmail" onclick="setMode('gmail')">Gmail</button>
+  <button class="mode-btn" onclick="setMode('outlook')">Outlook</button>
+  <button class="mode-btn" onclick="setMode('whatsapp')">WhatsApp</button>
+</div>
+
+<div class="gmail-actions">
+  <button class="gmail-btn-primary" onclick="composeInGmail(this)">Compose in Gmail</button>
+  <button class="gmail-btn-secondary" onclick="openGmailInbox(this)">Open Gmail Inbox</button>
+  <div class="gmail-actions-hint">Gmail will apply its own fonts and colours. Formatting structure is preserved.</div>
+</div>
+
+<div class="outlook-actions hidden">
+  <button class="outlook-btn-primary" onclick="copyForOutlook(this)">Copy for Outlook</button>
+  <div class="outlook-actions-hint">Copy body, then paste into Outlook. Fonts, colours, and styling are preserved.</div>
+</div>
+
+<div class="whatsapp-actions hidden">
+  <button class="whatsapp-btn-primary" onclick="copyForWhatsApp(this)">Copy for WhatsApp</button>
+  <button class="gmail-btn-secondary" onclick="sendViaWhatsApp(this)">Send via WhatsApp</button>
+  <div class="whatsapp-actions-hint">WhatsApp uses *bold*, _italic_, ~strikethrough~ formatting</div>
+</div>
+
+<div class="email-container gmail-preview">
+  <div class="recipient-bar">
+    <div class="recipient-content">
+      <div class="recipient-label">To</div>
+      <div class="recipient-text" id="to">[RECIPIENT EMAIL]</div>
+    </div>
+    <button class="copy-btn" onclick="copyField('to', this)">Copy</button>
+  </div>
+
+  <div class="recipient-bar hidden" id="cc-bar">
+    <div class="recipient-content">
+      <div class="recipient-label">CC</div>
+      <div class="recipient-text" id="cc"></div>
+    </div>
+    <button class="copy-btn" onclick="copyField('cc', this)">Copy</button>
+  </div>
+
+  <div class="recipient-bar hidden" id="bcc-bar">
+    <div class="recipient-content">
+      <div class="recipient-label">BCC</div>
+      <div class="recipient-text" id="bcc"></div>
+    </div>
+    <button class="copy-btn" onclick="copyField('bcc', this)">Copy</button>
+  </div>
+
+  <div class="subject-bar">
+    <div class="subject-content">
+      <div class="subject-label">Subject</div>
+      <div class="subject-text" id="subject">[SUBJECT LINE]</div>
+    </div>
+    <button class="copy-btn" onclick="copySubject(this)">Copy</button>
+  </div>
+
+  <div class="email-body-wrapper">
+    <div class="email-body-header">
+      <button class="copy-btn" onclick="copyBody(this)">Copy Body</button>
+    </div>
+    <div class="email-body" id="body"><p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">Hi [NAME],</p>
+
+<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">[OPENING PARAGRAPH]</p>
+
+<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">[BODY PARAGRAPH]</p>
+
+<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">[CLOSING PARAGRAPH]</p>
+
+<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">[SIGN-OFF],<br>Henrik</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var originalBodyHTML;
+
+document.addEventListener('DOMContentLoaded', function() {
+  originalBodyHTML = document.getElementById('body').innerHTML;
+  var cc = document.getElementById('cc');
+  if (cc && cc.innerText.trim()) {
+    document.getElementById('cc-bar').classList.remove('hidden');
+  }
+  var bcc = document.getElementById('bcc');
+  if (bcc && bcc.innerText.trim()) {
+    document.getElementById('bcc-bar').classList.remove('hidden');
+  }
+});
+
+function restoreBodyHTML() {
+  document.getElementById('body').innerHTML = originalBodyHTML;
+}
+
+function setMode(mode) {
+  var btns = document.querySelectorAll('.mode-btn');
+  var gmailActions = document.querySelector('.gmail-actions');
+  var outlookActions = document.querySelector('.outlook-actions');
+  var whatsappActions = document.querySelector('.whatsapp-actions');
+  var container = document.querySelector('.email-container');
+  var body = document.getElementById('body');
+
+  btns.forEach(function(b) { b.className = 'mode-btn'; });
+  gmailActions.classList.add('hidden');
+  outlookActions.classList.add('hidden');
+  whatsappActions.classList.add('hidden');
+  container.classList.remove('gmail-preview', 'whatsapp-preview');
+
+  if (mode === 'gmail') {
+    btns[0].classList.add('active-gmail');
+    gmailActions.classList.remove('hidden');
+    container.classList.add('gmail-preview');
+    restoreBodyHTML();
+  } else if (mode === 'outlook') {
+    btns[1].classList.add('active-outlook');
+    outlookActions.classList.remove('hidden');
+    restoreBodyHTML();
+  } else if (mode === 'whatsapp') {
+    btns[2].classList.add('active-whatsapp');
+    whatsappActions.classList.remove('hidden');
+    container.classList.add('whatsapp-preview');
+    body.innerHTML = htmlToWhatsAppPreview(); // safe: derived from own originalBodyHTML, not user input
+  }
+}
+
+function copyBodyAsHTML() {
+  var body = document.getElementById('body');
+  var sel = window.getSelection();
+  var range = document.createRange();
+  range.selectNodeContents(body);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  var ok = document.execCommand('copy');
+  sel.removeAllRanges();
+  return ok;
+}
+
+function copyField(fieldId, btn) {
+  var text = document.getElementById(fieldId).innerText.trim();
+  navigator.clipboard.writeText(text);
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Copy';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function copySubject(btn) {
+  var subject = document.getElementById('subject').innerText;
+  navigator.clipboard.writeText(subject);
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Copy';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function copyBody(btn) {
+  var body = document.getElementById('body');
+  var selection = window.getSelection();
+  var range = document.createRange();
+  range.selectNodeContents(body);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  document.execCommand('copy');
+  selection.removeAllRanges();
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Copy Body';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function copyForOutlook(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Copying...';
+
+  var ok = copyBodyAsHTML();
+  if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
+
+  btn.textContent = 'Copied! Paste in Outlook';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Copy for Outlook';
+    btn.classList.remove('copied');
+    btn.disabled = false;
+  }, 3000);
+}
+
+function composeInGmail(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Copying...';
+
+  var ok = copyBodyAsHTML();
+  if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
+
+  var to = document.getElementById('to').innerText.trim();
+  var subject = document.getElementById('subject').innerText.trim();
+  var cc = document.getElementById('cc') ? document.getElementById('cc').innerText.trim() : '';
+  var bcc = document.getElementById('bcc') ? document.getElementById('bcc').innerText.trim() : '';
+
+  var url = new URL('https://mail.google.com/mail/');
+  url.searchParams.set('view', 'cm');
+  url.searchParams.set('tf', '1');
+  url.searchParams.set('to', to);
+  url.searchParams.set('su', subject);
+  if (cc) url.searchParams.set('cc', cc);
+  if (bcc) url.searchParams.set('bcc', bcc);
+
+  window.open(url.toString(), '_blank');
+
+  btn.textContent = 'Copied! Opening Gmail...';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Compose in Gmail';
+    btn.classList.remove('copied');
+    btn.disabled = false;
+  }, 3000);
+}
+
+function openGmailInbox(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Copying...';
+
+  var ok = copyBodyAsHTML();
+  if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
+
+  window.open('https://mail.google.com/mail/#inbox?compose=new', '_blank');
+
+  btn.textContent = 'Copied! Opening Gmail...';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Open Gmail Inbox';
+    btn.classList.remove('copied');
+    btn.disabled = false;
+  }, 3000);
+}
+
+function htmlToWhatsAppPreview() {
+  var html = originalBodyHTML;
+
+  // Convert heading paragraphs to semantic bold (before stripping styles)
+  html = html.replace(/<p\b[^>]*font-size:\s*1[2-9]pt[^>]*font-weight:\s*bold[^>]*>([\s\S]*?)<\/p>/gi, '<p><strong>$1</strong></p>');
+  html = html.replace(/<p\b[^>]*font-weight:\s*bold[^>]*font-size:\s*1[2-9]pt[^>]*>([\s\S]*?)<\/p>/gi, '<p><strong>$1</strong></p>');
+
+  // Convert spacer paragraphs to line breaks (preserve visual spacing)
+  html = html.replace(/<p\b[^>]*>\s*(&nbsp;|\u00a0)\s*<\/p>/gi, '<br>');
+
+  // Convert tables to pipe-separated text paragraphs (tables don't render in WhatsApp)
+  html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, function(match, inner) {
+    var rows = [];
+    var trRegex = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+    var trMatch;
+    while ((trMatch = trRegex.exec(inner)) !== null) {
+      var cells = [];
+      var tdRegex = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
+      var tdMatch;
+      while ((tdMatch = tdRegex.exec(trMatch[1])) !== null) {
+        var cellText = tdMatch[1].replace(/<[^>]+>/g, '').trim();
+        cells.push(cellText);
+      }
+      if (cells.length) rows.push(cells.join(' | '));
+    }
+    return '<p>' + rows.join('<br>') + '</p>';
+  });
+
+  // Strip all inline style attributes (WhatsApp has no styling)
+  html = html.replace(/\s*style="[^"]*"/gi, '');
+
+  return html;
+}
+
+function htmlToWhatsApp() {
+  var html = originalBodyHTML;
+
+  // Strip spacer paragraphs early (nbsp-only paragraphs are just visual gaps)
+  html = html.replace(/<p\b[^>]*>\s*(&nbsp;|\u00a0)\s*<\/p>/gi, '');
+
+  // Process inline formatting (before stripping tags)
+  html = html.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*');
+  html = html.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, '_$2_');
+  html = html.replace(/<strike\b[^>]*>([\s\S]*?)<\/strike>/gi, '~$1~');
+  html = html.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, '```$1```');
+
+  // Headings: bold styled paragraphs (12pt+ with font-weight: bold)
+  html = html.replace(/<p\b[^>]*font-size:\s*1[2-9]pt[^>]*font-weight:\s*bold[^>]*>([\s\S]*?)<\/p>/gi, '\n*$1*\n');
+  html = html.replace(/<p\b[^>]*font-weight:\s*bold[^>]*font-size:\s*1[2-9]pt[^>]*>([\s\S]*?)<\/p>/gi, '\n*$1*\n');
+
+  // Horizontal rules
+  html = html.replace(/<hr\b[^>]*\/?>/gi, '\n---\n');
+
+  // Table conversion: rows to text lines
+  html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, function(match, inner) {
+    var rows = [];
+    var trRegex = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+    var trMatch;
+    while ((trMatch = trRegex.exec(inner)) !== null) {
+      var cells = [];
+      var tdRegex = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
+      var tdMatch;
+      while ((tdMatch = tdRegex.exec(trMatch[1])) !== null) {
+        var cellText = tdMatch[1].replace(/<[^>]+>/g, '').trim();
+        cells.push(cellText);
+      }
+      if (cells.length) rows.push(cells.join(' | '));
+    }
+    return '\n' + rows.join('\n') + '\n';
+  });
+
+  // Lists: ordered
+  html = html.replace(/<ol\b[^>]*>([\s\S]*?)<\/ol>/gi, function(match, inner) {
+    var items = [];
+    var num = 1;
+    var liRegex = /<li\b[^>]*>([\s\S]*?)<\/li>/gi;
+    var liMatch;
+    while ((liMatch = liRegex.exec(inner)) !== null) {
+      var text = liMatch[1].replace(/<[^>]+>/g, '').trim();
+      items.push(num + '. ' + text);
+      num++;
+    }
+    return '\n' + items.join('\n') + '\n';
+  });
+
+  // Lists: unordered
+  html = html.replace(/<ul\b[^>]*>([\s\S]*?)<\/ul>/gi, function(match, inner) {
+    var items = [];
+    var liRegex = /<li\b[^>]*>([\s\S]*?)<\/li>/gi;
+    var liMatch;
+    while ((liMatch = liRegex.exec(inner)) !== null) {
+      var text = liMatch[1].replace(/<[^>]+>/g, '').trim();
+      items.push('- ' + text);
+    }
+    return '\n' + items.join('\n') + '\n';
+  });
+
+  // Block elements
+  html = html.replace(/<br\s*\/?>/gi, '\n');
+  html = html.replace(/<\/p>/gi, '\n');
+  html = html.replace(/<p\b[^>]*>/gi, '');
+
+  // Remaining &nbsp; -> empty
+  html = html.replace(/&nbsp;/gi, '');
+
+  // Strip remaining tags
+  html = html.replace(/<[^>]+>/g, '');
+
+  // Decode HTML entities
+  var textarea = document.createElement('textarea');
+  textarea.innerHTML = html;
+  var text = textarea.value;
+
+  // Clean up whitespace: strip whitespace-only lines
+  text = text.replace(/\n[ \t]+\n/g, '\n\n');
+  // Collapse 2+ consecutive newlines to 2
+  text = text.replace(/\n{2,}/g, '\n\n');
+
+  return text.trim();
+}
+
+function copyForWhatsApp(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Copying...';
+
+  var text = htmlToWhatsApp();
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = 'Copied! Paste in WhatsApp';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'Copy for WhatsApp';
+      btn.classList.remove('copied');
+      btn.disabled = false;
+    }, 3000);
+  });
+}
+
+function sendViaWhatsApp(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Opening...';
+
+  var text = htmlToWhatsApp();
+  navigator.clipboard.writeText(text);
+  window.open('whatsapp://send?text=' + encodeURIComponent(text));
+
+  btn.textContent = 'Opening WhatsApp...';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Send via WhatsApp';
+    btn.classList.remove('copied');
+    btn.disabled = false;
+  }, 3000);
+}
+</script>
+
+</body>
+</html>
