@@ -1,0 +1,9 @@
+{
+  "name": "email",
+  "description": "HTML email drafts with rich text formatting that paste cleanly into Gmail and Outlook",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

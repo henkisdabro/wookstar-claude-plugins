@@ -471,6 +471,27 @@
         "vp9"
       ],
       "category": "media"
+    },
+    {
+      "name": "email",
+      "source": "./plugins/email",
+      "description": "HTML email drafts with rich text formatting that paste cleanly into Gmail and Outlook - includes preview server, Gmail compose integration, and formatting templates",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "email",
+        "gmail",
+        "outlook",
+        "html",
+        "drafts",
+        "formatting",
+        "preview"
+      ],
+      "category": "productivity"
     }
   ]
 }

@@ -55,6 +55,7 @@ wookstar-claude-plugins/
 │   │   ├── commands/*.md
 │   │   └── skills/<name>/SKILL.md
 │   ├── documents/
+│   ├── email/                   # HTML email drafts for Gmail/Outlook
 │   ├── shopify-developer/
 │   ├── ultimate-skill-creator/
 │   ├── timezone-tools/          # Renamed from utilities
