@@ -8,12 +8,7 @@ description: >-
   progressive disclosure strategy, or token efficiency approach for a new skill.
 model: inherit
 color: cyan
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Task
-  - AskUserQuestion
+tools: Read, Glob, Grep, Task, AskUserQuestion
 ---
 
 # Skill Architect Agent

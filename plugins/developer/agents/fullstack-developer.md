@@ -3,6 +3,7 @@ name: fullstack-developer
 description: Full-stack development specialist covering frontend, backend, and database technologies. Use PROACTIVELY for end-to-end application development, API integration, database design, and complete feature implementation.
 tools: Read, Write, Edit, Bash
 model: opus
+color: blue
 skills: webapp-testing, git-commit-helper
 ---
 

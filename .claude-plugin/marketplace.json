@@ -301,6 +301,7 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "gemini", "ai", "google"],
       "category": "ai",
       "mcpServers": "./.mcp.json"
@@ -314,6 +315,7 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "perplexity", "search", "ai"],
       "category": "ai",
       "mcpServers": "./.mcp.json"
@@ -340,6 +342,7 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "stocks", "finance", "alphavantage", "market-data"],
       "category": "data",
       "mcpServers": "./.mcp.json"
@@ -353,6 +356,7 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "crypto", "cryptocurrency", "coingecko", "market-data"],
       "category": "data",
       "mcpServers": "./.mcp.json"
@@ -366,6 +370,7 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "currency", "forex", "exchange", "conversion"],
       "category": "data",
       "mcpServers": "./.mcp.json"
@@ -379,8 +384,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "fetch", "web", "http"],
-      "category": "mcpServers",
+      "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -392,8 +398,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "google", "workspace", "gmail", "drive", "calendar"],
-      "category": "mcpServers",
+      "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -405,8 +412,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "mikrotik", "router", "network", "automation"],
-      "category": "mcpServers",
+      "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -418,8 +426,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "n8n", "automation", "workflows"],
-      "category": "mcpServers",
+      "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -431,8 +440,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "notion", "workspace", "notes", "database"],
-      "category": "mcpServers",
+      "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -444,8 +454,9 @@
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": ["mcp", "weather", "climate", "forecast"],
-      "category": "mcpServers",
+      "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
     {
@@ -492,6 +503,44 @@
         "preview"
       ],
       "category": "productivity"
+    },
+    {
+      "name": "humanizer",
+      "source": "./plugins/humanizer",
+      "description": "Remove signs of AI-generated writing from text - detects and eliminates AI tell-tales including corporate jargon, pattern repetition, and unnatural structures",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "humanizer",
+        "ai-detection",
+        "writing",
+        "text",
+        "editing"
+      ],
+      "category": "writing"
+    },
+    {
+      "name": "react-best-practices",
+      "source": "./plugins/react-best-practices",
+      "description": "Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React patterns",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "react",
+        "nextjs",
+        "performance",
+        "optimisation",
+        "best-practices"
+      ],
+      "category": "development"
     }
   ]
 }

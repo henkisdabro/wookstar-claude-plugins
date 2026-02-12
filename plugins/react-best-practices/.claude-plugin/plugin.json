@@ -1,0 +1,9 @@
+{
+  "name": "react-best-practices",
+  "description": "Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React patterns.",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

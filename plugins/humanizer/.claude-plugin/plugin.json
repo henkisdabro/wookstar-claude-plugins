@@ -1,0 +1,9 @@
+{
+  "name": "humanizer",
+  "description": "Remove signs of AI-generated writing from text. Detects and eliminates AI tell-tales including corporate jargon, pattern repetition, and unnatural structures to make writing sound authentically human.",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}
