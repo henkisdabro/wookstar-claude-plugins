@@ -125,6 +125,10 @@ PLUGINS_TO_ENABLE=(
     # "google-ads-scripts@wookstar-claude-plugins"
     # "gemini-cli-headless@wookstar-claude-plugins"
     # "timezone-tools@wookstar-claude-plugins"
+    # "ffmpeg@wookstar-claude-plugins"
+    # "message@wookstar-claude-plugins"
+    # "humanizer@wookstar-claude-plugins"
+    # "react-best-practices@wookstar-claude-plugins"
 
     # Ultimate Skill Creator - requires plugin-dev to be installed first
     # Provides: /create-skill-ultimate, /setup-skill-hook, skill-architect agent
@@ -139,14 +143,10 @@ PLUGINS_TO_ENABLE=(
     # "mcp-open-meteo@wookstar-claude-plugins"
     # "mcp-gemini-bridge@wookstar-claude-plugins"
     # "mcp-perplexity@wookstar-claude-plugins"
+    # "mcp-excalidraw@wookstar-claude-plugins"
     # "mcp-alphavantage@wookstar-claude-plugins"
     # "mcp-coingecko@wookstar-claude-plugins"
     # "mcp-currency-conversion@wookstar-claude-plugins"
-
-    # =========================================================================
-    # Scientific Skills (claude-scientific-skills)
-    # =========================================================================
-    "scientific-skills@claude-scientific-skills"
 
     # =========================================================================
     # Claude Skills (claude-skills) - jezweb/claude-skills

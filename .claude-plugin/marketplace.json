@@ -126,8 +126,8 @@
     {
       "name": "shopify-developer",
       "source": "./plugins/shopify-developer",
-      "description": "Professional Shopify development suite with 6 specialised skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimisation, and debugging. Complete solution for building custom themes, headless storefronts, and Shopify apps.",
-      "version": "1.1.0",
+      "description": "Complete Shopify development reference covering Liquid templating, theme development (OS 2.0), GraphQL/REST APIs, app development, Shopify Functions, Hydrogen, performance optimisation, and debugging. Single unified skill with progressive disclosure via 11 reference files. API version 2026-01.",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -145,7 +145,10 @@
         "app-development",
         "performance",
         "debugging",
-        "storefront"
+        "storefront",
+        "hydrogen",
+        "functions",
+        "headless"
       ],
       "category": "development"
     },
@@ -484,19 +487,21 @@
       "category": "media"
     },
     {
-      "name": "email",
-      "source": "./plugins/email",
-      "description": "HTML email drafts with rich text formatting that paste cleanly into Gmail and Outlook - includes preview server, Gmail compose integration, and formatting templates",
-      "version": "1.0.0",
+      "name": "message",
+      "source": "./plugins/message",
+      "description": "Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview",
+      "version": "2.2.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
+        "message",
         "email",
         "gmail",
         "outlook",
+        "whatsapp",
         "html",
         "drafts",
         "formatting",
@@ -507,8 +512,8 @@
     {
       "name": "humanizer",
       "source": "./plugins/humanizer",
-      "description": "Remove signs of AI-generated writing from text - detects and eliminates AI tell-tales including corporate jargon, pattern repetition, and unnatural structures",
-      "version": "1.0.0",
+      "description": "Humanise text and remove AI writing patterns - detects and fixes 24 AI tell-tales including inflated language, promotional tone, AI vocabulary, filler phrases, and formulaic structure",
+      "version": "3.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -516,10 +521,15 @@
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
         "humanizer",
+        "humanise",
         "ai-detection",
+        "ai-writing",
         "writing",
         "text",
-        "editing"
+        "editing",
+        "natural",
+        "rewrite",
+        "slop"
       ],
       "category": "writing"
     },

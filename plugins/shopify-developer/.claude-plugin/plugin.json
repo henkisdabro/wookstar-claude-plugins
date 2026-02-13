@@ -1,9 +1,9 @@
 {
   "name": "shopify-developer",
-  "description": "Professional Shopify development suite with 6 specialised skills covering Liquid templating, theme development, API integration (GraphQL/REST), custom app development, performance optimisation, and debugging",
+  "description": "Complete Shopify development reference covering Liquid templating, theme development (OS 2.0), GraphQL/REST APIs, app development, Shopify Functions, Hydrogen, performance optimisation, and debugging. Single unified skill with progressive disclosure via 11 reference files. API version 2026-01.",
   "author": {
     "name": "Henrik Soederlund",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.1.0"
+  "version": "2.0.0"
 }

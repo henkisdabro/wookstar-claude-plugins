@@ -47,43 +47,9 @@ Apply the Fifteen-Factor principles during:
 | **XIV. Telemetry** | Monitor everything | APM, health checks, domain metrics |
 | **XV. Security** | Authentication & Authorisation | RBAC, identity per request |
 
-## Applying Factors in Planning Sessions
-
-When creating a PRP, PRD, or architecture plan, evaluate the design against each factor:
-
-### Foundation Factors (I-VI)
-
-These establish the baseline for any cloud-native application:
-
-- **Codebase**: Define repository structure and branching strategy
-- **Dependencies**: Specify package manager and dependency isolation approach
-- **Config**: Plan environment variable strategy and secrets management
-- **Backing Services**: Identify all external services and abstraction layers
-- **Build/Release/Run**: Design CI/CD pipeline with immutable artifacts
-- **Processes**: Ensure stateless design, plan session/state storage
-
-### Operational Factors (VII-XII)
-
-These ensure smooth operation and maintenance:
-
-- **Port Binding**: Define service exposure strategy
-- **Concurrency**: Plan horizontal scaling approach
-- **Disposability**: Design for container orchestration
-- **Dev/Prod Parity**: Minimise environment differences
-- **Logs**: Plan logging infrastructure (ELK, Fluentd, etc.)
-- **Admin Processes**: Automate one-off tasks
-
-### Modern Extensions (XIII-XV)
-
-These address contemporary requirements:
-
-- **API First**: Define OpenAPI/Swagger contracts before implementation
-- **Telemetry**: Plan APM, health endpoints, and observability
-- **Security**: Design authentication/authorisation (OAuth2, RBAC)
-
 ## Architecture Checklist
 
-Use this checklist when reviewing or planning an application:
+When creating a PRP, PRD, or architecture plan, evaluate the design against each factor. Use this checklist for quick validation:
 
 ```
 □ Single codebase in version control
@@ -112,13 +78,4 @@ Detailed documentation for each factor is available in the references directory:
 - `references/modern-extensions.md` - Factors XIII-XV (API First, Telemetry, Security)
 - `references/setup-and-tools.md` - Tooling recommendations and quick start
 
-To load detailed information about specific factors, read the appropriate reference file. For example, when planning API design, load `references/modern-extensions.md` for API First guidance.
-
-### Searching References
-
-For specific implementation patterns, search the references:
-
-- API contracts: `grep -i "swagger\|openapi" references/`
-- Logging patterns: `grep -i "log\|fluentd\|elk" references/`
-- Security patterns: `grep -i "oauth\|rbac\|authentication" references/`
-- Container patterns: `grep -i "docker\|container" references/`
+Read the appropriate reference file for detailed guidance on specific factors.

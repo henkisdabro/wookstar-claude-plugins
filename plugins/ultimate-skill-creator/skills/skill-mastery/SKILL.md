@@ -1,12 +1,6 @@
 ---
 name: skill-mastery
-description: >-
-  Provides master-level guidance for creating exceptional Claude Code skills using
-  combined best practices from official plugin-dev toolkit, community patterns, and
-  latest API. Use when creating skills, designing skill architecture, writing skill
-  descriptions, planning progressive disclosure, choosing skill archetypes, optimising
-  token efficiency, or when user says "create a skill", "skill best practices",
-  "skill description help", "token-efficient skill".
+description: Provides master-level guidance for creating exceptional Claude Code skills using combined best practices from official plugin-dev toolkit, community patterns, and latest API. Use when creating skills, designing skill architecture, writing skill descriptions, planning progressive disclosure, choosing skill archetypes, optimising token efficiency, or when user says "create a skill", "skill best practices", "skill description help", "token-efficient skill".
 user-invocable: false
 ---
 

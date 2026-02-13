@@ -1,6 +1,6 @@
 # Gmail Email Formatting Rules - Complete Reference
 
-> **Note:** This documents Gmail's rendering behaviour for reference. The email skill generates Outlook-native HTML which degrades gracefully in Gmail. For generation rules, see SKILL.md. For Outlook copy-paste snippets, see outlook-formatting.md.
+> **Note:** This documents Gmail's rendering behaviour for reference. The message skill generates Outlook-native HTML which degrades gracefully in Gmail. For generation rules, see SKILL.md. For Outlook copy-paste snippets, see outlook-formatting.md.
 
 ## CSS Styling (Gmail Exact Match)
 

@@ -1,14 +1,6 @@
 ---
 name: tampermonkey
-description: |
-  Write Tampermonkey userscripts for browser automation, page modification, and web enhancement.
-  Use when: creating browser scripts, writing greasemonkey scripts, automating user interactions,
-  injecting CSS or JavaScript into web pages, modifying website behaviour, building browser extensions,
-  hiding unwanted page elements, adding form auto-fill, scraping website data, intercepting requests,
-  detecting URL changes in SPAs, or storing persistent user preferences.
-  Covers userscript headers (@match, @grant, @require), synchronous and async GM_* API functions,
-  common patterns (DOM mutation, URL change detection, element waiting), security sandboxing,
-  and cross-browser compatibility (Chrome, Firefox, Edge).
+description: Write Tampermonkey userscripts for browser automation, page modification, and web enhancement. Use when creating browser scripts, writing greasemonkey scripts, automating user interactions, injecting CSS or JavaScript into web pages, modifying website behaviour, building browser extensions, hiding unwanted page elements, adding form auto-fill, scraping website data, intercepting requests, detecting URL changes in SPAs, or storing persistent user preferences. Covers userscript headers (@match, @grant, @require), synchronous and async GM_* API functions, common patterns (DOM mutation, URL change detection, element waiting), security sandboxing, and cross-browser compatibility (Chrome, Firefox, Edge).
 allowed-tools:
   - Read
   - Glob
@@ -25,14 +17,14 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 
 ```javascript
 // ==UserScript==
-// @name         My Script Name                    // ← CUSTOMISE: Unique script name
-// @namespace    https://example.com/scripts/      // ← CUSTOMISE: Your unique namespace
-// @version      1.0.0                             // ← INCREMENT on updates
-// @description  Brief description of the script   // ← CUSTOMISE: What it does
-// @author       Your Name                         // ← CUSTOMISE: Your name
-// @match        https://example.com/*             // ← CUSTOMISE: Target URL pattern
-// @grant        none                              // ← ADD permissions as needed
-// @run-at       document-idle                     // ← ADJUST timing if needed
+// @name         My Script Name                    // <- CUSTOMISE: Unique script name
+// @namespace    https://example.com/scripts/      // <- CUSTOMISE: Your unique namespace
+// @version      1.0.0                             // <- INCREMENT on updates
+// @description  Brief description of the script   // <- CUSTOMISE: What it does
+// @author       Your Name                         // <- CUSTOMISE: Your name
+// @match        https://example.com/*             // <- CUSTOMISE: Target URL pattern
+// @grant        none                              // <- ADD permissions as needed
+// @run-at       document-idle                     // <- ADJUST timing if needed
 // ==/UserScript==
 
 (function() {
@@ -64,23 +56,13 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 ## URL Matching Quick Reference
 
 ```javascript
-// Exact domain
-// @match https://example.com/*
-
-// All subdomains
-// @match https://*.example.com/*
-
-// HTTP and HTTPS
-// @match *://example.com/*
-
-// Specific path
-// @match https://example.com/app/*
-
-// Exclude paths (use with @match)
-// @exclude https://example.com/admin/*
+// Exact domain                  // @match https://example.com/*
+// All subdomains                // @match https://*.example.com/*
+// HTTP and HTTPS                // @match *://example.com/*
+// Exclude paths (with @match)   // @exclude https://example.com/admin/*
 ```
 
-**For advanced patterns (regex, @include), see:** [url-matching.md](references/url-matching.md)
+**For advanced patterns (regex, @include, specific paths), see:** [url-matching.md](references/url-matching.md)
 
 ---
 
@@ -124,134 +106,32 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 
 ## Common Patterns
 
-### Wait for Element
+These patterns are used frequently. Brief summaries are below - load [patterns.md](references/patterns.md) for full implementations with code examples.
 
-```javascript
-function waitForElement(selector, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-        const element = document.querySelector(selector);
-        if (element) return resolve(element);
-
-        const observer = new MutationObserver((mutations, obs) => {
-            const el = document.querySelector(selector);
-            if (el) {
-                obs.disconnect();
-                resolve(el);
-            }
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        setTimeout(() => {
-            observer.disconnect();
-            reject(new Error(`Element ${selector} not found`));
-        }, timeout);
-    });
-}
-
-// Usage
-waitForElement('#my-element').then(el => {
-    console.log('Found:', el);
-});
-```
-
-### SPA URL Change Detection
-
-```javascript
-// @grant window.onurlchange
-
-if (window.onurlchange === null) {
-    window.addEventListener('urlchange', (info) => {
-        console.log('URL changed to:', info.url);
-        // Re-run your modifications
-    });
-}
-```
-
-### Cross-Origin Request
-
-```javascript
-// @grant GM_xmlhttpRequest
-// @connect api.example.com
-
-GM_xmlhttpRequest({
-    method: 'GET',
-    url: 'https://api.example.com/data',
-    headers: { 'Content-Type': 'application/json' },
-    onload: function(response) {
-        const data = JSON.parse(response.responseText);
-        console.log(data);
-    },
-    onerror: function(error) {
-        console.error('Request failed:', error);
-    }
-});
-```
-
-### Add Custom Styles
-
-```javascript
-// @grant GM_addStyle
-
-GM_addStyle(`
-    .my-custom-class {
-        background: #f0f0f0;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    #hide-this-element {
-        display: none !important;
-    }
-`);
-```
-
-### Persistent Settings
-
-```javascript
-// @grant GM_setValue
-// @grant GM_getValue
-// @grant GM_registerMenuCommand
-
-const settings = {
-    enabled: GM_getValue('enabled', true),
-    theme: GM_getValue('theme', 'dark')
-};
-
-GM_registerMenuCommand('Toggle Enabled', () => {
-    settings.enabled = !settings.enabled;
-    GM_setValue('enabled', settings.enabled);
-    location.reload();
-});
-```
-
-**For more patterns, see:** [patterns.md](references/patterns.md)
+- **Wait for Element** - Promise-based MutationObserver that resolves when a CSS selector appears in the DOM, with configurable timeout
+- **SPA URL Change Detection** - Detect navigation in single-page apps using `window.onurlchange` grant or History API interception
+- **Cross-Origin Request** - Fetch data from external APIs using `GM_xmlhttpRequest` with `@connect` domain whitelisting. See also [http-requests.md](references/http-requests.md)
+- **Add Custom Styles** - Inject CSS with `GM_addStyle` to restyle pages or hide elements. See also [api-dom-ui.md](references/api-dom-ui.md)
+- **Persistent Settings** - Store user preferences with `GM_setValue`/`GM_getValue` and expose toggle via `GM_registerMenuCommand`. See also [api-storage.md](references/api-storage.md)
+- **DOM Mutation Observation** - Watch for dynamically added content with MutationObserver (debounced variant included)
+- **Element Manipulation** - Inject HTML, remove/hide elements, replace text across the page
+- **Keyboard Shortcuts** - Simple handlers and a shortcut manager with modifier key support
+- **Data Extraction** - Extract table data to arrays/objects, collect and filter page links
+- **Error Handling** - Safe wrapper for try/catch and async retry with exponential backoff
 
 ---
 
 ## External Resources
 
-### @require - Load External Scripts
-
 ```javascript
-// @require https://code.jquery.com/jquery-3.6.0.min.js
-
-// With integrity hash (recommended)
+// @require - Load external scripts
 // @require https://code.jquery.com/jquery-3.6.0.min.js#sha256-/xUj+3OJU...
+// @require tampermonkey://vendor/jquery.js         // Built-in library
 
-// Built-in libraries
-// @require tampermonkey://vendor/jquery.js
-```
-
-### @resource - Preload Resources
-
-```javascript
-// @resource myCSS https://example.com/style.css
+// @resource - Preload and inject external CSS
+// @resource myCSS https://example.com/style.css    // Then: GM_addStyle(GM_getResourceText('myCSS'))
 // @grant GM_getResourceText
 // @grant GM_addStyle
-
-const css = GM_getResourceText('myCSS');
-GM_addStyle(css);
 ```
 
 ---
@@ -281,22 +161,6 @@ Always include in your response:
 5. **Permissions used** - Which @grants and why they're needed
 6. **Browser support** - If Chrome-only, Firefox-only, or universal
 
-**Example response format:**
-
-> This script adds a dark mode toggle to Example.com and remembers the user's preference.
-
-```javascript
-// ==UserScript==
-// @name         Example.com Dark Mode
-// ...
-// ==/UserScript==
-```
-
-> **Installation:** Copy/paste into Tampermonkey dashboard
-> **Customisation:** Change `DARK_BG_COLOR` to adjust the background colour
-> **Permissions:** Uses `GM_setValue`/`GM_getValue` to remember preference
-> **Browsers:** Chrome and Firefox
-
 ---
 
 ## Pre-Delivery Checklist
@@ -304,12 +168,14 @@ Always include in your response:
 Before returning a userscript, verify:
 
 ### Critical (Must Pass)
+
 - [ ] No hardcoded API keys, tokens, or passwords
 - [ ] @match is specific (not `*://*/*`)
 - [ ] All external URLs use HTTPS
 - [ ] User input sanitised before DOM insertion
 
 ### Important (Should Pass)
+
 - [ ] Wrapped in IIFE with 'use strict'
 - [ ] All @grant statements are necessary
 - [ ] @connect includes all external domains
@@ -317,6 +183,7 @@ Before returning a userscript, verify:
 - [ ] Null checks before DOM manipulation
 
 ### Recommended
+
 - [ ] @version follows semantic versioning (X.Y.Z)
 - [ ] Works in both Chrome and Firefox
 - [ ] Comments explain non-obvious code
@@ -329,35 +196,26 @@ Before returning a userscript, verify:
 
 Load these on-demand based on user needs:
 
-### Core Documentation
-
-| File | When to Load | Content |
-|------|--------------|---------|
-| [header-reference.md](references/header-reference.md) | Header syntax questions | All @tags with examples |
-| [url-matching.md](references/url-matching.md) | URL pattern questions | @match, @include, @exclude |
-| [patterns.md](references/patterns.md) | Implementation patterns | Common script patterns |
-| [sandbox-modes.md](references/sandbox-modes.md) | Security/isolation | Execution contexts |
-
-### API Reference
-
-| File | When to Load | Content |
-|------|--------------|---------|
-| [api-sync.md](references/api-sync.md) | GM_* function usage | Sync API documentation |
-| [api-async.md](references/api-async.md) | GM.* promise usage | Async API documentation |
-| [api-storage.md](references/api-storage.md) | Data persistence | setValue, getValue, listeners |
-| [http-requests.md](references/http-requests.md) | HTTP requests | GM_xmlhttpRequest |
-| [web-requests.md](references/web-requests.md) | Request interception | GM_webRequest (Firefox) |
-| [api-cookies.md](references/api-cookies.md) | Cookie manipulation | GM_cookie |
-| [api-dom-ui.md](references/api-dom-ui.md) | DOM/UI manipulation | addElement, addStyle, unsafeWindow |
-| [api-tabs.md](references/api-tabs.md) | Tab management | getTab, saveTab, openInTab |
-| [api-audio.md](references/api-audio.md) | Audio control | Mute/unmute tabs |
-
-### Troubleshooting & Quality
-
-| File | When to Load | Content |
-|------|--------------|---------|
-| [common-pitfalls.md](references/common-pitfalls.md) | Script issues | What breaks scripts |
-| [debugging.md](references/debugging.md) | Troubleshooting | How to debug |
-| [browser-compatibility.md](references/browser-compatibility.md) | Cross-browser | Chrome vs Firefox |
-| [security-checklist.md](references/security-checklist.md) | Pre-delivery | Security validation |
-| [version-numbering.md](references/version-numbering.md) | Version strings | Comparison rules |
+| File | When to Load |
+|------|--------------|
+| **Core** | |
+| [header-reference.md](references/header-reference.md) | Header syntax - all @tags with examples |
+| [url-matching.md](references/url-matching.md) | @match, @include, @exclude patterns |
+| [patterns.md](references/patterns.md) | Common implementation patterns with code |
+| [sandbox-modes.md](references/sandbox-modes.md) | Security/isolation execution contexts |
+| **API** | |
+| [api-sync.md](references/api-sync.md) | GM_* synchronous function usage |
+| [api-async.md](references/api-async.md) | GM.* promise-based API usage |
+| [api-storage.md](references/api-storage.md) | GM_setValue, GM_getValue, listeners |
+| [http-requests.md](references/http-requests.md) | GM_xmlhttpRequest cross-origin |
+| [web-requests.md](references/web-requests.md) | GM_webRequest interception (Firefox) |
+| [api-cookies.md](references/api-cookies.md) | GM_cookie manipulation |
+| [api-dom-ui.md](references/api-dom-ui.md) | addElement, addStyle, unsafeWindow |
+| [api-tabs.md](references/api-tabs.md) | getTab, saveTab, openInTab |
+| [api-audio.md](references/api-audio.md) | Mute/unmute tabs |
+| **Quality** | |
+| [common-pitfalls.md](references/common-pitfalls.md) | What breaks scripts and workarounds |
+| [debugging.md](references/debugging.md) | How to debug userscripts |
+| [browser-compatibility.md](references/browser-compatibility.md) | Chrome vs Firefox differences |
+| [security-checklist.md](references/security-checklist.md) | Pre-delivery security validation |
+| [version-numbering.md](references/version-numbering.md) | Version string comparison rules |

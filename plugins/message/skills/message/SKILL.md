@@ -1,13 +1,6 @@
 ---
 name: message
-description: >-
-  Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp.
-  Writes small HTML fragments and assembles full preview via build script.
-  Use when writing emails, drafting emails, composing replies, sending messages,
-  writing WhatsApp messages, sending Gmail messages, replying via email,
-  or when user mentions Gmail, Outlook, WhatsApp, email client, "email to",
-  "reply to", "draft an email", "write an email", "send a message",
-  "message to", "WhatsApp to", or professional correspondence.
+description: Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp. Writes small HTML fragments and assembles full preview via build script. Use when writing emails, drafting emails, composing replies, sending messages, writing WhatsApp messages, sending Gmail messages, replying via email, or when user mentions Gmail, Outlook, WhatsApp, email client, "email to", "reply to", "draft an email", "write an email", "send a message", "message to", "WhatsApp to", or professional correspondence.
 argument-hint: "[optional: path to existing .fragment.html for editing]"
 allowed-tools:
   - Bash
@@ -172,3 +165,7 @@ When WhatsApp mode is selected, the HTML email is converted to plain text with W
 
 - `references/outlook-formatting.md` - Outlook copy-paste snippets for all element types
 - `references/formatting-rules.md` - Gmail rendering behaviour reference
+
+## After Preview
+
+Once the user has the preview URL, ask whether they'd like to run the **humanizer** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humanizer skill on this draft to make it sound more natural?"
