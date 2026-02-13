@@ -111,13 +111,13 @@
       background: #d33426;
     }
 
-    .gmail-btn-primary:disabled {
-      opacity: 0.7;
-      cursor: wait;
+    .gmail-btn-primary.copying {
+      background: #b52d22;
     }
 
     .gmail-btn-primary.copied {
       background: #188038;
+      pointer-events: none;
     }
 
     .gmail-btn-secondary {
@@ -136,15 +136,15 @@
       background: rgba(255,255,255,0.25);
     }
 
-    .gmail-btn-secondary:disabled {
-      opacity: 0.7;
-      cursor: wait;
+    .gmail-btn-secondary.copying {
+      background: rgba(255,255,255,0.08);
     }
 
     .gmail-btn-secondary.copied {
       background: rgba(24,128,56,0.6);
       border-color: rgba(24,128,56,0.8);
       color: #fff;
+      pointer-events: none;
     }
 
     .outlook-btn-primary {
@@ -163,13 +163,13 @@
       background: #006cbe;
     }
 
-    .outlook-btn-primary:disabled {
-      opacity: 0.7;
-      cursor: wait;
+    .outlook-btn-primary.copying {
+      background: #005a9e;
     }
 
     .outlook-btn-primary.copied {
       background: #188038;
+      pointer-events: none;
     }
 
     .whatsapp-btn-primary {
@@ -188,13 +188,13 @@
       background: #1da851;
     }
 
-    .whatsapp-btn-primary:disabled {
-      opacity: 0.7;
-      cursor: wait;
+    .whatsapp-btn-primary.copying {
+      background: #19a34d;
     }
 
     .whatsapp-btn-primary.copied {
       background: #188038;
+      pointer-events: none;
     }
 
     .hidden { display: none !important; }
@@ -294,20 +294,18 @@
       padding: 20px;
     }
 
-    /* Default: Outlook rendering (Aptos 11pt) */
-    .email-body {
-      font-family: Aptos, Calibri, Arial, sans-serif;
-      font-size: 11pt;
-      line-height: 1.5;
-      color: #000000;
-    }
-
-    /* Gmail preview override: simulate Gmail rendering */
-    .gmail-preview .email-body {
+    /* Gmail rendering: Gmail container defaults */
+    .gmail-native {
       font-family: Arial, Helvetica, sans-serif;
       font-size: 13px;
       line-height: 19.5px;
       color: rgb(34, 34, 34);
+      font-weight: 400;
+    }
+
+    /* Outlook rendering: Aptos 11pt (styles are inline on elements) */
+    .email-body {
+      /* Minimal base - Outlook body styles are all inline on elements */
     }
 
     .email-body p {
@@ -358,7 +356,7 @@
     }
 
     /* WhatsApp preview: message styling */
-    .whatsapp-preview .email-body {
+    .whatsapp-preview-display {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
       line-height: 1.6;
@@ -368,13 +366,8 @@
       border-radius: 8px;
     }
 
-    .whatsapp-preview .email-body p {
+    .whatsapp-preview-display p {
       margin: 0 0 8px 0;
-    }
-
-    .whatsapp-preview .email-body ul,
-    .whatsapp-preview .email-body ol {
-      margin: 4px 0 8px 0;
     }
   </style>
 </head>
@@ -407,7 +400,7 @@
 
 <div class="email-wrapper">
   <div class="side-title">MESSAGE</div>
-  <div class="email-container gmail-preview">
+  <div class="email-container">
     <div class="recipient-bar" id="to-bar">
       <div class="recipient-content">
         <div class="recipient-label">To</div>
@@ -441,17 +434,17 @@
     </div>
 
     <div class="email-body-wrapper">
-      <div class="email-body" id="body"><!-- INJECT:BODY --></div>
+      <div id="gmail-body" class="email-body gmail-native"><!-- INJECT:GMAIL_BODY --></div>
+      <div id="outlook-body" class="email-body" style="display:none;"><!-- INJECT:OUTLOOK_BODY --></div>
+      <div id="whatsapp-raw" style="display:none;"><!-- INJECT:RAW_BODY --></div>
+      <div id="whatsapp-display" class="whatsapp-preview-display" style="display:none;"></div>
     </div>
 
   </div>
 </div>
 
 <script>
-var originalBodyHTML;
-
 document.addEventListener('DOMContentLoaded', function() {
-  originalBodyHTML = document.getElementById('body').innerHTML;
   var cc = document.getElementById('cc');
   if (cc && cc.innerText.trim()) {
     document.getElementById('cc-bar').classList.remove('hidden');
@@ -461,10 +454,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bcc-bar').classList.remove('hidden');
   }
 });
-
-function restoreBodyHTML() {
-  document.getElementById('body').innerHTML = originalBodyHTML;
-}
 
 function showEmailBars() {
   document.getElementById('to-bar').classList.remove('hidden');
@@ -487,39 +476,43 @@ function setMode(mode) {
   var gmailActions = document.querySelector('.gmail-actions');
   var outlookActions = document.querySelector('.outlook-actions');
   var whatsappActions = document.querySelector('.whatsapp-actions');
-  var container = document.querySelector('.email-container');
-  var body = document.getElementById('body');
+
+  var gmailBody = document.getElementById('gmail-body');
+  var outlookBody = document.getElementById('outlook-body');
+  var whatsappDisplay = document.getElementById('whatsapp-display');
 
   btns.forEach(function(b) { b.className = 'mode-btn'; });
   gmailActions.classList.add('hidden');
   outlookActions.classList.add('hidden');
   whatsappActions.classList.add('hidden');
-  container.classList.remove('gmail-preview', 'whatsapp-preview');
+
+  gmailBody.style.display = 'none';
+  outlookBody.style.display = 'none';
+  whatsappDisplay.style.display = 'none';
 
   if (mode === 'gmail') {
     btns[0].classList.add('active-gmail');
     gmailActions.classList.remove('hidden');
-    container.classList.add('gmail-preview');
-    restoreBodyHTML();
+    gmailBody.style.display = '';
     showEmailBars();
   } else if (mode === 'outlook') {
     btns[1].classList.add('active-outlook');
     outlookActions.classList.remove('hidden');
-    restoreBodyHTML();
+    outlookBody.style.display = '';
     showEmailBars();
   } else if (mode === 'whatsapp') {
     btns[2].classList.add('active-whatsapp');
     whatsappActions.classList.remove('hidden');
-    container.classList.add('whatsapp-preview');
-    body.innerHTML = htmlToWhatsAppPreview();
+    whatsappDisplay.innerHTML = htmlToWhatsAppPreview();
+    whatsappDisplay.style.display = '';
     hideEmailBars();
   }
 }
 
-function fallbackCopy(body) {
+function fallbackCopy(el) {
   var sel = window.getSelection();
   var range = document.createRange();
-  range.selectNodeContents(body);
+  range.selectNodeContents(el);
   sel.removeAllRanges();
   sel.addRange(range);
   var ok = document.execCommand('copy');
@@ -528,7 +521,7 @@ function fallbackCopy(body) {
 }
 
 function copyAsGmailHTML() {
-  var body = document.getElementById('body');
+  var body = document.getElementById('gmail-body');
   var html = body.innerHTML;
   if (navigator.clipboard && window.ClipboardItem) {
     var htmlBlob = new Blob([html], { type: 'text/html' });
@@ -541,9 +534,8 @@ function copyAsGmailHTML() {
 }
 
 function copyAsOutlookHTML() {
-  var body = document.getElementById('body');
-  var html = '<div style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #000000;">'
-    + body.innerHTML + '</div>';
+  var body = document.getElementById('outlook-body');
+  var html = body.innerHTML;
   if (navigator.clipboard && window.ClipboardItem) {
     var htmlBlob = new Blob([html], { type: 'text/html' });
     var textBlob = new Blob([body.innerText], { type: 'text/plain' });
@@ -576,47 +568,49 @@ function copySubject(btn) {
   }, 2000);
 }
 
+function btnCopying(btn) {
+  btn.classList.add('copying');
+  btn.dataset.originalText = btn.textContent;
+}
+
+function btnDone(btn, msg, duration) {
+  btn.classList.remove('copying');
+  btn.classList.add('copied');
+  btn.textContent = '\u2713 ' + msg;
+  setTimeout(function() {
+    btn.textContent = btn.dataset.originalText;
+    btn.classList.remove('copied');
+  }, duration || 3000);
+}
+
+function btnFail(btn) {
+  btn.classList.remove('copying');
+  btn.textContent = '\u2717 Copy failed';
+  setTimeout(function() {
+    btn.textContent = btn.dataset.originalText;
+  }, 2000);
+}
 
 function copyForGmail(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Copying...';
-
+  btnCopying(btn);
   copyAsGmailHTML().then(function(ok) {
-    if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
-
-    btn.textContent = 'Copied! Paste in Gmail';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'Copy for Gmail';
-      btn.classList.remove('copied');
-      btn.disabled = false;
-    }, 3000);
+    if (!ok) return btnFail(btn);
+    btnDone(btn, 'Copied! Paste in Gmail');
   });
 }
 
 function copyForOutlook(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Copying...';
-
+  btnCopying(btn);
   copyAsOutlookHTML().then(function(ok) {
-    if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
-
-    btn.textContent = 'Copied! Paste in Outlook';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'Copy for Outlook';
-      btn.classList.remove('copied');
-      btn.disabled = false;
-    }, 3000);
+    if (!ok) return btnFail(btn);
+    btnDone(btn, 'Copied! Paste in Outlook');
   });
 }
 
 function composeInGmail(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Copying...';
-
+  btnCopying(btn);
   copyAsGmailHTML().then(function(ok) {
-    if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
+    if (!ok) return btnFail(btn);
 
     var to = document.getElementById('to').innerText.trim();
     var subject = document.getElementById('subject').innerText.trim();
@@ -632,78 +626,55 @@ function composeInGmail(btn) {
     if (bcc) url.searchParams.set('bcc', bcc);
 
     window.open(url.toString(), '_blank');
-
-    btn.textContent = 'Copied! Opening Gmail...';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'Compose in Gmail';
-      btn.classList.remove('copied');
-      btn.disabled = false;
-    }, 3000);
+    btnDone(btn, 'Copied! Opening Gmail...');
   });
 }
 
 function openGmailInbox(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Copying...';
-
+  btnCopying(btn);
   copyAsGmailHTML().then(function(ok) {
-    if (!ok) { btn.textContent = 'Copy failed'; btn.disabled = false; return; }
-
+    if (!ok) return btnFail(btn);
     window.open('https://mail.google.com/mail/#inbox?compose=new', '_blank');
-
-    btn.textContent = 'Copied! Opening Gmail...';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'Open Gmail Inbox';
-      btn.classList.remove('copied');
-      btn.disabled = false;
-    }, 3000);
+    btnDone(btn, 'Copied! Opening Gmail...');
   });
 }
 
 function htmlToWhatsAppPreview() {
-  var html = originalBodyHTML;
+  // Get the plain text WhatsApp output and render it as styled HTML for preview
+  var text = htmlToWhatsApp();
 
-  html = html.replace(/<p\b[^>]*font-size:\s*1[2-9]pt[^>]*font-weight:\s*bold[^>]*>([\s\S]*?)<\/p>/gi, '<p><strong>$1</strong></p>');
-  html = html.replace(/<p\b[^>]*font-weight:\s*bold[^>]*font-size:\s*1[2-9]pt[^>]*>([\s\S]*?)<\/p>/gi, '<p><strong>$1</strong></p>');
+  // Escape HTML entities
+  text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  html = html.replace(/<p\b[^>]*>\s*(&nbsp;|\u00a0)\s*<\/p>/gi, '<br>');
+  // Convert WhatsApp formatting to visual equivalents
+  text = text.replace(/\*([^\*\n]+)\*/g, '<strong>$1</strong>');
+  text = text.replace(/_([^_\n]+)_/g, '<em>$1</em>');
+  text = text.replace(/~([^~\n]+)~/g, '<del>$1</del>');
+  // Code blocks (triple backtick)
+  text = text.replace(/```\n?([\s\S]*?)```/g, '<code style="display:block; background:#f0f0f0; padding:8px; border-radius:4px; margin:4px 0; white-space:pre-wrap; font-size:13px;">$1</code>');
+  // Inline code (single backtick)
+  text = text.replace(/`([^`\n]+)`/g, '<code style="background:#f0f0f0; padding:2px 4px; border-radius:3px; font-size:13px;">$1</code>');
 
-  html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, function(match, inner) {
-    var rows = [];
-    var trRegex = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
-    var trMatch;
-    while ((trMatch = trRegex.exec(inner)) !== null) {
-      var cells = [];
-      var tdRegex = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
-      var tdMatch;
-      while ((tdMatch = tdRegex.exec(trMatch[1])) !== null) {
-        var cellText = tdMatch[1].replace(/<[^>]+>/g, '').trim();
-        cells.push(cellText);
-      }
-      if (cells.length) rows.push(cells.join(' | '));
-    }
-    return '<p>' + rows.join('<br>') + '</p>';
-  });
+  // Convert newlines to <br>, preserving double newlines as paragraph breaks
+  text = text.replace(/\n\n/g, '<br><br>');
+  text = text.replace(/\n/g, '<br>');
 
-  html = html.replace(/\s*style="[^"]*"/gi, '');
-
-  return html;
+  return text;
 }
 
 function htmlToWhatsApp() {
-  var html = originalBodyHTML;
-
-  html = html.replace(/<p\b[^>]*>\s*(&nbsp;|\u00a0)\s*<\/p>/gi, '');
+  var rawEl = document.getElementById('whatsapp-raw');
+  var html = rawEl.innerHTML;
 
   html = html.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*');
   html = html.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, '_$2_');
-  html = html.replace(/<strike\b[^>]*>([\s\S]*?)<\/strike>/gi, '~$1~');
-  html = html.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, '```$1```');
+  html = html.replace(/<(del|strike)\b[^>]*>([\s\S]*?)<\/\1>/gi, '~$2~');
+  // Code blocks: <pre><code>...</code></pre> -> triple backticks
+  html = html.replace(/<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi, '\n```\n$1\n```\n');
+  // Inline code: <code>...</code> -> single backticks
+  html = html.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, '`$1`');
 
-  html = html.replace(/<p\b[^>]*font-size:\s*1[2-9]pt[^>]*font-weight:\s*bold[^>]*>([\s\S]*?)<\/p>/gi, '\n*$1*\n');
-  html = html.replace(/<p\b[^>]*font-weight:\s*bold[^>]*font-size:\s*1[2-9]pt[^>]*>([\s\S]*?)<\/p>/gi, '\n*$1*\n');
+  html = html.replace(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi, '\n*$1*\n');
 
   html = html.replace(/<hr\b[^>]*\/?>/gi, '\n---\n');
 
@@ -748,6 +719,11 @@ function htmlToWhatsApp() {
     return '\n' + items.join('\n') + '\n';
   });
 
+  html = html.replace(/<blockquote\b[^>]*>([\s\S]*?)<\/blockquote>/gi, function(match, inner) {
+    var text = inner.replace(/<[^>]+>/g, '').trim();
+    return '\n> ' + text + '\n';
+  });
+
   html = html.replace(/<br\s*\/?>/gi, '\n');
   html = html.replace(/<\/p>/gi, '\n');
   html = html.replace(/<p\b[^>]*>/gi, '');
@@ -767,36 +743,19 @@ function htmlToWhatsApp() {
 }
 
 function copyForWhatsApp(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Copying...';
-
+  btnCopying(btn);
   var text = htmlToWhatsApp();
   navigator.clipboard.writeText(text).then(function() {
-    btn.textContent = 'Copied! Paste in WhatsApp';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'Copy for WhatsApp';
-      btn.classList.remove('copied');
-      btn.disabled = false;
-    }, 3000);
+    btnDone(btn, 'Copied! Paste in WhatsApp');
   });
 }
 
 function sendViaWhatsApp(btn) {
-  btn.disabled = true;
-  btn.textContent = 'Opening...';
-
+  btnCopying(btn);
   var text = htmlToWhatsApp();
   navigator.clipboard.writeText(text);
   window.open('whatsapp://send?text=' + encodeURIComponent(text));
-
-  btn.textContent = 'Opening WhatsApp...';
-  btn.classList.add('copied');
-  setTimeout(function() {
-    btn.textContent = 'Send via WhatsApp';
-    btn.classList.remove('copied');
-    btn.disabled = false;
-  }, 3000);
+  btnDone(btn, 'Opening WhatsApp...');
 }
 </script>
 

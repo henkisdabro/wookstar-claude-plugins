@@ -1,6 +1,8 @@
 # Outlook Email Formatting - Copy-Paste Reference
 
-Consolidated snippets for generating Outlook-compatible HTML emails with 100% inline styles.
+> **Note:** Fragments are now Markdown. This file documents Outlook's inline style requirements for reference - the build script applies these styles automatically. For the fragment format, see SKILL.md.
+
+Consolidated snippets for Outlook-compatible HTML emails with 100% inline styles.
 
 ## Document Structure
 
