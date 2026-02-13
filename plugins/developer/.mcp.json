@@ -35,22 +35,6 @@
     "playwright": {
       "command": "npx",
       "args": ["@playwright/mcp@latest"]
-    },
-    "serena": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "ide-assistant",
-        "--mode",
-        "planning",
-        "--enable-web-dashboard",
-        "FALSE"
-      ],
-      "env": {}
     }
   }
 }

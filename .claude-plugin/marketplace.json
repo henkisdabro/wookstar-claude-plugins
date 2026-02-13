@@ -13,7 +13,7 @@
     {
       "name": "developer",
       "source": "./plugins/developer",
-      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 7 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena AI)",
+      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 6 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7)",
       "version": "2.1.0",
       "author": {
         "name": "Henrik Soederlund",

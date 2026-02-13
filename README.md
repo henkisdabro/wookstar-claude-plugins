@@ -240,7 +240,7 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 - 3 agents: fullstack-developer, validation-gates, documentation-manager
 - 3 commands: /containerize, /generate-prp, /execute-prp
 - 5 skills: git-commit-helper, webapp-testing, devtools, prp-generator, fifteen-factor-app
-- 7 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7, Serena
+- 6 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7
 
 **Installation:**
 

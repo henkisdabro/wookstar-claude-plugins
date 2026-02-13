@@ -32,7 +32,6 @@ Complete development toolkit with expert agents, commands, testing skills, and p
 - **firecrawl** - Advanced web scraping and crawling
 - **microsoft-docs** - Microsoft documentation access
 - **playwright** - Browser automation and testing
-- **serena** - AI planning and task management assistant
 
 ## Installation
 
