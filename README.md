@@ -37,7 +37,8 @@ Then install the plugins you need:
 /plugin install google-apps-script@wookstar-claude-plugins
 /plugin install tampermonkey@wookstar-claude-plugins
 /plugin install git-worktrees@wookstar-claude-plugins
-/plugin install gemini-cli-headless@wookstar-claude-plugins
+/plugin install gemini@wookstar-claude-plugins
+/plugin install codex@wookstar-claude-plugins
 
 # Utilities
 /plugin install timezone-tools@wookstar-claude-plugins
@@ -125,7 +126,7 @@ find ~ -path "*/.claude/settings.json" -exec grep -l -E "productivity|marketing|
 /plugin install google-tagmanager@wookstar-claude-plugins     # was in marketing
 /plugin install google-analytics@wookstar-claude-plugins      # was in marketing
 /plugin install google-ads-scripts@wookstar-claude-plugins    # was in marketing
-/plugin install gemini-cli-headless@wookstar-claude-plugins   # new
+/plugin install gemini@wookstar-claude-plugins   # new
 ```
 
 ---
@@ -458,15 +459,33 @@ GOOGLE_PROJECT_ID=your-project-id
 
 **Includes:**
 
-- 1 agent: gemini-cli-headless
+- 1 agent: gemini
 
 **Installation:**
 
 ```bash
-/plugin install gemini-cli-headless@wookstar-claude-plugins
+/plugin install gemini@wookstar-claude-plugins
 ```
 
 **Use Cases:** Programmatic prompts, JSON/streaming output parsing, CI/CD integration, batch processing
+
+---
+
+### Codex
+
+**OpenAI Codex CLI automation expert**
+
+**Includes:**
+
+- 1 agent: codex
+
+**Installation:**
+
+```bash
+/plugin install codex@wookstar-claude-plugins
+```
+
+**Use Cases:** Programmatic prompts, structured output parsing, CI/CD integration, workspace automation
 
 ---
 
@@ -561,7 +580,8 @@ GOOGLE_PROJECT_ID=your-project-id
   - [Google Apps Script](./plugins/google-apps-script/README.md)
   - [Tampermonkey](./plugins/tampermonkey/README.md)
   - [Git Worktrees](./plugins/git-worktrees/README.md)
-  - [Gemini CLI Headless](./plugins/gemini-cli-headless/README.md)
+  - [Gemini](./plugins/gemini/README.md)
+  - [Codex](./plugins/codex/README.md)
   - [Timezone Tools](./plugins/timezone-tools/README.md)
 
 ---

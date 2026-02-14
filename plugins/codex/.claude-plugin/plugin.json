@@ -1,0 +1,9 @@
+{
+  "name": "codex",
+  "description": "Expert guidance for OpenAI Codex CLI non-interactive mode operations - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

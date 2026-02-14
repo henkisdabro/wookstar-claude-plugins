@@ -1,4 +1,4 @@
-# Gemini CLI Headless
+# Gemini
 
 Expert guidance for Gemini CLI headless mode operations with Claude Code - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration.
 
@@ -6,12 +6,12 @@ Expert guidance for Gemini CLI headless mode operations with Claude Code - runni
 
 ### Agents (1)
 
-- **gemini-cli-headless** - Comprehensive Gemini CLI automation expert
+- **gemini** - Comprehensive Gemini CLI automation expert
 
 ## Installation
 
 ```bash
-/plugin install gemini-cli-headless@wookstar-claude-plugins
+/plugin install gemini@wookstar-claude-plugins
 ```
 
 ## Coverage

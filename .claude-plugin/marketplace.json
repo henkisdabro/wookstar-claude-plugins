@@ -275,10 +275,10 @@
       "category": "development"
     },
     {
-      "name": "gemini-cli-headless",
-      "source": "./plugins/gemini-cli-headless",
+      "name": "gemini",
+      "source": "./plugins/gemini",
       "description": "Expert guidance for Gemini CLI headless mode - running prompts programmatically, parsing JSON/streaming output, building automation scripts, and CI/CD integration",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -292,6 +292,26 @@
         "scripting",
         "ci-cd",
         "json"
+      ],
+      "category": "ai"
+    },
+    {
+      "name": "codex",
+      "source": "./plugins/codex",
+      "description": "Expert guidance for OpenAI Codex CLI non-interactive mode operations - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "codex",
+        "openai",
+        "cli",
+        "automation",
+        "scripting",
+        "ci-cd"
       ],
       "category": "ai"
     },

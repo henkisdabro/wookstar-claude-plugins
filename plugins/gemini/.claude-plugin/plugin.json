@@ -1,9 +1,9 @@
 {
-  "name": "gemini-cli-headless",
+  "name": "gemini",
   "description": "Expert guidance for Gemini CLI headless mode - running prompts programmatically, parsing JSON/streaming output, building automation scripts, and CI/CD integration",
   "author": {
     "name": "Henrik Soederlund",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

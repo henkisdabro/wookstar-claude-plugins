@@ -65,7 +65,8 @@ wookstar-claude-plugins/
 │   ├── google-tagmanager/       # Extracted from marketing
 │   ├── google-analytics/        # Extracted from marketing
 │   ├── google-ads-scripts/      # Extracted from marketing
-│   ├── gemini-cli-headless/     # New
+│   ├── codex/                   # OpenAI Codex CLI headless mode
+│   ├── gemini/                  # Gemini CLI headless mode
 │   ├── ffmpeg/                  # FFmpeg CLI reference
 │   ├── mcp-alphavantage/        # MCP-only plugins
 │   ├── mcp-coingecko/
