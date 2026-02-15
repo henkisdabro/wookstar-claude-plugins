@@ -1,12 +1,7 @@
 ---
 name: tampermonkey
 description: Write Tampermonkey userscripts for browser automation, page modification, and web enhancement. Use when creating browser scripts, writing greasemonkey scripts, automating user interactions, injecting CSS or JavaScript into web pages, modifying website behaviour, building browser extensions, hiding unwanted page elements, adding form auto-fill, scraping website data, intercepting requests, detecting URL changes in SPAs, or storing persistent user preferences. Covers userscript headers (@match, @grant, @require), synchronous and async GM_* API functions, common patterns (DOM mutation, URL change detection, element waiting), security sandboxing, and cross-browser compatibility (Chrome, Firefox, Edge).
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
-  - Write
-  - Edit
+allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
 # Tampermonkey Userscript Development

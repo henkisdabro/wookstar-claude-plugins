@@ -90,11 +90,13 @@ Apply these rules:
 - Specific trigger phrases users would say
 - Max 1024 characters
 
+**HARD RULES for frontmatter fields:**
+- The `description` field MUST be a single-line plain string. NEVER use YAML multi-line indicators (`>-`, `|`, `>`, `|-`). Multi-line descriptions break frontmatter parsing and leak raw YAML into skill listings.
+- The `allowed-tools` field MUST be a single-line comma-separated string (e.g. `allowed-tools: Read, Write, Edit`). NEVER use YAML list syntax with `- ` items.
+
 Use this template:
 ```yaml
-description: >-
-  [What it does - actions, capabilities].
-  Use when [trigger phrases, contexts, file types, user intents].
+description: [What it does - actions, capabilities]. Use when [trigger phrases, contexts, file types, user intents].
 ```
 
 ## Phase 6: Create the Skill
@@ -155,7 +157,7 @@ Check: description quality, progressive disclosure, writing style, token efficie
 
 Apply the Quick Reference checklist:
 - [ ] name: lowercase, hyphens, ≤64 chars
-- [ ] description: third person, specific triggers, ≤1024 chars
+- [ ] description: single-line plain string (no `>-` or `|`), third person, specific triggers, ≤1024 chars
 - [ ] SKILL.md body: <500 lines
 - [ ] References: one level deep
 - [ ] Consistent terminology

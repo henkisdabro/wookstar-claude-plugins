@@ -53,26 +53,22 @@ See [references/archetypes.md](references/archetypes.md) for detailed templates.
 - Specific trigger phrases users would say
 - Max 1024 characters
 
+**HARD RULES for frontmatter fields:**
+- The `description` field MUST be a single-line plain string. Never use YAML multi-line indicators (`>-`, `|`, `>`, `|-`). Multi-line descriptions break frontmatter parsing and leak raw YAML syntax into Claude Code's skill listings.
+- The `allowed-tools` field MUST be a single-line comma-separated string (e.g. `allowed-tools: Read, Write, Edit`). Never use YAML list syntax with `- ` items.
+
 **Template:**
 ```yaml
-description: >-
-  [What it does - actions, capabilities].
-  Use when [trigger phrases, contexts, file types, user intents].
+description: [What it does]. Use when [trigger phrases, contexts, file types, user intents].
 ```
 
 **Good examples:**
 ```yaml
 # Specific + triggers
-description: >-
-  Extract text and tables from PDF files, fill forms, merge documents.
-  Use when working with PDF files or when user mentions PDFs, forms,
-  or document extraction.
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when user mentions PDFs, forms, or document extraction.
 
 # Action + context
-description: >-
-  Generate descriptive commit messages by analysing git diffs.
-  Use when user asks for help writing commit messages or reviewing
-  staged changes.
+description: Generate descriptive commit messages by analysing git diffs. Use when user asks for help writing commit messages or reviewing staged changes.
 ```
 
 ### 3. Structure with Progressive Disclosure
@@ -278,9 +274,7 @@ SKILL CHECKLIST
 
 DESCRIPTION TEMPLATE
 ====================
-description: >-
-  [What it does - actions, capabilities].
-  Use when [trigger phrases, contexts, file types].
+description: [What it does - actions, capabilities]. Use when [trigger phrases, contexts, file types].
 ```
 
 ## Further Reading

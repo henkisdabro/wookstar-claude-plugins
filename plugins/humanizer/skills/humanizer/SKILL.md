@@ -1,13 +1,7 @@
 ---
 name: humanizer
 description: This skill should be used when the user wants to humanise text, remove AI slop, make writing sound less like ChatGPT, or rewrite content to sound more natural and human-written. Common triggers - "humanise this", "make this sound less AI", "this reads like a robot wrote it", "de-AI this text", "remove AI patterns", "make this more natural", "clean up this AI-generated text". Detects and fixes 24 patterns of AI writing based on Wikipedia's "Signs of AI writing" guide, including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, and formulaic structure.
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - AskUserQuestion
+allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 
 # Humanizer: Remove AI Writing Patterns

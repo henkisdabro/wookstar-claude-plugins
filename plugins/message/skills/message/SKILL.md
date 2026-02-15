@@ -2,11 +2,7 @@
 name: message
 description: Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp. Writes Markdown fragments and assembles platform-specific HTML via build script. Use when writing emails, drafting emails, composing replies, sending messages, writing WhatsApp messages, sending Gmail messages, replying via email, or when user mentions Gmail, Outlook, WhatsApp, email client, "email to", "reply to", "draft an email", "write an email", "send a message", "message to", "WhatsApp to", or professional correspondence.
 argument-hint: "[optional: path to existing .fragment.md for editing]"
-allowed-tools:
-  - Bash
-  - Write
-  - Read
-  - Edit
+allowed-tools: Bash, Write, Read, Edit
 ---
 
 # Message Drafts
