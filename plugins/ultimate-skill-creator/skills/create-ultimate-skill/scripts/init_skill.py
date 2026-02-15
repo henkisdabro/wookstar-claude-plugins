@@ -38,7 +38,7 @@ Choose structure based on archetype:
 - **Safety Tool**: Threat model + risk tiers + rules
 - **Orchestration**: Quick start + robot mode APIs
 
-See skill-mastery references for archetype templates.
+See create-ultimate-skill references for archetype templates.
 
 ## Resources
 
@@ -195,7 +195,7 @@ def init_skill(skill_name: str, path: str) -> Path | None:
     print("1. Edit SKILL.md - complete TODO items and description")
     print("2. Choose archetype (CLI, Methodology, Safety, Orchestration)")
     print("3. Customise or delete example files in scripts/, references/, assets/")
-    print("4. Validate with plugin-dev's skill-reviewer agent")
+    print("4. Review with create-ultimate-skill's Review Checklist")
 
     return skill_dir
 

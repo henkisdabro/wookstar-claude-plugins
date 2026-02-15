@@ -35,24 +35,16 @@ name: my_skill             # Bad - underscores
 
 **Template:**
 ```yaml
-description: >-
-  [What it does - actions, capabilities].
-  Use when [trigger phrases, contexts, file types, user intents].
+description: [What it does - actions, capabilities]. Use when [trigger phrases, contexts, file types, user intents].
 ```
 
 **Examples:**
 ```yaml
 # Good - specific, third person, trigger phrases
-description: >-
-  Extract text and tables from PDF files, fill forms, merge documents.
-  Use when working with PDF files or when user mentions PDFs, forms,
-  or document extraction.
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when user mentions PDFs, forms, or document extraction.
 
 # Good - action + context
-description: >-
-  Generate descriptive commit messages by analysing git diffs.
-  Use when user asks for help writing commit messages or reviewing
-  staged changes.
+description: Generate descriptive commit messages by analysing git diffs. Use when user asks for help writing commit messages or reviewing staged changes.
 
 # Bad - first person
 description: I can help you process Excel files
@@ -76,15 +68,11 @@ description: [very long description...]
 
 **Examples:**
 ```yaml
-# Comma-separated string
+# Comma-separated string (recommended)
 allowed-tools: Read, Grep, Glob
 
-# YAML array
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash(git:*)
+# Space-separated quoted strings
+allowed-tools: "Read" "Grep" "Glob" "Bash(git:*)"
 ```
 
 **Tool patterns:**
@@ -175,6 +163,51 @@ disable-model-invocation: true   # Only user can invoke via /skill-name
 disable-model-invocation: false  # Claude can also invoke (default)
 ```
 
+### license
+
+**Type:** String
+**Purpose:** SPDX license identifier for skill distribution
+**Examples:**
+```yaml
+license: MIT
+license: Apache-2.0
+```
+
+### compatibility
+
+**Type:** String
+**Purpose:** Environment requirements or constraints
+**Constraints:** 1-500 characters
+
+**Example:**
+```yaml
+compatibility: Requires Python 3.10+, pdfplumber package. Linux/macOS only.
+```
+
+### metadata
+
+**Type:** Object
+**Purpose:** Additional structured information about the skill
+
+**Fields:**
+- `author` - Creator name or handle
+- `version` - Semantic version string
+- `mcp-server` - Associated MCP server name
+- `category` - Skill category for organisation
+- `tags` - Comma-separated discovery tags
+- `documentation` - URL to external documentation
+- `support` - URL for issue reporting or support
+
+**Example:**
+```yaml
+metadata:
+  author: henkisdabro
+  version: 1.2.0
+  category: document-processing
+  tags: pdf, extraction, forms
+  documentation: https://github.com/user/skill-name
+```
+
 ---
 
 ## Visibility Control Matrix
@@ -193,15 +226,8 @@ disable-model-invocation: false  # Claude can also invoke (default)
 ```yaml
 ---
 name: advanced-pdf-processing
-description: >-
-  Extract text, tables, and images from PDF files. Fill PDF forms
-  programmatically. Merge and split PDF documents. Use when working
-  with PDF files, document extraction, form filling, or PDF manipulation.
-allowed-tools:
-  - Read
-  - Write
-  - Bash(pdftotext:*)
-  - Bash(pdftk:*)
+description: Extract text, tables, and images from PDF files. Fill PDF forms programmatically. Merge and split PDF documents. Use when working with PDF files, document extraction, form filling, or PDF manipulation.
+allowed-tools: Read, Write, Bash(pdftotext:*), Bash(pdftk:*)
 model: inherit
 user-invocable: true
 hooks:
@@ -260,6 +286,9 @@ plugin-name/skills/skill-name/SKILL.md
 | model | - | Valid model ID | No |
 | context | - | `fork` | No |
 | agent | - | Valid agent name | No |
+| license | - | SPDX identifier | No |
+| compatibility | 500 | Environment info | No |
+| metadata | - | Structured object | No |
 
 ---
 

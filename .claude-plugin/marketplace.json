@@ -84,8 +84,8 @@
     {
       "name": "ultimate-skill-creator",
       "source": "./plugins/ultimate-skill-creator",
-      "description": "Advanced skill development toolkit: 1 agent (skill-architect) + 2 commands (/create-skill-ultimate, /setup-skill-hook) + 1 comprehensive skill (skill-mastery with 4 reference guides and 2 utility scripts) + 1 hook (skill-activation-prompt). Combines official plugin-dev patterns, community best practices, and latest API. Requires plugin-dev@claude-plugins-official for validation agents.",
-      "version": "1.1.0",
+      "description": "Advanced skill development toolkit: 1 skill (/create-ultimate-skill with 2 reference guides and 2 utility scripts) + 1 command (/setup-skill-hook) + 1 hook (skill-activation-prompt). Create, review, and iterate on Claude Code skills using Anthropic's official best practices.",
+      "version": "2.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -94,13 +94,10 @@
       "keywords": [
         "skills",
         "skill-creator",
-        "plugin-dev",
         "development",
         "best-practices",
         "meta",
-        "archetypes",
-        "token-efficiency",
-        "progressive-disclosure"
+        "archetypes"
       ],
       "category": "meta"
     },
