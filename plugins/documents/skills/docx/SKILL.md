@@ -1,6 +1,6 @@
 ---
 name: docx
-description: Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when working with professional documents (.docx files) for creating new documents, modifying or editing content, working with tracked changes, adding comments, or any other document tasks.
+description: Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when working with professional documents (.docx files) for creating new documents, modifying or editing content, working with tracked changes, adding comments, or any other document tasks. Do NOT use for creating proposals, letters, or client-facing business documents from scratch - use document-builder for those.
 ---
 
 # DOCX creation, editing, and analysis

@@ -1,6 +1,6 @@
 ---
 name: git-worktrees
-description: "Parallel development workflow using git worktrees. Prepare isolated worktree directories and execute tasks across multiple workspaces for concurrent feature development."
+description: Parallel development workflow using git worktrees. Prepares isolated worktree directories and executes tasks across multiple workspaces for concurrent feature development. Use when user wants parallel branches, concurrent development, or asks about git worktrees.
 ---
 
 # Git Worktrees - Parallel Development Workflow
