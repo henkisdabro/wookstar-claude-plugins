@@ -69,6 +69,7 @@ wookstar-claude-plugins/
 │   ├── gemini/                  # Gemini CLI headless mode
 │   ├── ffmpeg/                  # FFmpeg CLI reference
 │   ├── mcp-alphavantage/        # MCP-only plugins
+│   ├── mcp-cloudflare/
 │   ├── mcp-coingecko/
 │   ├── mcp-currency-conversion/
 │   ├── mcp-excalidraw/

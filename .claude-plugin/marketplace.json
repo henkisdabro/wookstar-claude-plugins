@@ -13,8 +13,8 @@
     {
       "name": "developer",
       "source": "./plugins/developer",
-      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 6 MCP integrations (Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7)",
-      "version": "2.1.0",
+      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
+      "version": "2.2.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -351,6 +351,20 @@
       },
       "keywords": ["mcp", "excalidraw", "diagrams", "drawing", "visualisation"],
       "category": "productivity",
+      "mcpServers": "./.mcp.json"
+    },
+    {
+      "name": "mcp-cloudflare",
+      "source": "./plugins/mcp-cloudflare",
+      "description": "Official Cloudflare MCP server - 2,500+ API endpoints via Code Mode in just 2 tools (~1k tokens). Full platform access: Workers, Pages, D1, KV, R2, DNS, Zones, WAF, Tunnels, and more (uses OAuth)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["mcp", "cloudflare", "workers", "pages", "d1", "kv", "r2", "dns", "serverless"],
+      "category": "development",
       "mcpServers": "./.mcp.json"
     },
     {

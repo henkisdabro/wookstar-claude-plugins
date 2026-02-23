@@ -8,10 +8,6 @@
         "http://127.0.0.1:9222"
       ]
     },
-    "cloudflare-docs": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
-    },
     "context7": {
       "command": "npx",
       "args": [

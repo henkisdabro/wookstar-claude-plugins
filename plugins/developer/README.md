@@ -24,10 +24,9 @@ Complete development toolkit with expert agents, commands, testing skills, and p
 - **prp-generator** - Generate comprehensive Product Requirement Plans with research methodology
 - **fifteen-factor-app** - SaaS architecture principles (extends the Twelve-Factor App methodology)
 
-### MCP Servers (7)
+### MCP Servers (5)
 
 - **chrome-devtools** - Chrome DevTools Protocol integration
-- **cloudflare-docs** - Cloudflare documentation access
 - **context7** - Context-aware code understanding
 - **firecrawl** - Advanced web scraping and crawling
 - **microsoft-docs** - Microsoft documentation access
@@ -80,9 +79,6 @@ FIRECRAWL_API_KEY=your_key_here
 
 # Use Chrome DevTools
 "Debug this JavaScript performance issue"
-
-# Access documentation
-"Show me Cloudflare Workers examples"
 
 # Architecture guidance
 "Help me design this service following fifteen-factor principles"

@@ -1,0 +1,9 @@
+{
+  "name": "mcp-cloudflare",
+  "description": "Official Cloudflare MCP server - 2,500+ API endpoints via Code Mode in just 2 tools (~1k tokens). Full platform access including Workers, Pages, D1, KV, R2, DNS, Zones, and more",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

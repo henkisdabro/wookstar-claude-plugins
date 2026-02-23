@@ -1,9 +1,9 @@
 {
   "name": "developer",
-  "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 7 MCP integrations",
+  "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations",
   "author": {
     "name": "Henrik Soederlund",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.1.0"
+  "version": "2.2.0"
 }
