@@ -1,9 +1,0 @@
-{
-  "name": "humanizer",
-  "description": "Humanise text and remove AI writing patterns. Detects and fixes 24 AI tell-tales including inflated language, promotional tone, AI vocabulary, filler phrases, sycophantic tone, and formulaic structure.",
-  "author": {
-    "name": "Henrik Soederlund",
-    "email": "whom-wealthy.2z@icloud.com"
-  },
-  "version": "3.0.0"
-}

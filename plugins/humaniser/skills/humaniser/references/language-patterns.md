@@ -4,11 +4,19 @@ Detailed reference for language-level AI writing patterns. Read the compact summ
 
 ---
 
-## 7. Overused "AI Vocabulary" Words
+## 7. Overused "AI Vocabulary" Words (Era-Specific)
 
-**High-frequency AI words:** Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+Different LLM generations favour different words. Recognising the era helps identify the source model.
 
-**Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
+**2023 to mid-2024 (GPT-4 era):** Additionally, delve, intricate, meticulous, pivotal, testament, vibrant, enduring, tapestry, garner, underscore, interplay, intricacies
+
+**Mid-2024 to mid-2025 (GPT-4o era):** align with, enhance, emphasizing, fostering, highlighting, showcasing, crucial, key (adjective), landscape (abstract noun)
+
+**Mid-2025 onward (GPT-5 era):** emphasizing, enhance, highlighting, showcasing, plus notability-related terms (independent coverage, media outlets)
+
+**All-era high-frequency words:** Additionally, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+
+**Problem:** These words appear far more frequently in post-2023 text. They often co-occur, and specific clusters can fingerprint the model generation used.
 
 **Before:**
 > Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.

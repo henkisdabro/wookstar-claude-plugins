@@ -24,6 +24,19 @@ def find_free_port():
         return s.getsockname()[1]
 
 
+_AUTO_REFRESH_SCRIPT = """<script>
+(function(){
+  var lastMtime = null;
+  setInterval(function(){
+    fetch('/check-modified').then(function(r){return r.json()}).then(function(d){
+      if(lastMtime === null){lastMtime = d.mtime; return;}
+      if(d.mtime !== lastMtime){location.reload();}
+    }).catch(function(){});
+  }, 2000);
+})();
+</script>"""
+
+
 class SingleFileHandler(BaseHTTPRequestHandler):
     """Serves only the specified HTML file regardless of request path."""
 
@@ -32,6 +45,24 @@ class SingleFileHandler(BaseHTTPRequestHandler):
     lock = threading.Lock()
 
     def do_GET(self):
+        with self.lock:
+            SingleFileHandler.last_request_time = time.time()
+
+        # Serve file modification time as JSON for auto-refresh polling
+        if self.path == "/check-modified":
+            try:
+                mtime = os.path.getmtime(self.html_path)
+            except OSError:
+                mtime = 0
+            payload = f'{{"mtime": {mtime}}}'.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
         try:
             with open(self.html_path, "rb") as f:
                 content = f.read()
@@ -39,8 +70,11 @@ class SingleFileHandler(BaseHTTPRequestHandler):
             self.send_error(404, "File not found")
             return
 
-        with self.lock:
-            SingleFileHandler.last_request_time = time.time()
+        # Inject auto-refresh script before </body>
+        content_str = content.decode("utf-8")
+        if "</body>" in content_str:
+            content_str = content_str.replace("</body>", _AUTO_REFRESH_SCRIPT + "\n</body>")
+            content = content_str.encode("utf-8")
 
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -84,7 +118,7 @@ def main():
     SingleFileHandler.html_path = html_path
     SingleFileHandler.last_request_time = time.time()
 
-    port = find_free_port()
+    port = int(os.environ.get("PORT", 0)) or find_free_port()
     server = HTTPServer(("127.0.0.1", port), SingleFileHandler)
 
     # Clean shutdown on signals

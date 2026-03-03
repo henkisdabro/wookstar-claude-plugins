@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["markdown"]
+# ///
 """Assemble a fragment file into a full email preview.
 
 Reads a .fragment.md (Markdown with YAML frontmatter) or .fragment.html
@@ -6,9 +10,7 @@ Reads a .fragment.md (Markdown with YAML frontmatter) or .fragment.html
 and injects all three versions into the shell.html template.
 
 Usage:
-    python3 assemble.py /path/to/name.fragment.md [--serve] [--timeout 600]
-
-Requires: pip install markdown
+    uv run assemble.py /path/to/name.fragment.md [--serve] [--timeout 600]
 """
 
 import argparse

@@ -41,3 +41,31 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 **After:**
 > The economic factors you mentioned are relevant here.
+
+---
+
+## 27. Subject Lines Pasted into Content
+
+**Problem:** Email-style subject lines or message headers get pasted directly into body text, typically when AI-generated email/message content is used without cleanup.
+
+**Before:**
+> Subject: Follow-up on Q3 Budget Discussion
+>
+> Hi team, I wanted to follow up on our earlier conversation about the Q3 budget allocations.
+
+**After:**
+> Hi team, I wanted to follow up on our earlier conversation about the Q3 budget allocations.
+
+---
+
+## 28. Placeholder Text and Templates
+
+**Words to watch:** [Name], [Your Name], [Company], [Date], 2025-XX-XX, [Insert X here]
+
+**Problem:** AI chatbots leave unfilled Mad Libs-style blanks, template markers, or malformed placeholder dates in generated text. These are dead giveaways of unreviewed AI output.
+
+**Before:**
+> Dear [Recipient Name], I am writing to express my interest in the [Position Title] role at [Company Name]. With my experience in [Relevant Field], I believe I would be a strong fit.
+
+**After:**
+> Dear Sarah, I am writing to express my interest in the Senior Analyst role at Acme Corp. With six years of experience in financial modelling, I believe I would be a strong fit.

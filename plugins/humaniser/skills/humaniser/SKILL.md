@@ -1,12 +1,25 @@
 ---
-name: humanizer
-description: This skill should be used when the user wants to humanise text, remove AI slop, make writing sound less like ChatGPT, or rewrite content to sound more natural and human-written. Common triggers - "humanise this", "make this sound less AI", "this reads like a robot wrote it", "de-AI this text", "remove AI patterns", "make this more natural", "clean up this AI-generated text". Detects and fixes 24 patterns of AI writing based on Wikipedia's "Signs of AI writing" guide, including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, and formulaic structure.
+name: humaniser
+description: Identifies and removes AI writing patterns to make text sound natural and human-written. Use when user says "humanise this", "make this sound less AI", "this reads like a robot wrote it", "de-AI this text", "remove AI patterns", "make this more natural", "clean up this AI-generated text". Detects and fixes 28 patterns based on Wikipedia's "Signs of AI writing" guide - inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure. Do NOT use for grammar-only proofreading, spell checking, or rewriting text that is already clearly human-written.
 allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 
-# Humanizer: Remove AI Writing Patterns
+# Humaniser: Remove AI Writing Patterns
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup. Last synced with Wikipedia source: 2026-03-03.
+
+> **Core Philosophy:** Removing AI patterns is table stakes. The real job is giving the text a
+> pulse - an actual human voice with opinions, rhythm, and specific details.
+
+## THE EXACT PROMPT
+
+When humanising text, work in this order:
+
+1. Scan all 28 patterns (see Pattern Summary below)
+2. Read the relevant reference file(s) for the patterns found
+3. Rewrite every flagged section - don't just remove, replace with voice
+4. Read the result aloud (mentally) - does it sound like a person thinking?
+5. Return the humanised text, then list patterns fixed as a brief footnote
 
 ## Your Task
 
@@ -76,7 +89,7 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 
 | # | Pattern | Key Signals |
 |---|---------|-------------|
-| 7 | AI vocabulary words | Additionally, delve, foster, garner, underscore, tapestry |
+| 7 | AI vocabulary words (era-specific) | 2023: delve, tapestry, pivotal; 2024: align with, fostering; 2025+: enhance, showcasing |
 | 8 | Copula avoidance | serves as, stands as, boasts, features, offers [a] |
 | 9 | Negative parallelisms | Not only...but..., It's not just...it's... |
 | 10 | Rule of three | three-item lists forced into every sentence |
@@ -93,6 +106,8 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 | 16 | Title Case headings | Every Word Capitalised In Headings |
 | 17 | Emoji decoration | emojis on headings and bullet points |
 | 18 | Curly quotation marks | \u201csmart quotes\u201d instead of "straight quotes" |
+| 25 | Unusual tables | small unnecessary tables better suited to prose |
+| 26 | Skipped heading levels | jumping from H2 to H4, violating heading hierarchy |
 
 ### Communication patterns ([detailed reference](references/communication-patterns.md))
 
@@ -101,6 +116,8 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 | 19 | Chat artifacts | I hope this helps, Let me know, Here is a... |
 | 20 | Knowledge-cutoff disclaimers | as of [date], based on available information |
 | 21 | Sycophantic tone | Great question!, You're absolutely right! |
+| 27 | Subject lines pasted into content | email-style subject lines left in body text |
+| 28 | Placeholder text and templates | [Name], 2025-XX-XX, unfilled Mad Libs blanks |
 
 ### Filler and hedging ([detailed reference](references/filler-patterns.md))
 
@@ -133,6 +150,14 @@ Provide:
 1. The rewritten text
 2. A brief summary of changes made (optional, if helpful)
 
+## When NOT to Use
+
+- Text that is already clearly human-written - humanising human writing introduces its own
+  artificiality
+- Grammar or spell-check only requests - use a different approach
+- Formal legal, medical, or regulatory text where plain precision matters more than voice
+- Code comments or technical documentation - different register, different rules
+
 ---
 
 ## Reference Files
@@ -140,8 +165,10 @@ Provide:
 | File | Contents |
 |------|----------|
 | [content-patterns.md](references/content-patterns.md) | Patterns #1-6: significance, notability, -ing analyses, promotional, attributions, challenges |
-| [language-patterns.md](references/language-patterns.md) | Patterns #7-12: AI vocabulary, copula avoidance, parallelisms, rule of three, synonyms, ranges |
-| [style-patterns.md](references/style-patterns.md) | Patterns #13-18: em dashes, boldface, lists, title case, emojis, curly quotes |
-| [communication-patterns.md](references/communication-patterns.md) | Patterns #19-21: chat artifacts, disclaimers, sycophancy |
+| [language-patterns.md](references/language-patterns.md) | Patterns #7-12: AI vocabulary (era-specific), copula avoidance, parallelisms, rule of three, synonyms, ranges |
+| [style-patterns.md](references/style-patterns.md) | Patterns #13-18, #25-26: em dashes, boldface, lists, title case, emojis, curly quotes, tables, heading levels |
+| [communication-patterns.md](references/communication-patterns.md) | Patterns #19-21, #27-28: chat artifacts, disclaimers, sycophancy, subject lines, placeholder text |
 | [filler-patterns.md](references/filler-patterns.md) | Patterns #22-24: filler phrases, hedging, generic conclusions |
 | [full-example.md](references/full-example.md) | Comprehensive walkthrough with annotated changes + Wikipedia source |
+| [wikipedia-digest.md](references/wikipedia-digest.md) | Structured digest of Wikipedia source for future diff comparison |
+| [evals.md](references/evals.md) | Eval test suite: trigger tests, negative tests, pattern detection cases, quality rubric |

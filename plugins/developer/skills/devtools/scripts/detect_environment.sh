@@ -21,7 +21,8 @@ detect_environment() {
             return 0
             ;;
         Linux)
-            # Double-check it's not WSL
+            # Defensive fallback: re-check WSL in case the initial /proc/version check
+            # at the top was skipped (e.g. uname returned Linux before /proc was mounted)
             if [[ -f /proc/version ]] && grep -qiE "(microsoft|wsl)" /proc/version; then
                 echo "wsl2"
             else

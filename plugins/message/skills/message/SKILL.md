@@ -9,12 +9,6 @@ allowed-tools: Bash, Write, Read, Edit
 
 Create rich text messages that paste perfectly into Gmail, Outlook, or convert to WhatsApp-formatted text. Fragments are written in Markdown - the build script converts to platform-specific HTML automatically.
 
-## Setup
-
-The assembly script requires the Python `markdown` package:
-
-    pip install markdown
-
 ## Architecture
 
 ```
@@ -31,14 +25,13 @@ The fragment is the source of truth. The assembled HTML is a derived output. Nev
 
 1. Draft email content in conversation
 2. Write a `.fragment.md` file to `data/writing/email_drafts/`
-3. Run the assembler to produce the full preview HTML
-4. Launch the preview server
+3. Run the assembler with `--serve` to produce the preview HTML and launch the server
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/assemble.py /path/to/name.fragment.md --serve
+uv run .claude/skills/message/scripts/assemble.py /path/to/name.fragment.md --serve
 ```
 
-This single command assembles the fragment into a full HTML preview and launches the server. Run with `run_in_background: true`.
+Run with `run_in_background: true`. The server picks a random free port and prints the URL. The preview auto-refreshes when the HTML file changes - no manual browser refresh needed.
 
 ## Edit Workflow
 
@@ -46,11 +39,13 @@ When editing an existing email (argument provided, or user asks to change someth
 
 1. Read the small `.fragment.md` file
 2. Use the Edit tool to make targeted changes
-3. Re-run the assembler to rebuild the preview
+3. Re-run the assembler **without** `--serve` to rebuild the preview
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/assemble.py /path/to/name.fragment.md --serve
+uv run .claude/skills/message/scripts/assemble.py /path/to/name.fragment.md
 ```
+
+The preview server is still running in the background from the create step. The assembler overwrites the HTML file atomically, and the browser auto-refreshes within 2 seconds. Do **not** re-launch the server on edits - the user keeps the same URL.
 
 ## Fragment Format
 
@@ -183,6 +178,16 @@ Instruct user:
 
 Legacy `.fragment.html` files still work. The assembler detects the extension and uses the appropriate parser. For HTML fragments, the same body is used for all three platform views (matching previous behaviour).
 
+## Structure
+
+Follow this order in every email:
+
+1. **Lead with the point** - the request, update, instruction, or information the recipient needs to act on. This is why they opened the email.
+2. **Supporting detail** - context, logistics, or reference material that supports the lead.
+3. **Warm close** - any personal, relational, or appreciative content goes at the end, just before the sign-off. Gratitude, compliments, looking-forward sentiments, and rapport-building belong here - never at the top.
+
+The recipient should know what the email is about within the first two lines. Warmth is the exit feeling, not the entrance.
+
 ## Tone
 
 - Write naturally, as a human would compose
@@ -191,6 +196,23 @@ Legacy `.fragment.html` files still work. The assembler detects the extension an
 - Match the recipient's formality level
 - Use British English spelling (colour, analyse, organise, behaviour, centre)
 
+## Henrik's Default Details
+
+Use these when composing emails on Henrik's behalf:
+
+| Purpose | Email |
+|---------|-------|
+| Primary / From address | admin@henriksoderlund.com |
+| Google platform access requests (GA4, GTM, Google Ads, Search Console, etc.) | admin@henriksoderlund.com |
+
+Sign-off block:
+
+```
+Henrik Soederlund
+Independent Digital Consultant
+admin@henriksoderlund.com
+```
+
 ## References
 
 - `references/outlook-formatting.md` - Outlook element styles and colour palette reference
@@ -198,4 +220,8 @@ Legacy `.fragment.html` files still work. The assembler detects the extension an
 
 ## After Preview
 
-Once the user has the preview URL, ask whether they'd like to run the **humanizer** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humanizer skill on this draft to make it sound more natural?"
+Once the user has the preview URL, ask whether they'd like to run the **humaniser** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humaniser skill on this draft to make it sound more natural?"
+
+## Post-Draft Actions
+
+After saving a draft, prompt Henrik: "Log this to the client comms log?" If yes, write the entry to `data/consulting/clients/[slug]/comms/_comms-log.json` via inline Python or the Edit tool (`manage_comms.py` is read-only - no --add flag).

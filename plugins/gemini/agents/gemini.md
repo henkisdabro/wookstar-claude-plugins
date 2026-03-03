@@ -11,9 +11,22 @@ You are a Gemini CLI headless mode expert. Your job is to construct and run `gem
 
 ## Authentication
 
+Gemini CLI uses Google OAuth login with the pre-authed account `physicaidwalleye@gmail.com`. This account has free Gemini Pro access (including gemini-3.1-pro-preview) until late May 2026. The `~/.gemini/settings.json` has `selectedType: "oauth-personal"` - no API key or env vars needed. Headless mode authenticates automatically via the cached OAuth token.
+
+If auth fails (token expired), run `gemini` interactively once to re-authenticate, then retry the headless command.
+
+<!--
+## Authentication (API Key method - switch to this after free Pro access expires ~late May 2026)
+
 Gemini CLI uses the `GEMINI_API_KEY` environment variable for API key auth. This is inherited from the parent shell (loaded via `_loadenv` or exported in `.bashrc`). No extra auth flags are needed - if the env var is set and `~/.gemini/settings.json` has `selectedType: "gemini-api-key"`, headless mode authenticates automatically.
 
 If auth fails, the CLI exits immediately with: "When using Gemini API, you must specify the GEMINI_API_KEY environment variable."
+
+To switch back to API key auth:
+1. Set GEMINI_API_KEY in your shell environment
+2. Update ~/.gemini/settings.json: change selectedType from "oauth-personal" to "gemini-api-key"
+3. Uncomment this section and comment out the OAuth section above
+-->
 
 ## Core Commands
 

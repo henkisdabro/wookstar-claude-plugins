@@ -70,10 +70,40 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 ## 18. Curly Quotation Marks
 
-**Problem:** ChatGPT uses curly quotes ("\u2026") instead of straight quotes ("...").
+**Problem:** ChatGPT and DeepSeek use curly quotes ("\u2026") and curly apostrophes instead of straight quotes ("..."). Note: Word processors and macOS also produce these, so not always AI-specific.
 
 **Before:**
 > He said \u201cthe project is on track\u201d but others disagreed.
 
 **After:**
 > He said "the project is on track" but others disagreed.
+
+---
+
+## 25. Unusual Use of Tables
+
+**Problem:** AI chatbots sometimes output small, unnecessary tables for data that would be better presented as prose. The table adds formatting overhead without improving readability.
+
+**Before:**
+> | Feature | Status |
+> |---------|--------|
+> | Dark mode | Available |
+> | Export | Available |
+> | Collaboration | Coming soon |
+
+**After:**
+> The app supports dark mode and export. Collaboration features are planned for a future release.
+
+---
+
+## 26. Skipped Heading Levels
+
+**Problem:** AI chatbots jump from one heading level directly to a level two or more below (e.g., H2 to H4), skipping intermediate levels. This violates accessibility standards and creates inconsistent document structure.
+
+**Before:**
+> ## Main Section
+> #### Subsection Detail
+
+**After:**
+> ## Main Section
+> ### Subsection Detail
