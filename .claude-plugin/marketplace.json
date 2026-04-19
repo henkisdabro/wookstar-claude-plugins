@@ -6,15 +6,15 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.4.0",
+    "version": "6.5.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
     {
       "name": "developer",
       "source": "./plugins/developer",
-      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 4 skills (webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
-      "version": "2.3.0",
+      "description": "Professional development toolkit: 3 commands (containerize, PRP generation/execution) + 4 skills (webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
+      "version": "3.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -60,26 +60,6 @@
         "office"
       ],
       "category": "documents"
-    },
-    {
-      "name": "claudecode",
-      "source": "./plugins/claudecode",
-      "description": "Claude Code thinking tools: 2 commands (ultra-think for deep analytical reasoning, reflection for improving CLAUDE.md instructions)",
-      "version": "3.1.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "claude-code",
-        "thinking",
-        "reasoning",
-        "analysis",
-        "reflection",
-        "meta"
-      ],
-      "category": "meta"
     },
     {
       "name": "timezone-tools",

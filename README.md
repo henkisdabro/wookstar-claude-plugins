@@ -22,9 +22,6 @@ Then install the plugins you need:
 # Shopify development
 /plugin install shopify-developer@wookstar-claude-plugins
 
-# Claude Code thinking tools
-/plugin install claudecode@wookstar-claude-plugins
-
 # Writing
 /plugin install humanise@wookstar-claude-plugins
 
@@ -244,14 +241,13 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 
 ### Developer
 
-**Complete full-stack development suite**
+**Professional development toolkit**
 
 **Includes:**
 
-- 3 agents: fullstack-developer, validation-gates, documentation-manager
 - 3 commands: /containerize, /generate-prp, /execute-prp
 - 4 skills: webapp-testing, devtools, prp-generator, fifteen-factor-app
-- 6 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7
+- 5 MCP servers: Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7
 
 **Installation:**
 
@@ -259,7 +255,7 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 /plugin install developer@wookstar-claude-plugins
 ```
 
-**Use Cases:** Web development, testing, browser automation, technical documentation, architecture design
+**Use Cases:** Containerisation, PRP-driven development, browser automation, Chrome DevTools, architecture design
 
 ---
 
@@ -298,24 +294,6 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 **Use Cases:** Custom theme development, Liquid templating, headless storefronts, app development
 
 [View Shopify Developer Documentation](./plugins/shopify-developer/README.md)
-
----
-
-### Claude Code
-
-**Thinking and reasoning tools**
-
-**Includes:**
-
-- 2 commands: /ultra-think (deep analytical reasoning), /reflection (improve CLAUDE.md)
-
-**Installation:**
-
-```bash
-/plugin install claudecode@wookstar-claude-plugins
-```
-
-**Use Cases:** Complex problem-solving, multi-perspective analysis, improving Claude Code configuration
 
 ---
 
@@ -667,6 +645,46 @@ For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koal
 
 ---
 
+## Recommended Companion Plugins
+
+Wookstar covers domain-specific skills not found elsewhere. For core Claude Code capabilities, the **[official Anthropic plugin marketplace](https://github.com/anthropics/claude-plugins-official)** is the best complement. Install it alongside wookstar:
+
+```bash
+/plugin marketplace add anthropics/claude-plugins-official
+```
+
+### Recommended official plugins
+
+**Development agents** (replaces the agents previously in this pack):
+
+```bash
+/plugin install feature-dev@claude-plugins-official       # Full-stack developer + validation + docs agents
+/plugin install code-review@claude-plugins-official       # In-depth code review agent
+/plugin install pr-review-toolkit@claude-plugins-official # PR review workflows
+/plugin install agent-sdk-dev@claude-plugins-official     # Claude Agent SDK development
+```
+
+**LSP servers** (for languages not covered by this pack's lsp-* plugins):
+
+```bash
+/plugin install typescript-lsp@claude-plugins-official    # TypeScript + JavaScript
+/plugin install pyright-lsp@claude-plugins-official       # Python (Pyright)
+```
+
+**Claude Code meta-tools**:
+
+```bash
+/plugin install claude-md-management@claude-plugins-official  # Improve and manage CLAUDE.md
+/plugin install hookify@claude-plugins-official               # Write and manage hooks
+/plugin install skill-creator@claude-plugins-official         # Create your own skills
+/plugin install commit-commands@claude-plugins-official       # Git commit helpers
+/plugin install context7@claude-plugins-official              # Up-to-date library docs lookup
+/plugin install playwright@claude-plugins-official            # Browser automation testing
+/plugin install ralph-loop@claude-plugins-official            # Autonomous loop mode
+```
+
+---
+
 ## Documentation
 
 - **[CLAUDE.md](./CLAUDE.md)** - Developer guide for working with this marketplace
@@ -674,7 +692,6 @@ For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koal
   - [Developer](./plugins/developer/README.md)
   - [Documents](./plugins/documents/README.md)
   - [Shopify Developer](./plugins/shopify-developer/README.md)
-  - [Claude Code](./plugins/claudecode/README.md)
   - [Humanise](./plugins/humanise/README.md)
   - [Google Tag Manager](./plugins/google-tagmanager/README.md)
   - [Google Analytics](./plugins/google-analytics/README.md)
