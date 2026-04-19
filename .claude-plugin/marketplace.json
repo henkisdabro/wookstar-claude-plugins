@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.5.0",
+    "version": "6.6.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -634,7 +634,8 @@
             ".less": "less"
           }
         }
-      }
+      },
+      "strict": false
     },
     {
       "name": "lsp-html",
@@ -664,7 +665,8 @@
             ".htm": "html"
           }
         }
-      }
+      },
+      "strict": false
     },
     {
       "name": "lsp-json",
@@ -696,7 +698,8 @@
             ".jsonc": "jsonc"
           }
         }
-      }
+      },
+      "strict": false
     },
     {
       "name": "lsp-yaml",
@@ -730,7 +733,8 @@
             ".yml": "yaml"
           }
         }
-      }
+      },
+      "strict": false
     },
     {
       "name": "lsp-tailwind",
@@ -766,7 +770,8 @@
             ".js": "javascript"
           }
         }
-      }
+      },
+      "strict": false
     },
     {
       "name": "lsp-bash",
@@ -799,7 +804,8 @@
             ".bash": "shellscript"
           }
         }
-      }
+      },
+      "strict": false
     }
   ]
 }
