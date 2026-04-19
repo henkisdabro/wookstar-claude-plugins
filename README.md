@@ -25,8 +25,8 @@ Then install the plugins you need:
 # Claude Code thinking tools
 /plugin install claudecode@wookstar-claude-plugins
 
-# Skill development
-/plugin install ultimate-skill-creator@wookstar-claude-plugins
+# Writing
+/plugin install humanise@wookstar-claude-plugins
 
 # Analytics (standalone)
 /plugin install google-tagmanager@wookstar-claude-plugins
@@ -92,7 +92,7 @@ claude plugin uninstall productivity@wookstar-claude-plugins
 claude plugin uninstall marketing@wookstar-claude-plugins
 claude plugin uninstall utilities@wookstar-claude-plugins
 
-# Update marketplace to get v6.0.0
+# Update marketplace to get v6.2.0
 claude plugin marketplace update wookstar-claude-plugins
 
 # Remove leftover plugin folders
@@ -317,33 +317,6 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 ```
 
 **Use Cases:** Complex problem-solving, multi-perspective analysis, improving Claude Code configuration
-
----
-
-### Ultimate Skill Creator
-
-**Advanced skill development toolkit**
-
-**Requires:** [plugin-dev@claude-plugins-official](https://github.com/anthropics/claude-plugins-official) for validation agents
-
-**Includes:**
-
-- 1 agent: skill-architect (structure design and archetype recommendations)
-- 2 commands: /create-skill-ultimate (guided workflow), /setup-skill-hook (automatic hook setup)
-- 1 skill: skill-mastery (comprehensive development guide with 4 reference guides and 2 utility scripts)
-- 1 hook: skill-activation-prompt (auto-suggest relevant skills)
-
-**Installation:**
-
-```bash
-# Install required dependency first
-/plugin install plugin-dev@claude-plugins-official
-
-# Then install the plugin
-/plugin install ultimate-skill-creator@wookstar-claude-plugins
-```
-
-**Use Cases:** Creating professional skills, token-efficient architecture, progressive disclosure design
 
 ---
 
@@ -721,7 +694,7 @@ For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koal
   - [Documents](./plugins/documents/README.md)
   - [Shopify Developer](./plugins/shopify-developer/README.md)
   - [Claude Code](./plugins/claudecode/README.md)
-  - [Ultimate Skill Creator](./plugins/ultimate-skill-creator/README.md)
+  - [Humanise](./plugins/humanise/README.md)
   - [Google Tag Manager](./plugins/google-tagmanager/README.md)
   - [Google Analytics](./plugins/google-analytics/README.md)
   - [Google Ads Scripts](./plugins/google-ads-scripts/README.md)

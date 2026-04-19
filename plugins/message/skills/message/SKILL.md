@@ -220,7 +220,7 @@ admin@henriksoderlund.com
 
 ## After Preview
 
-Once the user has the preview URL, ask whether they'd like to run the **humaniser** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humaniser skill on this draft to make it sound more natural?"
+Once the user has the preview URL, ask whether they'd like to run the **humanise** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humanise skill on this draft to make it sound more natural?"
 
 ## Post-Draft Actions
 

@@ -1,12 +1,12 @@
 ---
-name: humaniser
-description: Identifies and removes AI writing patterns to make text sound natural and human-written. Use when user says "humanise this", "make this sound less AI", "this reads like a robot wrote it", "de-AI this text", "remove AI patterns", "make this more natural", "clean up this AI-generated text". Detects and fixes 28 patterns based on Wikipedia's "Signs of AI writing" guide - inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure. Do NOT use for grammar-only proofreading, spell checking, or rewriting text that is already clearly human-written.
+name: humanise
+description: Identifies and removes AI writing patterns to make text sound natural and human-written. Use when user says "humanise this", "make this sound less AI", "this reads like a robot wrote it", "de-AI this text", "remove AI patterns", "make this more natural", "clean up this AI-generated text". Detects and fixes 29 patterns based on Wikipedia's "Signs of AI writing" guide - inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks. Do NOT use for grammar-only proofreading, spell checking, or rewriting text that is already clearly human-written.
 allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 
 # Humaniser: Remove AI Writing Patterns
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup. Last synced with Wikipedia source: 2026-03-03.
+You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup. Last synced with Wikipedia source: 2026-04-18.
 
 > **Core Philosophy:** Removing AI patterns is table stakes. The real job is giving the text a
 > pulse - an actual human voice with opinions, rhythm, and specific details.
@@ -15,7 +15,7 @@ You are a writing editor that identifies and removes signs of AI-generated text 
 
 When humanising text, work in this order:
 
-1. Scan all 28 patterns (see Pattern Summary below)
+1. Scan all 29 patterns (see Pattern Summary below)
 2. Read the relevant reference file(s) for the patterns found
 3. Rewrite every flagged section - don't just remove, replace with voice
 4. Read the result aloud (mentally) - does it sound like a person thinking?
@@ -80,8 +80,8 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 |---|---------|-------------|
 | 1 | Inflated significance/legacy | stands as, testament, pivotal, broader, indelible mark |
 | 2 | Inflated notability | independent coverage, social media presence, leading expert |
-| 3 | Superficial -ing analyses | highlighting..., ensuring..., reflecting..., showcasing... |
-| 4 | Promotional language | boasts, vibrant, nestled, breathtaking, must-visit, stunning |
+| 3 | Superficial -ing analyses | highlighting..., ensuring..., reflecting..., showcasing..., valuable insights, align/resonate with |
+| 4 | Promotional language | boasts, vibrant, nestled, breathtaking, featuring, diverse array, stunning |
 | 5 | Vague attributions | Experts argue, Industry reports, Some critics argue |
 | 6 | Formulaic challenges sections | Despite its..., Despite these challenges, Future Outlook |
 
@@ -89,9 +89,9 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 
 | # | Pattern | Key Signals |
 |---|---------|-------------|
-| 7 | AI vocabulary words (era-specific) | 2023: delve, tapestry, pivotal; 2024: align with, fostering; 2025+: enhance, showcasing |
+| 7 | AI vocabulary words (era-specific) | 2023: delve, tapestry, bolstered; 2024: align with, fostering, pivotal; 2025+: enhance, showcasing |
 | 8 | Copula avoidance | serves as, stands as, boasts, features, offers [a] |
-| 9 | Negative parallelisms | Not only...but..., It's not just...it's... |
+| 9 | Negative parallelisms (two subtypes) | "Not only...but also..." / "It's not just...it's..." / "No X, no Y, just Z" |
 | 10 | Rule of three | three-item lists forced into every sentence |
 | 11 | Synonym cycling | protagonist/main character/central figure/hero cycling |
 | 12 | False ranges | from X to Y where X and Y aren't on a scale |
@@ -105,9 +105,10 @@ Use this table to **identify** patterns. When you find matches, read the linked 
 | 15 | Inline-header lists | **Header:** description bullet points |
 | 16 | Title Case headings | Every Word Capitalised In Headings |
 | 17 | Emoji decoration | emojis on headings and bullet points |
-| 18 | Curly quotation marks | \u201csmart quotes\u201d instead of "straight quotes" |
+| 18 | Curly quotation marks | \u201csmart quotes\u201d instead of "straight quotes" (ChatGPT/DeepSeek, not Gemini/Claude) |
 | 25 | Unusual tables | small unnecessary tables better suited to prose |
 | 26 | Skipped heading levels | jumping from H2 to H4, violating heading hierarchy |
+| 29 | Thematic breaks before headings | `----` horizontal rules inserted before every heading |
 
 ### Communication patterns ([detailed reference](references/communication-patterns.md))
 
@@ -166,7 +167,7 @@ Provide:
 |------|----------|
 | [content-patterns.md](references/content-patterns.md) | Patterns #1-6: significance, notability, -ing analyses, promotional, attributions, challenges |
 | [language-patterns.md](references/language-patterns.md) | Patterns #7-12: AI vocabulary (era-specific), copula avoidance, parallelisms, rule of three, synonyms, ranges |
-| [style-patterns.md](references/style-patterns.md) | Patterns #13-18, #25-26: em dashes, boldface, lists, title case, emojis, curly quotes, tables, heading levels |
+| [style-patterns.md](references/style-patterns.md) | Patterns #13-18, #25-26, #29: em dashes, boldface, lists, title case, emojis, curly quotes, tables, heading levels, thematic breaks |
 | [communication-patterns.md](references/communication-patterns.md) | Patterns #19-21, #27-28: chat artifacts, disclaimers, sycophancy, subject lines, placeholder text |
 | [filler-patterns.md](references/filler-patterns.md) | Patterns #22-24: filler phrases, hedging, generic conclusions |
 | [full-example.md](references/full-example.md) | Comprehensive walkthrough with annotated changes + Wikipedia source |

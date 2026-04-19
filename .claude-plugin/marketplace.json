@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.1.0",
+    "version": "6.2.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -78,26 +78,6 @@
         "analysis",
         "reflection",
         "meta"
-      ],
-      "category": "meta"
-    },
-    {
-      "name": "ultimate-skill-creator",
-      "source": "./plugins/ultimate-skill-creator",
-      "description": "Advanced skill development toolkit: 1 skill (/create-ultimate-skill with 2 reference guides and 2 utility scripts) + 1 command (/setup-skill-hook) + 1 hook (skill-activation-prompt). Create, review, and iterate on Claude Code skills using Anthropic's official best practices.",
-      "version": "2.0.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "skills",
-        "skill-creator",
-        "development",
-        "best-practices",
-        "meta",
-        "archetypes"
       ],
       "category": "meta"
     },
@@ -541,18 +521,18 @@
       "category": "productivity"
     },
     {
-      "name": "humanizer",
-      "source": "./plugins/humanizer",
-      "description": "Humanise text and remove AI writing patterns - detects and fixes 24 AI tell-tales including inflated language, promotional tone, AI vocabulary, filler phrases, and formulaic structure",
-      "version": "3.0.0",
+      "name": "humanise",
+      "source": "./plugins/humanise",
+      "description": "Humanise text and remove AI writing patterns - detects and fixes 29 AI tell-tales including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks",
+      "version": "4.0.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
-        "humanizer",
         "humanise",
+        "humanizer",
         "ai-detection",
         "ai-writing",
         "writing",
