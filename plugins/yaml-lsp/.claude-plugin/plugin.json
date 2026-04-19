@@ -1,0 +1,9 @@
+{
+  "name": "yaml-lsp",
+  "description": "YAML language server - provides schema validation, completions, hover, and formatting for YAML and YML files",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

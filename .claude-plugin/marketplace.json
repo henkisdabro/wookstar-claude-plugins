@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.0.0",
+    "version": "6.1.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -582,6 +582,155 @@
         "best-practices"
       ],
       "category": "development"
+    },
+    {
+      "name": "css-lsp",
+      "source": "./plugins/css-lsp",
+      "description": "CSS, SCSS, and Less language server via vscode-langservers-extracted - provides diagnostics, completions, hover documentation, and formatting for stylesheets",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "css", "scss", "less", "stylesheets", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "css": {
+          "command": "vscode-css-language-server",
+          "args": ["--stdio"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".css": "css",
+            ".scss": "scss",
+            ".less": "less"
+          }
+        }
+      }
+    },
+    {
+      "name": "html-lsp",
+      "source": "./plugins/html-lsp",
+      "description": "HTML language server via vscode-langservers-extracted - provides tag and attribute completions, diagnostics, hover documentation, and formatting for HTML files",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "html", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "html": {
+          "command": "vscode-html-language-server",
+          "args": ["--stdio"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".html": "html",
+            ".htm": "html"
+          }
+        }
+      }
+    },
+    {
+      "name": "json-lsp",
+      "source": "./plugins/json-lsp",
+      "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "json", "jsonc", "schema", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "json": {
+          "command": "vscode-json-language-server",
+          "args": ["--stdio"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".json": "json",
+            ".jsonc": "jsonc"
+          }
+        }
+      }
+    },
+    {
+      "name": "yaml-lsp",
+      "source": "./plugins/yaml-lsp",
+      "description": "YAML language server - provides schema validation, completions, hover documentation, and formatting for YAML files. Auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and more",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "yaml", "yml", "schema", "kubernetes", "docker", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "yaml": {
+          "command": "yaml-language-server",
+          "args": ["--stdio"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".yaml": "yaml",
+            ".yml": "yaml"
+          }
+        }
+      }
+    },
+    {
+      "name": "tailwind-lsp",
+      "source": "./plugins/tailwind-lsp",
+      "description": "Official Tailwind CSS language server - provides class completions with CSS previews, hover documentation, and diagnostics across HTML, CSS, and JS/TS files",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "tailwind", "tailwindcss", "css", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "tailwindcss": {
+          "command": "tailwindcss-language-server",
+          "args": ["--stdio"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".html": "html",
+            ".css": "css",
+            ".tsx": "typescriptreact",
+            ".jsx": "javascriptreact",
+            ".ts": "typescript",
+            ".js": "javascript"
+          }
+        }
+      }
+    },
+    {
+      "name": "bash-lsp",
+      "source": "./plugins/bash-lsp",
+      "description": "Bash and shell script language server - provides ShellCheck-powered diagnostics, completions, hover documentation, and go-to-definition for shell scripts",
+      "version": "1.0.0",
+      "author": {
+        "name": "Henrik Soederlund",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": ["lsp", "bash", "shell", "shellcheck", "scripting", "language-server"],
+      "category": "development",
+      "lspServers": {
+        "bash": {
+          "command": "bash-language-server",
+          "args": ["start"],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".sh": "shellscript",
+            ".bash": "shellscript"
+          }
+        }
+      }
     }
   ]
 }

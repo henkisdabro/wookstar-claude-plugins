@@ -1,0 +1,9 @@
+{
+  "name": "tailwind-lsp",
+  "description": "Tailwind CSS language server - provides class completions, hover previews, and diagnostics for Tailwind CSS across HTML, CSS, and JS/TS files",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}

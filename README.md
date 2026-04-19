@@ -44,6 +44,17 @@ Then install the plugins you need:
 /plugin install timezone-tools@wookstar-claude-plugins
 ```
 
+Or install LSP servers for real-time code intelligence (requires separate binary install - see each plugin's README):
+
+```bash
+/plugin install css-lsp@wookstar-claude-plugins       # CSS, SCSS, Less
+/plugin install html-lsp@wookstar-claude-plugins      # HTML
+/plugin install json-lsp@wookstar-claude-plugins      # JSON, JSONC
+/plugin install yaml-lsp@wookstar-claude-plugins      # YAML
+/plugin install tailwind-lsp@wookstar-claude-plugins  # Tailwind CSS
+/plugin install bash-lsp@wookstar-claude-plugins      # Bash/Shell
+```
+
 Or install individual MCP servers without the full toolkits:
 
 ```bash
@@ -507,6 +518,143 @@ GOOGLE_PROJECT_ID=your-project-id
 
 ---
 
+## LSP Servers
+
+Language Server Protocol plugins add real-time code intelligence to Claude Code. Each LSP plugin requires its server binary to be installed separately before enabling the plugin.
+
+> **Shared package:** `css-lsp`, `html-lsp`, and `json-lsp` all use `vscode-langservers-extracted` - one `npm install -g vscode-langservers-extracted` covers all three.
+
+---
+
+### CSS LSP
+
+**CSS, SCSS, and Less code intelligence**
+
+**Requires:** `npm install -g vscode-langservers-extracted`
+
+**Supports:** `.css`, `.scss`, `.less`
+
+**Features:** Diagnostics, property completions, MDN hover docs, colour previews, formatting
+
+**Installation:**
+
+```bash
+npm install -g vscode-langservers-extracted
+/plugin install css-lsp@wookstar-claude-plugins
+```
+
+[View CSS LSP Documentation](./plugins/css-lsp/README.md)
+
+---
+
+### HTML LSP
+
+**HTML code intelligence**
+
+**Requires:** `npm install -g vscode-langservers-extracted`
+
+**Supports:** `.html`, `.htm`
+
+**Features:** Tag and attribute completions, hover docs, diagnostics, formatting, embedded CSS/JS support
+
+**Installation:**
+
+```bash
+npm install -g vscode-langservers-extracted
+/plugin install html-lsp@wookstar-claude-plugins
+```
+
+[View HTML LSP Documentation](./plugins/html-lsp/README.md)
+
+---
+
+### JSON LSP
+
+**JSON and JSONC code intelligence**
+
+**Requires:** `npm install -g vscode-langservers-extracted`
+
+**Supports:** `.json`, `.jsonc`
+
+**Features:** JSON Schema validation, completions, hover docs, syntax error highlighting, formatting
+
+**Installation:**
+
+```bash
+npm install -g vscode-langservers-extracted
+/plugin install json-lsp@wookstar-claude-plugins
+```
+
+[View JSON LSP Documentation](./plugins/json-lsp/README.md)
+
+---
+
+### YAML LSP
+
+**YAML code intelligence with schema support**
+
+**Requires:** `npm install -g yaml-language-server`
+
+**Supports:** `.yaml`, `.yml`
+
+**Features:** Schema validation, completions, hover docs, auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and 900+ formats via SchemaStore
+
+**Installation:**
+
+```bash
+npm install -g yaml-language-server
+/plugin install yaml-lsp@wookstar-claude-plugins
+```
+
+[View YAML LSP Documentation](./plugins/yaml-lsp/README.md)
+
+---
+
+### Tailwind LSP
+
+**Tailwind CSS class completions and previews**
+
+**Requires:** `npm install -g @tailwindcss/language-server`
+
+**Supports:** `.html`, `.css`, `.tsx`, `.jsx`, `.ts`, `.js`
+
+**Features:** Class completions with live CSS previews on hover, unknown class warnings, `@apply` directive support, reads your `tailwind.config.js` for custom theme
+
+**Installation:**
+
+```bash
+npm install -g @tailwindcss/language-server
+/plugin install tailwind-lsp@wookstar-claude-plugins
+```
+
+[View Tailwind LSP Documentation](./plugins/tailwind-lsp/README.md)
+
+---
+
+### Bash LSP
+
+**Bash and shell script code intelligence**
+
+**Requires:** `npm install -g bash-language-server` + (recommended) `brew install shellcheck`
+
+**Supports:** `.sh`, `.bash`
+
+**Features:** ShellCheck-powered diagnostics, variable and command completions, hover docs, go-to-definition for functions
+
+**Installation:**
+
+```bash
+npm install -g bash-language-server
+brew install shellcheck  # macOS - provides error detection
+/plugin install bash-lsp@wookstar-claude-plugins
+```
+
+For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koalaman.shellcheck`
+
+[View Bash LSP Documentation](./plugins/bash-lsp/README.md)
+
+---
+
 ## Usage Examples
 
 ### Full-Stack Development
@@ -583,6 +731,13 @@ GOOGLE_PROJECT_ID=your-project-id
   - [Gemini](./plugins/gemini/README.md)
   - [Codex](./plugins/codex/README.md)
   - [Timezone Tools](./plugins/timezone-tools/README.md)
+- **LSP Servers:**
+  - [CSS LSP](./plugins/css-lsp/README.md)
+  - [HTML LSP](./plugins/html-lsp/README.md)
+  - [JSON LSP](./plugins/json-lsp/README.md)
+  - [YAML LSP](./plugins/yaml-lsp/README.md)
+  - [Tailwind LSP](./plugins/tailwind-lsp/README.md)
+  - [Bash LSP](./plugins/bash-lsp/README.md)
 
 ---
 
@@ -616,10 +771,10 @@ claude plugin validate .
 
 ## Marketplace Stats
 
-- **Version:** 6.0.0
-- **Total Plugins:** 24 (13 toolkits + 11 individual MCPs)
-- **Components:** 4 agents, 9 commands, 25 skills, 10 embedded MCP servers
-- **Categories:** Development, Documents, Analytics, E-commerce, AI, Utilities
+- **Version:** 6.1.0
+- **Total Plugins:** 37 (13 toolkits + 11 individual MCPs + 6 LSP servers + 7 others)
+- **Components:** 4 agents, 9 commands, 25 skills, 10 embedded MCP servers, 6 LSP servers
+- **Categories:** Development, Documents, Analytics, E-commerce, AI, Utilities, LSP
 
 ---
 

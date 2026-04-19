@@ -1,0 +1,9 @@
+{
+  "name": "bash-lsp",
+  "description": "Bash and shell script language server - provides diagnostics, completions, hover, and go-to-definition for shell scripts",
+  "author": {
+    "name": "Henrik Soederlund",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0"
+}
