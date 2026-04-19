@@ -36,7 +36,6 @@ Then install the plugins you need:
 # Automation skills (standalone)
 /plugin install google-apps-script@wookstar-claude-plugins
 /plugin install tampermonkey@wookstar-claude-plugins
-/plugin install git-worktrees@wookstar-claude-plugins
 /plugin install gemini@wookstar-claude-plugins
 /plugin install codex@wookstar-claude-plugins
 
@@ -133,7 +132,7 @@ find ~ -path "*/.claude/settings.json" -exec grep -l -E "productivity|marketing|
 /plugin install timezone-tools@wookstar-claude-plugins        # replaces utilities
 /plugin install google-apps-script@wookstar-claude-plugins    # was in productivity
 /plugin install tampermonkey@wookstar-claude-plugins          # was in productivity
-/plugin install git-worktrees@wookstar-claude-plugins         # was productivity commands
+/plugin install git-worktrees@wookstar-claude-plugins         # removed - native Claude Code support
 /plugin install google-tagmanager@wookstar-claude-plugins     # was in marketing
 /plugin install google-analytics@wookstar-claude-plugins      # was in marketing
 /plugin install google-ads-scripts@wookstar-claude-plugins    # was in marketing
@@ -251,7 +250,7 @@ claude plugin uninstall mcp-perplexity@wookstar-claude-plugins
 
 - 3 agents: fullstack-developer, validation-gates, documentation-manager
 - 3 commands: /containerize, /generate-prp, /execute-prp
-- 5 skills: git-commit-helper, webapp-testing, devtools, prp-generator, fifteen-factor-app
+- 4 skills: webapp-testing, devtools, prp-generator, fifteen-factor-app
 - 6 MCP servers: Chrome DevTools, Playwright, Cloudflare docs, Microsoft docs, Firecrawl, Context7
 
 **Installation:**
@@ -416,24 +415,6 @@ GOOGLE_PROJECT_ID=your-project-id
 ```
 
 **Use Cases:** Browser automation, page modification, web enhancement, userscripts
-
----
-
-### Git Worktrees
-
-**Parallel development workflow**
-
-**Includes:**
-
-- 1 skill: git-worktrees
-
-**Installation:**
-
-```bash
-/plugin install git-worktrees@wookstar-claude-plugins
-```
-
-**Use Cases:** Parallel feature development, A/B testing code changes, comparing implementation approaches
 
 ---
 
@@ -700,7 +681,6 @@ For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koal
   - [Google Ads Scripts](./plugins/google-ads-scripts/README.md)
   - [Google Apps Script](./plugins/google-apps-script/README.md)
   - [Tampermonkey](./plugins/tampermonkey/README.md)
-  - [Git Worktrees](./plugins/git-worktrees/README.md)
   - [Gemini](./plugins/gemini/README.md)
   - [Codex](./plugins/codex/README.md)
   - [Timezone Tools](./plugins/timezone-tools/README.md)

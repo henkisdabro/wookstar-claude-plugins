@@ -6,15 +6,15 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.3.0",
+    "version": "6.4.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
     {
       "name": "developer",
       "source": "./plugins/developer",
-      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 5 skills (git commit helper, webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
-      "version": "2.2.0",
+      "description": "Complete development suite: 3 expert agents (fullstack developer, validation gates, documentation manager) + 3 commands (containerize, PRP generation/execution) + 4 skills (webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
+      "version": "2.3.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -231,25 +231,6 @@
         "ppc"
       ],
       "category": "analytics"
-    },
-    {
-      "name": "git-worktrees",
-      "source": "./plugins/git-worktrees",
-      "description": "Parallel development workflow using git worktrees - prepare worktree directories and execute tasks across multiple isolated workspaces",
-      "version": "1.0.0",
-      "author": {
-        "name": "Henrik Soederlund",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "git",
-        "worktrees",
-        "parallel",
-        "development",
-        "workflow"
-      ],
-      "category": "development"
     },
     {
       "name": "gemini",
