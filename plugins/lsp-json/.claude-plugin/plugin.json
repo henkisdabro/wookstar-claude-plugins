@@ -1,5 +1,5 @@
 {
-  "name": "json-lsp",
+  "name": "lsp-json",
   "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
   "author": {
     "name": "Henrik Soederlund",

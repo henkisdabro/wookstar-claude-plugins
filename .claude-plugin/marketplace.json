@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.2.0",
+    "version": "6.3.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -302,7 +302,12 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "gemini", "ai", "google"],
+      "keywords": [
+        "mcp",
+        "gemini",
+        "ai",
+        "google"
+      ],
       "category": "ai",
       "mcpServers": "./.mcp.json"
     },
@@ -316,7 +321,12 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "perplexity", "search", "ai"],
+      "keywords": [
+        "mcp",
+        "perplexity",
+        "search",
+        "ai"
+      ],
       "category": "ai",
       "mcpServers": "./.mcp.json"
     },
@@ -329,7 +339,13 @@
         "name": "Anton Pidkuiko",
         "url": "https://github.com/antonpk1"
       },
-      "keywords": ["mcp", "excalidraw", "diagrams", "drawing", "visualisation"],
+      "keywords": [
+        "mcp",
+        "excalidraw",
+        "diagrams",
+        "drawing",
+        "visualisation"
+      ],
       "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
@@ -343,7 +359,17 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "cloudflare", "workers", "pages", "d1", "kv", "r2", "dns", "serverless"],
+      "keywords": [
+        "mcp",
+        "cloudflare",
+        "workers",
+        "pages",
+        "d1",
+        "kv",
+        "r2",
+        "dns",
+        "serverless"
+      ],
       "category": "development",
       "mcpServers": "./.mcp.json"
     },
@@ -357,7 +383,13 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "stocks", "finance", "alphavantage", "market-data"],
+      "keywords": [
+        "mcp",
+        "stocks",
+        "finance",
+        "alphavantage",
+        "market-data"
+      ],
       "category": "data",
       "mcpServers": "./.mcp.json"
     },
@@ -371,7 +403,13 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "crypto", "cryptocurrency", "coingecko", "market-data"],
+      "keywords": [
+        "mcp",
+        "crypto",
+        "cryptocurrency",
+        "coingecko",
+        "market-data"
+      ],
       "category": "data",
       "mcpServers": "./.mcp.json"
     },
@@ -385,7 +423,13 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "currency", "forex", "exchange", "conversion"],
+      "keywords": [
+        "mcp",
+        "currency",
+        "forex",
+        "exchange",
+        "conversion"
+      ],
       "category": "data",
       "mcpServers": "./.mcp.json"
     },
@@ -399,7 +443,12 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "fetch", "web", "http"],
+      "keywords": [
+        "mcp",
+        "fetch",
+        "web",
+        "http"
+      ],
       "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
@@ -413,7 +462,14 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "google", "workspace", "gmail", "drive", "calendar"],
+      "keywords": [
+        "mcp",
+        "google",
+        "workspace",
+        "gmail",
+        "drive",
+        "calendar"
+      ],
       "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
@@ -427,7 +483,13 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "mikrotik", "router", "network", "automation"],
+      "keywords": [
+        "mcp",
+        "mikrotik",
+        "router",
+        "network",
+        "automation"
+      ],
       "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
@@ -441,7 +503,12 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "n8n", "automation", "workflows"],
+      "keywords": [
+        "mcp",
+        "n8n",
+        "automation",
+        "workflows"
+      ],
       "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
@@ -455,7 +522,13 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "notion", "workspace", "notes", "database"],
+      "keywords": [
+        "mcp",
+        "notion",
+        "workspace",
+        "notes",
+        "database"
+      ],
       "category": "productivity",
       "mcpServers": "./.mcp.json"
     },
@@ -469,7 +542,12 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["mcp", "weather", "climate", "forecast"],
+      "keywords": [
+        "mcp",
+        "weather",
+        "climate",
+        "forecast"
+      ],
       "category": "utilities",
       "mcpServers": "./.mcp.json"
     },
@@ -564,8 +642,8 @@
       "category": "development"
     },
     {
-      "name": "css-lsp",
-      "source": "./plugins/css-lsp",
+      "name": "lsp-css",
+      "source": "./plugins/lsp-css",
       "description": "CSS, SCSS, and Less language server via vscode-langservers-extracted - provides diagnostics, completions, hover documentation, and formatting for stylesheets",
       "version": "1.0.0",
       "author": {
@@ -573,12 +651,21 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "css", "scss", "less", "stylesheets", "language-server"],
+      "keywords": [
+        "lsp",
+        "css",
+        "scss",
+        "less",
+        "stylesheets",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "css": {
           "command": "vscode-css-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".css": "css",
@@ -589,8 +676,8 @@
       }
     },
     {
-      "name": "html-lsp",
-      "source": "./plugins/html-lsp",
+      "name": "lsp-html",
+      "source": "./plugins/lsp-html",
       "description": "HTML language server via vscode-langservers-extracted - provides tag and attribute completions, diagnostics, hover documentation, and formatting for HTML files",
       "version": "1.0.0",
       "author": {
@@ -598,12 +685,18 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "html", "language-server"],
+      "keywords": [
+        "lsp",
+        "html",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "html": {
           "command": "vscode-html-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".html": "html",
@@ -613,8 +706,8 @@
       }
     },
     {
-      "name": "json-lsp",
-      "source": "./plugins/json-lsp",
+      "name": "lsp-json",
+      "source": "./plugins/lsp-json",
       "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
       "version": "1.0.0",
       "author": {
@@ -622,12 +715,20 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "json", "jsonc", "schema", "language-server"],
+      "keywords": [
+        "lsp",
+        "json",
+        "jsonc",
+        "schema",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "json": {
           "command": "vscode-json-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".json": "json",
@@ -637,8 +738,8 @@
       }
     },
     {
-      "name": "yaml-lsp",
-      "source": "./plugins/yaml-lsp",
+      "name": "lsp-yaml",
+      "source": "./plugins/lsp-yaml",
       "description": "YAML language server - provides schema validation, completions, hover documentation, and formatting for YAML files. Auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and more",
       "version": "1.0.0",
       "author": {
@@ -646,12 +747,22 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "yaml", "yml", "schema", "kubernetes", "docker", "language-server"],
+      "keywords": [
+        "lsp",
+        "yaml",
+        "yml",
+        "schema",
+        "kubernetes",
+        "docker",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "yaml": {
           "command": "yaml-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".yaml": "yaml",
@@ -661,8 +772,8 @@
       }
     },
     {
-      "name": "tailwind-lsp",
-      "source": "./plugins/tailwind-lsp",
+      "name": "lsp-tailwind",
+      "source": "./plugins/lsp-tailwind",
       "description": "Official Tailwind CSS language server - provides class completions with CSS previews, hover documentation, and diagnostics across HTML, CSS, and JS/TS files",
       "version": "1.0.0",
       "author": {
@@ -670,12 +781,20 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "tailwind", "tailwindcss", "css", "language-server"],
+      "keywords": [
+        "lsp",
+        "tailwind",
+        "tailwindcss",
+        "css",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "tailwindcss": {
           "command": "tailwindcss-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".html": "html",
@@ -689,8 +808,8 @@
       }
     },
     {
-      "name": "bash-lsp",
-      "source": "./plugins/bash-lsp",
+      "name": "lsp-bash",
+      "source": "./plugins/lsp-bash",
       "description": "Bash and shell script language server - provides ShellCheck-powered diagnostics, completions, hover documentation, and go-to-definition for shell scripts",
       "version": "1.0.0",
       "author": {
@@ -698,12 +817,21 @@
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": ["lsp", "bash", "shell", "shellcheck", "scripting", "language-server"],
+      "keywords": [
+        "lsp",
+        "bash",
+        "shell",
+        "shellcheck",
+        "scripting",
+        "language-server"
+      ],
       "category": "development",
       "lspServers": {
         "bash": {
           "command": "bash-language-server",
-          "args": ["start"],
+          "args": [
+            "start"
+          ],
           "transport": "stdio",
           "extensionToLanguage": {
             ".sh": "shellscript",

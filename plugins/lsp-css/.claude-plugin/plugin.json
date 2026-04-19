@@ -1,5 +1,5 @@
 {
-  "name": "css-lsp",
+  "name": "lsp-css",
   "description": "CSS, SCSS, and Less language server via vscode-langservers-extracted - provides diagnostics, completions, hover, and formatting for stylesheets",
   "author": {
     "name": "Henrik Soederlund",

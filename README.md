@@ -47,12 +47,12 @@ Then install the plugins you need:
 Or install LSP servers for real-time code intelligence (requires separate binary install - see each plugin's README):
 
 ```bash
-/plugin install css-lsp@wookstar-claude-plugins       # CSS, SCSS, Less
-/plugin install html-lsp@wookstar-claude-plugins      # HTML
-/plugin install json-lsp@wookstar-claude-plugins      # JSON, JSONC
-/plugin install yaml-lsp@wookstar-claude-plugins      # YAML
-/plugin install tailwind-lsp@wookstar-claude-plugins  # Tailwind CSS
-/plugin install bash-lsp@wookstar-claude-plugins      # Bash/Shell
+/plugin install lsp-css@wookstar-claude-plugins       # CSS, SCSS, Less
+/plugin install lsp-html@wookstar-claude-plugins      # HTML
+/plugin install lsp-json@wookstar-claude-plugins      # JSON, JSONC
+/plugin install lsp-yaml@wookstar-claude-plugins      # YAML
+/plugin install lsp-tailwind@wookstar-claude-plugins  # Tailwind CSS
+/plugin install lsp-bash@wookstar-claude-plugins      # Bash/Shell
 ```
 
 Or install individual MCP servers without the full toolkits:
@@ -705,12 +705,12 @@ For Linux: `sudo apt-get install shellcheck` | For Windows: `winget install koal
   - [Codex](./plugins/codex/README.md)
   - [Timezone Tools](./plugins/timezone-tools/README.md)
 - **LSP Servers:**
-  - [CSS LSP](./plugins/css-lsp/README.md)
-  - [HTML LSP](./plugins/html-lsp/README.md)
-  - [JSON LSP](./plugins/json-lsp/README.md)
-  - [YAML LSP](./plugins/yaml-lsp/README.md)
-  - [Tailwind LSP](./plugins/tailwind-lsp/README.md)
-  - [Bash LSP](./plugins/bash-lsp/README.md)
+  - [lsp-bash](./plugins/lsp-bash/README.md)
+  - [lsp-css](./plugins/lsp-css/README.md)
+  - [lsp-html](./plugins/lsp-html/README.md)
+  - [lsp-json](./plugins/lsp-json/README.md)
+  - [lsp-tailwind](./plugins/lsp-tailwind/README.md)
+  - [lsp-yaml](./plugins/lsp-yaml/README.md)
 
 ---
 

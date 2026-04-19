@@ -1,5 +1,5 @@
 {
-  "name": "html-lsp",
+  "name": "lsp-html",
   "description": "HTML language server via vscode-langservers-extracted - provides diagnostics, completions, hover, and formatting for HTML files",
   "author": {
     "name": "Henrik Soederlund",
