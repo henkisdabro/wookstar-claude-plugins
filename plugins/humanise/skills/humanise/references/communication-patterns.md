@@ -18,17 +18,23 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 ---
 
-## 20. Knowledge-Cutoff Disclaimers
+## 20. Knowledge-Cutoff Disclaimers and Source-Gap Speculation
 
-**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information...
+**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., not widely available/documented, in the provided/available sources, based on available information, likely exists, probably documented
 
-**Problem:** AI disclaimers about incomplete information get left in text.
+**Problem:** Two related behaviours: (1) AI disclaimers about incomplete information get left in text; (2) RAG-enabled models speculate about undocumented information as if it probably exists somewhere - pairing hedges with "likely" or "probably" claims about sources that may not exist at all.
 
-**Before:**
+**Before (cutoff disclaimer):**
 > While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
 
 **After:**
 > The company was founded in 1994, according to its registration documents.
+
+**Before (source-gap speculation):**
+> While the full details are not available in the provided sources, documentation likely exists within the company's internal records confirming the 1994 founding date.
+
+**After:**
+> The company was founded in 1994.
 
 ---
 

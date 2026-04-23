@@ -1,0 +1,14 @@
+{
+  "name": "message-preview",
+  "private": true,
+  "type": "module",
+  "version": "2.0.0",
+  "description": "Bun-based email/message preview server for the /message skill",
+  "scripts": {
+    "serve": "bun run serve.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "marked": "^14.1.0"
+  }
+}

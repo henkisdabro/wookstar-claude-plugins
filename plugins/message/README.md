@@ -1,10 +1,17 @@
 # Message Plugin
 
-Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview.
+Rich text message drafts for Gmail, Outlook, and WhatsApp with live browser preview.
 
 ## Prerequisites
 
-- Python 3 (for the assembler and preview server - stdlib only, no pip dependencies)
+- [Bun](https://bun.sh) runtime
+- Run once after install to fetch dependencies:
+
+```bash
+cd <skill-dir>/scripts && bun install
+```
+
+The skill directory is typically `~/.claude/plugins/message/skills/message/`.
 
 ## Installation
 
@@ -23,40 +30,50 @@ Ask Claude to draft a message:
 
 To edit an existing draft:
 
-- `/message data/writing/email_drafts/2026-02-12_john_update.fragment.html`
+- `/message data/writing/email_drafts/2026-02-12_john_update.fragment.md`
 - "Change the subject line in that email"
 - "Fix the typo in the second paragraph"
 
 ## Architecture
 
-The plugin uses a **fragment architecture** for token efficiency:
-
 ```
-Claude writes              Build script assembles        Output
-name.fragment.html  --->   shell.html + fragment   --->  name.html
-(12-85 lines)              (never seen by Claude)        (self-contained preview)
+Claude writes                Hook / build script          Output
+name.fragment.md   --->      Markdown -> HTML   --->      name.html
+(frontmatter + body)         Gmail transform               (self-contained preview
+                             Outlook transform              with three platform views)
+                             Inject into shell.html
 ```
 
-- **Fragment** (`.fragment.html`): Small file with just meta tags (to, subject, cc) and body HTML. This is what Claude reads and writes.
-- **Shell** (`shell.html`): Static template with all CSS, JS, and HTML chrome. Never read by Claude.
-- **Assembler** (`assemble.py`): Combines fragment + shell into a full preview HTML.
-- **Preview server** (`preview-server.py`): Serves the assembled HTML for browser review.
-
-This means creating an email costs ~150-750 tokens instead of ~15,000, and editing a typo is equally cheap.
+- **Fragment** (`.fragment.md`): Markdown with YAML frontmatter (`to`, `subject`, optional `cc`/`bcc`)
+- **Shell** (`templates/shell.html`): Static template with all CSS, JS, and dark-mode chrome
+- **Build pipeline** (`scripts/`): TypeScript modules compiled and run by Bun
 
 ## What's Included
 
-- **1 skill** - Message drafting with Outlook-native HTML, Gmail CSS override, and WhatsApp text conversion
-- **1 shell template** - `shell.html` with all CSS, JS, and mode toggle
-- **1 assembler** - `assemble.py` combines fragments with shell
-- **1 preview server** - Python HTTP server with idle auto-shutdown and clipboard copy
+- **1 skill** - Message drafting with Gmail-native HTML, Outlook inline styles, and WhatsApp text conversion
+- **1 shell template** - Dark-mode aware preview with WebSocket hot-reload and keyboard shortcuts
+- **6 TypeScript modules** - `build.ts`, `parse.ts`, `serve.ts`, `transform-gmail.ts`, `transform-outlook.ts`, `types.ts`
 - **2 formatting references** - Outlook formatting snippets and Gmail rendering behaviour
+- **Tests** - `bun test` in the skill directory
+
+## Preview UI
+
+Three-tab preview (Gmail / Outlook / WhatsApp) with keyboard shortcuts:
+
+| Key | Action |
+|-----|--------|
+| `G` | Switch to Gmail tab |
+| `O` | Switch to Outlook tab |
+| `W` | Switch to WhatsApp tab |
+| `C` | Copy current tab to clipboard |
+| `R` | Force reload |
+
+Copy buttons use the Clipboard API's HTML MIME type - paste into Gmail or Outlook preserves full formatting.
 
 ## Workflow
 
-1. Draft message content in conversation
-2. Fragment file created with meta tags and Outlook-native body HTML
-3. Assembler combines fragment with shell template
-4. Preview server launches on a random port
-5. Toggle between Gmail, Outlook, or WhatsApp mode
-6. Use platform-specific action buttons to send
+1. Claude writes a `.fragment.md` to `data/writing/email_drafts/`
+2. The PostToolUse hook (`auto_serve_fragment.sh`) auto-builds and launches the preview server
+3. Browser opens automatically with the preview URL
+4. Edits to the fragment hot-reload in under 100 ms via WebSocket
+5. Use platform tabs and copy buttons to send via Gmail, Outlook, or WhatsApp

@@ -540,7 +540,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview",
-      "version": "2.2.0",
+      "version": "2.4.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"

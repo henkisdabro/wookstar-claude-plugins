@@ -1,227 +1,146 @@
 ---
 name: message
-description: Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp. Writes Markdown fragments and assembles platform-specific HTML via build script. Use when writing emails, drafting emails, composing replies, sending messages, writing WhatsApp messages, sending Gmail messages, replying via email, or when user mentions Gmail, Outlook, WhatsApp, email client, "email to", "reply to", "draft an email", "write an email", "send a message", "message to", "WhatsApp to", or professional correspondence.
+description: Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp with live browser preview. Runs on Bun for near-instant cold start and opens the preview automatically. Use when writing emails, drafting emails, composing replies, sending messages, writing WhatsApp messages, or when user mentions Gmail, Outlook, WhatsApp, "email to", "reply to", "draft an email", "write an email", "send a message". Do NOT use for reading emails, managing contacts, or calendar invitations.
 argument-hint: "[optional: path to existing .fragment.md for editing]"
+model: sonnet
 allowed-tools: Bash, Write, Read, Edit
+hooks:
+  PostToolUse:
+    - matcher: "Write"
+      hooks:
+        - type: command
+          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.sh"
+          timeout: 30
 ---
 
 # Message Drafts
 
-Create rich text messages that paste perfectly into Gmail, Outlook, or convert to WhatsApp-formatted text. Fragments are written in Markdown - the build script converts to platform-specific HTML automatically.
+Bun-based preview server. Fragments are written in Markdown - the build script converts to platform-specific HTML. The bundled PostToolUse hook auto-builds, starts the preview server, and opens the browser whenever a `.fragment.md` is written.
 
-## Architecture
+## Flow
 
-```
-Claude writes              Build script assembles          Output (separate file)
-name.fragment.md  --->     Markdown -> HTML                name.html
-(10-30 lines)              Gmail transform (tags)          (self-contained preview
-                           Outlook transform (styles)       with three body versions)
-                           Inject into shell.html
-```
+1. Write the `.fragment.md` directly to `data/writing/email_drafts/` in ONE Write tool call.
+   **Do NOT write the email body inline in your response before the Write call.** Compose the
+   draft mentally and write it straight to the file - the preview server renders it.
+2. After the Write tool returns, read the URL the hook wrote:
+   ```bash
+   cat "${CLAUDE_PROJECT_DIR}/.claude/.message-preview-url" 2>/dev/null
+   ```
+3. Reply with only the preview URL and a one-line summary:
+   `Draft ready: email to Stuart re invoice follow-up → http://127.0.0.1:XXXX`
 
-The fragment is the source of truth. The assembled HTML is a derived output. Never edit the `.html` output directly.
+**The hook has already started the server and opened the browser by the time the Write tool returns.** Do NOT run `bun run serve.ts` yourself. Do NOT call `open <url>`. Do NOT launch a second server. The browser is already open.
 
-## Create Workflow
+**Always relay the preview URL to the user.** Read it from `.claude/.message-preview-url`. If that file is empty or missing, the fragment was still written - point the user at the most recent `.html` sibling file.
 
-1. Draft email content in conversation
-2. Write a `.fragment.md` file to `data/writing/email_drafts/`
-3. Run the assembler with `--serve` to produce the preview HTML and launch the server
+**On revision** ("make it shorter", "change the tone"): use Read to load the fragment, Edit to apply changes. The server hot-reloads in <100 ms via WebSocket. Do not echo the revised body - just confirm the change and include the same URL. Do NOT start a new server — the existing one is still running.
 
-```bash
-uv run .claude/skills/message/scripts/assemble.py /path/to/name.fragment.md --serve
-```
-
-Run with `run_in_background: true`. The server picks a random free port and prints the URL. The preview auto-refreshes when the HTML file changes - no manual browser refresh needed.
-
-## Edit Workflow
-
-When editing an existing email (argument provided, or user asks to change something):
-
-1. Read the small `.fragment.md` file
-2. Use the Edit tool to make targeted changes
-3. Re-run the assembler **without** `--serve` to rebuild the preview
+**Multiple concurrent drafts** are fully supported. Each fragment gets its own server on its own port. All servers stay alive until the machine reboots. To find the URL for any previously opened draft, run:
 
 ```bash
-uv run .claude/skills/message/scripts/assemble.py /path/to/name.fragment.md
+python3 -c "
+import json, sys
+d = json.load(open('${CLAUDE_PROJECT_DIR}/.claude/.message-previews.json'))
+print(d.get(sys.argv[1], 'not found'))
+" "/absolute/path/to/draft.fragment.md"
 ```
 
-The preview server is still running in the background from the create step. The assembler overwrites the HTML file atomically, and the browser auto-refreshes within 2 seconds. Do **not** re-launch the server on edits - the user keeps the same URL.
+## Fallback — if hook is not firing
 
-## Fragment Format
+If the hook is not firing (e.g. skill used outside the plugin), run manually:
 
-Fragments are Markdown files with YAML frontmatter:
+```bash
+~/.bun/bin/bun run <skill-scripts-dir>/serve.ts /path/to/name.fragment.md
+```
+
+Run with `run_in_background: true`. The server prints the output HTML path then the URL. Relay the URL to the user. On subsequent edits, the server hot-reloads automatically - do not re-run it.
+
+**First-time setup check:** before running `serve.ts`, verify `node_modules` exists in the scripts directory. If not, run `cd <skill-scripts-dir> && bun install` first (requires [Bun](https://bun.sh) to be installed).
+
+
+## Fragment format
+
+Markdown with YAML frontmatter, same as `/message` v1.
 
 ```markdown
 ---
 to: recipient@example.com
-cc: optional@example.com
-subject: Email Subject
+subject: Subject line
+cc: optional
+bcc: optional
 ---
 
-Hi **Stuart**,
+Body content in Markdown. Supports bold, italic, ~~strikethrough~~, headings, lists, blockquotes, code, tables, links. Embed raw HTML where Markdown falls short.
+```
 
-Here's the ~~old approach~~ new approach.
+Required: `to`, `subject`. Do not use horizontal rules - they render poorly in email clients.
 
-## Key Points
+## File naming
 
-- First item
-- Second item
+```
+data/writing/email_drafts/YYYY-MM-DD_recipient_subject.fragment.md
+data/writing/email_drafts/YYYY-MM-DD_recipient_subject.html        # generated
+```
 
-> Quoted text from previous email
+## Preview UI
 
-| Feature | Status |
-|---------|--------|
-| Auth    | Done   |
+The browser preview shows three tabs (Gmail / Outlook / WhatsApp) with keyboard shortcuts:
 
-Inline `code` and [a link](https://example.com).
+- **G / O / W** - switch tab
+- **C** - copy current tab (rich HTML for Gmail/Outlook, text for WhatsApp)
+- **R** - manual reload
 
-Cheers,
+Features: dark-mode aware, live WebSocket hot reload (<100 ms), mobile-responsive, copy buttons use the Clipboard API's HTML MIME type so paste into Gmail/Outlook preserves formatting as a single clean operation. Word and character counts update per tab. Build errors render as a red overlay with the exact message instead of a silent failure.
+
+## Edit flow
+
+Edit the `.fragment.md` file. The server watches it via `fs.watch` and pushes a reload over WebSocket. No Bash command, no polling, no manual refresh. Latency from save to visible update: typically under 100 ms.
+
+## Env flags
+
+- `MESSAGE_NO_OPEN=1` - skip auto-opening the browser (useful in headless contexts)
+
+## Structure and tone
+
+1. Lead with the point (request, update, instruction the recipient must act on)
+2. Supporting detail (context, logistics)
+3. Warm close (gratitude, relational content) just before the sign-off
+
+Match the recipient's formality. British English (colour, analyse, organise, behaviour, centre). Henrik's title is "Digital Consultant" - do not use "Strategy" or "Strategist" unless explicitly asked.
+
+## Henrik's defaults
+
+- From / reply-to: `admin@henriksoderlund.com`
+- Google platform access requests (GA4, GTM, Search Console, Google Ads): `admin@henriksoderlund.com`
+
+Sign-off:
+
+```
+Best,
 Henrik
 ```
 
-### Frontmatter Fields
+## After preview
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `to` | Yes | Comma-separated recipients |
-| `subject` | Yes | Email subject line |
-| `cc` | No | Hidden in preview if empty |
-| `bcc` | No | Hidden in preview if empty |
+Once the user has the preview URL, ask: "Would you like me to run the humanise skill on this draft to make it sound more natural?"
 
-### Formatting Reference
+## Post-draft actions
 
-Standard Markdown maps to platform-specific HTML automatically:
+After a client-facing draft, prompt: "Log this to the client comms log?" If yes, append to `data/consulting/clients/[slug]/comms/_comms-log.json` via Edit tool.
 
-| What you want | Write in Markdown |
-|---------------|-------------------|
-| Bold | `**bold**` |
-| Italic | `*italic*` |
-| Strikethrough | `~~strikethrough~~` |
-| Heading | `## Heading` |
-| Bullet list | `- item` |
-| Numbered list | `1. item` |
-| Blockquote | `> quoted text` |
-| Inline code | `` `code` `` |
-| Code block | triple backticks |
-| Link | `[text](url)` |
-| Table | `| col | col |` with separator row |
+Consulting emails (proposal, invoice, contract, engagement) - run:
 
-For features not in standard Markdown, embed HTML directly (it passes through unchanged):
-
-| What you want | Embed as HTML |
-|---------------|---------------|
-| Custom colour | `<span style="color: #c0392b;">red text</span>` |
-| Large text | `<font size="4">larger text</font>` |
-| Underline | `<u>underlined</u>` |
-| Indent | `<blockquote style="margin: 0 0 0 40px; border: none; padding: 0px;">indented</blockquote>` |
-
-### Example: User Asks for Colour and Strikethrough
-
-```
-User: "Write an email to Stuart. Strikethrough '$5000' and make his name red."
-
-Claude writes .fragment.md:
-
----
-to: akumanostuart@gmail.com
-subject: Pricing Update
----
-
-Hi <span style="color: #c0392b;">Stuart</span>,
-
-The old pricing was ~~$5000~~ but the new rate is $3000.
-
-Cheers,
-Henrik
+```bash
+python3 .claude/lib/scripts/sync_consulting_ledgers.py --client <slug> --event <type>
 ```
 
-## File Naming
-
-```
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.fragment.md   <- source
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.html          <- assembled output
-```
-
-Examples:
-
-- `2026-02-12_veronika_audit-proposal.fragment.md`
-- `2026-02-12_danielle_project-update.fragment.md`
-
-## Platform Transforms
-
-The build script produces three HTML versions from a single Markdown source:
-
-**Gmail** (tag transform): Converts semantic HTML to Gmail-native elements. `<p>` becomes `<div>`, `<strong>` becomes `<b>`, `<em>` becomes `<i>`, headings become `<font size>` with `<b>`. Container gets Arial 13px. No custom colours added - only platform defaults.
-
-**Outlook** (style injection): Adds inline styles to every element for Word's rendering engine. Aptos/Calibri 11pt, explicit `color: #000000` on every text element, `mso-line-height-rule` for spacing control. No custom colours added - only platform defaults.
-
-**WhatsApp** (text conversion): Strips HTML and converts to WhatsApp markdown - `*bold*`, `_italic_`, `~strikethrough~`. Tables become pipe-separated text.
-
-User-specified inline styles (colours, font sizes) are preserved through all transforms.
-
-## Preview
-
-The assembled HTML has a **Gmail/Outlook/WhatsApp mode toggle**:
-
-- **Gmail mode**: Gmail-native HTML with Arial 13px container, Gmail action buttons (Compose in Gmail, Open Gmail Inbox, Copy for Gmail)
-- **Outlook mode**: Outlook-native HTML with full inline styles, Outlook action button (Copy for Outlook)
-- **WhatsApp mode**: Converts to WhatsApp-compatible plain text. Action buttons: Copy for WhatsApp, Send via WhatsApp
-
-Instruct user:
-
-1. Click the URL printed by the server
-2. Select Gmail, Outlook, or WhatsApp mode
-3. Review the email preview
-4. Use the action buttons for their chosen client
-
-## Backward Compatibility
-
-Legacy `.fragment.html` files still work. The assembler detects the extension and uses the appropriate parser. For HTML fragments, the same body is used for all three platform views (matching previous behaviour).
-
-## Structure
-
-Follow this order in every email:
-
-1. **Lead with the point** - the request, update, instruction, or information the recipient needs to act on. This is why they opened the email.
-2. **Supporting detail** - context, logistics, or reference material that supports the lead.
-3. **Warm close** - any personal, relational, or appreciative content goes at the end, just before the sign-off. Gratitude, compliments, looking-forward sentiments, and rapport-building belong here - never at the top.
-
-The recipient should know what the email is about within the first two lines. Warmth is the exit feeling, not the entrance.
-
-## Tone
-
-- Write naturally, as a human would compose
-- Avoid repetitive language from previous emails in the thread
-- Keep prose flowing, not overly structured
-- Match the recipient's formality level
-- Use British English spelling (colour, analyse, organise, behaviour, centre)
-
-## Henrik's Default Details
-
-Use these when composing emails on Henrik's behalf:
-
-| Purpose | Email |
-|---------|-------|
-| Primary / From address | admin@henriksoderlund.com |
-| Google platform access requests (GA4, GTM, Google Ads, Search Console, etc.) | admin@henriksoderlund.com |
-
-Sign-off block:
-
-```
-Henrik Soederlund
-Independent Digital Consultant
-admin@henriksoderlund.com
-```
+Event mapping: proposal email -> `proposal-sent`, invoice -> `invoice-issued`, contract -> `contract-signed`.
 
 ## References
 
-- `references/outlook-formatting.md` - Outlook element styles and colour palette reference
-- `references/formatting-rules.md` - Gmail native HTML element reference
+- `references/formatting-rules.md` - Gmail native HTML element reference (copied from v1)
+- `references/outlook-formatting.md` - Outlook element styles and colour palette (copied from v1)
 
-## After Preview
+## Development
 
-Once the user has the preview URL, ask whether they'd like to run the **humanise** skill on the message to remove any AI writing patterns before sending. Example prompt: "Would you like me to run the humanise skill on this draft to make it sound more natural?"
-
-## Post-Draft Actions
-
-After saving a draft, prompt Henrik: "Log this to the client comms log?" If yes, write the entry to `data/consulting/clients/[slug]/comms/_comms-log.json` via inline Python or the Edit tool (`manage_comms.py` is read-only - no --add flag).
+Code lives in `.claude/skills/message/scripts/`. First-time setup: `cd .claude/skills/message/scripts && bun install`. Run tests: `cd .claude/skills/message && ~/.bun/bin/bun test`. Build-only without serving: `~/.bun/bin/bun run scripts/serve.ts <fragment> --build-only`.
