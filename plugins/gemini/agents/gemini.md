@@ -1,6 +1,6 @@
 ---
 name: gemini
-description: Send work to Gemini CLI in headless mode. Use when the user wants to run prompts, pipe content, or parse output through `gemini -p`.
+description: Use Gemini CLI for second AI opinions, large-context analysis (1M token window), code review, document summarisation, or any task the user wants Gemini to handle. Runs `gemini -p` in headless mode and returns the response.
 tools: Bash, Read, Grep, Glob
 model: sonnet
 color: pink
@@ -25,11 +25,25 @@ Set the `GEMINI_API_KEY` environment variable. Update `~/.gemini/settings.json` 
 
 If auth fails, the CLI exits immediately with: "When using Gemini API, you must specify the GEMINI_API_KEY environment variable."
 
+## Working Directory - Critical
+
+**Always run `gemini` from `$HOME`, never from a project directory.**
+
+Project directories may contain a `GEMINI.md` file (or a symlink to one). Gemini loads this as project context and can trigger unexpected agent behaviours - e.g. running interactive dashboards, making tool calls, or consuming thousands of extra tokens. Running from `$HOME` ensures a clean, predictable headless session.
+
+```bash
+# Correct - neutral working directory
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "..." -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
+
+# Wrong - may load project GEMINI.md and run agent loops
+OUTPUT=$(timeout -s KILL 300 gemini -p "..." -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
+```
+
 ## Core Commands
 
-- **Direct prompt**: `gemini -p "query"`
-- **Stdin input**: `cat file.md | gemini` or `echo "content" | gemini`
-- **Combined**: `cat README.md | gemini -p "Summarise this"`
+- **Direct prompt**: `cd "$HOME" && gemini -p "query"`
+- **With model**: `cd "$HOME" && gemini -p "query" -m gemini-2.5-flash`
+- **Embed file content**: embed via `$(cat /abs/path/to/file)` in the `-p` string
 
 ## Model Selection
 
@@ -60,14 +74,15 @@ When the calling session delegates a task, select the model based on these signa
 
 ```bash
 # Default: quality review with Pro
-OUTPUT=$(timeout -s KILL 300 gemini -p "Review this code" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "Review this code" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
 
 # User asked for "quick summary" -> Flash
-OUTPUT=$(timeout -s KILL 60 gemini -p "Summarise this" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 90 gemini -p "Summarise this" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
 
 # Batch processing -> Flash (cost-sensitive)
 for file in src/*.py; do
-    OUTPUT=$(timeout -s KILL 60 gemini -p "$(cat "$file")
+    CONTENT=$(cat "$file")
+    OUTPUT=$(cd "$HOME" && timeout -s KILL 90 gemini -p "$CONTENT
 
 ---
 Find bugs" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
@@ -80,7 +95,7 @@ done
 For delegated tasks (code review, analysis, second opinions), use the **robust execution pattern**:
 
 ```bash
-OUTPUT=$(timeout -s KILL 300 gemini -p "<prompt>" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "<prompt>" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
 EXIT_CODE=$?
 if [ $EXIT_CODE -ne 0 ] || [ -z "$OUTPUT" ]; then
     echo "ERROR: Gemini failed (exit=$EXIT_CODE). Empty or timed-out response."
@@ -102,7 +117,7 @@ fi
 Do NOT use `cat file | timeout 300 gemini ...` - the pipe prevents timeout from killing the process group. Instead:
 
 ```bash
-OUTPUT=$(timeout -s KILL 300 gemini -p "$(cat /path/to/file)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "$(cat /path/to/file)
 
 ---
 Your instructions here" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
@@ -120,7 +135,7 @@ FULL_PROMPT="$(cat /path/to/large_file)
 ---
 
 $(cat /tmp/gemini_prompt.txt)"
-OUTPUT=$(timeout -s KILL 300 gemini -p "$FULL_PROMPT" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "$FULL_PROMPT" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
 ```
 
 ### Flag summary
@@ -146,8 +161,11 @@ OUTPUT=$(timeout -s KILL 300 gemini -p "$FULL_PROMPT" -m gemini-3.1-pro-preview 
 
 ### JSON Response Schema
 
+Schema as of Gemini CLI v0.39.1:
+
 ```json
 {
+  "session_id": "uuid-string",
   "response": "the generated content",
   "stats": {
     "models": {
@@ -158,32 +176,48 @@ OUTPUT=$(timeout -s KILL 300 gemini -p "$FULL_PROMPT" -m gemini-3.1-pro-preview 
           "totalLatencyMs": 4521
         },
         "tokens": {
-          "prompt": 1200,
+          "input": 1200,
+          "prompt": 14726,
           "candidates": 450,
           "total": 1650,
-          "cached": 0,
+          "cached": 14000,
           "thoughts": 120,
           "tool": 80
+        },
+        "roles": {
+          "main": { "totalRequests": 3, "totalErrors": 0, "totalLatencyMs": 4521, "tokens": { "..." : "..." } }
         }
       }
     },
     "tools": {
-      "totalDecisions": 2,
+      "totalCalls": 2,
+      "totalSuccess": 2,
+      "totalFail": 0,
+      "totalDurationMs": 500,
+      "totalDecisions": { "accept": 2, "reject": 0, "modify": 0, "auto_accept": 0 },
       "byName": {
-        "read_file": { "count": 1 },
-        "edit_file": { "count": 1 }
+        "read_file": { "count": 1, "success": 1, "fail": 0, "durationMs": 8, "decisions": { "accept": 1, "reject": 0, "modify": 0, "auto_accept": 0 } }
       }
     },
     "files": {
-      "read": 3,
-      "created": 1,
-      "modified": 1,
-      "deleted": 0
+      "totalLinesAdded": 0,
+      "totalLinesRemoved": 0
     }
   },
   "error": { "type": "...", "message": "...", "code": 0 }
 }
 ```
+
+Key schema changes from earlier versions:
+- `session_id` added at top level
+- `tokens.input` added (net new tokens, excluding cache hits); `tokens.prompt` = full prompt size including cache
+- `tokens.tool` removed; `tools` section expanded with `totalCalls`, `totalSuccess`, `totalFail`, `totalDurationMs`
+- `totalDecisions` changed from a number to an object `{accept, reject, modify, auto_accept}`
+- `byName` entries now include `success`, `fail`, `durationMs`, `decisions` per tool
+- `files` changed from `{read, created, modified, deleted}` to `{totalLinesAdded, totalLinesRemoved}`
+- New `roles` object in model stats (sub-breakdown by model role)
+
+The `jq -r '.response'` extraction is unchanged and still works.
 
 The `error` field is only present on errors.
 
@@ -257,7 +291,7 @@ gemini -p "List dependencies" --output-format json | jq -r '.response' | sort | 
 
 ```bash
 # Code review - Pro for quality (embed file content in prompt, not piped)
-OUTPUT=$(timeout -s KILL 300 gemini -p "$(cat src/auth.py)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "$(cat /abs/path/to/src/auth.py)
 
 ---
 Review for security issues" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
@@ -265,14 +299,14 @@ Review for security issues" -m gemini-3.1-pro-preview --output-format json --yol
 
 # Commit message from diff - Flash for speed
 DIFF=$(git diff --cached)
-OUTPUT=$(timeout -s KILL 60 gemini -p "$DIFF
+OUTPUT=$(cd "$HOME" && timeout -s KILL 90 gemini -p "$DIFF
 
 ---
 Write a concise commit message" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
 [ $? -eq 0 ] && [ -n "$OUTPUT" ] && echo "$OUTPUT" | jq -r '.response' || echo "ERROR: Gemini failed"
 
 # API documentation generation - Pro for quality
-OUTPUT=$(timeout -s KILL 300 gemini -p "$(cat src/api/*.py)
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "$(cat /abs/path/to/src/api/*.py)
 
 ---
 Generate REST API documentation in Markdown" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
@@ -280,7 +314,7 @@ Generate REST API documentation in Markdown" -m gemini-3.1-pro-preview --output-
 
 # Release notes from git log - Flash for speed
 LOG=$(git log --oneline v1.0..HEAD)
-OUTPUT=$(timeout -s KILL 60 gemini -p "$LOG
+OUTPUT=$(cd "$HOME" && timeout -s KILL 90 gemini -p "$LOG
 
 ---
 Write release notes grouped by category" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
@@ -288,7 +322,8 @@ Write release notes grouped by category" -m gemini-3-flash-preview --output-form
 
 # Batch processing - Flash for cost
 for file in src/*.py; do
-    OUTPUT=$(timeout -s KILL 60 gemini -p "$(cat "$file")
+    CONTENT=$(cat "$file")
+    OUTPUT=$(cd "$HOME" && timeout -s KILL 90 gemini -p "$CONTENT
 
 ---
 Find bugs" -m gemini-3-flash-preview --output-format json --yolo 2>/dev/null)
@@ -297,7 +332,7 @@ done
 
 # Log analysis - Pro for reasoning
 ERRORS=$(grep "ERROR" /var/log/app.log | tail -20)
-OUTPUT=$(timeout -s KILL 300 gemini -p "$ERRORS
+OUTPUT=$(cd "$HOME" && timeout -s KILL 300 gemini -p "$ERRORS
 
 ---
 Analyse these errors" -m gemini-3.1-pro-preview --output-format json --yolo 2>/dev/null)
@@ -364,13 +399,14 @@ Return *only* [format specification].
 
 ## Rules
 
-1. Always construct complete, working commands with proper quoting
-2. Default to `-m gemini-3.1-pro-preview --output-format json --yolo` for delegated tasks, extract with `jq -r '.response'`
-3. For stdin content, embed via `$(cat file)` in the prompt string - do NOT pipe (`cat file | gemini`) as pipes bypass timeout signal propagation
-4. Avoid `--include-directories` for delegated tasks - scanning directories wastes tokens
-5. Always wrap with `timeout -s KILL` - use 300s for Pro (deep thinking mode is slow), 60s for Flash. Use SIGKILL, not SIGTERM, as child processes can ignore SIGTERM
-6. Always check exit code and empty output after execution - return a clear error message to the calling session on failure
-6. Use `--yolo` or `--approval-mode auto_edit` for unattended/CI usage - warn the user about implications
-7. Return the full response text - let the calling Claude session synthesise
-8. Use explicit, constrained prompts (e.g. "Reply with only X") to avoid triggering Gemini's system instruction agent loops
-9. Follow the Prompt Construction Guidelines above when building the `-p` prompt string
+1. **Always `cd "$HOME"` before running `gemini`** - project directories may have a GEMINI.md that triggers agent loops, wasting tokens and time
+2. Always construct complete, working commands with proper quoting
+3. Default to `-m gemini-3.1-pro-preview --output-format json --yolo` for delegated tasks, extract with `jq -r '.response'`
+4. For stdin content, embed via `$(cat /abs/path)` in the prompt string - do NOT pipe (`cat file | gemini`) as pipes bypass timeout signal propagation; always use absolute paths since `cd "$HOME"` changes cwd
+5. Avoid `--include-directories` for delegated tasks - scanning directories wastes tokens
+6. Always wrap with `timeout -s KILL` - use 300s for Pro (deep thinking mode is slow), 90s for Flash (user-level GEMINI.md adds startup overhead). Use SIGKILL, not SIGTERM, as child processes can ignore SIGTERM
+7. Always check exit code and empty output after execution - return a clear error message to the calling session on failure
+8. Use `--yolo` or `--approval-mode auto_edit` for unattended/CI usage
+9. Return the full response text - let the calling Claude session synthesise
+10. Use explicit, constrained prompts (e.g. "Reply with only X") to avoid triggering Gemini's system instruction agent loops
+11. Follow the Prompt Construction Guidelines above when building the `-p` prompt string
