@@ -1,6 +1,6 @@
 ---
 name: tampermonkey
-description: Write Tampermonkey userscripts for browser automation, page modification, and web enhancement. Use when creating browser scripts, writing greasemonkey scripts, automating user interactions, injecting CSS or JavaScript into web pages, modifying website behaviour, building browser extensions, hiding unwanted page elements, adding form auto-fill, scraping website data, intercepting requests, detecting URL changes in SPAs, or storing persistent user preferences. Covers userscript headers (@match, @grant, @require), synchronous and async GM_* API functions, common patterns (DOM mutation, URL change detection, element waiting), security sandboxing, and cross-browser compatibility (Chrome, Firefox, Edge).
+description: "Write and debug Tampermonkey userscripts for browser automation, page modification, and web enhancement. Use whenever the user mentions userscripts, Tampermonkey, Greasemonkey, Violentmonkey, or wants to write a script that runs on a website - even if they don't say 'userscript' explicitly. Also trigger for: injecting JavaScript or CSS into web pages, modifying website behaviour, hiding page elements, form auto-fill, scraping page data, intercepting requests, detecting URL changes in SPAs, adding keyboard shortcuts to websites, tab audio control, or TypeScript userscripts. Covers all header tags (@match, @grant, @require, @run-in), GM_* synchronous APIs, GM.* promise-based APIs (recommended for new scripts), batch storage operations (GM.getValues/setValues v5.3+), binary data support (v5.4+), TypeScript setup via @types/tampermonkey, security sandboxing, and cross-browser compatibility (Chrome, Firefox, Edge). Do NOT use for Selenium/Puppeteer automation, browser extensions (WebExtensions/MV3), or server-side scripts."
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
@@ -9,6 +9,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 Expert guidance for writing Tampermonkey userscripts - browser scripts that modify web pages, automate tasks, and enhance browsing experience.
 
 ## Quick Start Template
+
+**JavaScript (simple scripts with no GM.* APIs)**
 
 ```javascript
 // ==UserScript==
@@ -24,11 +26,34 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 
 (function() {
     'use strict';
-
     // Your code here
-    console.log('Script loaded!');
 })();
 ```
+
+**Modern (async/await - recommended when using GM.* APIs)**
+
+```javascript
+// ==UserScript==
+// @name         My Script Name
+// @namespace    https://example.com/scripts/
+// @version      1.0.0
+// @description  Brief description of the script
+// @author       Your Name
+// @match        https://example.com/*
+// @grant        GM.getValue
+// @grant        GM.setValue
+// @run-at       document-idle
+// ==/UserScript==
+
+(async () => {
+    'use strict';
+    // Async entry point — use await with GM.* APIs
+    const setting = await GM.getValue('myKey', 'default');
+    console.log('Script loaded, setting:', setting);
+})();
+```
+
+**TypeScript:** Add `@types/tampermonkey` for full type safety. See [typescript.md](references/typescript.md).
 
 ---
 
@@ -43,6 +68,7 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 | `@match` | Yes** | URLs to run on (**or @include) | `@match https://example.com/*` |
 | `@grant` | Situational | API permissions (use `none` for no GM_* APIs) | `@grant GM_setValue` |
 | `@run-at` | Optional | When to inject (default: `document-idle`) | `@run-at document-start` |
+| `@run-in` | Optional | Limit to normal or incognito tabs, or Firefox containers (v5.3+) | `@run-in normal-tabs` |
 
 **For complete header documentation, see:** [header-reference.md](references/header-reference.md)
 
@@ -72,6 +98,8 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 | Show notifications | `@grant GM_notification` |
 | Add menu commands | `@grant GM_registerMenuCommand` |
 | Detect URL changes (SPA) | `@grant window.onurlchange` |
+| Batch read/write settings (v5.3+) | `@grant GM.getValues` + `@grant GM.setValues` |
+| Mute/unmute tab audio | `@grant GM_audio` |
 
 ```javascript
 // Disable sandbox (no GM_* except GM_info)
@@ -113,6 +141,7 @@ These patterns are used frequently. Brief summaries are below - load [patterns.m
 - **Keyboard Shortcuts** - Simple handlers and a shortcut manager with modifier key support
 - **Data Extraction** - Extract table data to arrays/objects, collect and filter page links
 - **Error Handling** - Safe wrapper for try/catch and async retry with exponential backoff
+- **TypeScript Userscripts** - Type-safe scripts with `@types/tampermonkey`. See [typescript.md](references/typescript.md)
 
 ---
 
@@ -131,6 +160,35 @@ These patterns are used frequently. Brief summaries are below - load [patterns.m
 
 ---
 
+## TypeScript Support
+
+Install the type definitions for full IDE autocompletion and type safety:
+
+```bash
+npm install --save-dev @types/tampermonkey
+```
+
+```typescript
+// ==UserScript==
+// @name         My TypeScript Script
+// @match        https://example.com/*
+// @grant        GM.getValue
+// @grant        GM.xmlHttpRequest
+// @connect      api.example.com
+// ==/UserScript==
+
+(async () => {
+    'use strict';
+    const value = await GM.getValue<string>('key', 'default');
+    const info: Tampermonkey.ScriptInfo = GM_info;
+    console.log(info.script.name, value);
+})();
+```
+
+Build with a bundler (esbuild, Vite, webpack) to a single `.user.js` output file. For full project setup including tsconfig and bundler config, see [typescript.md](references/typescript.md).
+
+---
+
 ## What Tampermonkey Cannot Do
 
 Userscripts have limitations:
@@ -140,6 +198,7 @@ Userscripts have limitations:
 - **Access cross-origin iframes** - Browser security prevents this
 - **Persist across machines** - GM storage is local to each browser
 - **Bypass all CSP** - Some very strict CSP cannot be bypassed
+- **Inject without permission** - Tampermonkey v5.4.1+ requires users to grant injection permission per-site or globally; scripts cannot bypass this requirement
 
 Most limitations have **workarounds** - see [common-pitfalls.md](references/common-pitfalls.md).
 
@@ -199,8 +258,8 @@ Load these on-demand based on user needs:
 | [patterns.md](references/patterns.md) | Common implementation patterns with code |
 | [sandbox-modes.md](references/sandbox-modes.md) | Security/isolation execution contexts |
 | **API** | |
-| [api-sync.md](references/api-sync.md) | GM_* synchronous function usage |
-| [api-async.md](references/api-async.md) | GM.* promise-based API usage |
+| [api-sync.md](references/api-sync.md) | GM_* synchronous function reference (callback-based) |
+| [api-async.md](references/api-async.md) | GM.* promise-based API reference - prefer these for new scripts |
 | [api-storage.md](references/api-storage.md) | GM_setValue, GM_getValue, listeners |
 | [http-requests.md](references/http-requests.md) | GM_xmlhttpRequest cross-origin |
 | [web-requests.md](references/web-requests.md) | GM_webRequest interception (Firefox) |
@@ -214,3 +273,4 @@ Load these on-demand based on user needs:
 | [browser-compatibility.md](references/browser-compatibility.md) | Chrome vs Firefox differences |
 | [security-checklist.md](references/security-checklist.md) | Pre-delivery security validation |
 | [version-numbering.md](references/version-numbering.md) | Version string comparison rules |
+| [typescript.md](references/typescript.md) | TypeScript project setup with @types/tampermonkey, bundler config |

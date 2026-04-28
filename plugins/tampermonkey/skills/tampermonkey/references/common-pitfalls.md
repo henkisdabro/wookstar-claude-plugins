@@ -396,6 +396,18 @@ Scripts that work in Chrome may break in Firefox.
 
 ---
 
+## Pitfall 15: Script Not Running After Tampermonkey v5.4.1 Update
+
+Tampermonkey v5.4.1+ requires explicit user permission to inject scripts into pages.
+
+**Symptom:** Script was working, stopped after Tampermonkey updated.
+
+**Fix:** Click the Tampermonkey icon → "Allow extension to access this site" (or configure globally in Dashboard → Settings → Script Injection).
+
+**Why this changed:** Browser vendors (Chrome MV3) now require extensions to request explicit permission before injecting content into pages.
+
+---
+
 ## Quick Diagnostic Checklist
 
 When a script doesn't work:

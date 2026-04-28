@@ -75,7 +75,7 @@ GM_xmlhttpRequest({
         'Authorization': 'Bearer token123',
         'X-Custom-Header': 'value'
     },
-    data: 'request body',              // String, Blob, File, FormData, URLSearchParams
+    data: 'request body',              // String, Blob, File, FormData, URLSearchParams, ArrayBuffer, UInt8Array (v5.4+)
 
     // Request modifiers
     timeout: 30000,                    // Timeout in milliseconds
@@ -293,6 +293,25 @@ GM_xmlhttpRequest({
     url: 'https://api.example.com/upload',
     data: formData,
     onload: response => console.log('Uploaded!')
+});
+```
+
+### Binary Data Upload (v5.4+)
+
+ArrayBuffer and UInt8Array can be sent directly as the request body:
+
+```javascript
+// Send raw binary data
+const buffer = new ArrayBuffer(256);
+const view = new Uint8Array(buffer);
+// ... populate buffer ...
+
+GM_xmlhttpRequest({
+    method: 'POST',
+    url: 'https://api.example.com/binary',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    data: buffer,   // ArrayBuffer or UInt8Array
+    onload: response => console.log('Binary sent!')
 });
 ```
 
