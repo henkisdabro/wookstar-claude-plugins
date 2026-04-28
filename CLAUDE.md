@@ -157,6 +157,32 @@ Claude Code auto-discovers components within each plugin:
 2. Add `"mcpServers": "./.mcp.json"` to marketplace.json entry
 3. Test: `/plugin install <plugin>@wookstar-claude-plugins`
 
+### LSP Plugin (intentional exception to "manifest required")
+
+LSP plugins do **NOT** have a `.claude-plugin/plugin.json` file. They are declared entirely through the `lspServers` block on their entry in `.claude-plugin/marketplace.json`, with only a `README.md` inside the plugin directory. This was confirmed working as of v6.6.0 (commit `4f3b376`) and is the intended design - do not add stray `plugin.json` files to `plugins/lsp-*/`.
+
+To add a new LSP plugin:
+
+1. Create directory: `plugins/lsp-<lang>/` with just a `README.md` (binary install instructions, supported extensions)
+2. Add an entry to `.claude-plugin/marketplace.json` with `"category": "lsp"` and an `lspServers` block declaring `command`, `args`, `transport`, and `extensionToLanguage`
+3. Test: install it and confirm Claude Code surfaces diagnostics for files of the declared extensions
+
+## Skill Style Guide
+
+The 18 skills in this marketplace all share a description pattern that triggers reliably without false positives. Follow it for any new skill:
+
+```yaml
+description: <Declarative one-line summary of what the skill does>. Use when <list 5-10 explicit trigger phrases or keywords>. Do NOT use for <list disqualifying scenarios>.
+```
+
+Concrete examples to model from:
+
+- `plugins/message/skills/message/SKILL.md` - email/messaging triggers, explicit non-triggers
+- `plugins/humanise/skills/humanise/SKILL.md` - "humanise this", "make this sound less AI", explicit pattern detection
+- `plugins/developer/skills/devtools/SKILL.md` - browser debugging triggers, MCP-specific scenarios
+
+Why this matters: skill descriptions are the only way Claude decides whether to load a skill. Vague descriptions either fail to trigger or fire on unrelated requests. The "Use when … Do NOT use for …" formula gives both positive and negative signals.
+
 ## Critical Files
 
 ### .claude-plugin/marketplace.json

@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.6.0",
+    "version": "6.7.0",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -563,7 +563,7 @@
       "name": "humanise",
       "source": "./plugins/humanise",
       "description": "Humanise text and remove AI writing patterns - detects and fixes 29 AI tell-tales including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks",
-      "version": "4.0.0",
+      "version": "4.0.1",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
@@ -620,7 +620,7 @@
         "stylesheets",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "css": {
           "command": "vscode-css-language-server",
@@ -652,7 +652,7 @@
         "html",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "html": {
           "command": "vscode-html-language-server",
@@ -685,7 +685,7 @@
         "schema",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "json": {
           "command": "vscode-json-language-server",
@@ -720,7 +720,7 @@
         "docker",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "yaml": {
           "command": "yaml-language-server",
@@ -753,7 +753,7 @@
         "css",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "tailwindcss": {
           "command": "tailwindcss-language-server",
@@ -791,7 +791,7 @@
         "scripting",
         "language-server"
       ],
-      "category": "development",
+      "category": "lsp",
       "lspServers": {
         "bash": {
           "command": "bash-language-server",
