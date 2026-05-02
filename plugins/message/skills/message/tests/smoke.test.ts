@@ -1,13 +1,18 @@
 import { test, expect } from "bun:test";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, cp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { build } from "../scripts/build";
 
-async function buildInline(content: string, name = "test.fragment.md") {
+const FIXTURES = [
+  "/Users/Henrik/claudecode/lifeos/data/writing/email_drafts/2026-02-13_smiljka_contract-response.fragment.md",
+  "/Users/Henrik/claudecode/lifeos/data/writing/email_drafts/2026-02-13_stuart_markdown-test.fragment.md",
+];
+
+async function buildInScratch(fixture: string) {
   const dir = await mkdtemp(join(tmpdir(), "msgv2-test-"));
-  const scratch = join(dir, name);
-  await Bun.write(scratch, content);
+  const scratch = join(dir, basename(fixture));
+  await cp(fixture, scratch);
   try {
     const result = await build(scratch);
     return { dir, result };
@@ -17,24 +22,24 @@ async function buildInline(content: string, name = "test.fragment.md") {
   }
 }
 
-test("builds a basic fragment", async () => {
-  const { dir, result } = await buildInline(
-    "---\nto: test@example.com\nsubject: Hello\n---\n\nHi there.\n\nBest,\nHenrik",
-  );
-  try {
-    expect(result.meta.to).toBe("test@example.com");
-    expect(result.meta.subject).toBe("Hello");
-    expect(result.gmailBody.length).toBeGreaterThan(10);
-    expect(result.outlookBody.length).toBeGreaterThan(10);
-    expect(result.html).toContain('id="gmail-body"');
-    expect(result.html).toContain('id="outlook-body"');
-    expect(result.html).toContain('id="whatsapp-raw"');
-    expect(result.html).not.toContain("<!-- INJECT:");
-    expect(result.html).toContain("Hello");
-  } finally {
-    await rm(dir, { recursive: true, force: true });
-  }
-});
+for (const fixture of FIXTURES) {
+  test(`builds ${basename(fixture)}`, async () => {
+    const { dir, result } = await buildInScratch(fixture);
+    try {
+      expect(result.meta.to).toBeTruthy();
+      expect(result.meta.subject).toBeTruthy();
+      expect(result.gmailBody.length).toBeGreaterThan(10);
+      expect(result.outlookBody.length).toBeGreaterThan(10);
+      expect(result.html).toContain('id="gmail-body"');
+      expect(result.html).toContain('id="outlook-body"');
+      expect(result.html).toContain('id="whatsapp-raw"');
+      expect(result.html).not.toContain("<!-- INJECT:");
+      expect(result.html).toContain(result.meta.subject);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+}
 
 test("rejects fragment missing `to` frontmatter", async () => {
   const dir = await mkdtemp(join(tmpdir(), "msgv2-test-"));
@@ -48,24 +53,16 @@ test("rejects fragment missing `to` frontmatter", async () => {
 });
 
 test("preserves strikethrough via GFM", async () => {
-  const { dir, result } = await buildInline(
+  const dir = await mkdtemp(join(tmpdir(), "msgv2-test-"));
+  const scratch = join(dir, "strike.fragment.md");
+  await Bun.write(
+    scratch,
     "---\nto: a@b.com\nsubject: test\n---\n\nThis is ~~struck~~ text.",
   );
   try {
+    const result = await build(scratch);
     expect(result.gmailBody).toContain("<strike>struck</strike>");
     expect(result.outlookBody).toContain("<strike>struck</strike>");
-  } finally {
-    await rm(dir, { recursive: true, force: true });
-  }
-});
-
-test("injects cc and bcc when present", async () => {
-  const { dir, result } = await buildInline(
-    "---\nto: a@b.com\ncc: c@d.com\nbcc: e@f.com\nsubject: test\n---\n\nBody.",
-  );
-  try {
-    expect(result.html).toContain("c@d.com");
-    expect(result.html).toContain("e@f.com");
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

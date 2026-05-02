@@ -4,18 +4,11 @@ description: Create and edit rich text message drafts for Gmail, Outlook, and Wh
 argument-hint: "[optional: path to existing .fragment.md for editing]"
 model: sonnet
 allowed-tools: Bash, Write, Read, Edit
-hooks:
-  PostToolUse:
-    - matcher: "Write"
-      hooks:
-        - type: command
-          command: "bash ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.sh"
-          timeout: 30
 ---
 
 # Message Drafts
 
-Bun-based preview server. Fragments are written in Markdown - the build script converts to platform-specific HTML. The bundled PostToolUse hook auto-builds, starts the preview server, and opens the browser whenever a `.fragment.md` is written.
+Bun-based preview server. Same fragment format, faster launch, nicer preview, auto-opens the browser, minimal Claude roundtrips.
 
 ## Flow
 
@@ -45,19 +38,6 @@ print(d.get(sys.argv[1], 'not found'))
 " "/absolute/path/to/draft.fragment.md"
 ```
 
-## Fallback — if hook is not firing
-
-If the hook is not firing (e.g. skill used outside the plugin), run manually:
-
-```bash
-~/.bun/bin/bun run <skill-scripts-dir>/serve.ts /path/to/name.fragment.md
-```
-
-Run with `run_in_background: true`. The server prints the output HTML path then the URL. Relay the URL to the user. On subsequent edits, the server hot-reloads automatically - do not re-run it.
-
-**First-time setup check:** before running `serve.ts`, verify `node_modules` exists in the scripts directory. If not, run `cd <skill-scripts-dir> && bun install` first (requires [Bun](https://bun.sh) to be installed).
-
-
 ## Fragment format
 
 Markdown with YAML frontmatter, same as `/message` v1.
@@ -74,6 +54,28 @@ Body content in Markdown. Supports bold, italic, ~~strikethrough~~, headings, li
 ```
 
 Required: `to`, `subject`. Do not use horizontal rules - they render poorly in email clients.
+
+## Tables - mandatory rules
+
+When using tables, ALWAYS provide meaningful header names in the first row. Markdown's pipe-table syntax accepts blank headers (`| | |`) but the rendered output then shows a styled header row with no labels - confusing and unprofessional.
+
+GOOD:
+
+```markdown
+| Item | Amount |
+|---|--:|
+| Salary | $146,838.94 |
+```
+
+BAD - blank header row:
+
+```markdown
+| | |
+|---|--:|
+| Salary | $146,838.94 |
+```
+
+If a table truly has no natural header, use descriptive labels like `Item` / `Amount`, `Field` / `Value`, `Category` / `Notes`. Header cells render with a light grey background (`#f5f5f5`) by default in both Gmail and Outlook to differentiate them from data rows.
 
 ## File naming
 
@@ -143,4 +145,8 @@ Event mapping: proposal email -> `proposal-sent`, invoice -> `invoice-issued`, c
 
 ## Development
 
-Code lives in `.claude/skills/message/scripts/`. First-time setup: `cd .claude/skills/message/scripts && bun install`. Run tests: `cd .claude/skills/message && ~/.bun/bin/bun test`. Build-only without serving: `~/.bun/bin/bun run scripts/serve.ts <fragment> --build-only`.
+Code lives in `.claude/skills/message/scripts/`. Run tests: `cd .claude/skills/message && ~/.bun/bin/bun test`. Build-only without serving: `~/.bun/bin/bun run scripts/serve.ts <fragment> --build-only`.
+
+## Platform support
+
+Works on macOS, Linux, WSL2 (Ubuntu), and native Windows (PowerShell). The hook is `auto_serve_fragment.ts` and runs under Bun on all platforms — `bun` must be on PATH. Browser opening: `open` on macOS, `xdg-open` on Linux, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `cmd /c start` on Windows.

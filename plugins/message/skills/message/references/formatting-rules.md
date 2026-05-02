@@ -231,7 +231,7 @@ When replying to an email thread:
 Assemble and launch the preview server:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/assemble.py /path/to/name.fragment.html --serve
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.py /path/to/name.fragment.html
 ```
 
 Run with `run_in_background: true` in Claude Code. Auto-stops after 10 minutes idle.

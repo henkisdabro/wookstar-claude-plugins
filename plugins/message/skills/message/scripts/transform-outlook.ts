@@ -78,7 +78,7 @@ export function transformOutlook(html: string): string {
   result = result.replace(/<th(?:\s[^>]*)?>/g, (tag) =>
     hasUserStyle(tag)
       ? tag
-      : `<th style="border: 1px solid #999999; padding: 8pt; font-weight: bold; ${FONT}; ${SIZE}; ${COLOR}; ${LINE};">`,
+      : `<th style="border: 1px solid #999999; padding: 8pt; font-weight: bold; background-color: #f5f5f5; ${FONT}; ${SIZE}; ${COLOR}; ${LINE};">`,
   );
 
   result = result.replace(/<a\s[^>]*>/g, (tag) => {

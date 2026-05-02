@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
-import { watch } from "node:fs";
-import { resolve } from "node:path";
+import { watch, statSync, existsSync } from "node:fs";
+import { basename, dirname, resolve } from "node:path";
 import type { ServerWebSocket } from "bun";
 import { build } from "./build";
+import { openBrowser } from "./platform";
 
 interface Args {
   fragment: string;
@@ -32,20 +33,6 @@ function parseArgs(): Args {
   }
 
   return { fragment: resolve(fragment), buildOnly, timeout, noOpen };
-}
-
-function openBrowser(url: string): void {
-  const cmd =
-    process.platform === "darwin"
-      ? ["open", url]
-      : process.platform === "win32"
-        ? ["cmd", "/c", "start", "", url]
-        : ["xdg-open", url];
-  try {
-    Bun.spawn(cmd, { stdout: "ignore", stderr: "ignore" });
-  } catch {
-    // Non-fatal
-  }
 }
 
 async function main(): Promise<void> {
@@ -106,6 +93,15 @@ async function main(): Promise<void> {
             headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
           });
         }
+        // The output may have been deleted externally between requests (e.g.
+        // user cleaning up). Fail soft with a friendly message instead of
+        // streaming a missing file and producing a raw ENOENT.
+        if (!existsSync(initialOutput)) {
+          return new Response(
+            errorPage(`Preview output is missing. The fragment may have been moved or deleted.\nExpected: ${initialOutput}`),
+            { status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } },
+          );
+        }
         return new Response(Bun.file(initialOutput), {
           headers: { "cache-control": "no-cache" },
         });
@@ -116,6 +112,7 @@ async function main(): Promise<void> {
     websocket: {
       open(ws) {
         sockets.add(ws);
+        lastRequest = Date.now();
       },
       close(ws) {
         sockets.delete(ws);
@@ -129,24 +126,70 @@ async function main(): Promise<void> {
 
   if (!noOpen) openBrowser(url);
 
-  // Fragment file watcher with debounce
+  // Watch the parent directory (not the file). fs.watch on a single path binds
+  // to the inode and goes deaf after atomic writes (write-temp + rename), which
+  // is how the Edit tool and many editors save. Watching the directory and
+  // filtering by basename survives both in-place writes and atomic replaces.
+  const fragmentDir = dirname(fragment);
+  const fragmentName = basename(fragment);
+
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  const watcher = watch(fragment, async () => {
+  let lastFragmentMtime = 0;
+  function captureMtime(): void {
+    try {
+      lastFragmentMtime = statSync(fragment).mtimeMs;
+    } catch {
+      // fragment temporarily missing during atomic rename
+    }
+  }
+  captureMtime();
+
+  function broadcast(): void {
+    const msg = JSON.stringify({
+      type: buildError ? "error" : "reload",
+      error: buildError,
+    });
+    for (const ws of sockets) {
+      try {
+        ws.send(msg);
+      } catch {
+        sockets.delete(ws);
+      }
+    }
+  }
+
+  function scheduleRebuild(): void {
     if (debounceTimer) clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
       await doBuild();
-      for (const ws of sockets) {
-        try {
-          ws.send(JSON.stringify({ type: buildError ? "error" : "reload", error: buildError }));
-        } catch {
-          sockets.delete(ws);
-        }
-      }
+      broadcast();
     }, 80);
+  }
+
+  const watcher = watch(fragmentDir, (_evt, name) => {
+    if (name !== fragmentName) return;
+    captureMtime();
+    scheduleRebuild();
   });
 
-  // Idle shutdown
+  // Backstop for environments where the directory watcher can miss events
+  // (network mounts, WSL2 cross-filesystem edits on /mnt/c, some Windows
+  // editors). One stat() per 2 s is negligible.
+  const mtimePoll = setInterval(() => {
+    try {
+      const m = statSync(fragment).mtimeMs;
+      if (m && m !== lastFragmentMtime) {
+        lastFragmentMtime = m;
+        scheduleRebuild();
+      }
+    } catch {
+      // fragment temporarily missing during atomic rename
+    }
+  }, 2000);
+
+  // Idle shutdown - skip while a browser is connected.
   const idleCheck = setInterval(() => {
+    if (sockets.size > 0) return;
     if (Date.now() - lastRequest > timeout * 1000) {
       console.error(`\nIdle for ${timeout}s - shutting down.`);
       shutdown();
@@ -155,6 +198,7 @@ async function main(): Promise<void> {
 
   function shutdown(): void {
     clearInterval(idleCheck);
+    clearInterval(mtimePoll);
     watcher.close();
     for (const ws of sockets) ws.close();
     server.stop();

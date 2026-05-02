@@ -54,7 +54,7 @@ export function transformGmail(html: string): string {
   );
   result = result.replace(
     /<th(?:\s[^>]*)?>/g,
-    '<th style="border: 1px solid #999999; padding: 8px; font-weight: bold;">',
+    '<th style="border: 1px solid #999999; padding: 8px; font-weight: bold; background-color: #f5f5f5;">',
   );
 
   result = result.replace(/<hr\s*\/?>/g, "");

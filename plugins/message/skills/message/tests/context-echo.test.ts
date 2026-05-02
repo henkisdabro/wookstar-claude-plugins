@@ -172,3 +172,36 @@ describe("conversation log echo scan", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Hook latency test
+// ---------------------------------------------------------------------------
+
+describe("hook latency", () => {
+  test("auto_serve_fragment.ts completes within 3s for a known fragment", async () => {
+    const HOOK = "/Users/Henrik/claudecode/lifeos/.claude/hooks/auto_serve_fragment.ts";
+    const FRAGMENT =
+      "/Users/Henrik/claudecode/lifeos/data/writing/email_drafts/2026-02-13_stuart_markdown-test.fragment.md";
+
+    if (!existsSync(HOOK) || !existsSync(FRAGMENT)) {
+      console.log("Hook or fixture not found - skipping latency test");
+      return;
+    }
+
+    const input = JSON.stringify({ tool_input: { file_path: FRAGMENT } });
+    const start = performance.now();
+
+    const proc = Bun.spawn(["bun", "run", HOOK], {
+      stdin: new TextEncoder().encode(input),
+      stdout: "pipe",
+      stderr: "pipe",
+      env: { ...process.env, MESSAGE_NO_OPEN: "1" },
+    });
+
+    await new Response(proc.stdout).text();
+    const elapsed = performance.now() - start;
+
+    console.log(`Hook returned in ${elapsed.toFixed(0)}ms`);
+    expect(elapsed).toBeLessThan(3500);
+  }, 5000);
+});

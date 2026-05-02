@@ -131,6 +131,7 @@
     .btn.primary-gmail { background: var(--gmail); }
     .btn.primary-outlook { background: var(--outlook); }
     .btn.primary-whatsapp { background: var(--whatsapp); }
+    .btn.slack { background: rgb(72, 26, 84); color: #fff; }
     .btn.ghost {
       background: var(--chrome);
       color: var(--text);
@@ -220,6 +221,16 @@
       line-height: 1.5;
       min-height: 120px;
     }
+    .slack-frame {
+      padding: 20px;
+      background: #fff;
+      color: #1d1c1d;
+      font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      white-space: pre-wrap;
+      font-size: 15px;
+      line-height: 1.46;
+      min-height: 120px;
+    }
 
     .hidden-platform { display: none; }
 
@@ -299,10 +310,12 @@
     <button class="tab active" data-tab="gmail" onclick="showTab('gmail')">Gmail<span class="kbd">G</span></button>
     <button class="tab" data-tab="outlook" onclick="showTab('outlook')">Outlook<span class="kbd">O</span></button>
     <button class="tab" data-tab="whatsapp" onclick="showTab('whatsapp')">WhatsApp<span class="kbd">W</span></button>
+    <button class="tab" data-tab="slack" onclick="showTab('slack')">Slack<span class="kbd">S</span></button>
   </div>
   <div class="actions">
-    <button class="btn ghost" onclick="composeInGmail(this)">Compose in Gmail</button>
-    <button class="btn ghost" onclick="sendViaWhatsApp(this)">Open WhatsApp</button>
+    <button class="btn ghost platform-action" data-for="gmail" onclick="composeInGmail(this)">Compose in Gmail</button>
+    <button class="btn ghost platform-action" data-for="whatsapp" onclick="sendViaWhatsApp(this)">Open WhatsApp</button>
+    <button class="btn slack platform-action" data-for="slack" onclick="openSlack(this)">Open Slack</button>
     <button class="btn primary-gmail" onclick="copyCurrentTab(this)" id="copy-btn">Copy <span class="kbd">C</span></button>
   </div>
 </div>
@@ -334,6 +347,7 @@
   <div id="gmail-body" class="body-frame gmail-frame"><!-- INJECT:GMAIL_BODY --></div>
   <div id="outlook-body" class="body-frame outlook-frame hidden-platform"><!-- INJECT:OUTLOOK_BODY --></div>
   <div id="whatsapp-body" class="whatsapp-frame hidden-platform"></div>
+  <div id="slack-body" class="slack-frame hidden-platform"></div>
   <div id="whatsapp-raw" class="hidden-platform"><!-- INJECT:RAW_BODY --></div>
 </div>
 
@@ -341,8 +355,10 @@
   <span><kbd>G</kbd> Gmail</span>
   <span><kbd>O</kbd> Outlook</span>
   <span><kbd>W</kbd> WhatsApp</span>
+  <span><kbd>S</kbd> Slack</span>
   <span><kbd>C</kbd> Copy current tab</span>
   <span><kbd>R</kbd> Force reload</span>
+  <span class="platform-action" data-for="slack">After pasting in Slack, press <kbd>⌘⇧F</kbd> (or <kbd>Ctrl+Shift+F</kbd>) to format markdown as rich text</span>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -350,7 +366,9 @@
 <script>
 (function () {
   var currentTab = 'gmail';
-  var PRIMARY_CLASS = { gmail: 'primary-gmail', outlook: 'primary-outlook', whatsapp: 'primary-whatsapp' };
+  var TABS = ['gmail', 'outlook', 'whatsapp', 'slack'];
+  var PRIMARY_CLASS = { gmail: 'primary-gmail', outlook: 'primary-outlook', whatsapp: 'primary-whatsapp', slack: 'slack' };
+  var TAB_LABEL = { gmail: 'Gmail', outlook: 'Outlook', whatsapp: 'WhatsApp', slack: 'Slack' };
 
   function $(id) { return document.getElementById(id); }
   function toast(msg) {
@@ -368,7 +386,7 @@
   }
 
   function updateCounts() {
-    var text = $(currentTab === 'whatsapp' ? 'whatsapp-body' : currentTab + '-body').innerText || '';
+    var text = $(currentTab + '-body').innerText || '';
     var chars = text.length;
     var words = (text.match(/\S+/g) || []).length;
     var read = Math.max(1, Math.round(words / 200));
@@ -379,15 +397,18 @@
 
   window.showTab = function (name) {
     currentTab = name;
-    ['gmail', 'outlook', 'whatsapp'].forEach(function (t) {
+    TABS.forEach(function (t) {
       var body = $(t + '-body');
       var tab = document.querySelector('.tab[data-tab="' + t + '"]');
       if (body) body.classList.toggle('hidden-platform', t !== name);
       if (tab) tab.classList.toggle('active', t === name);
     });
+    document.querySelectorAll('.platform-action').forEach(function (b) {
+      b.style.display = b.getAttribute('data-for') === name ? '' : 'none';
+    });
     var btn = $('copy-btn');
     btn.className = 'btn ' + PRIMARY_CLASS[name];
-    btn.innerHTML = 'Copy for ' + name.charAt(0).toUpperCase() + name.slice(1) + ' <span class="kbd">C</span>';
+    btn.innerHTML = 'Copy for ' + TAB_LABEL[name] + ' <span class="kbd">C</span>';
     updateCounts();
   };
 
@@ -413,7 +434,10 @@
     return ok;
   }
 
-  function htmlToWhatsApp() {
+  // Bold/italic/strike/code/quote markers are byte-identical for WhatsApp and
+  // Slack mrkdwn. Only link rendering differs - WhatsApp has no markdown link
+  // syntax (text + URL inline), Slack uses <url|text>.
+  function htmlToMessenger(flavour) {
     var html = $('whatsapp-raw').innerHTML;
     html = html.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*');
     html = html.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, '_$2_');
@@ -421,7 +445,8 @@
     html = html.replace(/<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi, '\n```\n$1\n```\n');
     html = html.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, '`$1`');
     html = html.replace(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi, '\n*$1*\n');
-    html = html.replace(/<hr\b[^>]*\/?>/gi, '\n---\n');
+    // Slack doesn't render HR; WhatsApp shows literal dashes - blank line is cleaner.
+    html = html.replace(/<hr\b[^>]*\/?>/gi, '\n');
     html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, function (m, inner) {
       var rows = [], trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi, tr;
       while ((tr = trRe.exec(inner)) !== null) {
@@ -444,18 +469,26 @@
     html = html.replace(/<blockquote\b[^>]*>([\s\S]*?)<\/blockquote>/gi, function (m, inner) {
       return '\n> ' + inner.replace(/<[^>]+>/g, '').trim() + '\n';
     });
+    // Links - must run before the catch-all tag strip below or URLs get lost.
+    // Both WhatsApp and Slack auto-link plain URLs; Slack's <url|label> mrkdwn
+    // only works when WYSIWYG is disabled, so plain URL is the safer bet.
+    html = html.replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, function (m, url, label) {
+      var clean = label.replace(/<[^>]+>/g, '').trim();
+      return !clean || clean === url ? url : clean + ' (' + url + ')';
+    });
     html = html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<p\b[^>]*>/gi, '');
     html = html.replace(/&nbsp;/gi, '').replace(/<[^>]+>/g, '');
     var ta = document.createElement('textarea'); ta.innerHTML = html;
     var text = ta.value.replace(/\n[ \t]+\n/g, '\n\n').replace(/\n{2,}/g, '\n\n');
     return text.trim();
   }
+  function htmlToWhatsApp() { return htmlToMessenger('whatsapp'); }
 
   function markCopyState(btn, ok, label) {
     btn.classList.remove('copied', 'failed');
     btn.classList.add(ok ? 'copied' : 'failed');
     var original = btn.innerHTML;
-    btn.innerHTML = (ok ? '✓ ' : '✗ ') + label;
+    btn.innerHTML = (ok ? '\u2713 ' : '\u2717 ') + label;
     setTimeout(function () {
       btn.classList.remove('copied', 'failed');
       btn.innerHTML = original;
@@ -463,13 +496,16 @@
   }
 
   window.copyCurrentTab = function (btn) {
-    if (currentTab === 'whatsapp') {
-      var text = htmlToWhatsApp();
-      navigator.clipboard.writeText(text).then(function () { markCopyState(btn, true, 'Copied WhatsApp'); toast('Copied. Paste in WhatsApp.'); });
+    if (currentTab === 'whatsapp' || currentTab === 'slack') {
+      var text = htmlToMessenger(currentTab);
+      navigator.clipboard.writeText(text).then(function () {
+        markCopyState(btn, true, 'Copied ' + TAB_LABEL[currentTab]);
+        toast('Copied. Paste in ' + TAB_LABEL[currentTab] + '.');
+      });
     } else {
       copyRichHtml(currentTab + '-body').then(function (ok) {
         markCopyState(btn, ok, 'Copied');
-        toast(ok ? 'Copied. Paste in ' + currentTab + '.' : 'Copy failed');
+        toast(ok ? 'Copied. Paste in ' + TAB_LABEL[currentTab] + '.' : 'Copy failed');
       });
     }
   };
@@ -508,9 +544,22 @@
     toast('Opening WhatsApp...');
   };
 
-  function renderWhatsApp() {
-    var body = $('whatsapp-body');
-    if (body) body.textContent = htmlToWhatsApp();
+  window.openSlack = function (btn) {
+    // Slack has no URL scheme that pre-fills a message, so we copy the
+    // mrkdwn text and open the app - user pastes into the destination channel.
+    var text = htmlToMessenger('slack');
+    navigator.clipboard.writeText(text).then(function () {
+      markCopyState(btn, true, 'Copied for Slack');
+      window.open('slack://open');
+      toast('Opening Slack... Paste (Cmd/Ctrl+V), then Cmd/Ctrl+Shift+F to format.');
+    });
+  };
+
+  function renderMessengers() {
+    var wa = $('whatsapp-body');
+    if (wa) wa.textContent = htmlToMessenger('whatsapp');
+    var sl = $('slack-body');
+    if (sl) sl.textContent = htmlToMessenger('slack');
   }
 
   function setStatus(state, label) {
@@ -554,6 +603,7 @@
     if (k === 'g') showTab('gmail');
     else if (k === 'o') showTab('outlook');
     else if (k === 'w') showTab('whatsapp');
+    else if (k === 's') showTab('slack');
     else if (k === 'c') copyCurrentTab($('copy-btn'));
     else if (k === 'r') location.reload();
   });
@@ -561,7 +611,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     hideIfEmpty('cc', 'cc-row');
     hideIfEmpty('bcc', 'bcc-row');
-    renderWhatsApp();
+    renderMessengers();
     updateCounts();
     showTab('gmail');
     if (typeof WebSocket !== 'undefined') connect(); else pollFallback();

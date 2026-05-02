@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.7.0",
+    "version": "6.7.1",
     "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins"
   },
   "plugins": [
@@ -540,7 +540,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview",
-      "version": "2.4.0",
+      "version": "2.5.0",
       "author": {
         "name": "Henrik Soederlund",
         "email": "whom-wealthy.2z@icloud.com"
