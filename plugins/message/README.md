@@ -73,7 +73,7 @@ Copy buttons use the Clipboard API's HTML MIME type - paste into Gmail or Outloo
 ## Workflow
 
 1. Claude writes a `.fragment.md` to `data/writing/email_drafts/`
-2. The PostToolUse hook (`auto_serve_fragment.sh`) auto-builds and launches the preview server
+2. The PostToolUse hook (`auto-serve-fragment.ts`, runs under Bun) auto-builds and launches the preview server
 3. Browser opens automatically with the preview URL
 4. Edits to the fragment hot-reload in under 100 ms via WebSocket
 5. Use platform tabs and copy buttons to send via Gmail, Outlook, or WhatsApp

@@ -4,6 +4,13 @@ description: Create and edit rich text message drafts for Gmail, Outlook, and Wh
 argument-hint: "[optional: path to existing .fragment.md for editing]"
 model: sonnet
 allowed-tools: Bash, Write, Read, Edit
+hooks:
+  PostToolUse:
+    - matcher: "Write"
+      hooks:
+        - type: command
+          command: "bun run ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts"
+          timeout: 30
 ---
 
 # Message Drafts
@@ -149,4 +156,4 @@ Code lives in `.claude/skills/message/scripts/`. Run tests: `cd .claude/skills/m
 
 ## Platform support
 
-Works on macOS, Linux, WSL2 (Ubuntu), and native Windows (PowerShell). The hook is `auto_serve_fragment.ts` and runs under Bun on all platforms — `bun` must be on PATH. Browser opening: `open` on macOS, `xdg-open` on Linux, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `cmd /c start` on Windows.
+Works on macOS, Linux, WSL2 (Ubuntu), and native Windows (PowerShell). The hook is `auto-serve-fragment.ts` and runs under Bun on all platforms — `bun` must be on PATH. Browser opening: `open` on macOS, `xdg-open` on Linux, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `cmd /c start` on Windows.
