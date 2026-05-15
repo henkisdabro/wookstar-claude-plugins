@@ -1,14 +1,8 @@
 # Developer Toolkit
 
-Complete development toolkit with expert agents, commands, testing skills, and powerful MCP integrations.
+Complete development toolkit with commands, testing skills, and powerful MCP integrations.
 
 ## What's Included
-
-### Agents (3)
-
-- **fullstack-developer** - Expert in frontend (React, TypeScript, Vue) and backend (Node.js, FastAPI, databases)
-- **validation-gates** - Testing and quality assurance specialist (unit tests, integration tests, coverage)
-- **documentation-manager** - Technical documentation specialist for README files, API docs, and architecture decisions
 
 ### Commands (3)
 
@@ -16,9 +10,8 @@ Complete development toolkit with expert agents, commands, testing skills, and p
 - **/generate-prp** - Generate Progressive Refinement Plans for complex features
 - **/execute-prp** - Execute previously generated PRPs
 
-### Skills (5)
+### Skills (4)
 
-- **git-commit-helper** - Generate descriptive commit messages from git diffs
 - **webapp-testing** - Web application testing toolkit with Playwright
 - **devtools** - Chrome DevTools MCP setup guide for browser debugging and automation
 - **prp-generator** - Generate comprehensive Product Requirement Plans with research methodology
@@ -53,26 +46,14 @@ FIRECRAWL_API_KEY=your_key_here
 ## Usage Examples
 
 ```bash
-# Fullstack agent helps with development
-"Build a REST API with authentication"
-
-# Documentation manager keeps docs in sync
-"Update the documentation after these code changes"
-
-# Validation agent runs tests
-"Run all tests and check coverage"
-
 # Generate a Progressive Refinement Plan
 /generate-prp "Build user authentication module"
 
 # Execute the generated plan
 /execute-prp
 
-# Container-ize your application
+# Container-ise your application
 /containerize
-
-# Git commit helper
-"Generate a commit message for my changes"
 
 # Playwright testing
 "Test the checkout flow in our web app"
@@ -109,13 +90,9 @@ Generates comprehensive Product Requirement Plans with:
 
 This toolkit is ideal for:
 
-- Full-stack web application development
-- Testing and quality assurance
 - Browser automation and testing
-- Git workflow optimisation
 - Accessing technical documentation
 - Web scraping and data extraction
 - Generating comprehensive project plans
-- Maintaining documentation alongside code changes
 - SaaS architecture design and review
 - Container-ising applications for deployment

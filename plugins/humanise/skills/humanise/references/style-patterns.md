@@ -1,4 +1,4 @@
-# Style Patterns (13-18)
+# Style Patterns (13-18, 25-26, 29)
 
 Detailed reference for style-level AI writing patterns. Read the compact summary table in SKILL.md first to identify which patterns apply, then consult this file for rewriting guidance.
 
@@ -6,7 +6,7 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 ## 13. Em Dash Overuse
 
-**Problem:** LLMs use em dashes (--) more than humans, mimicking "punchy" sales writing.
+**Problem:** LLMs use em dashes (--) more than humans, mimicking "punchy" sales writing. Note: OpenAI's GPT-5.1 has attempted to suppress em dash use, so this tell is weaker in newer ChatGPT output - use in combination with other indicators.
 
 **Before:**
 > The term is primarily promoted by Dutch institutions--not by the people themselves. You don't say "Netherlands, Europe" as an address--yet this mislabeling continues--even in official documents.
@@ -70,7 +70,7 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 ## 18. Curly Quotation Marks
 
-**Problem:** ChatGPT and DeepSeek use curly quotes ("\u2026") and curly apostrophes instead of straight quotes ("..."). Note: Word processors and macOS also produce these, so not always AI-specific.
+**Problem:** ChatGPT and DeepSeek use curly quotes ("\u2026") and curly apostrophes instead of straight quotes ("..."). Gemini and Claude typically avoid curly quotes. Note: Word processors and macOS also produce these, so not always AI-specific.
 
 **Before:**
 > He said \u201cthe project is on track\u201d but others disagreed.
@@ -107,3 +107,33 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 **After:**
 > ## Main Section
 > ### Subsection Detail
+
+---
+
+## 29. Thematic Breaks Before Headings
+
+**Problem:** AI chatbots frequently insert horizontal rules (`----` or `---`) before each heading, a Markdown artifact carried over from chat output. In published writing this creates unnecessary visual breaks and signals the text was pasted from a chat interface without cleanup.
+
+**Before:**
+> The term has roots in 18th-century French textile trade.
+>
+> ---
+>
+> ## History
+>
+> Headwrapping practices date back centuries across multiple cultures.
+>
+> ---
+>
+> ## Form and Construction
+
+**After:**
+> The term has roots in 18th-century French textile trade.
+>
+> ## History
+>
+> Headwrapping practices date back centuries across multiple cultures.
+>
+> ## Form and Construction
+
+**When to flag:** Horizontal rules appearing mechanically before every heading. Occasional thematic breaks between genuinely distinct content sections are fine - the tell is when they appear before *every* heading like clockwork.

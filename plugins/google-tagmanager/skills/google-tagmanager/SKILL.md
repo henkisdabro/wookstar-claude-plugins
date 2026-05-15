@@ -1,6 +1,6 @@
 ---
 name: google-tagmanager
-description: Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and API automation. Use when working with GTM implementation, configuration, optimisation, troubleshooting, or any GTM-related tasks.
+description: Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and API automation. Use when working with GTM implementation, configuration, dataLayer push design, custom tag/template building, server-side container setup, GTM API automation, optimisation, or troubleshooting. Do NOT use for direct gtag.js/GA4 setup that bypasses GTM (use the google-analytics skill), Adobe Launch, Tealium, or other non-GTM tag management systems.
 ---
 
 # Google Tag Manager

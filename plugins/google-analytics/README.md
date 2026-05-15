@@ -47,7 +47,7 @@ export GOOGLE_PROJECT_ID="your-gcp-project-id"
 "Implement purchase event tracking for my checkout flow"
 
 # Analysis
-"Write SQL to analyze GA4 conversion funnels in BigQuery"
+"Write SQL to analyse GA4 conversion funnels in BigQuery"
 
 # Server-side
 "Send offline conversion data using Measurement Protocol"

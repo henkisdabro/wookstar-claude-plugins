@@ -1,6 +1,6 @@
 ---
 name: google-analytics
-description: Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, custom dimensions, user tracking, audiences, reporting, BigQuery integration, gtag.js implementation, GTM integration, Measurement Protocol, DebugView, privacy compliance, and data management. Use when working with GA4 implementation, tracking, analysis, or any GA4-related tasks.
+description: Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, custom dimensions, user tracking, audiences, reporting, BigQuery integration, gtag.js implementation, GTM integration, Measurement Protocol, DebugView, privacy compliance, and data management. Use when working with GA4 implementation, tracking, configuration, debugging, BigQuery export queries, gtag/dataLayer setup, or any GA4-related tasks. Do NOT use for Universal Analytics (sunset July 2024), Adobe Analytics, Mixpanel, Amplitude, or other non-GA4 platforms. Do NOT use for ad-platform reporting (use google-ads-scripts for that).
 ---
 
 # Google Analytics 4 Complete Guide

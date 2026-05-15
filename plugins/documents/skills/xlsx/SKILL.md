@@ -1,6 +1,6 @@
 ---
 name: xlsx
-description: Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualisation. Use when working with spreadsheets (.xlsx, .xlsm, .csv, .tsv) for creating new spreadsheets with formulas and formatting, reading or analysing data, modifying existing spreadsheets while preserving formulas, data analysis and visualisation, or recalculating formulas.
+description: Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualisation. Use when working with spreadsheets (.xlsx, .xlsm, .csv, .tsv) for creating new spreadsheets with formulas and formatting, reading or analysing data, modifying existing spreadsheets while preserving formulas, data analysis and visualisation, or recalculating formulas. Do NOT use for plain CSV/TSV manipulation when no formulas, formatting, or multi-sheet workbook structure is needed - plain text tooling is faster. Do NOT use for BigQuery or warehouse-scale SQL analysis.
 ---
 
 # Requirements for Outputs

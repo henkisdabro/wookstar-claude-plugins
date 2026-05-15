@@ -19,10 +19,10 @@ Expert guidance for Google Ads Script development with Claude Code, covering Ads
 - **Campaign operations** - Create, modify, pause campaigns
 - **Ad groups** - Management and targeting
 - **Keywords** - Bidding, match types, negative keywords
-- **Bidding strategies** - Automated rules, ROAS optimization
+- **Bidding strategies** - Automated rules, ROAS optimisation
 - **Performance reporting** - Custom reports and dashboards
 - **Budget management** - Spend limits and pacing
-- **Quality scores** - Monitoring and optimization
+- **Quality scores** - Monitoring and optimisation
 - **Conversion tracking** - Integration and analysis
 
 ## Usage Examples
@@ -34,7 +34,7 @@ Expert guidance for Google Ads Script development with Claude Code, covering Ads
 # Reporting
 "Create a weekly performance report sent via email"
 
-# Optimization
+# Optimisation
 "Build a script to adjust bids based on ROAS targets"
 
 # Bulk operations

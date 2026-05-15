@@ -8,13 +8,15 @@ Detailed reference for language-level AI writing patterns. Read the compact summ
 
 Different LLM generations favour different words. Recognising the era helps identify the source model.
 
-**2023 to mid-2024 (GPT-4 era):** Additionally, delve, intricate, meticulous, pivotal, testament, vibrant, enduring, tapestry, garner, underscore, interplay, intricacies
+**2023 to mid-2024 (GPT-4 era):** Additionally, boasts, bolstered, crucial, delve, emphasizing, enduring, garner, intricate/intricacies, interplay, key, landscape, meticulous/meticulously, pivotal, underscore, tapestry, testament, valuable, vibrant
 
-**Mid-2024 to mid-2025 (GPT-4o era):** align with, enhance, emphasizing, fostering, highlighting, showcasing, crucial, key (adjective), landscape (abstract noun)
+**Mid-2024 to mid-2025 (GPT-4o era):** align with, bolstered, crucial, emphasizing, enhance, enduring, fostering, highlighting, pivotal, showcasing, underscore, vibrant
 
 **Mid-2025 onward (GPT-5 era):** emphasizing, enhance, highlighting, showcasing, plus notability-related terms (independent coverage, media outlets)
 
-**All-era high-frequency words:** Additionally, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+**All-era high-frequency words:** Additionally, boasts, bolstered, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), meticulous/meticulously, pivotal, robust, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+
+**Note on "concrete" (WP:CONCRETE):** When an AI chatbot is challenged about AI-generated content, it tends to use "concrete" as an adjective - "no concrete evidence", "can you provide concrete examples". This defensive usage is characteristic of AI responses to AI-detection allegations, not general writing.
 
 **Problem:** These words appear far more frequently in post-2023 text. They often co-occur, and specific clusters can fingerprint the model generation used.
 
@@ -40,15 +42,29 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 ---
 
-## 9. Negative Parallelisms
+## 9. Negative Parallelisms (two subtypes)
 
-**Problem:** Constructions like "Not only...but..." or "It's not just about..., it's..." are overused.
+Wikipedia documents two distinct constructions, both overused by AI models.
+
+### Subtype A: "Not only X, but also Y"
+
+**Problem:** Constructions like "Not only...but..." or "It's not just...it's..." frame mundane observations as surprising revelations.
 
 **Before:**
 > It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement.
 
 **After:**
 > The heavy beat adds to the aggressive tone.
+
+### Subtype B: "Not X, not Y, just Z"
+
+**Problem:** Explicit denials of characteristics the text never claimed, used to create false contrast and drama.
+
+**Before:**
+> This isn't a tool for power users. It's not complicated. It's not intimidating. It's just a calendar that gets out of your way.
+
+**After:**
+> The calendar is intentionally minimal, with no configuration options beyond the default layout.
 
 ---
 

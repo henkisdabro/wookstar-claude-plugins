@@ -20,7 +20,7 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 ## 2. Undue Emphasis on Notability and Media Coverage
 
-**Words to watch:** independent coverage, local/regional/national media outlets, written by a leading expert, active social media presence
+**Words to watch:** independent coverage, local/regional/national media outlets, music/business/tech outlets, profiled in, written by a leading expert, active social media presence
 
 **Problem:** LLMs hit readers over the head with claims of notability, often listing sources without context.
 
@@ -34,7 +34,7 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 ## 3. Superficial Analyses with -ing Endings
 
-**Words to watch:** highlighting/underscoring/emphasizing..., ensuring..., reflecting/symbolizing..., contributing to..., cultivating/fostering..., encompassing..., showcasing...
+**Words to watch:** highlighting/underscoring/emphasizing..., ensuring..., reflecting/symbolizing..., contributing to..., cultivating/fostering..., encompassing..., showcasing..., valuable insights, align/resonate with
 
 **Problem:** AI chatbots tack present participle ("-ing") phrases onto sentences to add fake depth.
 
@@ -44,11 +44,21 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 **After:**
 > The temple uses blue, green, and gold colors. The architect said these were chosen to reference local bluebonnets and the Gulf coast.
 
+**Sub-pattern: Claiming things "generated debate"**
+
+AI chatbots also claim that topics or events prompted discussion, reflection, or debate - even when those discussions are not documented. Watch for: *generated debate*, *prompted broader reflection*, *shaped emerging policy discussions*, *raised philosophical questions about*, *sparked conversation around*.
+
+**Before:**
+> The phenomenon has generated debate about authenticity and consent. These works have shaped emerging policy discussions about ownership and dignity.
+
+**After:**
+> Critics have raised concerns about consent; regulators in the EU began reviewing related policy in 2024.
+
 ---
 
 ## 4. Promotional and Advertisement-like Language
 
-**Words to watch:** boasts a, vibrant, rich (figurative), profound, enhancing its, showcasing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, breathtaking, must-visit, stunning
+**Words to watch:** boasts a, vibrant, rich (figurative), profound, enhancing its, showcasing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, featuring, diverse array, breathtaking, must-visit, stunning
 
 **Problem:** LLMs have serious problems keeping a neutral tone, especially for "cultural heritage" topics.
 

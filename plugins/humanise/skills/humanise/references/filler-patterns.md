@@ -38,3 +38,33 @@ Detailed reference for filler and hedging AI writing patterns. Read the compact 
 
 **After:**
 > The company plans to open two more locations next year.
+
+---
+
+## Historical Patterns (2022-2024, now less common)
+
+These appeared in older LLM output and are rarer now, but still worth flagging when found.
+
+### Didactic Disclaimers
+
+**Words to watch:** *it's important/critical/crucial to note/remember/consider*, *worth noting*, *may vary*, *it is essential to understand that*
+
+Older models (~2023) prefaced statements with safety or variance disclaimers, especially for topics varying by location or involving controversy.
+
+**Before:**
+> However, it's important to note that these groups operate outside the formal structure and their influence may vary.
+
+**After:**
+> These groups operate outside the formal structure and have limited influence on policy.
+
+### Section Summaries
+
+**Words to watch:** *In summary*, *In conclusion*, *Overall*, *To summarise*, *To recap*
+
+Older LLMs ended paragraphs and sections by restating what they just said.
+
+**Before:**
+> In conclusion, the report highlights three main findings: rising costs, declining enrollment, and faculty retention issues. Overall, these factors present significant challenges.
+
+**After:**
+> Costs are rising, enrollment is falling, and faculty are leaving - a combination that puts several departments at risk.

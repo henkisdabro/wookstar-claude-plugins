@@ -1,6 +1,6 @@
 ---
 name: timezone-tools
-description: Get current time in any timezone and convert times between timezones. Use when working with time, dates, timezones, scheduling across regions, or when user mentions specific cities/regions for time queries. Supports IANA timezone names.
+description: Get current time in any timezone and convert times between timezones. Use when working with time, dates, timezones, scheduling across regions, "what time is it in X", "convert 3pm Sydney to London", DST checks, or when the user mentions specific cities/regions for time queries. Supports IANA timezone names. Do NOT use for date arithmetic (adding days/months), recurring event scheduling, business-day calculations, or full calendar/booking logic - those need a dedicated date library or scheduling tool.
 ---
 
 # Timezone Tools

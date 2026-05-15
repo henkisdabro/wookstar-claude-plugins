@@ -40,8 +40,8 @@
     {
       "name": "documents",
       "source": "./plugins/documents",
-      "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
-      "version": "1.1.0",
+      "description": "Professional document processing suite: 4 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, fast text-layer PDF extraction, forms, tables, OCR, and formulas",
+      "version": "1.2.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -563,7 +563,7 @@
       "name": "humanise",
       "source": "./plugins/humanise",
       "description": "Humanise text and remove AI writing patterns - detects and fixes 29 AI tell-tales including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks",
-      "version": "4.0.1",
+      "version": "4.0.2",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

@@ -1,16 +1,16 @@
 ---
 name: react-best-practices
-description: Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating waterfalls, optimising bundles, and improving rendering. Use when optimising React apps, reviewing performance, or refactoring components.
+description: Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating waterfalls, optimising bundles, and improving rendering. Use when optimising React or Next.js apps, reviewing performance, refactoring components, hunting wasteful re-renders, reducing bundle size, debugging client/server data-fetching, or tightening rendering paths. Do NOT use for non-React frameworks (Vue, Svelte, Solid, Angular), React Native, or general JavaScript performance unrelated to React.
 ---
 
-# React Best Practices - Performance Optimization
+# React Best Practices - Performance Optimisation
 
-Comprehensive performance optimization guide for React and Next.js applications with 40+ rules organized by impact level. Designed to help developers eliminate performance bottlenecks and follow best practices.
+Comprehensive performance optimisation guide for React and Next.js applications with 40+ rules organised by impact level. Designed to help developers eliminate performance bottlenecks and follow best practices.
 
 ## When to use this skill
 
 **Use React Best Practices when:**
-- Optimizing React or Next.js application performance
+- Optimising React or Next.js application performance
 - Reviewing code for performance improvements
 - Refactoring existing components for better performance
 - Implementing new features with performance in mind
@@ -20,12 +20,12 @@ Comprehensive performance optimization guide for React and Next.js applications 
 
 **Key areas covered:**
 - **Eliminating Waterfalls** (CRITICAL): Prevent sequential async operations
-- **Bundle Size Optimization** (CRITICAL): Reduce initial JavaScript payload
-- **Server-Side Performance** (HIGH): Optimize RSC and data fetching
+- **Bundle Size Optimisation** (CRITICAL): Reduce initial JavaScript payload
+- **Server-Side Performance** (HIGH): Optimise RSC and data fetching
 - **Client-Side Data Fetching** (MEDIUM-HIGH): Implement efficient caching
-- **Re-render Optimization** (MEDIUM): Minimize unnecessary re-renders
-- **Rendering Performance** (MEDIUM): Optimize browser rendering
-- **JavaScript Performance** (LOW-MEDIUM): Micro-optimizations for hot paths
+- **Re-render Optimisation** (MEDIUM): Minimize unnecessary re-renders
+- **Rendering Performance** (MEDIUM): Optimise browser rendering
+- **JavaScript Performance** (LOW-MEDIUM): Micro-optimisations for hot paths
 - **Advanced Patterns** (LOW): Specialized techniques for edge cases
 
 ## Quick reference
@@ -77,7 +77,7 @@ The complete performance guidelines are available in the references folder:
 Each rule includes:
 - Incorrect/correct code comparisons
 - Specific impact metrics
-- When to apply the optimization
+- When to apply the optimisation
 - Real-world examples
 
 ## Categories overview
@@ -90,7 +90,7 @@ Waterfalls are the #1 performance killer. Each sequential await adds full networ
 - Promise.all() for independent operations
 - Strategic Suspense boundaries
 
-### 2. Bundle Size Optimization (CRITICAL)
+### 2. Bundle Size Optimisation (CRITICAL)
 Reducing initial bundle size improves Time to Interactive and Largest Contentful Paint.
 - Avoid barrel file imports
 - Conditional module loading
@@ -99,7 +99,7 @@ Reducing initial bundle size improves Time to Interactive and Largest Contentful
 - Preload based on user intent
 
 ### 3. Server-Side Performance (HIGH)
-Optimize server-side rendering and data fetching.
+Optimise server-side rendering and data fetching.
 - Cross-request LRU caching
 - Minimize serialization at RSC boundaries
 - Parallel data fetching with component composition
@@ -110,7 +110,7 @@ Automatic deduplication and efficient data fetching patterns.
 - Deduplicate global event listeners
 - Use SWR for automatic deduplication
 
-### 5. Re-render Optimization (MEDIUM)
+### 5. Re-render Optimisation (MEDIUM)
 Reduce unnecessary re-renders to minimize wasted computation.
 - Defer state reads to usage point
 - Extract to memoized components
@@ -120,17 +120,17 @@ Reduce unnecessary re-renders to minimize wasted computation.
 - Use transitions for non-urgent updates
 
 ### 6. Rendering Performance (MEDIUM)
-Optimize the browser rendering process.
+Optimise the browser rendering process.
 - Animate SVG wrapper instead of SVG element
 - CSS content-visibility for long lists
 - Hoist static JSX elements
-- Optimize SVG precision
+- Optimise SVG precision
 - Prevent hydration mismatch without flickering
 - Use Activity component for show/hide
 - Use explicit conditional rendering
 
 ### 7. JavaScript Performance (LOW-MEDIUM)
-Micro-optimizations for hot paths.
+Micro-optimisations for hot paths.
 - Batch DOM CSS changes
 - Build index maps for repeated lookups
 - Cache property access in loops
@@ -151,13 +151,13 @@ Specialized techniques for edge cases.
 
 ## Implementation approach
 
-When optimizing a React application:
+When optimising a React application:
 
 1. **Profile first**: Use React DevTools Profiler and browser performance tools to identify bottlenecks
 2. **Focus on critical paths**: Start with eliminating waterfalls and reducing bundle size
 3. **Measure impact**: Verify improvements with metrics (LCP, TTI, FID)
-4. **Apply incrementally**: Don't over-optimize prematurely
-5. **Test thoroughly**: Ensure optimizations don't break functionality
+4. **Apply incrementally**: Don't over-optimise prematurely
+5. **Test thoroughly**: Ensure optimisations don't break functionality
 
 ## Key metrics to track
 
@@ -191,7 +191,7 @@ When optimizing a React application:
 - [React Documentation](https://react.dev)
 - [Next.js Documentation](https://nextjs.org)
 - [SWR Documentation](https://swr.vercel.app)
-- [Vercel Bundle Optimization](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)
+- [Vercel Bundle Optimisation](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)
 - [Vercel Dashboard Performance](https://vercel.com/blog/how-we-made-the-vercel-dashboard-twice-as-fast)
 - [better-all Library](https://github.com/shuding/better-all)
 - [node-lru-cache](https://github.com/isaacs/node-lru-cache)

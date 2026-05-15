@@ -1,6 +1,6 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-04-23
+Last fetched: 2026-05-15
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
@@ -79,7 +79,7 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 
 ---
 
-## AI Vocabulary Era Breakdown (as of 2026-04-15)
+## AI Vocabulary Era Breakdown (as of 2026-05-15)
 
 ### 2023 to mid-2024 (GPT-4 era)
 
@@ -91,15 +91,35 @@ align with, bolstered, crucial, emphasizing, enhance, enduring, fostering, highl
 
 ### Mid-2025 onward (GPT-5 era)
 
-emphasizing, enhance, highlighting, showcasing, plus increased notability-related terms (independent coverage, media outlets)
+emphasizing, enhance, highlighting, showcasing, robust, plus increased notability-related terms (independent coverage, media outlets)
 
 ### Models with distinct traits
 
 - **ChatGPT/DeepSeek**: Curly quotation marks and apostrophes
 - **Gemini/Claude**: Typically avoid curly quotes
+- **ChatGPT (GPT-5.1+)**: Attempted suppression of em dash overuse; em dash tell now weaker for newer ChatGPT output
 - **All models**: Rule of three, copula avoidance, negative parallelisms
 
+### New word: robust (added 2026-05-15)
+
+"Robust" added to Wikipedia's main AI vocabulary words-to-watch list, appearing in the GPT-5 era alongside "enhance", "highlighting", "showcasing".
+
+### WP:CONCRETE note (added 2026-05-15)
+
+When AI chatbots respond to AI-detection allegations, they characteristically use "concrete" as an adjective: "no concrete evidence", "please provide concrete examples". Not a general writing tell - specific to defensive AI responses.
+
 ---
+
+## Changes from 2026-04-23 to 2026-05-15
+
+1. **New AI vocabulary word: "robust"** - Added to Wikipedia's main words-to-watch list. Appearing in GPT-5 era text alongside enhance/highlighting/showcasing. Added to skill language-patterns.md Pattern #7 all-era list.
+2. **WP:CONCRETE defensive usage** - Wikipedia documents that AI chatbots use "concrete" characteristically when defending against AI-detection allegations ("no concrete evidence"). Not a general writing tell. Added as note to language-patterns.md Pattern #7.
+3. **GPT-5.1 em dash suppression** - Wikipedia notes OpenAI's GPT-5.1 attempted to suppress em dash overuse. Pattern #13 now less reliable for newer ChatGPT output; use in combination with other indicators. Added to style-patterns.md.
+4. **Pattern #3 sub-pattern: "generated debate"** - Wikipedia now explicitly documents AI claiming things "generated debate", "prompted broader reflection", "shaped emerging policy discussions" - synthetic impact claims not limited to -ing endings. Added to content-patterns.md.
+5. **Historical indicators section (new)** - Wikipedia added a section for patterns now uncommon in newer models: didactic disclaimers ("it's important to note", "worth noting", "may vary") and section summaries ("In summary", "In conclusion", "Overall"). Added to filler-patterns.md with historical context.
+6. **New Wikipedia-only sections (NOT added to skill)** - Wikipedia now has dedicated sections for: Markup (wikitext/Markdown artifacts, turn0search0, oaicite tags), Citations (broken links, invalid DOIs/ISBNs), Miscellaneous (edit summary tells, permissions gaming), and expanded AI-written comments indicators (wikilawyering, canned quality emphasis). These are Wikipedia-specific and not relevant to general text humanising.
+7. **Notability pattern expanded** - New examples: "strong digital presence", "actively shares updates and events". Skill pattern #2 already covers this adequately.
+8. **"Signs of human writing" section added** - Wikipedia now documents what DOESN'T indicate AI: perfect grammar, formal prose, transition words in isolation, unsourced content. Not added to skill (already covered by "When NOT to Use").
 
 ## Changes from 2026-04-18 to 2026-04-23
 
