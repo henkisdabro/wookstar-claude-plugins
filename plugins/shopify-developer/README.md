@@ -93,5 +93,5 @@ Development / E-commerce
 
 ---
 
-**Created by:** Henrik Soederlund ([@henkisdabro](https://github.com/henkisdabro))
+**Created by:** [@henkisdabro](https://github.com/henkisdabro)
 **Part of:** Claude Code Plugin Marketplace

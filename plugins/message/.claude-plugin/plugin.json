@@ -2,8 +2,8 @@
   "name": "message",
   "description": "Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview",
   "author": {
-    "name": "Henrik Soederlund",
+    "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.5.1"
+  "version": "2.5.2"
 }

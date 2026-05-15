@@ -115,19 +115,14 @@ Edit the `.fragment.md` file. The server watches it via `fs.watch` and pushes a 
 2. Supporting detail (context, logistics)
 3. Warm close (gratitude, relational content) just before the sign-off
 
-Match the recipient's formality. British English (colour, analyse, organise, behaviour, centre). Henrik's title is "Digital Consultant" - do not use "Strategy" or "Strategist" unless explicitly asked.
+Match the recipient's formality. British English (colour, analyse, organise, behaviour, centre).
 
-## Henrik's defaults
+## Your defaults
 
-- From / reply-to: `admin@henriksoderlund.com`
-- Google platform access requests (GA4, GTM, Search Console, Google Ads): `admin@henriksoderlund.com`
+Customise these for the user's context:
 
-Sign-off:
-
-```
-Best,
-Henrik
-```
+- From / reply-to: `your-email@example.com`
+- Sign-off: `Best,\n[Your Name]`
 
 ## After preview
 
@@ -135,15 +130,7 @@ Once the user has the preview URL, ask: "Would you like me to run the humanise s
 
 ## Post-draft actions
 
-After a client-facing draft, prompt: "Log this to the client comms log?" If yes, append to `data/consulting/clients/[slug]/comms/_comms-log.json` via Edit tool.
-
-Consulting emails (proposal, invoice, contract, engagement) - run:
-
-```bash
-python3 .claude/lib/scripts/sync_consulting_ledgers.py --client <slug> --event <type>
-```
-
-Event mapping: proposal email -> `proposal-sent`, invoice -> `invoice-issued`, contract -> `contract-signed`.
+After a client-facing draft, prompt the user if they'd like to log this to a comms log or trigger any downstream actions in their project.
 
 ## References
 
@@ -152,7 +139,7 @@ Event mapping: proposal email -> `proposal-sent`, invoice -> `invoice-issued`, c
 
 ## Development
 
-Code lives in `.claude/skills/message/scripts/`. Run tests: `cd .claude/skills/message && ~/.bun/bin/bun test`. Build-only without serving: `~/.bun/bin/bun run scripts/serve.ts <fragment> --build-only`.
+Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. Run tests: `cd .claude/skills/message && ~/.bun/bin/bun test`. Build-only without serving: `~/.bun/bin/bun run scripts/serve.ts <fragment> --build-only`.
 
 ## Platform support
 

@@ -2,6 +2,30 @@
 
 Development guidance for Claude Code when working with this plugin marketplace.
 
+## Personal Information Policy
+
+This is a **public plugin marketplace**. Never commit personal information to any file in this repo.
+
+Prohibited content:
+
+- Real names (full names or first+last)
+- Email addresses (any domain, including `@henriksoderlund.com`)
+- Phone numbers
+- Physical addresses
+- Project-specific file paths referencing personal directories (e.g. `data/consulting/clients/`)
+
+Allowed: the GitHub handle `henkisdabro` in homepage URLs and author fields, and the throwaway email `whom-wealthy.2z@icloud.com` in plugin manifest author blocks.
+
+**Before every commit**, run the personal info scan and confirm zero hits:
+
+```bash
+grep -rEi \
+  'henriksoderlund|[a-z0-9._%+-]+@henriksoderlund\.[a-z]{2,}|\+?[0-9]{10,}' \
+  plugins/ --include="*.md" --include="*.json" --include="*.ts" --include="*.html"
+```
+
+If any hit: strip or replace with a placeholder (`your-email@example.com`, `[Your Name]`) before committing.
+
 ## Quick Reference
 
 ```bash
@@ -208,7 +232,7 @@ Plugin manifest (required for each plugin):
   "name": "plugin-name",
   "description": "Plugin description",
   "author": {
-    "name": "Henrik Soederlund",
+    "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
   "version": "1.0.0"

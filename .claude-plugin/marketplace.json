@@ -1,7 +1,7 @@
 {
   "name": "wookstar-claude-plugins",
   "owner": {
-    "name": "Henrik Soederlund",
+    "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
@@ -16,7 +16,7 @@
       "description": "Professional development toolkit: 3 commands (containerize, PRP generation/execution) + 4 skills (webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
       "version": "3.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -43,7 +43,7 @@
       "description": "Professional document processing suite: 3 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, forms, tables, OCR, and formulas",
       "version": "1.1.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -67,7 +67,7 @@
       "description": "Timezone conversion and time queries across IANA timezones",
       "version": "1.1.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -86,7 +86,7 @@
       "description": "Complete Shopify development reference covering Liquid templating, theme development (OS 2.0), GraphQL/REST APIs, app development, Shopify Functions, Hydrogen, performance optimisation, and debugging. Single unified skill with progressive disclosure via 11 reference files. API version 2026-01.",
       "version": "2.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -115,7 +115,7 @@
       "description": "Comprehensive Google Apps Script development guide covering SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers, and Workspace automation",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -136,7 +136,7 @@
       "description": "Write Tampermonkey userscripts for browser automation, page modification, and web enhancement with comprehensive API reference",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -155,7 +155,7 @@
       "description": "Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and GTM API",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -177,7 +177,7 @@
       "description": "Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, ecommerce, BigQuery, Measurement Protocol, and privacy compliance",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -199,7 +199,7 @@
       "description": "Expert guidance for Google Ads Script development including AdsApp API, campaign management, ad groups, keywords, reporting, and automation",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -218,7 +218,7 @@
       "description": "Expert guidance for Gemini CLI headless mode - running prompts programmatically, parsing JSON/streaming output, building automation scripts, and CI/CD integration",
       "version": "1.1.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -237,9 +237,9 @@
       "name": "codex",
       "source": "./plugins/codex",
       "description": "Expert guidance for OpenAI Codex CLI non-interactive mode operations - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -259,7 +259,7 @@
       "description": "Google Gemini AI model integration via MCP",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -278,7 +278,7 @@
       "description": "Perplexity AI-powered search and information retrieval",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -316,7 +316,7 @@
       "description": "Official Cloudflare MCP server - 2,500+ API endpoints via Code Mode in just 2 tools (~1k tokens). Full platform access: Workers, Pages, D1, KV, R2, DNS, Zones, WAF, Tunnels, and more (uses OAuth)",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -340,7 +340,7 @@
       "description": "Stock market data, company information, and financial indicators via AlphaVantage",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -360,7 +360,7 @@
       "description": "Cryptocurrency prices, market data, and historical trends via CoinGecko",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -380,7 +380,7 @@
       "description": "Real-time currency exchange rates and conversion (no API key required)",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -400,7 +400,7 @@
       "description": "Web content fetching and HTTP requests",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -419,7 +419,7 @@
       "description": "Google Workspace integration (Gmail, Drive, Calendar)",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -440,7 +440,7 @@
       "description": "MikroTik router management and network automation",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -460,7 +460,7 @@
       "description": "n8n workflow automation integration",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -479,7 +479,7 @@
       "description": "Notion workspace and database integration",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -499,7 +499,7 @@
       "description": "Weather and climate data (no API key required)",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -518,7 +518,7 @@
       "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation - covers filters, codecs, GPU acceleration, and common workflows",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -540,9 +540,9 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Rich text message drafts for Gmail, Outlook, and WhatsApp with formatting preview",
-      "version": "2.5.1",
+      "version": "2.5.2",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -565,7 +565,7 @@
       "description": "Humanise text and remove AI writing patterns - detects and fixes 29 AI tell-tales including inflated language, promotional tone, AI vocabulary, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks",
       "version": "4.0.1",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -589,7 +589,7 @@
       "description": "Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React patterns",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -608,7 +608,7 @@
       "description": "CSS, SCSS, and Less language server via vscode-langservers-extracted - provides diagnostics, completions, hover documentation, and formatting for stylesheets",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -643,7 +643,7 @@
       "description": "HTML language server via vscode-langservers-extracted - provides tag and attribute completions, diagnostics, hover documentation, and formatting for HTML files",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -674,7 +674,7 @@
       "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -707,7 +707,7 @@
       "description": "YAML language server - provides schema validation, completions, hover documentation, and formatting for YAML files. Auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and more",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -742,7 +742,7 @@
       "description": "Official Tailwind CSS language server - provides class completions with CSS previews, hover documentation, and diagnostics across HTML, CSS, and JS/TS files",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
@@ -779,7 +779,7 @@
       "description": "Bash and shell script language server - provides ShellCheck-powered diagnostics, completions, hover documentation, and go-to-definition for shell scripts",
       "version": "1.0.0",
       "author": {
-        "name": "Henrik Soederlund",
+        "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
