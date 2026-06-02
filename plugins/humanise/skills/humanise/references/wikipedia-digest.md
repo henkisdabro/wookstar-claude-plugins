@@ -1,6 +1,6 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-05-15
+Last fetched: 2026-06-02
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
@@ -8,17 +8,19 @@ This file is a structured digest of the Wikipedia article used to build this ski
 
 ## How to Update
 
-1. Fetch the latest article:
+1. Fetch the latest article. Prefer the **raw wikitext** - the WebFetch summariser
+   paraphrases and drops whole sections, so use it only for a quick orientation pass:
    ```
-   WebFetch https://markdown.new/https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+   curl -sL "https://en.wikipedia.org/w/index.php?title=Wikipedia:Signs_of_AI_writing&action=raw" -o /tmp/sai_raw.txt
    ```
+   Then Read /tmp/sai_raw.txt and `grep -nE "^(==|===|====)"` it for the section map.
 2. Compare the fetched content against this digest below
 3. Look for: new patterns, removed patterns, renamed patterns, updated keywords, new examples, new model-era information
 4. Update the relevant reference files and this digest
 
 ---
 
-## Pattern Digest (as of 2026-04-15)
+## Pattern Digest (as of 2026-06-02)
 
 ### Content Patterns
 
@@ -39,7 +41,7 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 | # (Wiki) | # (Skill) | Pattern Name | Key Signals |
 |-----------|-----------|--------------|-------------|
 | 14 | 7 | AI vocabulary words (era-specific) | See era breakdown below |
-| 15 | 8 | Copula avoidance (is/are) | serves as, stands as, marks, represents, boasts, features, offers |
+| 15 | 8 | Copula avoidance (is/are) | serves as, stands as, marks, represents, boasts, features, maintains, offers, refers to |
 | 16 | 9 | Negative parallelisms | Not only...but..., It's not just...it's..., No...no...just... |
 | 19 | 10 | Rule of three | three-item lists, triadic structures |
 | 20 | 11 | Elegant variation (synonym cycling) | protagonist/main character/central figure/hero cycling |
@@ -79,7 +81,7 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 
 ---
 
-## AI Vocabulary Era Breakdown (as of 2026-05-15)
+## AI Vocabulary Era Breakdown (as of 2026-06-02, unchanged since 2026-05-15)
 
 ### 2023 to mid-2024 (GPT-4 era)
 
@@ -109,6 +111,15 @@ emphasizing, enhance, highlighting, showcasing, robust, plus increased notabilit
 When AI chatbots respond to AI-detection allegations, they characteristically use "concrete" as an adjective: "no concrete evidence", "please provide concrete examples". Not a general writing tell - specific to defensive AI responses.
 
 ---
+
+## Changes from 2026-05-15 to 2026-06-02
+
+1. **Copula avoidance: "maintains" and "refers to" added** - Wikipedia's words-to-watch box now lists *maintains* alongside *boasts/features/offers*, and documents *refers to* as a lead-sentence dodge (writing "X refers to..." as though the article were about the term, not the subject). Added both to language-patterns.md Pattern #8.
+2. **"Historical indicators" is now a formal article section** - Wikipedia split the older-model tells into a dedicated section: didactic disclaimers, section summaries (both already in skill), plus **prompt refusal** ("as an AI language model", "I'm sorry, I can't..."), abrupt cut-offs, and outdated access-date parameters. Added Prompt refusal to filler-patterns.md historical section. Abrupt cut-offs and access-date are citation/Wikipedia-specific and not added.
+3. **"Ineffective indicators" section expanded** - Wikipedia now spells out weak signals that produce false positives: perfect grammar, formal/"fancy" prose, transition words in isolation, letter-like formatting alone, mixed casual/formal register, unsourced content, and (bizarre or correct) wikitext. Added a concise "Ineffective indicators" block to SKILL.md "When NOT to Use" so the humaniser doesn't strip voice from genuinely human text. Paired with the "Signs of human writing" note: text predating ChatGPT's 30 Nov 2022 launch can be ruled out outright.
+4. **No changes** to AI vocabulary word lists or era breakdowns (GPT-4 / GPT-4o / GPT-5) - the 2026-05-15 sync remains current, "robust" still listed.
+5. **Update method note** - the WebFetch summariser was found to paraphrase and drop sections unreliably; the digest's "How to Update" now points at raw wikitext (`action=raw`) as the source of truth.
+6. **New Wikipedia-only sections (NOT added to skill)** - the article keeps growing Wikipedia-specific material: Markup (Markdown/wikitext artifacts, turn0search0, oaicite, grok_card, attributableIndex), Citations (broken links, invalid DOI/ISBN, page-less book cites, utm_source tags), and a large "Indicators of AI-written comments" tree (canned good-faith/adherence boilerplate, calls to focus on content, wikilawyering, WP:PRESERVE invocation, non-existent shortcuts, declined-draft confusion). All Wikipedia-process-specific.
 
 ## Changes from 2026-04-23 to 2026-05-15
 

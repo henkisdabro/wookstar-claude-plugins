@@ -68,3 +68,15 @@ Older LLMs ended paragraphs and sections by restating what they just said.
 
 **After:**
 > Costs are rising, enrollment is falling, and faculty are leaving - a combination that puts several departments at risk.
+
+### Prompt Refusal
+
+**Words to watch:** *as an AI language model*, *as a large language model*, *I cannot offer medical/legal advice, but I can...*, *I'm sorry, I can't...*
+
+Older chatbots declined prompts with apologies and reminders that they are AI, often pivoting to a similar request they would answer. Outright refusals are now rare, but the residue still turns up pasted into documents.
+
+**Before:**
+> As an AI language model, I can't directly publish this for you, but I can help you draft the bibliography below.
+
+**After:**
+> Bibliography:

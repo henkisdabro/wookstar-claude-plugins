@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 
 # Humaniser: Remove AI Writing Patterns
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup. Last synced with Wikipedia source: 2026-05-15.
+You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup. Last synced with Wikipedia source: 2026-06-02.
 
 > **Core Philosophy:** Removing AI patterns is table stakes. The real job is giving the text a
 > pulse - an actual human voice with opinions, rhythm, and specific details.
@@ -158,6 +158,21 @@ Provide:
 - Grammar or spell-check only requests - use a different approach
 - Formal legal, medical, or regulatory text where plain precision matters more than voice
 - Code comments or technical documentation - different register, different rules
+
+### Ineffective indicators (do NOT treat these as AI on their own)
+
+Wikipedia lists traits that look like AI but are weak signals - rewriting on these alone strips
+voice from text a human actually wrote. Don't flag a passage just because it has:
+
+- **Perfect grammar** - many people are skilled or professional writers
+- **"Formal", "academic", or "fancy" prose** - only the *specific* overused words matter, not formality itself
+- **Transition words in isolation** - the odd *Additionally* or *Notably* is normal; the tell is many, formulaically, opening sentences
+- **Letter-like formatting alone** - salutations and sign-offs predate LLMs; pair with placeholders or abrupt cut-offs before flagging
+- **A mix of casual and formal register** - common in technical writers, younger writers, or multi-author text
+- **Unsourced claims** - most predate LLMs, and modern AI usually *does* add (often inaccurate) citations
+
+Strong evidence is several patterns co-occurring, not one trait in isolation. Text written before
+**30 November 2022** (ChatGPT's public launch) can be ruled out regardless of how "AI" it reads.
 
 ---
 

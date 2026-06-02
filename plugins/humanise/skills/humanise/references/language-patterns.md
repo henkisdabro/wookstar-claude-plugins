@@ -30,9 +30,9 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 ## 8. Avoidance of "is"/"are" (Copula Avoidance)
 
-**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/offers [a]
+**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/maintains/offers [a], refers to
 
-**Problem:** LLMs substitute elaborate constructions for simple copulas.
+**Problem:** LLMs substitute elaborate constructions for simple copulas. In lead sentences they also avoid *is* by writing *refers to*, as though the text were about the word or term rather than the subject itself ("X refers to..." instead of "X is...").
 
 **Before:**
 > Gallery 825 serves as LAAA's exhibition space for contemporary art. The gallery features four separate spaces and boasts over 3,000 square feet.
