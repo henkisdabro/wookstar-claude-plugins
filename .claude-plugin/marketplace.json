@@ -672,7 +672,7 @@
       "name": "lsp-json",
       "source": "./plugins/lsp-json",
       "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -696,6 +696,31 @@
           "extensionToLanguage": {
             ".json": "json",
             ".jsonc": "jsonc"
+          },
+          "initializationOptions": {
+            "provideFormatter": true,
+            "schemas": [
+              {
+                "fileMatch": [
+                  "wrangler.jsonc",
+                  "wrangler.json"
+                ],
+                "url": "https://www.unpkg.com/wrangler/config-schema.json"
+              },
+              {
+                "fileMatch": [
+                  "tsconfig.json",
+                  "tsconfig.*.json"
+                ],
+                "url": "https://www.schemastore.org/tsconfig.json"
+              },
+              {
+                "fileMatch": [
+                  "package.json"
+                ],
+                "url": "https://www.schemastore.org/package.json"
+              }
+            ]
           }
         }
       },
@@ -705,7 +730,7 @@
       "name": "lsp-yaml",
       "source": "./plugins/lsp-yaml",
       "description": "YAML language server - provides schema validation, completions, hover documentation, and formatting for YAML files. Auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and more",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -731,43 +756,20 @@
           "extensionToLanguage": {
             ".yaml": "yaml",
             ".yml": "yaml"
-          }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "lsp-tailwind",
-      "source": "./plugins/lsp-tailwind",
-      "description": "Official Tailwind CSS language server - provides class completions with CSS previews, hover documentation, and diagnostics across HTML, CSS, and JS/TS files",
-      "version": "1.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "lsp",
-        "tailwind",
-        "tailwindcss",
-        "css",
-        "language-server"
-      ],
-      "category": "lsp",
-      "lspServers": {
-        "tailwindcss": {
-          "command": "tailwindcss-language-server",
-          "args": [
-            "--stdio"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".html": "html",
-            ".css": "css",
-            ".tsx": "typescriptreact",
-            ".jsx": "javascriptreact",
-            ".ts": "typescript",
-            ".js": "javascript"
+          },
+          "initializationOptions": {
+            "yaml": {
+              "schemas": {
+                "https://www.schemastore.org/dependabot-2.0.json": ".github/dependabot.yml",
+                "https://www.schemastore.org/pnpm-workspace.json": "pnpm-workspace.yaml"
+              },
+              "schemaStore": {
+                "enable": true
+              },
+              "completion": true,
+              "hover": true,
+              "validate": true
+            }
           }
         }
       },
