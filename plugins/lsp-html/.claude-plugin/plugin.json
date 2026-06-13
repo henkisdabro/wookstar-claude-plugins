@@ -1,0 +1,20 @@
+{
+  "name": "lsp-html",
+  "version": "1.0.0",
+  "description": "HTML Language Server via vscode-langservers-extracted",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "lspServers": {
+    "html": {
+      "command": "vscode-html-language-server",
+      "args": ["--stdio"],
+      "transport": "stdio",
+      "extensionToLanguage": {
+        ".html": "html",
+        ".htm": "html"
+      }
+    }
+  }
+}

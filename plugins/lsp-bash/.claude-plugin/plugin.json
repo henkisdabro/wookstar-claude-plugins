@@ -1,0 +1,20 @@
+{
+  "name": "lsp-bash",
+  "version": "1.0.0",
+  "description": "Bash/Shell Language Server",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "lspServers": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "transport": "stdio",
+      "extensionToLanguage": {
+        ".sh": "shellscript",
+        ".bash": "shellscript"
+      }
+    }
+  }
+}
