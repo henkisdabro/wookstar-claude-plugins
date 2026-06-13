@@ -606,7 +606,7 @@
       "name": "lsp-css",
       "source": "./plugins/lsp-css",
       "description": "CSS, SCSS, and Less language server via vscode-langservers-extracted - provides diagnostics, completions, hover documentation, and formatting for stylesheets",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -641,7 +641,7 @@
       "name": "lsp-html",
       "source": "./plugins/lsp-html",
       "description": "HTML language server via vscode-langservers-extracted - provides tag and attribute completions, diagnostics, hover documentation, and formatting for HTML files",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -672,7 +672,7 @@
       "name": "lsp-json",
       "source": "./plugins/lsp-json",
       "description": "JSON and JSONC language server via vscode-langservers-extracted - provides schema validation, completions, and formatting for JSON files",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -730,7 +730,7 @@
       "name": "lsp-yaml",
       "source": "./plugins/lsp-yaml",
       "description": "YAML language server - provides schema validation, completions, hover documentation, and formatting for YAML files. Auto-detects schemas for GitHub Actions, Docker Compose, Kubernetes, and more",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -779,7 +779,7 @@
       "name": "lsp-bash",
       "source": "./plugins/lsp-bash",
       "description": "Bash and shell script language server - provides ShellCheck-powered diagnostics, completions, hover documentation, and go-to-definition for shell scripts",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

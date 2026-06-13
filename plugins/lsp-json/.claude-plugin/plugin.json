@@ -1,6 +1,6 @@
 {
   "name": "lsp-json",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "JSON Language Server via vscode-langservers-extracted",
   "author": {
     "name": "henkisdabro",

@@ -1,6 +1,6 @@
 {
   "name": "lsp-css",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CSS/SCSS/Less Language Server via vscode-langservers-extracted",
   "author": {
     "name": "henkisdabro",

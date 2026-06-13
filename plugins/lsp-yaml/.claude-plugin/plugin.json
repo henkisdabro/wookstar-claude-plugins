@@ -1,6 +1,6 @@
 {
   "name": "lsp-yaml",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "YAML Language Server",
   "author": {
     "name": "henkisdabro",
