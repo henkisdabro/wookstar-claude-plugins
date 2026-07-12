@@ -9,16 +9,6 @@ description: Expert guidance for Google Ads Script development including AdsApp 
 
 Guidance for developing Google Ads Scripts using the AdsApp API. Automate campaign management, bid optimisation, performance reporting, and bulk operations through JavaScript running in the Google Ads editor.
 
-## When to Use This Skill
-
-- Automating campaign management or bulk operations
-- Managing keywords and adjusting bids programmatically
-- Creating performance reports or dashboards
-- Implementing automated rules for campaign optimisation
-- Optimising ad spend based on ROAS or CPA targets
-- Monitoring quality scores, budgets, or conversions
-- Debugging Google Ads Script code or API issues
-
 ## Core Capabilities
 
 ### 1. Campaign Operations
@@ -52,9 +42,10 @@ The most common pattern - pause keywords with low quality scores and high spend:
 ```javascript
 function pauseLowQualityKeywords() {
   const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.quality_info.quality_score < 4')
-    .withCondition('keyword.metrics.cost > 100000000')
+    .withCondition('ad_group_criterion.status = "ENABLED"')
+    .withCondition('ad_group_criterion.quality_info.quality_score < 4')
+    .withCondition('metrics.cost_micros > 100000000') // 100 in account currency
+    .forDateRange('LAST_30_DAYS')
     .get();
 
   let count = 0;
@@ -80,8 +71,8 @@ See [references/best-practices.md](references/best-practices.md) for detailed co
 ## Integration with Other Skills
 
 - **google-apps-script** - Use for Google Sheets reporting, Gmail notifications, Drive file management, and trigger setup
-- **ga4-measurement-protocol** - Combine with GA4 for tracking script-triggered events
-- **gtm-api** - Coordinate with GTM configurations for holistic tracking
+- **google-analytics** - Combine with GA4 Measurement Protocol for tracking script-triggered events
+- **google-tagmanager** - Coordinate with GTM configurations for holistic tracking
 
 ## Validation & Testing
 

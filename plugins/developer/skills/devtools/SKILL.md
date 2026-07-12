@@ -1,13 +1,13 @@
 ---
 name: devtools
-description: Chrome DevTools MCP setup and live-browser debugging for visual app inspection, console/network/performance triage, and automation. Use when the user asks to set up browser debugging, launch Chrome with DevTools, configure chrome-devtools-mcp, see what my app looks like, take screenshots of my web application, check the browser console, debug console errors, inspect network requests, analyse API responses, measure Core Web Vitals or page performance, run a Lighthouse audit, test button clicks or form submissions, automate browser interactions, fill out forms programmatically, simulate user actions, emulate mobile devices or slow networks, capture DOM snapshots, execute JavaScript in the browser, or troubleshoot Chrome DevTools MCP connection issues. Supports Windows, Linux, and WSL2 environments. Do NOT use for headless CI test runs - use Playwright tests directly. Do NOT use for Selenium/Puppeteer setup.
+description: Chrome DevTools MCP setup and live-browser debugging for visual app inspection, console/network/performance triage, and automation. Use when the user asks to set up browser debugging, launch Chrome with DevTools, configure chrome-devtools-mcp, see what my app looks like, take screenshots of my web application, debug console errors, inspect network requests and API responses, measure Core Web Vitals or page performance, run a Lighthouse audit, test button clicks or form submissions, automate browser interactions, fill out forms programmatically, simulate user actions, emulate mobile devices or slow networks, capture DOM snapshots, execute JavaScript in the browser, or troubleshoot Chrome DevTools MCP connection issues. Supports Windows, Linux, and WSL2 environments. Do NOT use for headless CI test runs - use Playwright tests directly. Do NOT use for Selenium/Puppeteer setup.
 ---
 
 # Chrome DevTools MCP
 
 **GitHub Repository:** https://github.com/ChromeDevTools/chrome-devtools-mcp
 
-Without browser access, Claude is "coding blindfolded" - making changes without seeing results. The Chrome DevTools MCP server provides **26 specialised tools** across these categories:
+Without browser access, Claude is "coding blindfolded" - making changes without seeing results. The Chrome DevTools MCP server provides specialised tools across these categories:
 
 | Category | Capabilities |
 |----------|--------------|

@@ -1,7 +1,6 @@
 ---
 name: fifteen-factor-app
 description: Cloud-native SaaS architecture methodology extending Twelve-Factor with three additional factors (API First, Telemetry, Security). Use when planning SaaS tools, product software architecture, microservices design, PRPs/PRDs, or cloud-native application development; when the user says "fifteen factor", "12 factor", "SaaS architecture", "cloud-native design", "application architecture", "microservices best practices"; or when in a planning/architecture session. Do NOT use for greenfield monolith design without cloud-native constraints, internal tooling that will never ship as a service, or local-only scripts.
-user-invocable: false
 ---
 
 # Fifteen-Factor App Methodology

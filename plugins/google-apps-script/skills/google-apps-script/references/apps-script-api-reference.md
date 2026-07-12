@@ -1290,7 +1290,7 @@ https://www.googleapis.com/auth/script.external_request
 https://www.googleapis.com/auth/script.send_mail
 ```
 
-### Setting Scopes Manually (appscript.json)
+### Setting Scopes Manually (appsscript.json)
 
 **Manifest file:**
 ```json

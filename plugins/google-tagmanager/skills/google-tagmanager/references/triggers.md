@@ -39,7 +39,7 @@ Fires on: All Page Views
 
 **Use Cases**:
 
-- GA4 Configuration tag
+- Google Tag (GA4 measurement)
 - Essential tracking pixels
 - Data layer initialisation tags
 

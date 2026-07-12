@@ -79,6 +79,7 @@ Scanned PDFs and image-based documents including Tesseract integration, language
 | merge_pdfs.py | Merge multiple PDFs | `python scripts/merge_pdfs.py file1.pdf file2.pdf --output merged.pdf` |
 | split_pdf.py | Split PDF into pages | `python scripts/split_pdf.py input.pdf --output-dir pages/` |
 | validate_pdf.py | Validate PDF integrity | `python scripts/validate_pdf.py input.pdf` |
+| flatten_form.py | Make filled form fields read-only | `python scripts/flatten_form.py filled.pdf final.pdf` |
 
 ## Dependencies
 
@@ -86,6 +87,12 @@ All scripts require:
 
 ```bash
 pip install pdfplumber pypdf pillow pytesseract pandas
+```
+
+Excel output from `extract_tables.py` additionally requires openpyxl:
+
+```bash
+pip install openpyxl
 ```
 
 Optional for OCR:

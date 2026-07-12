@@ -35,13 +35,13 @@ Every tag has three components:
 
 ### Google Analytics 4 (GA4)
 
-#### GA4 Configuration Tag
+#### Google Tag
 
-Sets up the GA4 measurement and should fire on all pages:
+Sets up the GA4 measurement and should fire on all pages (this tag type replaced the "GA4 Configuration" tag in 2023):
 
 ```
-Tag Type: Google Analytics: GA4 Configuration
-Measurement ID: G-XXXXXXXXXX
+Tag Type: Google Tag
+Tag ID: G-XXXXXXXXXX
 Trigger: All Pages
 ```
 
@@ -57,7 +57,7 @@ Sends custom events to GA4:
 
 ```
 Tag Type: Google Analytics: GA4 Event
-Configuration Tag: {{GA4 Configuration}}
+Measurement ID: G-XXXXXXXXXX
 Event Name: button_click
 Event Parameters:
   - button_text: {{Click Text}}

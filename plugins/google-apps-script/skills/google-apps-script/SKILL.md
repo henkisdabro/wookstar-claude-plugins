@@ -9,25 +9,6 @@ description: Comprehensive guide for Google Apps Script development covering all
 
 Cloud-based JavaScript platform for automating Google Workspace services. Server-side V8 runtime with automatic OAuth integration across Sheets, Docs, Gmail, Drive, Calendar, and more.
 
-## When to Use This Skill
-
-Invoke this skill when:
-
-- Automating Google Sheets operations (reading, writing, formatting)
-- Creating or editing Google Docs programmatically
-- Managing Gmail messages and sending emails
-- Working with Google Drive files and folders
-- Automating Google Calendar events
-- Implementing triggers (time-based or event-based)
-- Building custom functions for Sheets
-- Creating Google Workspace add-ons
-- Handling OAuth scopes and authorisation
-- Making HTTP requests to external APIs with UrlFetchApp
-- Using persistent storage with PropertiesService
-- Implementing caching strategies with CacheService
-- Optimising performance with batch operations
-- Debugging Apps Script code or authorisation issues
-
 ## Core Services
 
 1. **SpreadsheetApp** - Google Sheets automation (read, write, format, data validation)
@@ -65,7 +46,7 @@ function generateWeeklyReport() {
 - **Cache data** - use CacheService (25 min TTL) for frequently accessed data
 - **Error handling** - wrap operations in try/catch, log errors to a sheet for audit trails
 - **Respect limits** - 6-minute execution timeout; split large jobs across triggers
-- **Minimise scopes** - request only necessary OAuth permissions in `appscript.json`
+- **Minimise scopes** - request only necessary OAuth permissions in `appsscript.json`
 - **Persistent storage** - use PropertiesService for configuration and state
 - **Validate inputs** - always check objects exist before accessing properties
 
@@ -82,8 +63,8 @@ Debug with `Logger.log()` and view output via View > Logs (Cmd/Ctrl + Enter). Us
 ## Integration with Other Skills
 
 - **google-ads-scripts** - Export Google Ads data to Sheets for reporting
-- **gtm-datalayer** - Coordinate with GTM for tracking events triggered by Apps Script
-- **ga4-bigquery** - Query BigQuery from Apps Script and write results to Sheets
+- **google-tagmanager** - Coordinate with GTM for tracking events triggered by Apps Script
+- **google-analytics** - Query GA4 BigQuery exports from Apps Script and write results to Sheets
 
 ## Troubleshooting
 

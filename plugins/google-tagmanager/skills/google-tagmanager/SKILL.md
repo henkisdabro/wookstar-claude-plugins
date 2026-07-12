@@ -24,10 +24,10 @@ Invoke when setting up or configuring GTM containers, tags, triggers, or variabl
 
 ### Basic Tag Configuration
 
-```javascript
-// Example: GA4 Configuration Tag
-Tag Type: Google Analytics: GA4 Configuration
-Measurement ID: G-XXXXXXXXXX
+```text
+Example: Google Tag (GA4)
+Tag Type: Google Tag
+Tag ID: G-XXXXXXXXXX
 Trigger: All Pages
 ```
 
@@ -66,7 +66,7 @@ User Action --> Trigger Fires --> Tag Executes --> Data Sent
 
 ### GA4 Page View Tracking
 
-1. Create GA4 Configuration tag with Measurement ID
+1. Create Google Tag with your GA4 Measurement ID (formerly the "GA4 Configuration" tag type)
 2. Set trigger to "All Pages"
 3. Test in Preview mode, verify in GA4 DebugView
 4. Publish

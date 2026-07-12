@@ -14,7 +14,7 @@
       "name": "developer",
       "source": "./plugins/developer",
       "description": "Professional development toolkit: 3 commands (containerize, PRP generation/execution) + 4 skills (webapp testing, devtools, PRP generator, Fifteen-Factor App) + 5 MCP integrations (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7)",
-      "version": "3.0.0",
+      "version": "3.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -41,7 +41,7 @@
       "name": "documents",
       "source": "./plugins/documents",
       "description": "Professional document processing suite: 4 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, fast text-layer PDF extraction, forms, tables, OCR, and formulas",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -65,7 +65,7 @@
       "name": "timezone-tools",
       "source": "./plugins/timezone-tools",
       "description": "Timezone conversion and time queries across IANA timezones",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -113,7 +113,7 @@
       "name": "google-apps-script",
       "source": "./plugins/google-apps-script",
       "description": "Comprehensive Google Apps Script development guide covering SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers, and Workspace automation",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -134,7 +134,7 @@
       "name": "tampermonkey",
       "source": "./plugins/tampermonkey",
       "description": "Write Tampermonkey userscripts for browser automation, page modification, and web enhancement with comprehensive API reference",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -153,7 +153,7 @@
       "name": "google-tagmanager",
       "source": "./plugins/google-tagmanager",
       "description": "Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and GTM API",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -197,7 +197,7 @@
       "name": "google-ads-scripts",
       "source": "./plugins/google-ads-scripts",
       "description": "Expert guidance for Google Ads Script development including AdsApp API, campaign management, ad groups, keywords, reporting, and automation",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -587,7 +587,7 @@
       "name": "react-best-practices",
       "source": "./plugins/react-best-practices",
       "description": "Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React patterns",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

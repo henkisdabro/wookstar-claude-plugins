@@ -369,7 +369,7 @@ Custom Dimensions:
   - index: 1, dimension value: {{User Type}}
 ```
 
-**Note**: For GA4, use GA4 Configuration tags instead.
+**Note**: For GA4, use the Google Tag instead.
 
 ## Variable Scoping and Persistence
 

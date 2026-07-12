@@ -7,27 +7,6 @@ description: Comprehensive React and Next.js performance optimisation guide with
 
 Comprehensive performance optimisation guide for React and Next.js applications with 40+ rules organised by impact level. Designed to help developers eliminate performance bottlenecks and follow best practices.
 
-## When to use this skill
-
-**Use React Best Practices when:**
-- Optimising React or Next.js application performance
-- Reviewing code for performance improvements
-- Refactoring existing components for better performance
-- Implementing new features with performance in mind
-- Debugging slow rendering or loading issues
-- Reducing bundle size
-- Eliminating request waterfalls
-
-**Key areas covered:**
-- **Eliminating Waterfalls** (CRITICAL): Prevent sequential async operations
-- **Bundle Size Optimisation** (CRITICAL): Reduce initial JavaScript payload
-- **Server-Side Performance** (HIGH): Optimise RSC and data fetching
-- **Client-Side Data Fetching** (MEDIUM-HIGH): Implement efficient caching
-- **Re-render Optimisation** (MEDIUM): Minimize unnecessary re-renders
-- **Rendering Performance** (MEDIUM): Optimise browser rendering
-- **JavaScript Performance** (LOW-MEDIUM): Micro-optimisations for hot paths
-- **Advanced Patterns** (LOW): Specialized techniques for edge cases
-
 ## Quick reference
 
 ### Critical priorities
@@ -70,9 +49,10 @@ const MonacoEditor = dynamic(
 
 ## Using the guidelines
 
-The complete performance guidelines are available in the references folder:
+The guidelines live in the references folder at two depths - pick the one that fits the task:
 
-- **react-performance-guidelines.md**: Complete guide with all 40+ rules, code examples, and impact analysis
+- **[references/react-performance-guidelines.md](references/react-performance-guidelines.md)**: the complete guide with all rules, code examples, and impact analysis. Read this for a full review or audit.
+- **[references/rules/](references/rules/)**: one file per rule, named `<category>-<rule>.md` (e.g. `async-parallel.md`, `bundle-barrel-imports.md`). Read individual files when working on a specific problem - the category pointers below map each rule to its file.
 
 Each rule includes:
 - Incorrect/correct code comparisons
@@ -83,71 +63,71 @@ Each rule includes:
 ## Categories overview
 
 ### 1. Eliminating Waterfalls (CRITICAL)
-Waterfalls are the #1 performance killer. Each sequential await adds full network latency.
-- Defer await until needed
-- Dependency-based parallelization
-- Prevent waterfall chains in API routes
-- Promise.all() for independent operations
-- Strategic Suspense boundaries
+Waterfalls are the #1 performance killer. Each sequential await adds full network latency. Rules: `references/rules/async-*.md`
+- Defer await until needed - [async-defer-await.md](references/rules/async-defer-await.md)
+- Dependency-based parallelization - [async-dependencies.md](references/rules/async-dependencies.md)
+- Prevent waterfall chains in API routes - [async-api-routes.md](references/rules/async-api-routes.md)
+- Promise.all() for independent operations - [async-parallel.md](references/rules/async-parallel.md)
+- Strategic Suspense boundaries - [async-suspense-boundaries.md](references/rules/async-suspense-boundaries.md)
 
 ### 2. Bundle Size Optimisation (CRITICAL)
-Reducing initial bundle size improves Time to Interactive and Largest Contentful Paint.
-- Avoid barrel file imports
-- Conditional module loading
-- Defer non-critical third-party libraries
-- Dynamic imports for heavy components
-- Preload based on user intent
+Reducing initial bundle size improves Time to Interactive and Largest Contentful Paint. Rules: `references/rules/bundle-*.md`
+- Avoid barrel file imports - [bundle-barrel-imports.md](references/rules/bundle-barrel-imports.md)
+- Conditional module loading - [bundle-conditional.md](references/rules/bundle-conditional.md)
+- Defer non-critical third-party libraries - [bundle-defer-third-party.md](references/rules/bundle-defer-third-party.md)
+- Dynamic imports for heavy components - [bundle-dynamic-imports.md](references/rules/bundle-dynamic-imports.md)
+- Preload based on user intent - [bundle-preload.md](references/rules/bundle-preload.md)
 
 ### 3. Server-Side Performance (HIGH)
-Optimise server-side rendering and data fetching.
-- Cross-request LRU caching
-- Minimize serialization at RSC boundaries
-- Parallel data fetching with component composition
-- Per-request deduplication with React.cache()
+Optimise server-side rendering and data fetching. Rules: `references/rules/server-*.md`
+- Cross-request LRU caching - [server-cache-lru.md](references/rules/server-cache-lru.md)
+- Minimize serialization at RSC boundaries - [server-serialization.md](references/rules/server-serialization.md)
+- Parallel data fetching with component composition - [server-parallel-fetching.md](references/rules/server-parallel-fetching.md)
+- Per-request deduplication with React.cache() - [server-cache-react.md](references/rules/server-cache-react.md)
 
 ### 4. Client-Side Data Fetching (MEDIUM-HIGH)
-Automatic deduplication and efficient data fetching patterns.
-- Deduplicate global event listeners
-- Use SWR for automatic deduplication
+Automatic deduplication and efficient data fetching patterns. Rules: `references/rules/client-*.md`
+- Deduplicate global event listeners - [client-event-listeners.md](references/rules/client-event-listeners.md)
+- Use SWR for automatic deduplication - [client-swr-dedup.md](references/rules/client-swr-dedup.md)
 
 ### 5. Re-render Optimisation (MEDIUM)
-Reduce unnecessary re-renders to minimize wasted computation.
-- Defer state reads to usage point
-- Extract to memoized components
-- Narrow effect dependencies
-- Subscribe to derived state
-- Use lazy state initialization
-- Use transitions for non-urgent updates
+Reduce unnecessary re-renders to minimize wasted computation. Rules: `references/rules/rerender-*.md`
+- Defer state reads to usage point - [rerender-defer-reads.md](references/rules/rerender-defer-reads.md)
+- Extract to memoized components - [rerender-memo.md](references/rules/rerender-memo.md)
+- Narrow effect dependencies - [rerender-dependencies.md](references/rules/rerender-dependencies.md)
+- Subscribe to derived state - [rerender-derived-state.md](references/rules/rerender-derived-state.md)
+- Use lazy state initialization - [rerender-lazy-state-init.md](references/rules/rerender-lazy-state-init.md)
+- Use transitions for non-urgent updates - [rerender-transitions.md](references/rules/rerender-transitions.md)
 
 ### 6. Rendering Performance (MEDIUM)
-Optimise the browser rendering process.
-- Animate SVG wrapper instead of SVG element
-- CSS content-visibility for long lists
-- Hoist static JSX elements
-- Optimise SVG precision
-- Prevent hydration mismatch without flickering
-- Use Activity component for show/hide
-- Use explicit conditional rendering
+Optimise the browser rendering process. Rules: `references/rules/rendering-*.md`
+- Animate SVG wrapper instead of SVG element - [rendering-animate-svg-wrapper.md](references/rules/rendering-animate-svg-wrapper.md)
+- CSS content-visibility for long lists - [rendering-content-visibility.md](references/rules/rendering-content-visibility.md)
+- Hoist static JSX elements - [rendering-hoist-jsx.md](references/rules/rendering-hoist-jsx.md)
+- Optimise SVG precision - [rendering-svg-precision.md](references/rules/rendering-svg-precision.md)
+- Prevent hydration mismatch without flickering - [rendering-hydration-no-flicker.md](references/rules/rendering-hydration-no-flicker.md)
+- Use Activity component for show/hide - [rendering-activity.md](references/rules/rendering-activity.md)
+- Use explicit conditional rendering - [rendering-conditional-render.md](references/rules/rendering-conditional-render.md)
 
 ### 7. JavaScript Performance (LOW-MEDIUM)
-Micro-optimisations for hot paths.
-- Batch DOM CSS changes
-- Build index maps for repeated lookups
-- Cache property access in loops
-- Cache repeated function calls
-- Cache storage API calls
-- Combine multiple array iterations
-- Early length check for array comparisons
-- Early return from functions
-- Hoist RegExp creation
-- Use loop for min/max instead of sort
-- Use Set/Map for O(1) lookups
-- Use toSorted() instead of sort()
+Micro-optimisations for hot paths. Rules: `references/rules/js-*.md`
+- Batch DOM CSS changes - [js-batch-dom-css.md](references/rules/js-batch-dom-css.md)
+- Build index maps for repeated lookups - [js-index-maps.md](references/rules/js-index-maps.md)
+- Cache property access in loops - [js-cache-property-access.md](references/rules/js-cache-property-access.md)
+- Cache repeated function calls - [js-cache-function-results.md](references/rules/js-cache-function-results.md)
+- Cache storage API calls - [js-cache-storage.md](references/rules/js-cache-storage.md)
+- Combine multiple array iterations - [js-combine-iterations.md](references/rules/js-combine-iterations.md)
+- Early length check for array comparisons - [js-length-check-first.md](references/rules/js-length-check-first.md)
+- Early return from functions - [js-early-exit.md](references/rules/js-early-exit.md)
+- Hoist RegExp creation - [js-hoist-regexp.md](references/rules/js-hoist-regexp.md)
+- Use loop for min/max instead of sort - [js-min-max-loop.md](references/rules/js-min-max-loop.md)
+- Use Set/Map for O(1) lookups - [js-set-map-lookups.md](references/rules/js-set-map-lookups.md)
+- Use toSorted() instead of sort() - [js-tosorted-immutable.md](references/rules/js-tosorted-immutable.md)
 
 ### 8. Advanced Patterns (LOW)
-Specialized techniques for edge cases.
-- Store event handlers in refs
-- useLatest for stable callback refs
+Specialized techniques for edge cases. Rules: `references/rules/advanced-*.md`
+- Store event handlers in refs - [advanced-event-handler-refs.md](references/rules/advanced-event-handler-refs.md)
+- useLatest for stable callback refs - [advanced-use-latest.md](references/rules/advanced-use-latest.md)
 
 ## Implementation approach
 

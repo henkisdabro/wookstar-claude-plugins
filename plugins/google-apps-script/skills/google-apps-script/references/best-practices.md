@@ -72,7 +72,7 @@ Scripts have a 6-minute timeout. For large operations:
 
 ## 5. Minimise OAuth Scopes
 
-Request only necessary permissions in `appscript.json`:
+Request only necessary permissions in `appsscript.json`:
 
 ```json
 {

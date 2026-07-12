@@ -126,10 +126,10 @@ pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
 
 ## Dependencies
 
-Required dependencies (install if not available):
+Required dependencies (install if not available). Linux commands shown first, macOS (Homebrew) in parentheses:
 
-- **pandoc**: `sudo apt-get install pandoc` (for text extraction)
-- **docx**: `npm install -g docx` (for creating new documents)
-- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
-- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
-- **defusedxml**: `pip install defusedxml` (for secure XML parsing)
+- **pandoc**: `sudo apt-get install pandoc` (macOS: `brew install pandoc`) - for text extraction
+- **docx**: `npm install -g docx` - for creating new documents
+- **LibreOffice**: `sudo apt-get install libreoffice` (macOS: `brew install --cask libreoffice`) - for PDF conversion
+- **Poppler**: `sudo apt-get install poppler-utils` (macOS: `brew install poppler`) - for pdftoppm to convert PDF to images
+- **defusedxml**: `pip install defusedxml` - for secure XML parsing
