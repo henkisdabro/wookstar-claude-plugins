@@ -1,8 +1,30 @@
 // Port of transform_gmail() from .claude/skills/message/scripts/serve.py lines 130-269.
-// Semantics must stay identical — these transforms are the truth of the skill.
+// Semantics must stay identical - these transforms are the truth of the skill.
+
+import { codeNewlinesToBr, stripHorizontalRules } from "./transform-shared";
+
+function hasUserStyle(tag: string): boolean {
+  return tag.includes('style="') || tag.includes("style='");
+}
+
+const BR = "<div><br></div>";
 
 export function transformGmail(html: string): string {
   let result = html;
+
+  result = stripHorizontalRules(result);
+
+  // Blank-line spacers are decided on marked's semantic output, BEFORE any tag
+  // conversion (afterwards headings and paragraphs are both <div> and can no
+  // longer be told apart). Left blocks {p, table, blockquote, pre} give a
+  // blank line; right blocks {p, h1-6, table, blockquote, pre} accept one.
+  // Headings give none - the text under a heading sits flush. Lists neither
+  // give nor accept one - Gmail's compose applies its own ~1em list margins on
+  // paste, so a spacer div would double the gap.
+  result = result.replace(
+    /(<\/(?:p|table|blockquote|pre)>)\s*(<(?:p|h[1-6]|table|blockquote|pre)\b)/g,
+    `$1\n${BR}\n$2`,
+  );
 
   result = result.replace(
     /<h1[^>]*>([\s\S]*?)<\/h1>/g,
@@ -28,7 +50,8 @@ export function transformGmail(html: string): string {
 
   result = result.replace(
     /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/g,
-    '<div><font face="monospace">$1</font></div>',
+    (_m, inner: string) =>
+      `<div><font face="monospace">${codeNewlinesToBr(inner)}</font></div>`,
   );
   result = result.replace(
     /<code[^>]*>([\s\S]*?)<\/code>/g,
@@ -39,39 +62,30 @@ export function transformGmail(html: string): string {
   result = result.replace(/<em([^>]*)>/g, "<i$1>").replace(/<\/em>/g, "</i>");
   result = result.replace(/<del([^>]*)>/g, "<strike$1>").replace(/<\/del>/g, "</strike>");
 
-  result = result.replace(
-    /<a\s+(href="[^"]*")/g,
-    '<a $1 style="color: rgb(17, 85, 204);"',
-  );
+  result = result.replace(/<a\s[^>]*>/g, (tag) => {
+    if (hasUserStyle(tag)) return tag;
+    const hrefMatch = tag.match(/href="[^"]*"/);
+    const href = hrefMatch ? hrefMatch[0] : "";
+    return `<a ${href} style="color: rgb(17, 85, 204);">`;
+  });
 
-  result = result.replace(
-    /<table(?:\s[^>]*)?>/g,
-    '<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border: 1px solid #999999;">',
+  result = result.replace(/<table(?:\s[^>]*)?>/g, (tag) =>
+    hasUserStyle(tag)
+      ? tag
+      : '<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; border: 1px solid #999999;">',
   );
-  result = result.replace(
-    /<td(?:\s[^>]*)?>/g,
-    '<td style="border: 1px solid #999999; padding: 8px;">',
+  result = result.replace(/<td(?:\s[^>]*)?>/g, (tag) =>
+    hasUserStyle(tag)
+      ? tag
+      : '<td style="border: 1px solid #999999; padding: 8px;">',
   );
-  result = result.replace(
-    /<th(?:\s[^>]*)?>/g,
-    '<th style="border: 1px solid #999999; padding: 8px; font-weight: bold; background-color: #f5f5f5;">',
+  result = result.replace(/<th(?:\s[^>]*)?>/g, (tag) =>
+    hasUserStyle(tag)
+      ? tag
+      : '<th style="border: 1px solid #999999; padding: 8px; font-weight: bold; background-color: #f2f2f2;">',
   );
-
-  result = result.replace(/<hr\s*\/?>/g, "");
 
   result = result.replace(/<p([^>]*)>/g, "<div$1>").replace(/<\/p>/g, "</div>");
-
-  const BR = "<div><br></div>";
-  result = result.replace(/<\/div>\s*<div>/g, `</div>\n${BR}\n<div>`);
-  result = result.replace(/<\/div>\s*(<div><font size=)/g, `</div>\n${BR}\n$1`);
-  result = result.replace(/<\/div>\s*(<div><b>)/g, `</div>\n${BR}\n$1`);
-  result = result.replace(/(?<!<\/div>\n<div><br><\/div>)\s*(<table\b)/g, `\n${BR}\n$1`);
-  result = result.replace(/(<\/table>)\s*/g, `$1\n${BR}\n`);
-  result = result.replace(/(?<!<\/div>\n<div><br><\/div>)\s*(<blockquote\b)/g, `\n${BR}\n$1`);
-  result = result.replace(/(<\/blockquote>)\s*/g, `$1\n${BR}\n`);
-
-  const brEsc = BR.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  result = result.replace(new RegExp(`(${brEsc}\\n)+${brEsc}`, "g"), BR);
 
   return result;
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-import { watch, statSync, existsSync } from "node:fs";
+import { watch, statSync, readFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import type { ServerWebSocket } from "bun";
 import { build } from "./build";
-import { openBrowser } from "./platform";
+import { isAllowedOpenUrl } from "./open-url";
 
 interface Args {
   fragment: string;
@@ -33,6 +33,31 @@ function parseArgs(): Args {
   }
 
   return { fragment: resolve(fragment), buildOnly, timeout, noOpen };
+}
+
+function isWSL(): boolean {
+  if (process.platform !== "linux") return false;
+  if (process.env.WSL_DISTRO_NAME) return true;
+  try {
+    return readFileSync("/proc/version", "utf8").toLowerCase().includes("microsoft");
+  } catch {
+    return false;
+  }
+}
+
+function openBrowser(url: string): void {
+  let cmd: string[];
+  if (process.platform === "darwin") cmd = ["open", url];
+  else if (process.platform === "win32") cmd = ["cmd", "/c", "start", "", url];
+  // WSL2: open via the Windows host - localhost is shared, and xdg-open is
+  // typically absent or headless inside the WSL distro.
+  else if (isWSL()) cmd = ["cmd.exe", "/c", "start", "", url];
+  else cmd = ["xdg-open", url];
+  try {
+    Bun.spawn(cmd, { stdout: "ignore", stderr: "ignore" });
+  } catch {
+    // Non-fatal
+  }
 }
 
 async function main(): Promise<void> {
@@ -86,21 +111,25 @@ async function main(): Promise<void> {
         return Response.json({ mtime: lastBuildAt / 1000, error: buildError });
       }
 
+      // Open a destination URL via the HOST's default handler (browser, mail
+      // app, WhatsApp). The preview page may be rendered inside an embedded
+      // webview (cmux browser pane, VS Code/Zed in-app browsers) where
+      // window.open lands in that webview instead of the user's real apps.
+      if (url.pathname === "/open" && req.method === "POST") {
+        const target = url.searchParams.get("url") ?? "";
+        if (!isAllowedOpenUrl(target)) {
+          return new Response("URL not allowed", { status: 400 });
+        }
+        openBrowser(target);
+        return new Response(null, { status: 204 });
+      }
+
       if (url.pathname === "/" || url.pathname === "/index.html") {
         if (buildError) {
           return new Response(errorPage(buildError), {
             status: 200,
             headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
           });
-        }
-        // The output may have been deleted externally between requests (e.g.
-        // user cleaning up). Fail soft with a friendly message instead of
-        // streaming a missing file and producing a raw ENOENT.
-        if (!existsSync(initialOutput)) {
-          return new Response(
-            errorPage(`Preview output is missing. The fragment may have been moved or deleted.\nExpected: ${initialOutput}`),
-            { status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } },
-          );
         }
         return new Response(Bun.file(initialOutput), {
           headers: { "cache-control": "no-cache" },
@@ -112,7 +141,6 @@ async function main(): Promise<void> {
     websocket: {
       open(ws) {
         sockets.add(ws);
-        lastRequest = Date.now();
       },
       close(ws) {
         sockets.delete(ws);
@@ -126,70 +154,68 @@ async function main(): Promise<void> {
 
   if (!noOpen) openBrowser(url);
 
-  // Watch the parent directory (not the file). fs.watch on a single path binds
-  // to the inode and goes deaf after atomic writes (write-temp + rename), which
-  // is how the Edit tool and many editors save. Watching the directory and
-  // filtering by basename survives both in-place writes and atomic replaces.
-  const fragmentDir = dirname(fragment);
-  const fragmentName = basename(fragment);
-
+  // Live-reload pipeline. Two triggers feed one debounced, mtime-deduped
+  // rebuild:
+  //   1. fs.watch on the containing directory - fast path (<100 ms).
+  //   2. an mtime poll - safety net.
+  // The poll is not optional: macOS fs.watch on a directory silently DROPS the
+  // event when an editor saves atomically (write temp file + rename over the
+  // target), which is the common save path for many editors and tools. Without
+  // the poll, atomic-save edits never reload. (Verified: in-place appends fire
+  // the watcher; a `mv new over target` does not.)
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let lastFragmentMtime = 0;
-  function captureMtime(): void {
+
+  function fragmentMtime(): number {
     try {
-      lastFragmentMtime = statSync(fragment).mtimeMs;
+      return statSync(fragment).mtimeMs;
     } catch {
-      // fragment temporarily missing during atomic rename
-    }
-  }
-  captureMtime();
-
-  function broadcast(): void {
-    const msg = JSON.stringify({
-      type: buildError ? "error" : "reload",
-      error: buildError,
-    });
-    for (const ws of sockets) {
-      try {
-        ws.send(msg);
-      } catch {
-        sockets.delete(ws);
-      }
+      return lastFragmentMtime; // mid-rename or transiently missing - ignore
     }
   }
 
-  function scheduleRebuild(): void {
+  let lastFragmentMtime = fragmentMtime();
+
+  function scheduleReload(): void {
     if (debounceTimer) clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
       await doBuild();
-      broadcast();
+      for (const ws of sockets) {
+        try {
+          ws.send(JSON.stringify({ type: buildError ? "error" : "reload", error: buildError }));
+        } catch {
+          sockets.delete(ws);
+        }
+      }
     }, 80);
   }
 
-  const watcher = watch(fragmentDir, (_evt, name) => {
-    if (name !== fragmentName) return;
-    captureMtime();
-    scheduleRebuild();
+  // Rebuild only when the fragment's own mtime actually advanced. Deduping on
+  // mtime means the fs.watch trigger and the poll trigger never double-build,
+  // and the build's own output write (a sibling .html in the same dir) can't
+  // loop back into a rebuild.
+  function checkFragment(): void {
+    const mtime = fragmentMtime();
+    if (mtime === lastFragmentMtime) return;
+    lastFragmentMtime = mtime;
+    scheduleReload();
+  }
+
+  const fragmentDir = dirname(fragment);
+  const fragmentName = basename(fragment);
+  const watcher = watch(fragmentDir, (_eventType, filename) => {
+    if (filename && filename.toString() !== fragmentName) return;
+    checkFragment();
   });
+  // A directory that is removed/unmounted (or EMFILE) emits 'error'; without a
+  // handler that throws and kills the long-lived server. Swallow it - the mtime
+  // poll below remains as the sole reload trigger.
+  watcher.on("error", () => {});
 
-  // Backstop for environments where the directory watcher can miss events
-  // (network mounts, WSL2 cross-filesystem edits on /mnt/c, some Windows
-  // editors). One stat() per 2 s is negligible.
-  const mtimePoll = setInterval(() => {
-    try {
-      const m = statSync(fragment).mtimeMs;
-      if (m && m !== lastFragmentMtime) {
-        lastFragmentMtime = m;
-        scheduleRebuild();
-      }
-    } catch {
-      // fragment temporarily missing during atomic rename
-    }
-  }, 2000);
+  // Safety-net poll for atomic-rename saves fs.watch drops on macOS.
+  const pollTimer = setInterval(checkFragment, 300);
 
-  // Idle shutdown - skip while a browser is connected.
+  // Idle shutdown
   const idleCheck = setInterval(() => {
-    if (sockets.size > 0) return;
     if (Date.now() - lastRequest > timeout * 1000) {
       console.error(`\nIdle for ${timeout}s - shutting down.`);
       shutdown();
@@ -198,7 +224,7 @@ async function main(): Promise<void> {
 
   function shutdown(): void {
     clearInterval(idleCheck);
-    clearInterval(mtimePoll);
+    clearInterval(pollTimer);
     watcher.close();
     for (const ws of sockets) ws.close();
     server.stop();

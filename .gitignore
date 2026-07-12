@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # Claude Code Files
 .claude
+# Dependencies (plugins install on first use via their hooks)
+node_modules/

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "message-preview",
   "private": true,
   "type": "module",
@@ -9,6 +10,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "marked": "^14.1.0"
+    "marked": "18.0.3"
   }
 }

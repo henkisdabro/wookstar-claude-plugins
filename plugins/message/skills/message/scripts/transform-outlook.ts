@@ -1,6 +1,8 @@
 // Port of transform_outlook() from .claude/skills/message/scripts/serve.py lines 288-450.
 // Adds Outlook-compatible inline styles. Word engine strips <style> blocks.
 
+import { codeNewlinesToBr, stripHorizontalRules } from "./transform-shared";
+
 const FONT = "font-family: Aptos, Calibri, Arial, sans-serif";
 const SIZE = "font-size: 11pt";
 const COLOR = "color: #000000";
@@ -11,8 +13,25 @@ function hasUserStyle(tag: string): boolean {
   return tag.includes('style="') || tag.includes("style='");
 }
 
+const SPACER = `<p style="${FONT}; ${SIZE}; ${COLOR}; margin: 0;">&nbsp;</p>`;
+
 export function transformOutlook(html: string): string {
   let result = html;
+
+  result = stripHorizontalRules(result);
+
+  // Consecutive paragraphs get a blank-line spacer. This runs on marked's
+  // semantic output BEFORE heading conversion (headings also become <p> below,
+  // and heading -> following text must stay flush), so only real paragraph
+  // boundaries match here.
+  //
+  // Unlike the Gmail transform (one semantic pre-conversion rule), this lane
+  // keeps its remaining spacer rules post-conversion further down: their
+  // boundaries (table/list/blockquote/bold-heading) key off the CONVERTED
+  // markup and their output is signed-off rendering that must stay
+  // byte-identical. Only the paragraph rule lives up here, because it is the
+  // one boundary that post-conversion markup can no longer distinguish.
+  result = result.replace(/(<\/p>)\s*(<p>)/g, `$1\n${SPACER}\n$2`);
 
   result = result.replace(
     /<h1[^>]*>([\s\S]*?)<\/h1>/g,
@@ -45,8 +64,8 @@ export function transformOutlook(html: string): string {
 
   result = result.replace(
     /<pre[^>]*>([\s\S]*?)<\/pre>/g,
-    (_m, inner) =>
-      `<div style="font-family: 'Courier New', Consolas, monospace; font-size: 10pt; ${COLOR}; background-color: #f4f4f4; padding: 8pt; margin: 0 0 12pt 0;">${inner}</div>`,
+    (_m, inner: string) =>
+      `<div style="font-family: 'Courier New', Consolas, monospace; font-size: 10pt; ${COLOR}; background-color: #f4f4f4; padding: 8pt; margin: 0 0 12pt 0;">${codeNewlinesToBr(inner)}</div>`,
   );
 
   result = result.replace(
@@ -78,7 +97,7 @@ export function transformOutlook(html: string): string {
   result = result.replace(/<th(?:\s[^>]*)?>/g, (tag) =>
     hasUserStyle(tag)
       ? tag
-      : `<th style="border: 1px solid #999999; padding: 8pt; font-weight: bold; background-color: #f5f5f5; ${FONT}; ${SIZE}; ${COLOR}; ${LINE};">`,
+      : `<th style="border: 1px solid #999999; padding: 8pt; font-weight: bold; background-color: #f2f2f2; ${FONT}; ${SIZE}; ${COLOR}; ${LINE};">`,
   );
 
   result = result.replace(/<a\s[^>]*>/g, (tag) => {
@@ -88,10 +107,9 @@ export function transformOutlook(html: string): string {
     return `<a ${href} style="color: #0563c1; text-decoration: underline; ${FONT}; ${SIZE};">`;
   });
 
-  result = result.replace(/<hr\s*\/?>/g, "");
-
-  const SPACER = `<p style="${FONT}; ${SIZE}; ${COLOR}; margin: 0;">&nbsp;</p>`;
-
+  // Phase 2 of the spacer mechanism - post-conversion rules keyed off the
+  // CONVERTED markup. See the note on the paragraph rule above for why this
+  // lane is two-phase while the Gmail lane is a single semantic pre-pass.
   result = result.replace(/(<\/p>|<\/div>)\s*(<table\b)/g, `$1\n${SPACER}\n$2`);
   result = result.replace(/(<\/table>)\s*(<p\b|<div\b)/g, `$1\n${SPACER}\n$2`);
 

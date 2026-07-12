@@ -1,6 +1,6 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-06-02
+Last fetched: 2026-07-12
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
@@ -8,19 +8,17 @@ This file is a structured digest of the Wikipedia article used to build this ski
 
 ## How to Update
 
-1. Fetch the latest article. Prefer the **raw wikitext** - the WebFetch summariser
-   paraphrases and drops whole sections, so use it only for a quick orientation pass:
+1. Fetch the latest article:
    ```
-   curl -sL "https://en.wikipedia.org/w/index.php?title=Wikipedia:Signs_of_AI_writing&action=raw" -o /tmp/sai_raw.txt
+   WebFetch https://markdown.new/https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
    ```
-   Then Read /tmp/sai_raw.txt and `grep -nE "^(==|===|====)"` it for the section map.
 2. Compare the fetched content against this digest below
 3. Look for: new patterns, removed patterns, renamed patterns, updated keywords, new examples, new model-era information
 4. Update the relevant reference files and this digest
 
 ---
 
-## Pattern Digest (as of 2026-06-02)
+## Pattern Digest (as of 2026-04-15)
 
 ### Content Patterns
 
@@ -41,8 +39,8 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 | # (Wiki) | # (Skill) | Pattern Name | Key Signals |
 |-----------|-----------|--------------|-------------|
 | 14 | 7 | AI vocabulary words (era-specific) | See era breakdown below |
-| 15 | 8 | Copula avoidance (is/are) | serves as, stands as, marks, represents, boasts, features, maintains, offers, refers to |
-| 16 | 9 | Negative parallelisms | Not only...but..., It's not just...it's..., No...no...just... |
+| 15 | 8 | Copula avoidance (is/are) | serves as, stands as, marks, represents, boasts, features, offers |
+| 16 | 9 | Negative parallelisms (3 subtypes) | (A) Not only X but also Y, (B) Not X, it's Y, (C) X rather than Y (Grok) |
 | 19 | 10 | Rule of three | three-item lists, triadic structures |
 | 20 | 11 | Elegant variation (synonym cycling) | protagonist/main character/central figure/hero cycling |
 
@@ -81,7 +79,7 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 
 ---
 
-## AI Vocabulary Era Breakdown (as of 2026-06-02, unchanged since 2026-05-15)
+## AI Vocabulary Era Breakdown (as of 2026-04-15)
 
 ### 2023 to mid-2024 (GPT-4 era)
 
@@ -93,44 +91,26 @@ align with, bolstered, crucial, emphasizing, enhance, enduring, fostering, highl
 
 ### Mid-2025 onward (GPT-5 era)
 
-emphasizing, enhance, highlighting, showcasing, robust, plus increased notability-related terms (independent coverage, media outlets)
+emphasizing, enhance, highlighting, showcasing, plus increased notability-related terms (independent coverage, media outlets)
 
 ### Models with distinct traits
 
 - **ChatGPT/DeepSeek**: Curly quotation marks and apostrophes
 - **Gemini/Claude**: Typically avoid curly quotes
-- **ChatGPT (GPT-5.1+)**: Attempted suppression of em dash overuse; em dash tell now weaker for newer ChatGPT output
+- **Grok**: Overuses "causal", "empirical", "correlate"; still overusing "underscore" as of 2026; favours the "X rather than Y" negative parallelism (subtype C)
+- **Comment/discussion tell**: overuse of "concrete" ("concrete evidence", "concrete examples") in AI-detection debates
 - **All models**: Rule of three, copula avoidance, negative parallelisms
-
-### New word: robust (added 2026-05-15)
-
-"Robust" added to Wikipedia's main AI vocabulary words-to-watch list, appearing in the GPT-5 era alongside "enhance", "highlighting", "showcasing".
-
-### WP:CONCRETE note (added 2026-05-15)
-
-When AI chatbots respond to AI-detection allegations, they characteristically use "concrete" as an adjective: "no concrete evidence", "please provide concrete examples". Not a general writing tell - specific to defensive AI responses.
 
 ---
 
-## Changes from 2026-05-15 to 2026-06-02
+## Changes from 2026-04-23 to 2026-07-12
 
-1. **Copula avoidance: "maintains" and "refers to" added** - Wikipedia's words-to-watch box now lists *maintains* alongside *boasts/features/offers*, and documents *refers to* as a lead-sentence dodge (writing "X refers to..." as though the article were about the term, not the subject). Added both to language-patterns.md Pattern #8.
-2. **"Historical indicators" is now a formal article section** - Wikipedia split the older-model tells into a dedicated section: didactic disclaimers, section summaries (both already in skill), plus **prompt refusal** ("as an AI language model", "I'm sorry, I can't..."), abrupt cut-offs, and outdated access-date parameters. Added Prompt refusal to filler-patterns.md historical section. Abrupt cut-offs and access-date are citation/Wikipedia-specific and not added.
-3. **"Ineffective indicators" section expanded** - Wikipedia now spells out weak signals that produce false positives: perfect grammar, formal/"fancy" prose, transition words in isolation, letter-like formatting alone, mixed casual/formal register, unsourced content, and (bizarre or correct) wikitext. Added a concise "Ineffective indicators" block to SKILL.md "When NOT to Use" so the humaniser doesn't strip voice from genuinely human text. Paired with the "Signs of human writing" note: text predating ChatGPT's 30 Nov 2022 launch can be ruled out outright.
-4. **No changes** to AI vocabulary word lists or era breakdowns (GPT-4 / GPT-4o / GPT-5) - the 2026-05-15 sync remains current, "robust" still listed.
-5. **Update method note** - the WebFetch summariser was found to paraphrase and drop sections unreliably; the digest's "How to Update" now points at raw wikitext (`action=raw`) as the source of truth.
-6. **New Wikipedia-only sections (NOT added to skill)** - the article keeps growing Wikipedia-specific material: Markup (Markdown/wikitext artifacts, turn0search0, oaicite, grok_card, attributableIndex), Citations (broken links, invalid DOI/ISBN, page-less book cites, utm_source tags), and a large "Indicators of AI-written comments" tree (canned good-faith/adherence boilerplate, calls to focus on content, wikilawyering, WP:PRESERVE invocation, non-existent shortcuts, declined-draft confusion). All Wikipedia-process-specific.
-
-## Changes from 2026-04-23 to 2026-05-15
-
-1. **New AI vocabulary word: "robust"** - Added to Wikipedia's main words-to-watch list. Appearing in GPT-5 era text alongside enhance/highlighting/showcasing. Added to skill language-patterns.md Pattern #7 all-era list.
-2. **WP:CONCRETE defensive usage** - Wikipedia documents that AI chatbots use "concrete" characteristically when defending against AI-detection allegations ("no concrete evidence"). Not a general writing tell. Added as note to language-patterns.md Pattern #7.
-3. **GPT-5.1 em dash suppression** - Wikipedia notes OpenAI's GPT-5.1 attempted to suppress em dash overuse. Pattern #13 now less reliable for newer ChatGPT output; use in combination with other indicators. Added to style-patterns.md.
-4. **Pattern #3 sub-pattern: "generated debate"** - Wikipedia now explicitly documents AI claiming things "generated debate", "prompted broader reflection", "shaped emerging policy discussions" - synthetic impact claims not limited to -ing endings. Added to content-patterns.md.
-5. **Historical indicators section (new)** - Wikipedia added a section for patterns now uncommon in newer models: didactic disclaimers ("it's important to note", "worth noting", "may vary") and section summaries ("In summary", "In conclusion", "Overall"). Added to filler-patterns.md with historical context.
-6. **New Wikipedia-only sections (NOT added to skill)** - Wikipedia now has dedicated sections for: Markup (wikitext/Markdown artifacts, turn0search0, oaicite tags), Citations (broken links, invalid DOIs/ISBNs), Miscellaneous (edit summary tells, permissions gaming), and expanded AI-written comments indicators (wikilawyering, canned quality emphasis). These are Wikipedia-specific and not relevant to general text humanising.
-7. **Notability pattern expanded** - New examples: "strong digital presence", "actively shares updates and events". Skill pattern #2 already covers this adequately.
-8. **"Signs of human writing" section added** - Wikipedia now documents what DOESN'T indicate AI: perfect grammar, formal prose, transition words in isolation, unsourced content. Not added to skill (already covered by "When NOT to Use").
+1. **Negative parallelisms now three subtypes** (Wiki 3.3.1-3.3.3): a third subtype **"X rather than Y"** (the reversed construction) has been added alongside "Not only X but also Y" and "Not X, but Y". Wikipedia flags "X rather than Y" as particularly common in Grok output. Updated skill #9 in SKILL.md and language-patterns.md.
+2. **New model-specific traits: Grok**: overuses "causal", "empirical", "correlate", and continues overusing "underscore" as of 2026. Added to language-patterns.md #7 and the model-traits list here.
+3. **Comment/discussion tell**: overuse of "concrete" ("concrete evidence/examples") in AI-detection debates. Noted here; not added as a client-copy pattern (out of scope for humanising deliverables).
+4. **Emoji-as-formatting (4.5), unusual tables (4.6), thematic breaks before headings (4.9) re-confirmed** as explicit Wikipedia sections. The 2026-04-23 note treated their absence as extraction uncertainty; the current article lists all three, so the corresponding skill patterns (#17, #25, #29) are Wikipedia-backed, not skill-only.
+5. **Em dash and curly-quote shortcuts** now have dedicated Wikipedia shortcuts (WP:AIDASH, WP:AICURLY) - no content change to the patterns themselves.
+6. **No changes** to AI vocabulary word lists or era breakdowns.
 
 ## Changes from 2026-04-18 to 2026-04-23
 

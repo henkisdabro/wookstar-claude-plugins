@@ -31,6 +31,9 @@ These values are extracted directly from Gmail's compose window and ensure the e
 
 - NO blank line after `<b>Heading</b>`
 - Text follows immediately on next line with single `<br>`
+- The Gmail transform enforces this: headings never emit a spacer after
+  themselves (the spacer decision is made on marked's semantic output, before
+  headings and paragraphs are both flattened to `<div>`)
 
 **Correct:**
 
@@ -48,10 +51,22 @@ These values are extracted directly from Gmail's compose window and ensure the e
 <br><br>Description with extra blank line after heading...
 ```
 
-### After Lists
+### Around Lists
 
-- Single `<br>` before continuing prose
-- No extra spacing needed after `</ul>` or `</ol>`
+- Gmail lane: NO spacer before or after `<ul>`/`<ol>`. Gmail's compose applies
+  its own ~1em list margins on paste, so a `<div><br></div>` spacer would
+  double the gap (confirmed by real-paste testing 2026-07-12).
+- Rich Text lane: one `&nbsp;` spacer paragraph before and after the list -
+  its lists carry inline `margin: 0`, so the spacer IS the gap there.
+
+### Line Breaks Within a Paragraph
+
+- A single newline in the Markdown source is a real line break (`<br>`) in
+  every lane (`marked` runs with `breaks: true`). Sign-offs like
+  `Best,` / `Alex` stay on two lines.
+- Multi-line code blocks keep their line breaks as `<br>` inside the
+  monospace `<div>` - a literal `\n` would render as a space and flatten the
+  block onto one line.
 
 ## Structure Rules
 
@@ -228,27 +243,27 @@ When replying to an email thread:
 
 ## Local Preview
 
-Assemble and launch the preview server:
+The preview server is Bun-based (`scripts/serve.ts`); the retired Python `assemble.py` no longer exists. Normally the `auto_serve_fragment.sh` hook builds and serves automatically on write. On a fresh clone, run `bash .claude/skills/message/scripts/preflight.sh` once (installs bun + deps, self-tests, fails loudly with the fix). To launch it manually:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.py /path/to/name.fragment.html
+bun run .claude/skills/message/scripts/serve.ts /path/to/name.fragment.md
 ```
 
-Run with `run_in_background: true` in Claude Code. Auto-stops after 10 minutes idle.
+Run with `run_in_background: true` in Claude Code. It idle-shuts-down after 30 minutes with no connected tab (an open preview tab keeps it alive).
 
 User workflow:
 
 1. Click the URL printed by the server
-2. Select Gmail, Outlook, or WhatsApp mode
+2. Select the Gmail, Rich Text, or Markdown tab
 3. Review the email preview (To, CC, BCC, Subject, Body)
-4. Use platform-specific action buttons to send
+4. Use the action buttons (Open in Email App / Compose in Gmail / Open in WhatsApp / Copy) to send
 
 ## File Organisation
 
 ### Naming Convention
 
 ```
-YYYY-MM-DD_recipient_subject.fragment.html   (source - Claude writes/edits)
+YYYY-MM-DD_recipient_subject.fragment.md     (source - Claude writes/edits)
 YYYY-MM-DD_recipient_subject.html            (output - build script writes)
 ```
 

@@ -14,11 +14,7 @@
       --chrome: #ffffff;
       --chrome-border: #e6e6e6;
       --chrome-shadow: 0 12px 40px rgba(0,0,0,0.12);
-      --tab-active-bg: #1a1a1a;
-      --tab-active-text: #fff;
-      --tab-inactive-bg: #f2f2f2;
-      --tab-inactive-text: #555;
-      --tab-border: #e0e0e0;
+      --step-bg: #f2f2f2;
       --meta-label: #888;
       --meta-value: #222;
       --divider: #eee;
@@ -39,11 +35,7 @@
         --chrome: #1b1b20;
         --chrome-border: #2a2a32;
         --chrome-shadow: 0 12px 40px rgba(0,0,0,0.5);
-        --tab-active-bg: #f2f2f5;
-        --tab-active-text: #0e0e10;
-        --tab-inactive-bg: #26262c;
-        --tab-inactive-text: #bcbcc5;
-        --tab-border: #2a2a32;
+        --step-bg: #26262c;
         --meta-label: #888;
         --meta-value: #e8e8ec;
         --divider: #2a2a32;
@@ -64,58 +56,46 @@
       align-items: center;
     }
 
-    .topbar {
+    /* Three channel lanes, each a card: header (brand accent) + two equal-weight
+       neutral buttons stacked as step 1 Copy, step 2 Open. Colour identifies the
+       lane (accent bar + numbered badges); it never fills a button, so Copy and
+       Open read as equal weight. */
+    /* Never wrap: the three lanes stay side by side on one line at any width. */
+    .lanes {
       width: 100%;
       max-width: 960px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
+      margin-bottom: 12px;
+      flex-wrap: nowrap;
     }
-
-    .tabs {
-      display: inline-flex;
+    .lane {
+      flex: 1 1 0;
+      min-width: 0;
       background: var(--chrome);
       border: 1px solid var(--chrome-border);
-      border-radius: 10px;
-      padding: 4px;
-      gap: 2px;
+      border-top: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .tab {
-      border: none;
-      background: transparent;
-      color: var(--tab-inactive-text);
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 7px;
-      cursor: pointer;
-      letter-spacing: 0.2px;
-      transition: background 0.15s, color 0.15s;
+    .lane-gmail { --accent: var(--gmail); }
+    .lane-mail { --accent: var(--outlook); }
+    .lane-whatsapp { --accent: var(--whatsapp); }
+    .lane-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
     }
-    .tab:hover { background: var(--tab-inactive-bg); }
-    .tab.active { background: var(--tab-active-bg); color: var(--tab-active-text); }
-    .tab .kbd {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 1px 5px;
-      font-size: 10px;
-      border: 1px solid currentColor;
-      border-radius: 3px;
-      opacity: 0.6;
-    }
-    .btn .kbd {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 1px 5px;
-      font-size: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 3px;
-    }
+    /* Buttons stacked full width: step 1 above step 2, and each button's width
+       is fixed by the lane (not its label), so the "Copied" flash cannot resize
+       it or shift the button below. */
+    .lane-actions { display: flex; flex-direction: column; gap: 8px; }
 
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn {
       border: none;
       color: #fff;
@@ -124,25 +104,60 @@
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.08s, filter 0.15s;
+      transition: transform 0.08s, filter 0.15s, background 0.15s;
     }
-    .btn:hover { filter: brightness(1.08); }
     .btn:active { transform: translateY(1px); }
-    .btn.primary-gmail { background: var(--gmail); }
-    .btn.primary-outlook { background: var(--outlook); }
-    .btn.primary-whatsapp { background: var(--whatsapp); }
-    .btn.slack { background: rgb(72, 26, 84); color: #fff; }
-    .btn.ghost {
-      background: var(--chrome);
+    .btn.copied { background: var(--ok) !important; color: #fff !important; border-color: var(--ok) !important; }
+    .btn.failed { background: var(--fail) !important; color: #fff !important; border-color: var(--fail) !important; }
+
+    /* Neutral, equal-weight lane buttons. */
+    .btn.step {
+      width: 100%;
+      background: var(--step-bg);
       color: var(--text);
       border: 1px solid var(--chrome-border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
     }
-    .btn.copied { background: var(--ok) !important; }
-    .btn.failed { background: var(--fail) !important; }
-    #copy-btn {
-      min-width: 180px;
-      text-align: right;
+    .btn.step:hover { background: var(--chrome-border); }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      flex: none;
     }
+    .btn.step .ext { opacity: 0.55; font-weight: 700; }
+
+    .paste-note {
+      width: 100%;
+      max-width: 960px;
+      margin: -2px 0 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .paste-note b { color: var(--meta-value); font-weight: 600; }
+    .paste-note .n {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--text-muted); color: var(--chrome);
+      font-size: 9px; font-weight: 700; vertical-align: middle;
+    }
+
+    /* Off-screen but still rendered, so innerText and selection stay valid for
+       the copy path (display:none would break both). */
+    .offscreen { position: absolute; left: -99999px; top: 0; width: 1px; height: 1px; overflow: hidden; }
 
     .preview-shell {
       width: 100%;
@@ -211,27 +226,6 @@
     .body-frame a { color: rgb(17, 85, 204); }
     .body-frame table { margin: 12px 0; }
 
-    .whatsapp-frame {
-      padding: 20px;
-      background: #e5ddd5;
-      color: #111;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      white-space: pre-wrap;
-      font-size: 14px;
-      line-height: 1.5;
-      min-height: 120px;
-    }
-    .slack-frame {
-      padding: 20px;
-      background: #fff;
-      color: #1d1c1d;
-      font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      white-space: pre-wrap;
-      font-size: 15px;
-      line-height: 1.46;
-      min-height: 120px;
-    }
-
     .hidden-platform { display: none; }
 
     .hints {
@@ -290,35 +284,45 @@
 
     @media (max-width: 640px) {
       body { padding: 12px 8px 40px; }
-      .topbar { flex-direction: column; align-items: stretch; }
-      .tabs { justify-content: center; }
-      .actions { justify-content: center; }
+      .lane { padding: 8px 8px 10px; }
+      .btn.step { padding: 8px 10px; font-size: 12px; }
       .meta-row .label { width: 44px; font-size: 10px; }
     }
 
     @media print {
       body { background: #fff; padding: 0; }
-      .topbar, .hints, .counts, .toast, .status-dot { display: none !important; }
+      .lanes, .paste-note, .hints, .counts, .toast, .status-dot { display: none !important; }
       .preview-shell { box-shadow: none; border: none; }
     }
   </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="gmail" onclick="showTab('gmail')">Gmail<span class="kbd">G</span></button>
-    <button class="tab" data-tab="outlook" onclick="showTab('outlook')">Outlook<span class="kbd">O</span></button>
-    <button class="tab" data-tab="whatsapp" onclick="showTab('whatsapp')">WhatsApp<span class="kbd">W</span></button>
-    <button class="tab" data-tab="slack" onclick="showTab('slack')">Slack<span class="kbd">S</span></button>
+<div class="lanes">
+  <div class="lane lane-gmail">
+    <div class="lane-head">Gmail</div>
+    <div class="lane-actions">
+      <button class="btn step" id="copy-gmail" onclick="copyGmail(this)" title="Copy the Gmail-formatted message to your clipboard (G)"><span class="step-num">1</span> Copy for Gmail</button>
+      <button class="btn step" onclick="composeInGmail()" title="Opens the Gmail web compose window in a new tab - then paste (Cmd+V) the copied message into the body"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
+    </div>
   </div>
-  <div class="actions">
-    <button class="btn ghost platform-action" data-for="gmail" onclick="composeInGmail(this)">Compose in Gmail</button>
-    <button class="btn ghost platform-action" data-for="whatsapp" onclick="sendViaWhatsApp(this)">Open WhatsApp</button>
-    <button class="btn slack platform-action" data-for="slack" onclick="openSlack(this)">Open Slack</button>
-    <button class="btn primary-gmail" onclick="copyCurrentTab(this)" id="copy-btn">Copy <span class="kbd">C</span></button>
+  <div class="lane lane-mail">
+    <div class="lane-head">Mail app</div>
+    <div class="lane-actions">
+      <button class="btn step" id="copy-rich" onclick="copyRichText(this)" title="Copy the rich-text message for desktop mail clients: Thunderbird, Apple Mail, Outlook (T)"><span class="step-num">1</span> Copy Rich Text</button>
+      <button class="btn step" onclick="openInMailApp()" title="Opens your default desktop mail app (Thunderbird, Apple Mail, Outlook) - then paste (Cmd+V) the copied message into the body (E)"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
+    </div>
+  </div>
+  <div class="lane lane-whatsapp">
+    <div class="lane-head">WhatsApp</div>
+    <div class="lane-actions">
+      <button class="btn step" id="copy-md" onclick="copyMarkdown(this)" title="Copy the light-markup Markdown / plain-text message to your clipboard (M)"><span class="step-num">1</span> Copy Markdown</button>
+      <button class="btn step" onclick="sendViaWhatsApp()" title="Opens WhatsApp - then paste (Cmd+V) the copied message (W)"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
+    </div>
   </div>
 </div>
+
+<div class="paste-note"><span class="n">1</span> <b>Copy</b> puts the message on your clipboard, then <span class="n">2</span> <b>Open &#8599;</b> launches the app - paste it (Cmd+V) into it.</div>
 
 <div class="preview-shell">
   <div class="meta-row" id="to-row">
@@ -344,39 +348,61 @@
 
   <div class="counts"><span><b id="word-count">0</b> words</span><span><b id="char-count">0</b> characters</span><span><b id="read-time">0</b> min read</span><span><span class="status-dot" id="status-dot"></span><span id="status-text">Live</span></span></div>
 
-  <div id="gmail-body" class="body-frame gmail-frame"><!-- INJECT:GMAIL_BODY --></div>
-  <div id="outlook-body" class="body-frame outlook-frame hidden-platform"><!-- INJECT:OUTLOOK_BODY --></div>
-  <div id="whatsapp-body" class="whatsapp-frame hidden-platform"></div>
-  <div id="slack-body" class="slack-frame hidden-platform"></div>
+  <!-- Rich Text is the single visible preview. gmail-body stays in the DOM but
+       off-screen (NOT display:none) so its innerText/selection still yield a
+       faithful clipboard payload for "Copy for Gmail". whatsapp-raw is only ever
+       read via innerHTML (layout-independent), so display:none is safe there. -->
+  <div id="outlook-body" class="body-frame outlook-frame"><!-- INJECT:OUTLOOK_BODY --></div>
+  <div id="gmail-body" class="body-frame gmail-frame offscreen"><!-- INJECT:GMAIL_BODY --></div>
   <div id="whatsapp-raw" class="hidden-platform"><!-- INJECT:RAW_BODY --></div>
 </div>
 
 <div class="hints">
-  <span><kbd>G</kbd> Gmail</span>
-  <span><kbd>O</kbd> Outlook</span>
-  <span><kbd>W</kbd> WhatsApp</span>
-  <span><kbd>S</kbd> Slack</span>
-  <span><kbd>C</kbd> Copy current tab</span>
+  <span><kbd>G</kbd> Copy for Gmail</span>
+  <span><kbd>T</kbd> Copy Rich Text</span>
+  <span><kbd>M</kbd> Copy Markdown</span>
+  <span><kbd>E</kbd> Open in Mail app</span>
+  <span><kbd>W</kbd> Open in WhatsApp</span>
   <span><kbd>R</kbd> Force reload</span>
-  <span class="platform-action" data-for="slack">After pasting in Slack, press <kbd>⌘⇧F</kbd> (or <kbd>Ctrl+Shift+F</kbd>) to format markdown as rich text</span>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+/* Shared client helpers (scripts/client/*.js), inlined at build time so the
+   page stays self-contained. Exposes globals: mailtoAddrs, buildMailto,
+   htmlToWhatsApp. */
+/* INJECT:CLIENT_JS */
+</script>
+
+<script>
 (function () {
-  var currentTab = 'gmail';
-  var TABS = ['gmail', 'outlook', 'whatsapp', 'slack'];
-  var PRIMARY_CLASS = { gmail: 'primary-gmail', outlook: 'primary-outlook', whatsapp: 'primary-whatsapp', slack: 'slack' };
-  var TAB_LABEL = { gmail: 'Gmail', outlook: 'Outlook', whatsapp: 'WhatsApp', slack: 'Slack' };
+  // Internal ids stay gmail/outlook/whatsapp (wired to build.ts + element ids).
+  // A one-shot reminder shown when the user tabs back to this page after an
+  // "open" action, so the "paste it, it's on your clipboard" message survives
+  // the mail/WhatsApp app stealing focus.
+  var pasteReminder = null;
 
   function $(id) { return document.getElementById(id); }
-  function toast(msg) {
+  function toast(msg, ms) {
     var t = $('toast');
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(t._timer);
-    t._timer = setTimeout(function () { t.classList.remove('show'); }, 1800);
+    t._timer = setTimeout(function () { t.classList.remove('show'); }, ms || 1800);
+  }
+  function armPasteReminder(msg) { pasteReminder = msg; }
+
+  // Route "Open" actions through the preview server (POST /open), which hands
+  // the URL to the OS default handler. Opening from page JS (window.open /
+  // location.href) launches inside whatever renders this page - a cmux browser
+  // pane or a VS Code/Zed in-app browser - where the user is usually not
+  // signed in. The fallback covers the static-file case (no server behind the
+  // page) and a server that refuses the URL.
+  function openExternal(url, fallback) {
+    fetch('/open?url=' + encodeURIComponent(url), { method: 'POST' })
+      .then(function (r) { if (!r.ok) fallback(); })
+      .catch(function () { fallback(); });
   }
 
   function hideIfEmpty(id, rowId) {
@@ -385,8 +411,9 @@
     else $(rowId).classList.remove('hidden');
   }
 
+  // The single visible preview is the Rich Text (outlook) rendering.
   function updateCounts() {
-    var text = $(currentTab + '-body').innerText || '';
+    var text = $('outlook-body').innerText || '';
     var chars = text.length;
     var words = (text.match(/\S+/g) || []).length;
     var read = Math.max(1, Math.round(words / 200));
@@ -394,23 +421,6 @@
     $('word-count').textContent = words;
     $('read-time').textContent = read;
   }
-
-  window.showTab = function (name) {
-    currentTab = name;
-    TABS.forEach(function (t) {
-      var body = $(t + '-body');
-      var tab = document.querySelector('.tab[data-tab="' + t + '"]');
-      if (body) body.classList.toggle('hidden-platform', t !== name);
-      if (tab) tab.classList.toggle('active', t === name);
-    });
-    document.querySelectorAll('.platform-action').forEach(function (b) {
-      b.style.display = b.getAttribute('data-for') === name ? '' : 'none';
-    });
-    var btn = $('copy-btn');
-    btn.className = 'btn ' + PRIMARY_CLASS[name];
-    btn.innerHTML = 'Copy for ' + TAB_LABEL[name] + ' <span class="kbd">C</span>';
-    updateCounts();
-  };
 
   function copyRichHtml(bodyId) {
     var body = $(bodyId);
@@ -434,80 +444,37 @@
     return ok;
   }
 
-  // Bold/italic/strike/code/quote markers are byte-identical for WhatsApp and
-  // Slack mrkdwn. Only link rendering differs - WhatsApp has no markdown link
-  // syntax (text + URL inline), Slack uses <url|text>.
-  function htmlToMessenger(flavour) {
-    var html = $('whatsapp-raw').innerHTML;
-    html = html.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, '*$2*');
-    html = html.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/\1>/gi, '_$2_');
-    html = html.replace(/<(del|strike)\b[^>]*>([\s\S]*?)<\/\1>/gi, '~$2~');
-    html = html.replace(/<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi, '\n```\n$1\n```\n');
-    html = html.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, '`$1`');
-    html = html.replace(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi, '\n*$1*\n');
-    // Slack doesn't render HR; WhatsApp shows literal dashes - blank line is cleaner.
-    html = html.replace(/<hr\b[^>]*\/?>/gi, '\n');
-    html = html.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/gi, function (m, inner) {
-      var rows = [], trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi, tr;
-      while ((tr = trRe.exec(inner)) !== null) {
-        var cells = [], tdRe = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi, td;
-        while ((td = tdRe.exec(tr[1])) !== null) cells.push(td[1].replace(/<[^>]+>/g, '').trim());
-        if (cells.length) rows.push(cells.join(' | '));
-      }
-      return '\n' + rows.join('\n') + '\n';
-    });
-    html = html.replace(/<ol\b[^>]*>([\s\S]*?)<\/ol>/gi, function (m, inner) {
-      var items = [], n = 1, re = /<li\b[^>]*>([\s\S]*?)<\/li>/gi, li;
-      while ((li = re.exec(inner)) !== null) items.push((n++) + '. ' + li[1].replace(/<[^>]+>/g, '').trim());
-      return '\n' + items.join('\n') + '\n';
-    });
-    html = html.replace(/<ul\b[^>]*>([\s\S]*?)<\/ul>/gi, function (m, inner) {
-      var items = [], re = /<li\b[^>]*>([\s\S]*?)<\/li>/gi, li;
-      while ((li = re.exec(inner)) !== null) items.push('- ' + li[1].replace(/<[^>]+>/g, '').trim());
-      return '\n' + items.join('\n') + '\n';
-    });
-    html = html.replace(/<blockquote\b[^>]*>([\s\S]*?)<\/blockquote>/gi, function (m, inner) {
-      return '\n> ' + inner.replace(/<[^>]+>/g, '').trim() + '\n';
-    });
-    // Links - must run before the catch-all tag strip below or URLs get lost.
-    // Both WhatsApp and Slack auto-link plain URLs; Slack's <url|label> mrkdwn
-    // only works when WYSIWYG is disabled, so plain URL is the safer bet.
-    html = html.replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, function (m, url, label) {
-      var clean = label.replace(/<[^>]+>/g, '').trim();
-      return !clean || clean === url ? url : clean + ' (' + url + ')';
-    });
-    html = html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<p\b[^>]*>/gi, '');
-    html = html.replace(/&nbsp;/gi, '').replace(/<[^>]+>/g, '');
-    var ta = document.createElement('textarea'); ta.innerHTML = html;
-    var text = ta.value.replace(/\n[ \t]+\n/g, '\n\n').replace(/\n{2,}/g, '\n\n');
-    return text.trim();
-  }
-  function htmlToWhatsApp() { return htmlToMessenger('whatsapp'); }
+  // htmlToWhatsApp(rawHtml) is injected from scripts/client/whatsapp.js above.
+  function whatsappText() { return htmlToWhatsApp($('whatsapp-raw').innerHTML); }
 
   function markCopyState(btn, ok, label) {
     btn.classList.remove('copied', 'failed');
     btn.classList.add(ok ? 'copied' : 'failed');
     var original = btn.innerHTML;
-    btn.innerHTML = (ok ? '\u2713 ' : '\u2717 ') + label;
+    btn.innerHTML = (ok ? '✓ ' : '✗ ') + label;
     setTimeout(function () {
       btn.classList.remove('copied', 'failed');
       btn.innerHTML = original;
     }, 1800);
   }
 
-  window.copyCurrentTab = function (btn) {
-    if (currentTab === 'whatsapp' || currentTab === 'slack') {
-      var text = htmlToMessenger(currentTab);
-      navigator.clipboard.writeText(text).then(function () {
-        markCopyState(btn, true, 'Copied ' + TAB_LABEL[currentTab]);
-        toast('Copied. Paste in ' + TAB_LABEL[currentTab] + '.');
-      });
-    } else {
-      copyRichHtml(currentTab + '-body').then(function (ok) {
+  // Three format-specific copy buttons (clipboard only). Gmail/Rich Text copy
+  // the rendered HTML of their respective (possibly off-screen) body; Markdown
+  // copies the light-markup transform of the raw source.
+  function richCopyHandler(bodyId, successMsg) {
+    return function (btn) {
+      copyRichHtml(bodyId).then(function (ok) {
         markCopyState(btn, ok, 'Copied');
-        toast(ok ? 'Copied. Paste in ' + TAB_LABEL[currentTab] + '.' : 'Copy failed');
+        toast(ok ? successMsg : 'Copy failed');
       });
-    }
+    };
+  }
+  window.copyGmail = richCopyHandler('gmail-body', 'Copied Gmail formatting. Paste into Gmail.');
+  window.copyRichText = richCopyHandler('outlook-body', 'Copied rich text. Paste into your mail client.');
+  window.copyMarkdown = function (btn) {
+    navigator.clipboard.writeText(whatsappText())
+      .then(function () { markCopyState(btn, true, 'Copied'); toast('Copied Markdown. Paste anywhere.'); })
+      .catch(function () { markCopyState(btn, false, 'Copy failed'); });
   };
 
   window.copyFieldText = function (id, btn) {
@@ -518,49 +485,78 @@
     });
   };
 
-  window.composeInGmail = function (btn) {
+  function fields() {
+    return {
+      to: $('to').innerText.trim(),
+      subject: $('subject').innerText.trim(),
+      cc: $('cc').innerText.trim(),
+      bcc: $('bcc').innerText.trim()
+    };
+  }
+
+  // buildMailto()/mailtoAddrs() are injected from scripts/client/mailto.js above.
+  // Copy the rich text, THEN open an empty-body mailto - navigation is gated on
+  // the clipboard write resolving so the app switch cannot cancel it. If the
+  // copy is refused, fall back to a body-carrying mailto so the user is never
+  // left with an empty compose and nothing on the clipboard.
+  window.openInMailApp = function () {
+    var f = fields();
+    copyRichHtml('outlook-body').then(function (ok) {
+      if (ok) {
+        var href = buildMailto({ to: f.to, subject: f.subject, cc: f.cc, bcc: f.bcc, body: '' }).href;
+        openExternal(href, function () { window.location.href = href; });
+        armPasteReminder('Rich text is on your clipboard - paste it (Cmd+V) into the email body.');
+        toast('Opening your mail app - paste the body (Cmd+V).', 5000);
+      } else {
+        var body = ($('outlook-body').innerText || '').trim();
+        var result = buildMailto({ to: f.to, subject: f.subject, cc: f.cc, bcc: f.bcc, body: body });
+        if (result.overflow && navigator.clipboard) navigator.clipboard.writeText(body).catch(function () {});
+        openExternal(result.href, function () { window.location.href = result.href; });
+        toast(result.overflow ? 'Draft too long for the link - body copied, paste it in.' : 'Opening your mail app...');
+      }
+    });
+  };
+
+  window.composeInGmail = function () {
     copyRichHtml('gmail-body').then(function (ok) {
-      if (!ok) { markCopyState(btn, false, 'Copy failed'); return; }
-      var to = $('to').innerText.trim();
-      var subject = $('subject').innerText.trim();
-      var cc = $('cc').innerText.trim();
-      var bcc = $('bcc').innerText.trim();
+      if (!ok) { toast('Copy failed - Gmail not opened'); return; }
+      var f = fields();
       var url = new URL('https://mail.google.com/mail/');
       url.searchParams.set('view', 'cm');
       url.searchParams.set('tf', '1');
-      url.searchParams.set('to', to);
-      url.searchParams.set('su', subject);
-      if (cc) url.searchParams.set('cc', cc);
-      if (bcc) url.searchParams.set('bcc', bcc);
-      window.open(url.toString(), '_blank');
-      toast('Opening Gmail... Paste (Ctrl+V) to add the formatted message');
+      url.searchParams.set('to', f.to);
+      url.searchParams.set('su', f.subject);
+      if (f.cc) url.searchParams.set('cc', f.cc);
+      if (f.bcc) url.searchParams.set('bcc', f.bcc);
+      var gurl = url.toString();
+      openExternal(gurl, function () { window.open(gurl, '_blank'); });
+      armPasteReminder('Formatted message is on your clipboard - paste it (Cmd+V) into Gmail.');
+      toast('Opening Gmail - paste (Cmd+V) to add the formatted message.', 5000);
     });
   };
 
-  window.sendViaWhatsApp = function (btn) {
-    var text = htmlToWhatsApp();
-    navigator.clipboard.writeText(text);
-    window.open('whatsapp://send?text=' + encodeURIComponent(text));
-    toast('Opening WhatsApp...');
+  window.sendViaWhatsApp = function () {
+    var text = whatsappText();
+    // Always put the full message on the clipboard - it is the reliable path.
+    if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+    // whatsapp:// text prefill is truncated/mangled for long or multi-paragraph
+    // messages, so only prefill for short ones; otherwise open the app and let
+    // the user paste the copied text.
+    if (text.length <= 700) {
+      var wurl = 'whatsapp://send?text=' + encodeURIComponent(text);
+      openExternal(wurl, function () { window.open(wurl); });
+      toast('Opening WhatsApp...', 5000);
+    } else {
+      openExternal('whatsapp://send', function () { window.open('whatsapp://send'); });
+      toast('Message copied - paste it into WhatsApp (Cmd+V).', 5000);
+    }
+    armPasteReminder('Message is on your clipboard - paste it (Cmd+V) into WhatsApp.');
   };
 
-  window.openSlack = function (btn) {
-    // Slack has no URL scheme that pre-fills a message, so we copy the
-    // mrkdwn text and open the app - user pastes into the destination channel.
-    var text = htmlToMessenger('slack');
-    navigator.clipboard.writeText(text).then(function () {
-      markCopyState(btn, true, 'Copied for Slack');
-      window.open('slack://open');
-      toast('Opening Slack... Paste (Cmd/Ctrl+V), then Cmd/Ctrl+Shift+F to format.');
-    });
-  };
-
-  function renderMessengers() {
-    var wa = $('whatsapp-body');
-    if (wa) wa.textContent = htmlToMessenger('whatsapp');
-    var sl = $('slack-body');
-    if (sl) sl.textContent = htmlToMessenger('slack');
-  }
+  // When the user tabs back to this page after an open action, remind them once.
+  window.addEventListener('focus', function () {
+    if (pasteReminder) { toast(pasteReminder, 4000); pasteReminder = null; }
+  });
 
   function setStatus(state, label) {
     $('status-dot').className = 'status-dot' + (state !== 'live' ? ' ' + state : '');
@@ -600,20 +596,18 @@
     if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key.toLowerCase();
-    if (k === 'g') showTab('gmail');
-    else if (k === 'o') showTab('outlook');
-    else if (k === 'w') showTab('whatsapp');
-    else if (k === 's') showTab('slack');
-    else if (k === 'c') copyCurrentTab($('copy-btn'));
+    if (k === 'g') copyGmail($('copy-gmail'));
+    else if (k === 't') copyRichText($('copy-rich'));
+    else if (k === 'm') copyMarkdown($('copy-md'));
+    else if (k === 'e') openInMailApp();
+    else if (k === 'w') sendViaWhatsApp();
     else if (k === 'r') location.reload();
   });
 
   document.addEventListener('DOMContentLoaded', function () {
     hideIfEmpty('cc', 'cc-row');
     hideIfEmpty('bcc', 'bcc-row');
-    renderMessengers();
     updateCounts();
-    showTab('gmail');
     if (typeof WebSocket !== 'undefined') connect(); else pollFallback();
   });
 })();

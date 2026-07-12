@@ -1,7 +1,11 @@
 import { marked } from "marked";
 import type { FragmentMeta } from "./types";
 
-marked.setOptions({ gfm: true, breaks: false });
+// breaks: true - a single newline inside a paragraph is a real line break
+// (<br>), matching how people write emails ("Best,\nAlex" stays two lines).
+// With the default (false) marked leaves a literal \n that HTML renders as a
+// space, silently joining sign-offs onto one line.
+marked.setOptions({ gfm: true, breaks: true });
 
 export interface ParsedFragment {
   meta: FragmentMeta;
@@ -26,9 +30,9 @@ function parseMarkdownFragment(content: string): ParsedFragment {
   let body = content;
 
   if (content.startsWith("---")) {
-    const parts = content.split(/\n---\n/);
+    const parts = content.split(/\r?\n---\r?\n/);
     if (parts.length >= 2) {
-      const fm = parts[0].replace(/^---\n?/, "").trim();
+      const fm = parts[0].replace(/^---\r?\n?/, "").trim();
       body = parts.slice(1).join("\n---\n").trim();
       for (const line of fm.split(/\r?\n/)) {
         const trimmed = line.trim();
@@ -42,8 +46,10 @@ function parseMarkdownFragment(content: string): ParsedFragment {
     }
   }
 
-  const preprocessed = body.replace(/~~(.+?)~~/g, "<del>$1</del>");
-  const bodyHtml = marked.parse(preprocessed, { async: false }) as string;
+  // marked's GFM already renders ~~text~~ as <del>. A manual pre-pass also
+  // rewrote ~~ inside inline code / fenced blocks, corrupting them - so let GFM
+  // do it (verified: `a~~2` stays a literal code span).
+  const bodyHtml = marked.parse(body, { async: false }) as string;
 
   return { meta: meta as FragmentMeta, bodyHtml };
 }
@@ -68,6 +74,15 @@ export function validateFragment(meta: FragmentMeta, body: string): string[] {
   if (!meta.to) errors.push("Missing required field: to");
   if (!meta.subject) errors.push("Missing required field: subject");
   if (!body.trim()) errors.push("Empty body content");
+  // House style: no em/en dashes in user-facing copy - use " - " instead.
+  // Matches the real code points and the Windows-1252 mojibake byte-forms
+  // (U+2014 as bytes E2 80 94 misread as Latin-1 -> â).
+  const dash = /[\u2013\u2014]|\u00e2\u0080[\u0093\u0094]/;
+  for (const [name, val] of [["subject", meta.subject], ["body", body]] as const) {
+    if (val && dash.test(val)) {
+      errors.push(`Em/en dash in ${name} - replace with " - "`);
+    }
+  }
   return errors;
 }
 

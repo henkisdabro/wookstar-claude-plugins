@@ -95,13 +95,13 @@ function extractAssistantText(jsonl: string): string[] {
 
 describe("echo detection logic", () => {
   test("detects exact match", () => {
-    const body = "Dear Stuart,\n\nThank you for your time.\n\nBest,\nHenrik";
+    const body = "Dear Jordan,\n\nThank you for your time.\n\nBest,\nAlex";
     expect(containsEcho("Here is the draft: " + body, body)).toBe(true);
   });
 
   test("detects partial echo via window", () => {
     const longBody =
-      "Dear Stuart,\n\nI wanted to follow up on the invoice we discussed last week. The amount due is $5,000 and the due date is approaching. Please let me know if you have any questions.\n\nBest,\nHenrik";
+      "Dear Jordan,\n\nI wanted to follow up on the invoice we discussed last week. The amount due is $5,000 and the due date is approaching. Please let me know if you have any questions.\n\nBest,\nAlex";
     // Only a portion appears in assistant text
     const partialQuote =
       "I wanted to follow up on the invoice we discussed last week. The amount due is $5,000";
@@ -109,8 +109,8 @@ describe("echo detection logic", () => {
   });
 
   test("does not flag unrelated text", () => {
-    const body = "Dear Stuart,\n\nThank you for your time.\n\nBest,\nHenrik";
-    expect(containsEcho("Draft ready: email to Stuart → http://127.0.0.1:3000", body)).toBe(false);
+    const body = "Dear Jordan,\n\nThank you for your time.\n\nBest,\nAlex";
+    expect(containsEcho("Draft ready: email to Jordan → http://127.0.0.1:3000", body)).toBe(false);
   });
 
   test("does not flag short URL-only response", () => {
@@ -126,8 +126,12 @@ describe("echo detection logic", () => {
 
 describe("conversation log echo scan", () => {
   test("no recent /message invocation echoes fragment body", async () => {
-    const PROJECT_DIR = "/Users/Henrik/claudecode/lifeos";
+    const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
     const DRAFTS_DIR = join(PROJECT_DIR, "data/writing/email_drafts");
+    if (!existsSync(DRAFTS_DIR)) {
+      console.log("No drafts dir in this project - skipping live scan");
+      return;
+    }
 
     const logFile = await findLatestConversationLog(PROJECT_DIR);
     if (!logFile) {
@@ -171,37 +175,4 @@ describe("conversation log echo scan", () => {
       expect(echoed).toBe(false);
     }
   });
-});
-
-// ---------------------------------------------------------------------------
-// Hook latency test
-// ---------------------------------------------------------------------------
-
-describe("hook latency", () => {
-  test("auto_serve_fragment.ts completes within 3s for a known fragment", async () => {
-    const HOOK = "/Users/Henrik/claudecode/lifeos/.claude/hooks/auto_serve_fragment.ts";
-    const FRAGMENT =
-      "/Users/Henrik/claudecode/lifeos/data/writing/email_drafts/2026-02-13_stuart_markdown-test.fragment.md";
-
-    if (!existsSync(HOOK) || !existsSync(FRAGMENT)) {
-      console.log("Hook or fixture not found - skipping latency test");
-      return;
-    }
-
-    const input = JSON.stringify({ tool_input: { file_path: FRAGMENT } });
-    const start = performance.now();
-
-    const proc = Bun.spawn(["bun", "run", HOOK], {
-      stdin: new TextEncoder().encode(input),
-      stdout: "pipe",
-      stderr: "pipe",
-      env: { ...process.env, MESSAGE_NO_OPEN: "1" },
-    });
-
-    await new Response(proc.stdout).text();
-    const elapsed = performance.now() - start;
-
-    console.log(`Hook returned in ${elapsed.toFixed(0)}ms`);
-    expect(elapsed).toBeLessThan(3500);
-  }, 5000);
 });

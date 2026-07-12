@@ -8,15 +8,15 @@ Detailed reference for language-level AI writing patterns. Read the compact summ
 
 Different LLM generations favour different words. Recognising the era helps identify the source model.
 
-**2023 to mid-2024 (GPT-4 era):** Additionally, boasts, bolstered, crucial, delve, emphasizing, enduring, garner, intricate/intricacies, interplay, key, landscape, meticulous/meticulously, pivotal, underscore, tapestry, testament, valuable, vibrant
+**2023 to mid-2024 (GPT-4 era):** Additionally, delve, intricate, meticulous, pivotal, testament, vibrant, enduring, tapestry, garner, underscore, interplay, intricacies
 
-**Mid-2024 to mid-2025 (GPT-4o era):** align with, bolstered, crucial, emphasizing, enhance, enduring, fostering, highlighting, pivotal, showcasing, underscore, vibrant
+**Mid-2024 to mid-2025 (GPT-4o era):** align with, enhance, emphasizing, fostering, highlighting, showcasing, crucial, key (adjective), landscape (abstract noun)
 
 **Mid-2025 onward (GPT-5 era):** emphasizing, enhance, highlighting, showcasing, plus notability-related terms (independent coverage, media outlets)
 
-**All-era high-frequency words:** Additionally, boasts, bolstered, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), meticulous/meticulously, pivotal, robust, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+**Model-specific traits:** Grok overuses "causal", "empirical", "correlate", and continues overusing "underscore" (as of 2026). Grok also favours the "X rather than Y" negative parallelism (see #9). ChatGPT/DeepSeek use curly quotation marks; Gemini/Claude typically avoid them.
 
-**Note on "concrete" (WP:CONCRETE):** When an AI chatbot is challenged about AI-generated content, it tends to use "concrete" as an adjective - "no concrete evidence", "can you provide concrete examples". This defensive usage is characteristic of AI responses to AI-detection allegations, not general writing.
+**All-era high-frequency words:** Additionally, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
 
 **Problem:** These words appear far more frequently in post-2023 text. They often co-occur, and specific clusters can fingerprint the model generation used.
 
@@ -30,9 +30,9 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 ## 8. Avoidance of "is"/"are" (Copula Avoidance)
 
-**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/maintains/offers [a], refers to
+**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/offers [a]
 
-**Problem:** LLMs substitute elaborate constructions for simple copulas. In lead sentences they also avoid *is* by writing *refers to*, as though the text were about the word or term rather than the subject itself ("X refers to..." instead of "X is...").
+**Problem:** LLMs substitute elaborate constructions for simple copulas.
 
 **Before:**
 > Gallery 825 serves as LAAA's exhibition space for contemporary art. The gallery features four separate spaces and boasts over 3,000 square feet.
@@ -42,29 +42,19 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 ---
 
-## 9. Negative Parallelisms (two subtypes)
+## 9. Negative Parallelisms
 
-Wikipedia documents two distinct constructions, both overused by AI models.
+**Problem:** Constructions that define something by first negating an alternative are overused. Wikipedia documents three subtypes:
 
-### Subtype A: "Not only X, but also Y"
-
-**Problem:** Constructions like "Not only...but..." or "It's not just...it's..." frame mundane observations as surprising revelations.
-
-**Before:**
-> It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement.
-
-**After:**
-> The heavy beat adds to the aggressive tone.
-
-### Subtype B: "Not X, not Y, just Z"
-
-**Problem:** Explicit denials of characteristics the text never claimed, used to create false contrast and drama.
+- **(A) "Not only X, but also Y"** - additive: "It is not just X, it's Y."
+- **(B) "Not X, but Y"** - corrective: "It's not X, it's Y."
+- **(C) "X rather than Y"** - the reversed construction; particularly common in Grok output.
 
 **Before:**
-> This isn't a tool for power users. It's not complicated. It's not intimidating. It's just a calendar that gets out of your way.
+> It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement. The track works through texture rather than melody.
 
 **After:**
-> The calendar is intentionally minimal, with no configuration options beyond the default layout.
+> The heavy beat adds to the aggressive tone. The track leans on texture over melody.
 
 ---
 

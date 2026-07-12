@@ -7,13 +7,31 @@ import { transformOutlook } from "./transform-outlook";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const SHELL_PATH = join(SCRIPT_DIR, "..", "templates", "shell.html");
+// Client helpers authored/tested as ES modules, then inlined into the preview
+// so the built page stays a self-contained, zero-network-fetch file. Single
+// source of truth: the browser runs the exact code the tests exercise.
+const CLIENT_JS_FILES = [
+  join(SCRIPT_DIR, "client", "mailto.js"),
+  join(SCRIPT_DIR, "client", "whatsapp.js"),
+];
 
 let shellCache: string | null = null;
+let clientJsCache: string | null = null;
 
 async function loadShell(): Promise<string> {
   if (shellCache) return shellCache;
   shellCache = await Bun.file(SHELL_PATH).text();
   return shellCache;
+}
+
+async function loadClientJs(): Promise<string> {
+  if (clientJsCache !== null) return clientJsCache;
+  const parts = await Promise.all(CLIENT_JS_FILES.map((f) => Bun.file(f).text()));
+  // Strip ESM `export ` so the declarations become plain globals the inline
+  // preview script can call; the modules import cleanly in the test runner.
+  const js = parts.join("\n\n").replace(/^\s*export\s+/gm, "");
+  clientJsCache = js;
+  return js;
 }
 
 function assemble(
@@ -22,16 +40,25 @@ function assemble(
   gmailBody: string,
   outlookBody: string,
   rawBody: string,
+  clientJs: string,
 ): string {
-  return shell
-    .replaceAll("<!-- INJECT:PAGE_TITLE -->", escapeHtml(meta.title || "Message Preview"))
-    .replaceAll("<!-- INJECT:TO -->", escapeHtml(meta.to || ""))
-    .replaceAll("<!-- INJECT:CC -->", escapeHtml(meta.cc || ""))
-    .replaceAll("<!-- INJECT:BCC -->", escapeHtml(meta.bcc || ""))
-    .replaceAll("<!-- INJECT:SUBJECT -->", escapeHtml(meta.subject || ""))
-    .replaceAll("<!-- INJECT:GMAIL_BODY -->", gmailBody)
-    .replaceAll("<!-- INJECT:OUTLOOK_BODY -->", outlookBody)
-    .replaceAll("<!-- INJECT:RAW_BODY -->", rawBody);
+  // Function replacements, not string replacements: a plain replacement string
+  // makes replaceAll interpret `$'`, `` $` ``, `$&`, `$1` as substitution
+  // patterns, which silently corrupts any body/subject containing them (e.g.
+  // the finance notation "in $'000s"). A replacer function is taken verbatim.
+  const inject = (s: string, marker: string, value: string): string =>
+    s.replaceAll(marker, () => value);
+  let out = shell;
+  out = inject(out, "<!-- INJECT:PAGE_TITLE -->", escapeHtml(meta.title || "Message Preview"));
+  out = inject(out, "<!-- INJECT:TO -->", escapeHtml(meta.to || ""));
+  out = inject(out, "<!-- INJECT:CC -->", escapeHtml(meta.cc || ""));
+  out = inject(out, "<!-- INJECT:BCC -->", escapeHtml(meta.bcc || ""));
+  out = inject(out, "<!-- INJECT:SUBJECT -->", escapeHtml(meta.subject || ""));
+  out = inject(out, "<!-- INJECT:GMAIL_BODY -->", gmailBody);
+  out = inject(out, "<!-- INJECT:OUTLOOK_BODY -->", outlookBody);
+  out = inject(out, "<!-- INJECT:RAW_BODY -->", rawBody);
+  out = inject(out, "/* INJECT:CLIENT_JS */", clientJs);
+  return out;
 }
 
 async function atomicWrite(outputPath: string, content: string): Promise<void> {
@@ -64,7 +91,8 @@ export async function build(fragmentPath: string): Promise<BuildResult> {
   const rawBody = bodyHtml;
 
   const shell = await loadShell();
-  const html = assemble(shell, meta, gmailBody, outlookBody, rawBody);
+  const clientJs = await loadClientJs();
+  const html = assemble(shell, meta, gmailBody, outlookBody, rawBody, clientJs);
   await atomicWrite(outputPath, html);
 
   return { outputPath, meta, gmailBody, outlookBody, rawBody, html };

@@ -44,11 +44,15 @@ Note: Do not add styles to the `<body>` tag - they are ignored when copy/pasting
 <p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0;">&nbsp;</p>
 ```
 
-**Spacing rules:**
+**Spacing rules (as enforced by the transform):**
 
-- Double blank lines (`&nbsp;` x2) before major section headings
-- Single blank line before and after tables
-- Single blank line after bullet/numbered lists
+- Single blank line (`&nbsp;` spacer paragraph) between consecutive paragraphs -
+  paragraphs carry `margin: 0`, so the spacer is the only source of the gap
+  (this is also what separates the sign-off "Best,/Alex" from the paragraph
+  above it)
+- Single blank line before headings; NO blank line after a heading - the text
+  under a heading sits flush
+- Single blank line before and after tables and bullet/numbered lists
 
 ## Headings
 
@@ -184,7 +188,7 @@ Note: Do not add styles to the `<body>` tag - they are ignored when copy/pasting
 ### Email Signature
 
 ```html
-<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">Cheers,<br>Henrik</p>
+<p style="font-family: Aptos, Calibri, Arial, sans-serif; font-size: 11pt; color: #000000; margin: 0 0 12pt 0;">Cheers,<br>Alex</p>
 ```
 
 ## Colour Reference
