@@ -20,9 +20,11 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 ## 2. Undue Emphasis on Notability and Media Coverage
 
-**Words to watch:** independent coverage, local/regional/national media outlets, written by a leading expert, active social media presence
+**Words to watch:** independent coverage, local/regional/national media outlets, trade publications, cited/featured/profiled in, written by a leading expert, active social media presence
 
 **Problem:** LLMs hit readers over the head with claims of notability, often listing sources without context.
+
+**What separates this from an ordinary press release** (Wikipedia sharpened this in August 2026, because the pattern was being over-applied): humans have cited news clippings for promotional purposes forever. The tell is that the attention lands on **characteristics of the sources themselves** - what they contain, whether they are easy or hard to find, and how they classify against the wider media landscape - rather than on what the sources actually said. A model asked to write for a publication often echoes that publication's own editorial criteria back at the reader, as though the justification for including the text had been pasted into the text.
 
 **Before:**
 > Her views have been cited in The New York Times, BBC, Financial Times, and The Hindu. She maintains an active social media presence with over 500,000 followers.

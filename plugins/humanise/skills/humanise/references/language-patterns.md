@@ -66,6 +66,8 @@ It also runs across sentence boundaries, where the second sentence quietly corre
 
 **Problem:** LLMs force ideas into groups of three to appear comprehensive.
 
+**Stronger where nobody would bother.** The signal counts for much more in throwaway contexts than in polished prose - a commit message, a chat reply, a subject line, a one-line status update. A person dashing off a note does not reach for a triad; a model does it everywhere at the same rate.
+
 **Before:**
 > The event features keynote sessions, panel discussions, and networking opportunities. Attendees can expect innovation, inspiration, and industry insights.
 
@@ -105,6 +107,14 @@ It also runs across sentence boundaries, where the second sentence quietly corre
 **Words to watch:** in connection with/to, connected with/to, in association with, associated with
 
 **Problem:** Where a plain preposition would state the relationship, newer models reach for an indirect construction that abstracts it away. "Associated with" hides whether the person founded the thing, played in it, taught there or was merely photographed next to it - and the model often does not know, so the vagueness is load-bearing. It clusters with promotional buzzspeak and AI vocabulary ("widely associated", "particularly associated"). Fix it by naming the actual relationship, or by using *of*, *for*, *by*, "worked with", "used in", "caused by".
+
+**The shape of it**, in matched pairs. The left column is what a person writes; the right is the model refusing to commit to a verb:
+
+| Direct | Vague |
+|---|---|
+| In 2017 she was chief executive of ExampleCorp | In 2017 sources identified her as being associated with leadership at ExampleCorp |
+| He taught physics at Example University | He was connected with physics education at Example University |
+| The council funded the restoration | The restoration has been associated with council funding |
 
 **Caution:** the construction is legitimate where the connection genuinely is loose or disputed, and in legal or forensic register where "in connection with" is the correct term of art. Abundance is the tell, not a single use.
 

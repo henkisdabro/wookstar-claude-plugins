@@ -20,7 +20,9 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 ## 20. Knowledge-Cutoff Disclaimers and Source-Gap Speculation
 
-**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., not widely available/documented, in the provided/available sources, based on available information, likely exists, probably documented
+**Words to watch:** Up to my last training update, as of my last knowledge update, While specific details are limited/scarce..., not widely available/documented/disclosed, in the provided/available sources or search results, based on available information, likely exists, probably documented
+
+**Removed September 2026:** bare "as of [date]" is no longer a signal. Wikipedia dropped it because it is ordinary dating language that humans and templates produce constantly. Only the self-referential versions - "as of my last knowledge update", "up to my last training update" - point at a model.
 
 **Problem:** Two related behaviours: (1) AI disclaimers about incomplete information get left in text; (2) RAG-enabled models speculate about undocumented information as if it probably exists somewhere - pairing hedges with "likely" or "probably" claims about sources that may not exist at all.
 
@@ -35,6 +37,32 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 **After:**
 > The company was founded in 1994.
+
+---
+
+## 34. Procedural Self-Congratulation in Change Summaries
+
+**Words to watch:** refined, enhanced, enriched, streamlined, improved clarity/flow, ensured that X adheres to, in compliance with, revised for tone, preserved/preserving, retained/retaining, avoided/avoiding, aimed to, added verified/sourced content, improved attribution
+
+**Problem:** When a model describes work it has just done - a commit message, a pull request description, a changelog line, a handover note, a "here is what I changed" paragraph - it narrates process virtue in place of substance. It reports that the change was careful rather than saying what changed. A second half of the same habit is volunteering what was *not* done: what it preserved, retained, avoided or was careful about, when nobody raised the question.
+
+This is the fastest-growing section of the Wikipedia source. As of September 2026 it carries four separate subsections on edit summaries alone, because the tell survives even where a model's prose has been edited into shape by a human - the summary of the work is written last and gets least attention.
+
+**Rewrite rule:** name what changed, in the words someone would use to search for it later. Drop every claim about the quality of your own process. If preservation genuinely mattered, say what was preserved and why it was at risk; otherwise cut it.
+
+**Before:**
+> Refined the export module for improved clarity and flow, ensuring the implementation adheres to project conventions while preserving existing behaviour and avoiding regressions.
+
+**After:**
+> Export now streams rows instead of buffering the whole file. Same output, no longer holds 2GB in memory on the annual report.
+
+**Before:**
+> Enhanced the client onboarding documentation with additional detail and improved structure, retaining all original content.
+
+**After:**
+> Added the credential handover steps to the onboarding doc. They were only in my head and the last two engagements both stalled on them.
+
+**Note:** ordinary changelog verbs are not the pattern. "Fixed", "added", "removed", "renamed" describe the change. "Refined", "streamlined", "enhanced" describe how the author would like the change to be regarded.
 
 ---
 

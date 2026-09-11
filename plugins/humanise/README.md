@@ -1,6 +1,6 @@
 # Humanise
 
-Remove AI tell-tales from text. Detects and eliminates 32 patterns of AI-generated writing including inflated language, promotional tone, AI vocabulary, vague expressions of connection, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks and leaked chatbot citation artifacts.
+Remove AI tell-tales from text. Detects and eliminates 34 patterns of AI-generated writing including inflated language, promotional tone, AI vocabulary, vague expressions of connection, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks and leaked chatbot citation artifacts.
 
 Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cleanup. Last checked against the source: 2026-08-21.
 
@@ -15,7 +15,7 @@ Invoke with: "humanise this", "make this sound less AI", "remove AI patterns", "
 The skill:
 
 1. Calibrates on a sample of the author's own writing, when one is available
-2. Scans for all 32 patterns
+2. Scans for all 34 patterns
 3. Reads detailed reference files for found patterns
 4. Rewrites flagged sections (replaces with voice, not just removes)
 5. Audits its own draft for remaining AI tells and for invented facts

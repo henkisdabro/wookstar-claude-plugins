@@ -1,9 +1,9 @@
 {
   "name": "humanise",
-  "description": "Humanise text and remove AI writing patterns. Detects and fixes 32 AI tell-tales including inflated language, promotional tone, AI vocabulary, vague expressions of connection, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks.",
+  "description": "Humanise text and remove AI writing patterns. Detects and fixes 34 AI tell-tales including inflated language, promotional tone, AI vocabulary, vague expressions of connection, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "4.4.0"
+  "version": "4.5.0"
 }

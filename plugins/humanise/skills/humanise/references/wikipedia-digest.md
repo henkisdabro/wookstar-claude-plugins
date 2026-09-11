@@ -1,8 +1,8 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-08-21
-Last checked: 2026-08-21 (three changes applied - see below)
-Previously fetched: 2026-08-02
+Last fetched: 2026-09-09
+Last checked: 2026-09-09 (six changes applied - see below)
+Previously fetched: 2026-08-21, 2026-08-02
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
@@ -31,7 +31,7 @@ This file is a structured digest of the Wikipedia article used to build this ski
 
 ---
 
-## Pattern Digest (as of 2026-08-21)
+## Pattern Digest (as of 2026-09-09)
 
 ### Content Patterns
 
@@ -65,8 +65,8 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 | 23 | 14 | Overuse of boldface | mechanical bolding of terms |
 | 24 | 15 | Inline-header vertical lists | **Header:** description bullet points |
 | 25 | 17 | Emoji decoration | emojis on headings and bullet points |
-| 26 | 13 | Overuse of em dashes | excessive -- usage for dramatic effect |
-| 27 | 25 | Unusual use of tables | small unnecessary tables better as prose |
+| 26 | 13 | Overuse of em dashes | excessive -- usage for dramatic effect. **Tagged by Wikipedia 2026-09 for possible demotion to Historical indicators** |
+| 27 | 25 | Unusual use of tables | small minimally formatted tables better as prose; also Markdown table syntax nested inside another markup's table. Strengthened 2026-09 from "in rare cases" |
 | 28 | 18 | Curly quotation marks and apostrophes | smart quotes (ChatGPT/DeepSeek trait; Gemini/Claude avoid) |
 | 29 | 27 | Subject lines pasted into content | email-style subject lines left in body |
 | 30 | 26 | Skipped heading levels | H2 to H4 jumps, accessibility violation |
@@ -85,8 +85,9 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 | # (Wiki) | # (Skill) | Pattern Name | Key Signals |
 |-----------|-----------|--------------|-------------|
 | 32 | 19 | Collaborative communication artifacts | I hope this helps, Let me know, Here is a... |
-| 33 | 20 | Knowledge-cutoff disclaimers | as of [date], based on available information |
+| 33 | 20 | Knowledge-cutoff disclaimers | as of my last knowledge update, based on available information. Bare *as of [date]* removed by Wikipedia 2026-09 |
 | 34 | 28 | Phrasal templates and placeholder text | [Name], 2025-XX-XX, unfilled blanks |
+| Edit summaries (4 subsections) | 34 | Procedural self-congratulation in change summaries | refined, streamlined, enhanced, ensured adherence to, preserved, retained, avoided, improved clarity and flow. Generalised from Wikipedia edit summaries to commit messages, PR descriptions, changelogs |
 
 ### Historical Indicators (Wiki section "Historical indicators")
 
@@ -150,6 +151,71 @@ Additionally (especially sentence-initial), align with, boasts (meaning "has"), 
 - **All models**: Rule of three, copula avoidance, negative parallelisms
 - **Idiolect**: ChatGPT and Grok lean into broader-context framing; Gemini and Claude run more concise. ChatGPT is likely the most-used chatbot for Wikipedia edits.
 - **Em dash suppression**: OpenAI GPT-5.1 (Nov 2025) actively suppresses em dashes, so their absence proves nothing
+
+---
+
+## Changes from 2026-08-21 to 2026-09-09
+
+Article checked at revision 1373840632 (2026-09-08T06:40Z) against baseline revision 1370524124
+(2026-08-21T16:50Z). Article grew 214,687 to 220,401 bytes across roughly 50 edits, the large
+majority of which are presentation churn: the maintainers converted most example blocks from
+`{{collapse top}}`/`{{ctop}}` to `{{cot|bg=#ffffff}}`/`{{cob}}` and stripped `expand=yes`. No
+section was added or removed from the pattern tree apart from two Wikipedia-only edit-summary
+subsections. Six portable changes, all applied:
+
+1. **Em dash overuse tagged for possible demotion.** A September 2026 maintenance banner on the
+   section reads that if more recent examples cannot be found it should probably move to
+   Historical indicators, "as it seems to be less common in current LLM output". Recorded as a
+   weakening-tell caveat on skill pattern **#13**, alongside the existing GPT-5.1 suppression
+   note. Not demoted in the skill yet - Wikipedia has not moved it either. A house rule banning
+   em dashes in an author's own writing is unaffected; that is a style rule, not a detector.
+2. **Unusual use of tables strengthened.** "In rare cases, some AIs may create unnecessary small
+   tables" became "Some AIs create small, minimally formatted tables". A new line was also added:
+   models attempt Markdown table formatting inside wikitables, "which will render as a more
+   obvious garbled mess". Both applied to skill pattern **#25**; the nested-markup artefact is a
+   hard tell in any non-Markdown destination.
+3. **Rule of three gained a context rule.** New sentence: the sign is stronger where most people
+   would not bother with stylistic flourishes, naming edit summaries as the example. Generalised
+   on skill pattern **#10** to commit messages, chat replies, subject lines and status updates.
+4. **Canned notability clarified** (2026-08-27, "clarification pass on AIATTR since people are
+   getting this wrong too"). The distinguishing feature is that attention falls on characteristics
+   of the sources themselves - contents, findability, classification against the media landscape -
+   not on what the sources said; and the model echoes the destination's own inclusion criteria back
+   into the text. Words to watch gained *cited/featured in* beside *profiled in*, and *trade
+   publications*. Applied to skill pattern **#2**.
+5. **Bare "as of [date]" removed** from the knowledge-cutoff words-to-watch box. It was already
+   footnoted as not unique to chatbots; Wikipedia has now dropped it outright. Removed from skill
+   pattern **#20**, keeping the self-referential forms, with a note explaining the removal so it
+   does not get re-added.
+6. **New skill pattern #34, procedural self-congratulation in change summaries.** Generalised from
+   the Wikipedia "Edit summaries" tree, which is the fastest-growing part of the article - four
+   subsections now, and all three of their words-to-watch boxes were expanded during this window
+   (*refined, enhanced, enriched, streamlined, clarity, flow* added to the policy-adherence box;
+   *avoided/avoiding, ensured/ensuring, aimed/aiming to* to the preserved/retained box; *added
+   verified ...* and *with independent/secondary/third-party/peer-reviewed sources* to the citation
+   box). One subsection was renamed to "...'avoided' mistakes, and other procedural statements" and
+   another added ("Overemphasis on parameter/template names and markup idiosyncracies"). The
+   portable form is a model describing its own work by process virtue rather than substance, which
+   lands in commit messages, PR descriptions, changelogs and handover notes. Skill count moves 33
+   to 34.
+
+Considered and not adopted:
+
+- **"Use of Markdown" reframed** (2026-08-27): the claim that LLMs are poor at wikitext was
+  softened to LLMs defaulting to Markdown because it is the more common markup in their data and
+  for their users. Wikitext-specific reasoning; the skill's #30 already covers Markdown surviving
+  into a non-Markdown destination and needed no change.
+- **Vague expression of connection rewritten** (2026-09-02, "a better way to explain this"). The
+  substance is unchanged but the new explanation is clearer, working from matched pairs. Skill
+  pattern **#32** gained the paired-form table; the definition itself was already correct.
+- **New AI vocabulary example** from a June 2024 revision to *Howdy Modi*. No word list changed;
+  all 17 words-to-watch boxes are otherwise identical apart from the changes listed above.
+- Wikipedia-only additions: canned user pages, permissions gaming, DOIs leading to unrelated
+  articles, AfC submission statements, comment-specific indicators.
+
+"Ineffective indicators", "Signs of human writing" (all five Syntax constructions), "Historical
+indicators", "Differences between LLMs" and "Pro-authoritarian bias" are byte-identical to the
+2026-08-21 baseline.
 
 ---
 

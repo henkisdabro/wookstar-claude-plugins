@@ -1,19 +1,19 @@
 ---
 name: humanise
-description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 32 patterns from Wikipedia's "Signs of AI writing". For grammar-only proofreading or spell checking, edit normally instead.
+description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 34 patterns from Wikipedia's "Signs of AI writing". For grammar-only proofreading or spell checking, edit normally instead.
 allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 
 # Humaniser: remove AI writing patterns
 
-Based on Wikipedia's "Signs of AI writing", maintained by WikiProject AI Cleanup. Last checked against the Wikipedia source: 2026-08-21.
+Based on Wikipedia's "Signs of AI writing", maintained by WikiProject AI Cleanup. Last checked against the Wikipedia source: 2026-09-09.
 
 > Removing AI patterns is table stakes. The job is giving the text a **pulse**.
 
 ## Process
 
 1. Calibrate on the author's voice if a sample is available (see Voice calibration)
-2. Scan all 32 patterns (see Pattern summary)
+2. Scan all 34 patterns (see Pattern summary)
 3. Read the reference file for every pattern found
 4. Rewrite each flagged section, replacing the pattern with pulse
 5. Audit that draft against the two questions below, answering both in writing
@@ -116,7 +116,7 @@ Identify patterns here, then read the linked reference for rewriting guidance an
 
 | # | Pattern | Key Signals |
 |---|---------|-------------|
-| 13 | Em dash overuse | excessive -- usage for dramatic effect |
+| 13 | Em dash overuse | excessive -- usage for dramatic effect (weakening as a tell; see reference) |
 | 14 | Boldface overuse | mechanical **bolding** of terms |
 | 15 | Inline-header lists | **Header:** description bullet points |
 | 16 | Title Case headings | Every Word Capitalised In Headings |
@@ -132,10 +132,11 @@ Identify patterns here, then read the linked reference for rewriting guidance an
 | # | Pattern | Key Signals |
 |---|---------|-------------|
 | 19 | Chat artifacts | I hope this helps, Let me know, Here is a... |
-| 20 | Knowledge-cutoff disclaimers | as of [date], based on available information |
+| 20 | Knowledge-cutoff disclaimers | as of my last knowledge update, based on available information (bare "as of [date]" dropped Sept 2026) |
 | 21 | Sycophantic tone | Great question!, You're absolutely right! |
 | 27 | Subject lines pasted into content | email-style subject lines left in body text |
 | 28 | Placeholder text and templates | [Name], 2025-XX-XX, unfilled Mad Libs blanks |
+| 34 | Procedural self-congratulation in change summaries | refined, streamlined, enhanced, ensured adherence to, preserved, avoided, improved clarity and flow |
 
 ### Filler and hedging ([detailed reference](references/filler-patterns.md))
 
@@ -145,6 +146,9 @@ Identify patterns here, then read the linked reference for rewriting guidance an
 | 23 | Excessive hedging | could potentially possibly, might have some effect |
 | 24 | Generic positive conclusions | future looks bright, exciting times, journey toward excellence |
 | 31 | Didactic disclaimers and section summaries (2022-24 era) | it's important to note, worth noting, may vary, In summary, In conclusion, Overall |
+| 33 | Announced significance and announced plain speech | and this matters, which matters because, said/stated plainly, to put it plainly, worth saying plainly, worth knowing, let me be blunt |
+
+Pattern 33 is **non-negotiable where an author's own rules ban it** - see the author-instruction note in the reference; it then applies to every reply and every file, not only to text being humanised.
 
 Patterns 11 and 31 are **historical**: Wikipedia files them as tells of older models, so they mark text drafted in 2023-24 or lifted from an older document rather than anything a current model just produced.
 

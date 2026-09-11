@@ -10,6 +10,8 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 **Caveat (2026):** vendors have started suppressing them, notably OpenAI in GPT-5.1. Absence of em dashes is no longer evidence of human authorship - check the other patterns.
 
+**Weakening as a tell (September 2026):** Wikipedia has tagged its own em dash section for possible demotion to historical indicators, on the grounds that recent examples are getting hard to find in current model output. Treat a cluster of em dashes as era-dating evidence - it points at 2023-2025 text or an older document - rather than as proof that something was generated this week. It remains binding wherever an author's own style rules ban em dashes, which is a separate question from detection.
+
 **Before:**
 > The term is primarily promoted by Dutch institutions--not by the people themselves. You don't say "Netherlands, Europe" as an address--yet this mislabeling continues--even in official documents.
 
@@ -84,7 +86,9 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 ## 25. Unusual Use of Tables
 
-**Problem:** AI chatbots sometimes output small, unnecessary tables for data that would be better presented as prose. The table adds formatting overhead without improving readability.
+**Problem:** AI chatbots output small, minimally formatted tables for data that would read better as prose or as a summary box. The table adds formatting overhead without improving readability. Wikipedia strengthened this in September 2026, dropping its earlier "in rare cases" framing - it is now common rather than occasional.
+
+**Related artefact:** models also attempt Markdown table syntax *inside* a table written in another markup, producing a visibly garbled mess of pipes and dashes. In any environment that is not Markdown, that mix is a hard tell rather than a stylistic one.
 
 **Before:**
 > | Feature | Status |
