@@ -2,7 +2,6 @@
 name: message
 description: Create and edit rich text message drafts for Gmail, Outlook, and WhatsApp with live browser preview. Runs on Bun for near-instant cold start and opens the preview automatically. Use when writing emails, drafting emails, composing replies, sending messages, writing WhatsApp messages, or when user mentions Gmail, Outlook, WhatsApp, "email to", "reply to", "draft an email", "write an email", "send a message". Do NOT use for reading emails, managing contacts, or calendar invitations.
 argument-hint: "[optional: path to existing .fragment.md for editing]"
-model: sonnet
 allowed-tools: Bash, Write, Read, Edit
 hooks:
   PostToolUse:
