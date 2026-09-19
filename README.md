@@ -354,7 +354,7 @@ cd wookstar-claude-plugins
 claude plugin validate .
 ```
 
-For contributor guidelines (manifest rules, MCP file references, LSP exception, skill style), see **[CLAUDE.md](./CLAUDE.md)**.
+For contributor guidelines (manifest rules, MCP file references, LSP exception, skill style), see **[AGENTS.md](./AGENTS.md)**.
 
 ---
 
