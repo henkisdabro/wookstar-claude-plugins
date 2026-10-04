@@ -1,6 +1,6 @@
 ---
 name: google-analytics
-description: Google Analytics 4 implementation and analysis reference. Use when querying live GA4 report data, setting up a GA4 property or data stream, installing gtag.js, designing event or ecommerce tracking, registering custom dimensions or audiences, sending server-side events via Measurement Protocol, writing SQL against the BigQuery export, debugging with DebugView, or configuring Consent Mode and data retention. Do NOT use for general GTM container work such as triggers, variables, custom templates or server-side containers - use google-tagmanager; Google Ads scripting or ad reporting - use google-ads-scripts; Universal Analytics or non-Google analytics tools.
+description: Google Analytics 4 implementation and analysis reference. Use when querying live GA4 report data, setting up a GA4 property or data stream, installing gtag.js, designing event or ecommerce tracking, registering custom dimensions or audiences, sending server-side events via Measurement Protocol, linking GA4 to BigQuery and understanding the export schema, debugging with DebugView, or configuring Consent Mode and data retention. Do NOT use for general GTM container work such as triggers, variables, custom templates or server-side containers - use google-tagmanager; Google Ads scripting or ad reporting - use google-ads-scripts; writing or running SQL against GA4 export tables - use the bigquery skill; Universal Analytics or non-Google analytics tools.
 ---
 
 # Google Analytics 4
@@ -44,7 +44,8 @@ Making parameters appear in reports?        -> references/custom-dimensions.md
 Implementing User ID / cross-device?        -> references/user-tracking.md
 Building audiences for remarketing?         -> references/audiences.md
 Analysing data in GA4 reports?              -> references/reporting.md
-Exporting to BigQuery for SQL analysis?     -> references/bigquery.md
+Linking BigQuery / export schema?           -> references/bigquery.md
+Querying export data with SQL?              -> the bigquery skill
 Installing via gtag.js directly?            -> references/gtag.md
 Setting up GA4 in Google Tag Manager?       -> references/gtm-integration.md
 Sending events from server/backend?         -> references/measurement-protocol.md

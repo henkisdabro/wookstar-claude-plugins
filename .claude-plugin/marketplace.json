@@ -165,7 +165,7 @@
     {
       "name": "google-analytics",
       "source": "./plugins/google-analytics",
-      "description": "Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, ecommerce, BigQuery, Measurement Protocol, and privacy compliance",
+      "description": "Google Analytics 4 guide covering property setup, events, ecommerce, Measurement Protocol and privacy compliance, plus a skill for querying the GA4 BigQuery export with cost-controlled SQL",
       "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
@@ -175,11 +175,11 @@
       "keywords": [
         "ga4",
         "google-analytics",
-        "analytics",
-        "events",
-        "ecommerce",
         "bigquery",
-        "measurement-protocol"
+        "sql",
+        "measurement-protocol",
+        "ecommerce",
+        "analytics-export"
       ],
       "category": "analytics",
       "mcpServers": "./.mcp.json"

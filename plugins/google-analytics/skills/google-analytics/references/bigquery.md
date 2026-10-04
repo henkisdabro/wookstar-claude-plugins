@@ -1,16 +1,12 @@
-# GA4 BigQuery Export and Analysis
+# GA4 BigQuery Export
 
-Covers GA4 BigQuery export including setup, schema, SQL query patterns, and data analysis.
-
-## Overview
-
-GA4 BigQuery export provides raw, event-level data access for advanced analysis, custom reporting, machine learning, and long-term data warehousing. Unlike GA4 reports, BigQuery data is unsampled and allows SQL-based analysis.
+Source of truth for the export itself: why to use it, how to link it, export options, table naming and the schema. Writing and running SQL against the export - parameter extraction, sessionisation, cost control and query patterns - lives in the plugin's `bigquery` skill (`skills/bigquery/SKILL.md` and its `references/query-patterns.md`).
 
 ## Why Use BigQuery
 
 | Benefit | Description |
 |---------|-------------|
-| Unsampled data | No sampling thresholds |
+| Unsampled data | No sampling or thresholding |
 | Raw event data | Access every parameter |
 | SQL analysis | Complex queries and joins |
 | Data integration | Combine with other sources |
@@ -23,30 +19,18 @@ GA4 BigQuery export provides raw, event-level data access for advanced analysis,
 ### Prerequisites
 
 - GA4 property (standard or 360)
-- Google Cloud project
-- BigQuery API enabled
-- Editor permissions on GA4 property
+- Google Cloud project with the BigQuery API enabled and billing (or the BigQuery sandbox)
+- Editor permissions on the GA4 property, Owner on the Cloud project
 
 ### Setup Steps
 
-**Step 1: Create/Select Google Cloud Project**
+1. console.cloud.google.com - create or select a project, enable the BigQuery API
+2. GA4 Admin -> Product Links -> BigQuery Links -> Link
+3. Choose the Cloud project and a dataset location (US, EU, a region) - it cannot be changed later
+4. Choose export frequency (see below) and the data streams/events to include
+5. Optionally include advertising IDs, then submit
 
-1. Go to console.cloud.google.com
-2. Create new project or select existing
-3. Enable BigQuery API
-
-**Step 2: Link GA4 to BigQuery**
-
-1. GA4 Admin -> Product Links -> BigQuery Links
-2. Click "Link"
-3. Choose Google Cloud project
-4. Select dataset location (US, EU, etc.)
-5. Configure export:
-   - Daily: Complete export once per day
-   - Streaming: Near real-time (standard and 360, billed separately)
-   - Fresh Daily: 360 only
-6. Include advertising IDs (optional)
-7. Confirm setup
+The dataset is created as `analytics_<property_id>`. First data arrives within about 24 hours.
 
 ### Export Options
 
@@ -55,11 +39,12 @@ GA4 BigQuery export provides raw, event-level data access for advanced analysis,
 | Daily Export | Once per day, previous day's complete data (standard: 1 million events/day limit) | Standard and 360 |
 | Fresh Daily | Delivered by ~5am, updated through the day | 360 only |
 | Streaming Export | Near real-time, best-effort, $0.05/GB | Standard and 360 |
+| User data export | Daily `pseudonymous_users_` and `users_` tables | Standard and 360 |
 | Include Advertising IDs | For Ads integration | Optional |
 
 ### Data Availability
 
-- Daily tables: once per day, after the day ends (time varies)
+- Daily tables: once per day, after the day ends (time varies). GA4 can rewrite a daily table for up to 72 hours to add late-arriving events.
 - Intraday tables (`events_intraday_`): filled by streaming export within minutes, replaced when the daily table lands
 - Streaming omits new-user and new-session traffic source data - use the daily table for acquisition analysis
 
@@ -68,270 +53,62 @@ GA4 BigQuery export provides raw, event-level data access for advanced analysis,
 ### Table Naming
 
 ```
-project.dataset.events_YYYYMMDD     # Daily export
-project.dataset.events_intraday_YYYYMMDD  # Intraday
-project.dataset.events_*            # Wildcard all dates
+project.dataset.events_YYYYMMDD             # Daily export (date-sharded, one table per day)
+project.dataset.events_intraday_YYYYMMDD    # Streaming/intraday
+project.dataset.pseudonymous_users_YYYYMMDD # User data export, keyed by user_pseudo_id
+project.dataset.users_YYYYMMDD              # User data export, keyed by user_id
+project.dataset.events_*                    # Wildcard - also matches events_intraday_*
 ```
 
-### Key Schema Fields
+### Schema
 
-#### Event Fields
+One row per event. `event_params`, `user_properties` and `items` are repeated records and need `UNNEST`.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| event_date | STRING | YYYYMMDD format |
-| event_timestamp | INTEGER | Microseconds since epoch |
-| event_name | STRING | Event name |
-| event_params | RECORD (REPEATED) | Event parameters |
-| event_value_in_usd | FLOAT | Event value |
+| Column | Type | Notes |
+|--------|------|-------|
+| `event_date` | STRING | YYYYMMDD in the property's reporting time zone |
+| `event_timestamp` | INTEGER | UTC, microseconds since epoch |
+| `event_name` | STRING | page_view, session_start, purchase, ... |
+| `event_params` | RECORD (REPEATED) | `.key`, `.value.string_value`, `.value.int_value`, `.value.float_value`, `.value.double_value` |
+| `event_previous_timestamp` | INTEGER | Microseconds |
+| `event_value_in_usd` | FLOAT | Event value converted to USD |
+| `event_bundle_sequence_id` | INTEGER | Sequential ID of the upload bundle |
+| `event_server_timestamp_offset` | INTEGER | Microseconds |
+| `batch_page_id`, `batch_ordering_id`, `batch_event_index` | INTEGER | Ordering of events within a batch - tie-breakers when timestamps collide |
+| `user_id` | STRING | Set via `user_id`; null when not set |
+| `user_pseudo_id` | STRING | Pseudonymous client ID, always present (unless consent denied) |
+| `is_active_user` | BOOLEAN | Whether the user was active in the day |
+| `privacy_info` | RECORD | `.analytics_storage`, `.ads_storage`, `.uses_transient_token` |
+| `user_properties` | RECORD (REPEATED) | `.key`, `.value.string_value`, `.value.int_value`, `.value.float_value`, `.value.double_value`, `.value.set_timestamp_micros` |
+| `user_first_touch_timestamp` | INTEGER | Microseconds |
+| `user_ltv` | RECORD | `.revenue`, `.currency` |
+| `device` | RECORD | `.category`, `.mobile_brand_name`, `.mobile_model_name`, `.mobile_marketing_name`, `.mobile_os_hardware_model`, `.operating_system`, `.operating_system_version`, `.vendor_id`, `.advertising_id`, `.language`, `.is_limited_ad_tracking`, `.time_zone_offset_seconds`, `.web_info.browser`, `.web_info.browser_version`, `.web_info.hostname` |
+| `geo` | RECORD | `.continent`, `.sub_continent`, `.country`, `.region`, `.metro`, `.city` |
+| `app_info` | RECORD | `.id`, `.version`, `.firebase_app_id`, `.install_source` |
+| `traffic_source` | RECORD | `.name`, `.medium`, `.source` - the **user's first** acquisition, never session-level |
+| `collected_traffic_source` | RECORD | Event-scoped: `.manual_campaign_id`, `.manual_campaign_name`, `.manual_source`, `.manual_medium`, `.manual_term`, `.manual_content`, `.manual_creative_format`, `.manual_marketing_tactic`, `.manual_source_platform`, `.gclid`, `.dclid`, `.srsltid` |
+| `session_traffic_source_last_click` | RECORD | Session-scoped last-click attribution as GA4 reports it: `.manual_campaign.{source, medium, campaign_name, campaign_id, term, content, source_platform, creative_format, marketing_tactic}`, `.cross_channel_campaign.{source, medium, campaign_name, campaign_id, source_platform}`, plus `google_ads_campaign`, `sa360_campaign`, `dv360_campaign`, `cm360_campaign`. Only in newer exports - older tables lack it |
+| `stream_id` | STRING | Data stream ID |
+| `platform` | STRING | WEB, IOS, ANDROID |
+| `ecommerce` | RECORD | `.transaction_id`, `.purchase_revenue`, `.purchase_revenue_in_usd`, `.refund_value`, `.shipping_value`, `.tax_value` (each with `_in_usd`), `.total_item_quantity`, `.unique_items` |
+| `items` | RECORD (REPEATED) | `.item_id`, `.item_name`, `.item_brand`, `.item_variant`, `.item_category` to `.item_category5`, `.price`, `.price_in_usd`, `.quantity`, `.item_revenue`, `.item_revenue_in_usd`, `.item_refund`, `.item_refund_in_usd`, `.coupon`, `.affiliation`, `.location_id`, `.item_list_id`, `.item_list_name`, `.item_list_index`, `.promotion_id`, `.promotion_name`, `.creative_name`, `.creative_slot`, `.item_params` |
+| `publisher` | RECORD | App ad revenue: `.ad_revenue_in_usd`, `.ad_format`, `.ad_source_name`, `.ad_unit_id` |
 
-#### User Fields
+Full field list: [GA4 BigQuery Export schema](https://support.google.com/analytics/answer/7029846).
 
-| Field | Type | Description |
-|-------|------|-------------|
-| user_id | STRING | User ID if set |
-| user_pseudo_id | STRING | Anonymous ID |
-| user_properties | RECORD (REPEATED) | User properties |
-| user_first_touch_timestamp | INTEGER | First visit |
+### Common event_params keys (web)
 
-#### Device Fields
+| Key | Value column | Notes |
+|-----|--------------|-------|
+| `ga_session_id` | `int_value` | Session start time in seconds; unique only per `user_pseudo_id` |
+| `ga_session_number` | `int_value` | 1 = first session |
+| `page_location`, `page_referrer`, `page_title` | `string_value` | |
+| `engagement_time_msec` | `int_value` | Sum per session for engagement time |
+| `session_engaged` | `string_value` (`'1'`) | Sometimes arrives as `int_value` - read both |
+| `entrances` | `int_value` | `1` on the landing-page `page_view` |
+| `source`, `medium`, `campaign` | `string_value` | Event-level UTMs, mostly on the first event of a session |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| device.category | STRING | desktop, mobile, tablet |
-| device.operating_system | STRING | Windows, iOS, Android |
-| device.browser | STRING | Chrome, Safari |
-
-#### Geo Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| geo.country | STRING | Country name |
-| geo.region | STRING | State/region |
-| geo.city | STRING | City name |
-
-#### Traffic Source Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| traffic_source.source | STRING | google, direct |
-| traffic_source.medium | STRING | organic, cpc |
-| traffic_source.name | STRING | Campaign name |
-
-#### E-commerce Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| ecommerce.transaction_id | STRING | Transaction ID |
-| ecommerce.purchase_revenue_in_usd | FLOAT | Purchase revenue |
-| items | RECORD (REPEATED) | Items array |
-
-## SQL Query Patterns
-
-### Query 1: Event Count by Name
-
-```sql
-SELECT
-  event_name,
-  COUNT(*) as event_count
-FROM
-  `project.dataset.events_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-GROUP BY
-  event_name
-ORDER BY
-  event_count DESC
-```
-
-### Query 2: Extract Event Parameters
-
-```sql
-SELECT
-  event_date,
-  event_name,
-  user_pseudo_id,
-  (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location') as page_location,
-  (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_title') as page_title
-FROM
-  `project.dataset.events_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-  AND event_name = 'page_view'
-LIMIT 1000
-```
-
-### Query 3: Purchase Analysis
-
-```sql
-SELECT
-  event_date,
-  COUNT(DISTINCT user_pseudo_id) as purchasers,
-  COUNT(DISTINCT ecommerce.transaction_id) as transactions,
-  SUM(ecommerce.purchase_revenue_in_usd) as total_revenue,
-  AVG(ecommerce.purchase_revenue_in_usd) as avg_order_value
-FROM
-  `project.dataset.events_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-  AND event_name = 'purchase'
-  AND ecommerce.transaction_id IS NOT NULL
-GROUP BY
-  event_date
-ORDER BY
-  event_date
-```
-
-### Query 4: UNNEST Items Array
-
-```sql
-SELECT
-  event_date,
-  item.item_name,
-  item.item_category,
-  SUM(item.quantity) as total_quantity,
-  SUM(item.item_revenue_in_usd) as total_revenue
-FROM
-  `project.dataset.events_*`,
-  UNNEST(items) as item
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-  AND event_name = 'purchase'
-GROUP BY
-  event_date,
-  item.item_name,
-  item.item_category
-ORDER BY
-  total_revenue DESC
-```
-
-### Query 5: User Journey Analysis
-
-```sql
-WITH user_events AS (
-  SELECT
-    user_pseudo_id,
-    event_timestamp,
-    event_name,
-    (SELECT value.string_value FROM UNNEST(event_params)
-     WHERE key = 'page_location') as page_location
-  FROM
-    `project.dataset.events_*`
-  WHERE
-    _TABLE_SUFFIX = '20250115'
-)
-SELECT
-  user_pseudo_id,
-  ARRAY_AGG(
-    STRUCT(event_name, page_location, event_timestamp)
-    ORDER BY event_timestamp
-  ) as event_sequence
-FROM
-  user_events
-GROUP BY
-  user_pseudo_id
-LIMIT 100
-```
-
-### Query 6: Session Attribution
-
-```sql
-SELECT
-  event_date,
-  traffic_source.source,
-  traffic_source.medium,
-  traffic_source.name as campaign,
-  COUNT(DISTINCT user_pseudo_id) as users,
-  COUNT(DISTINCT CONCAT(user_pseudo_id,
-    (SELECT value.int_value FROM UNNEST(event_params)
-     WHERE key = 'ga_session_id'))) as sessions
-FROM
-  `project.dataset.events_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-GROUP BY
-  event_date,
-  traffic_source.source,
-  traffic_source.medium,
-  traffic_source.name
-ORDER BY
-  sessions DESC
-```
-
-### Helper Functions
-
-```sql
--- Reusable functions for parameter extraction
-CREATE TEMP FUNCTION GetParamString(params ANY TYPE, target_key STRING)
-RETURNS STRING
-AS (
-  (SELECT value.string_value FROM UNNEST(params) WHERE key = target_key)
-);
-
-CREATE TEMP FUNCTION GetParamInt(params ANY TYPE, target_key STRING)
-RETURNS INT64
-AS (
-  (SELECT value.int_value FROM UNNEST(params) WHERE key = target_key)
-);
-
--- Usage
-SELECT
-  event_date,
-  GetParamString(event_params, 'page_location') as page_location,
-  GetParamInt(event_params, 'engagement_time_msec') as engagement_time
-FROM
-  `project.dataset.events_*`
-WHERE
-  _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-```
-
-## Query Optimisation
-
-### Best Practices
-
-**1. Use _TABLE_SUFFIX Filtering:**
-```sql
--- Good
-WHERE _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-
--- Bad (scans all partitions)
-WHERE event_date BETWEEN '20250101' AND '20250131'
-```
-
-**2. Filter on Clustered Columns:**
-```sql
--- Tables clustered by event_name and event_timestamp
-WHERE event_name IN ('page_view', 'purchase')
-```
-
-**3. Select Specific Columns:**
-```sql
--- Good
-SELECT event_name, user_pseudo_id, event_timestamp
-
--- Bad (high cost)
-SELECT *
-```
-
-**4. Limit UNNEST Operations:**
-```sql
--- Good: Inline UNNEST
-(SELECT value.string_value FROM UNNEST(event_params)
- WHERE key = 'page_location')
-
--- Avoid: Full UNNEST in FROM
-FROM table, UNNEST(event_params) as param
-WHERE param.key = 'page_location'
-```
-
-**5. Use LIMIT During Development:**
-```sql
-LIMIT 1000  -- Test query first
-```
-
-## Cost Management
-
-### BigQuery Pricing
+## BigQuery Pricing
 
 | Type | Cost |
 |------|------|
@@ -339,29 +116,16 @@ LIMIT 1000  -- Test query first
 | Queries (on-demand) | ~$6.25/TiB scanned |
 | GA4 streaming export | $0.05/GB |
 
-### Free Tier
-
-- 10 GiB storage free/month
-- 1 TiB queries free/month
-
-### Reducing Costs
-
-1. Partition by date using _TABLE_SUFFIX
-2. Select only needed columns
-3. Use LIMIT for testing
-4. Create materialised views for frequent queries
-5. Set up cost alerts in Google Cloud
+Free tier: 10 GiB storage and 1 TiB of query scanning per month. Prices change - confirm on [BigQuery pricing](https://cloud.google.com/bigquery/pricing).
 
 ## Data Retention
-
-### GA4 vs BigQuery
 
 | Platform | Retention |
 |----------|-----------|
 | GA4 Standard | 2 or 14 months |
-| BigQuery | Unlimited (until deleted) |
+| BigQuery | Unlimited (until deleted, or until the dataset's default table expiration) |
 
-### Setting Table Expiration
+A BigQuery sandbox project sets a 60-day table expiration - upgrade to billing to keep history.
 
 ```sql
 ALTER TABLE `project.dataset.events_20250101`
@@ -372,101 +136,17 @@ SET OPTIONS (
 
 ## Common Use Cases
 
-### 1. Unsampled Reporting
+- **Unsampled reporting** - complete data where GA4 UI samples or thresholds
+- **Custom attribution** - full user journeys, custom credit models
+- **Data integration** - join GA4 with CRM, product catalogue, ad spend
+- **Machine learning** - churn, LTV, conversion propensity
+- **Long-term analysis** - history beyond GA4 retention, year-over-year
 
-GA4 UI may sample large datasets. BigQuery provides complete data.
+## Export Troubleshooting
 
-### 2. Custom Attribution
-
-- Access full user journey
-- Build custom attribution models
-- Credit touchpoints as needed
-
-### 3. Data Integration
-
-- Join GA4 with CRM data
-- Combine with product catalogue
-- Enrich with external sources
-
-### 4. Machine Learning
-
-- Export to ML tools
-- Predict churn, LTV, conversions
-- Train custom models
-
-### 5. Long-term Analysis
-
-- Historical analysis beyond GA4 limits
-- Year-over-year comparisons
-- Trend analysis
-
-## Troubleshooting
-
-### No Data in Tables
-
-**Causes:**
-- Link just created (wait 24 hours)
-- Export paused
-- Wrong project/dataset
-
-**Solutions:**
-1. Wait for first export
-2. Check BigQuery Links status
-3. Verify project configuration
-
-### Missing Events
-
-**Causes:**
-- Events not firing
-- Consent mode blocking
-- Filter applied
-
-**Solutions:**
-1. Verify in DebugView first
-2. Check consent configuration
-3. Review data filters
-
-### High Query Costs
-
-**Causes:**
-- SELECT * usage
-- Missing date filters
-- Large date ranges
-
-**Solutions:**
-1. Select specific columns
-2. Always use _TABLE_SUFFIX
-3. Narrow date ranges
-
-## Quick Reference
-
-### Table Names
-
-- Daily: `events_YYYYMMDD`
-- Intraday: `events_intraday_YYYYMMDD`
-- Wildcard: `events_*`
-
-### Date Filter
-
-```sql
-WHERE _TABLE_SUFFIX BETWEEN '20250101' AND '20250131'
-```
-
-### Extract Parameter
-
-```sql
-(SELECT value.string_value FROM UNNEST(event_params)
- WHERE key = 'param_name')
-```
-
-### UNNEST Items
-
-```sql
-FROM table, UNNEST(items) as item
-```
-
-### Costs
-
-- Storage: $0.02/GB/month
-- Queries: $6.25/TiB scanned (on-demand)
-- Free: 10 GiB storage, 1 TiB queries/month
+| Symptom | Causes | Fix |
+|---------|--------|-----|
+| No tables in the dataset | Link just created, export paused, wrong project, billing disabled | Wait 24 hours, check Admin -> BigQuery Links status, confirm the project and billing |
+| Daily export stopped | Standard property over 1 million events/day | Exclude events or streams from export, or move to streaming |
+| Events missing | Events not firing, consent denied, data filter applied | Verify in DebugView, check Consent Mode, review data filters |
+| Numbers differ from GA4 UI | Expected - see the `bigquery` skill's "UI vs BigQuery" section | |
