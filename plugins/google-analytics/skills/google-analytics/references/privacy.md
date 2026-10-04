@@ -1,6 +1,6 @@
 # GA4 Privacy and Compliance
 
-Expert guidance for GA4 privacy including GDPR, CCPA, Consent Mode v2, and data deletion.
+Reference for GA4 privacy including GDPR, CCPA, Consent Mode v2, and data deletion.
 
 ## Overview
 
@@ -18,8 +18,8 @@ Google's API for communicating user consent status to GA4, Google Ads, and other
 |-----------|---------|--------|
 | ad_storage | Advertising cookies | granted / denied |
 | analytics_storage | Analytics cookies | granted / denied |
-| ad_user_data | User data for advertising (NEW) | granted / denied |
-| ad_personalization | Personalized ads (NEW) | granted / denied |
+| ad_user_data | User data for advertising | granted / denied |
+| ad_personalization | Personalised ads | granted / denied |
 | personalization_storage | Website personalisation | granted / denied |
 | functionality_storage | Essential functionality | granted / denied |
 | security_storage | Security features | granted / denied |

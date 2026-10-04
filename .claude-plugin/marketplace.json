@@ -174,7 +174,7 @@
       "name": "google-analytics",
       "source": "./plugins/google-analytics",
       "description": "Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, ecommerce, BigQuery, Measurement Protocol, and privacy compliance",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

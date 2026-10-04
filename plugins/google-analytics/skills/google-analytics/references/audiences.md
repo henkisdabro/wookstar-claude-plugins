@@ -1,6 +1,6 @@
 # GA4 Audiences and Segmentation
 
-Expert guidance for creating and managing audiences for analysis, remarketing, and personalisation.
+Covers creating and managing audiences for analysis, remarketing, and personalisation.
 
 ## Overview
 

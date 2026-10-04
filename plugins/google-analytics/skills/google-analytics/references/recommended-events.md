@@ -1,6 +1,6 @@
 # GA4 Recommended Events
 
-Complete guide to implementing Google-defined recommended events including ecommerce, engagement, and monetisation events.
+Covers implementing Google-defined recommended events including ecommerce, engagement, and monetisation events.
 
 ## Overview
 

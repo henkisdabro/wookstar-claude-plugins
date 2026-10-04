@@ -1,6 +1,6 @@
 # GA4 Events Fundamentals
 
-Comprehensive guide to GA4 event architecture including event types, parameters, scopes, and naming conventions.
+Covers GA4 event architecture including event types, parameters, scopes, and naming conventions.
 
 ## Overview
 

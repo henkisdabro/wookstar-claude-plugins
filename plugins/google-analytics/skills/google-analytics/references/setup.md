@@ -1,6 +1,6 @@
 # GA4 Property Setup and Installation
 
-Complete guide for creating Google Analytics 4 accounts, properties, data streams, and installing tracking code.
+Covers creating Google Analytics 4 accounts, properties, data streams, and installing tracking code.
 
 ## Overview
 

@@ -1,6 +1,6 @@
 # GA4 Google Tag Manager Integration
 
-Expert guidance for implementing GA4 using Google Tag Manager including tags, triggers, variables, and data layer.
+Covers implementing GA4 using Google Tag Manager including tags, triggers, variables, and data layer.
 
 ## Overview
 

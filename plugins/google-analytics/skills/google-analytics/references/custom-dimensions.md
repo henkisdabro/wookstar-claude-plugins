@@ -1,6 +1,6 @@
 # GA4 Custom Dimensions and Metrics
 
-Expert guidance for registering event parameters as custom dimensions and creating custom metrics.
+Covers registering event parameters as custom dimensions and creating custom metrics.
 
 ## Overview
 

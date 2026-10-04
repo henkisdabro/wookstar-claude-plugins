@@ -1,6 +1,6 @@
 # GA4 Custom Events
 
-Expert guidance for creating business-specific custom events beyond Google's recommended events.
+Covers creating business-specific custom events beyond Google's recommended events.
 
 ## Overview
 

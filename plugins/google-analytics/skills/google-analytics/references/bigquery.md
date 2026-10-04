@@ -1,6 +1,6 @@
 # GA4 BigQuery Export and Analysis
 
-Complete guide to GA4 BigQuery export including setup, schema, SQL query patterns, and data analysis.
+Covers GA4 BigQuery export including setup, schema, SQL query patterns, and data analysis.
 
 ## Overview
 
@@ -43,7 +43,8 @@ GA4 BigQuery export provides raw, event-level data access for advanced analysis,
 4. Select dataset location (US, EU, etc.)
 5. Configure export:
    - Daily: Complete export once per day
-   - Streaming: Real-time (360 only)
+   - Streaming: Near real-time (standard and 360, billed separately)
+   - Fresh Daily: 360 only
 6. Include advertising IDs (optional)
 7. Confirm setup
 
@@ -51,15 +52,16 @@ GA4 BigQuery export provides raw, event-level data access for advanced analysis,
 
 | Option | Description | Availability |
 |--------|-------------|--------------|
-| Daily Export | Once per day (~9 AM property timezone) | Standard GA4 |
-| Streaming Export | Near real-time | GA4 360 only |
+| Daily Export | Once per day, previous day's complete data (standard: 1 million events/day limit) | Standard and 360 |
+| Fresh Daily | Delivered by ~5am, updated through the day | 360 only |
+| Streaming Export | Near real-time, best-effort, $0.05/GB | Standard and 360 |
 | Include Advertising IDs | For Ads integration | Optional |
 
 ### Data Availability
 
-- Daily tables: ~24 hours after day ends
-- Intraday tables: ~3 updates per day
-- Streaming: Minutes after collection (360)
+- Daily tables: once per day, after the day ends (time varies)
+- Intraday tables (`events_intraday_`): filled by streaming export within minutes, replaced when the daily table lands
+- Streaming omits new-user and new-session traffic source data - use the daily table for acquisition analysis
 
 ## Table Structure
 
@@ -334,13 +336,13 @@ LIMIT 1000  -- Test query first
 | Type | Cost |
 |------|------|
 | Storage | ~$0.02/GB/month |
-| Queries | ~$5/TB scanned |
-| Streaming inserts | ~$0.05/GB (360 only) |
+| Queries (on-demand) | ~$6.25/TiB scanned |
+| GA4 streaming export | $0.05/GB |
 
 ### Free Tier
 
-- 10 GB storage free/month
-- 1 TB queries free/month
+- 10 GiB storage free/month
+- 1 TiB queries free/month
 
 ### Reducing Costs
 
@@ -466,5 +468,5 @@ FROM table, UNNEST(items) as item
 ### Costs
 
 - Storage: $0.02/GB/month
-- Queries: $5/TB scanned
-- Free: 10 GB storage, 1 TB queries/month
+- Queries: $6.25/TiB scanned (on-demand)
+- Free: 10 GiB storage, 1 TiB queries/month

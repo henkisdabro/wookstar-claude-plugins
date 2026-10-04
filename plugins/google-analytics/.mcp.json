@@ -5,7 +5,7 @@
       "args": ["run", "analytics-mcp"],
       "env": {
         "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}",
-        "GOOGLE_PROJECT_ID": "${GOOGLE_PROJECT_ID}"
+        "GOOGLE_CLOUD_PROJECT": "${GOOGLE_CLOUD_PROJECT}"
       }
     }
   }
