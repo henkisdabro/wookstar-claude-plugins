@@ -355,7 +355,7 @@
       "name": "mcp-n8n",
       "source": "./plugins/mcp-n8n",
       "description": "n8n workflow automation integration",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

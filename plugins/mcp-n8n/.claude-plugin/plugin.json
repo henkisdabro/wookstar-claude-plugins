@@ -5,5 +5,20 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "userConfig": {
+    "n8n_api_url": {
+      "type": "string",
+      "title": "n8n instance URL",
+      "description": "Base URL of your n8n instance, e.g. https://n8n.example.com",
+      "required": true
+    },
+    "n8n_api_key": {
+      "type": "string",
+      "title": "n8n API key",
+      "description": "Create one under Settings > n8n API in your instance",
+      "required": true,
+      "sensitive": true
+    }
+  }
 }
