@@ -791,6 +791,28 @@
         "ripgrep"
       ],
       "category": "ai"
+    },
+    {
+      "name": "media-tools",
+      "source": "./plugins/media-tools",
+      "description": "Search YouTube and download captions or audio with yt-dlp, then transcribe audio locally with Whisper (mlx-whisper on Apple Silicon, openai-whisper elsewhere)",
+      "version": "1.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "youtube",
+        "yt-dlp",
+        "transcription",
+        "whisper",
+        "mlx-whisper",
+        "speech-to-text",
+        "subtitles",
+        "apple-silicon"
+      ],
+      "category": "media"
     }
   ]
 }
