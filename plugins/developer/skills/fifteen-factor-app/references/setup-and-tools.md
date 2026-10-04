@@ -17,7 +17,7 @@ For Windows users, Git Bash is recommended for a better command-line experience.
 
 ### Connecting to GitHub Using SSH
 
-Refer to [GitHub SSH documentation](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) to set up SSH for your GitHub account.
+Refer to [GitHub SSH documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) to set up SSH for your GitHub account.
 
 ### Clone an Application
 
@@ -32,15 +32,17 @@ cd fifteen-factor-app
 
 ### Recommended Tools
 
+Use the current release of each unless the project pins one.
+
 | Tool | Version | Required |
 |------|---------|----------|
-| JDK | 17+ (LTS) | Yes |
+| JDK | Current LTS | Yes |
 | Java IDE | IntelliJ IDEA / VS Code | Yes |
-| Gradle | 8.x | Yes |
-| Maven | 3.9.x | Alternative |
-| Git client | 2.x | Yes |
-| Docker | 24.x | Yes |
-| Spring Boot | 3.2.x | Yes |
+| Gradle | Current | Yes |
+| Maven | Current | Alternative |
+| Git client | Current | Yes |
+| Docker | Current | Yes |
+| Spring Boot | Current supported line | Yes |
 
 ### Spring Boot Starter Dependencies
 
@@ -74,27 +76,16 @@ dependencies {
 
 | Tool | Version | Required |
 |------|---------|----------|
-| Node.js | 20+ (LTS) | Yes |
-| pnpm | 8.x | Yes |
-| TypeScript | 5.x | Yes |
-| Docker | 24.x | Yes |
+| Node.js | Active LTS | Yes |
+| pnpm | Current | Yes |
+| TypeScript | Current | Yes |
+| Docker | Current | Yes |
 
 ### Essential Packages
 
-```json
-{
-  "dependencies": {
-    "express": "^4.18.0",
-    "dotenv": "^16.0.0",
-    "winston": "^3.11.0",
-    "prom-client": "^15.0.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.0",
-    "@types/node": "^20.0.0",
-    "@types/express": "^4.17.0"
-  }
-}
+```bash
+pnpm add express dotenv winston prom-client
+pnpm add -D typescript @types/node @types/express
 ```
 
 ---
@@ -105,19 +96,14 @@ dependencies {
 
 | Tool | Version | Required |
 |------|---------|----------|
-| Python | 3.11+ | Yes |
-| pip | Latest | Yes |
-| Poetry | 1.7+ | Recommended |
-| Docker | 24.x | Yes |
+| Python | Current stable | Yes |
+| uv | Current | Yes |
+| Docker | Current | Yes |
 
 ### Essential Packages
 
-```text
-fastapi>=0.109.0
-uvicorn>=0.27.0
-python-dotenv>=1.0.0
-structlog>=24.1.0
-prometheus-client>=0.19.0
+```bash
+uv add fastapi uvicorn python-dotenv structlog prometheus-client
 ```
 
 ---
@@ -129,25 +115,28 @@ prometheus-client>=0.19.0
 **Dockerfile Example:**
 
 ```dockerfile
-FROM node:20-alpine AS builder
+FROM node:lts-slim AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
-RUN npm run build
+RUN pnpm build && pnpm prune --prod
 
-FROM node:20-alpine
+FROM node:lts-slim
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+USER node
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
 ```
 
-**Docker Compose:**
+Pin the base image by digest for production; the developer plugin's `/containerize` skill covers cache mounts, distroless images and healthchecks.
+
+**Docker Compose** (`compose.yaml`; the top-level `version:` key is obsolete):
 
 ```yaml
-version: '3.8'
 services:
   app:
     build: .
@@ -234,20 +223,25 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: lts/*
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm test

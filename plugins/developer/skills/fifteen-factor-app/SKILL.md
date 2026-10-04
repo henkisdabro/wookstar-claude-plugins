@@ -1,6 +1,6 @@
 ---
 name: fifteen-factor-app
-description: Cloud-native SaaS architecture methodology extending Twelve-Factor with three additional factors (API First, Telemetry, Security). Use when planning SaaS tools, product software architecture, microservices design, PRPs/PRDs, or cloud-native application development; when the user says "fifteen factor", "12 factor", "SaaS architecture", "cloud-native design", "application architecture", "microservices best practices"; or when in a planning/architecture session. Do NOT use for greenfield monolith design without cloud-native constraints, internal tooling that will never ship as a service, or local-only scripts.
+description: Fifteen-Factor App methodology - Twelve-Factor plus API First, Telemetry and Security - for cloud-native SaaS architecture. Use when designing a SaaS product or microservice, reviewing an architecture against twelve or fifteen factors, adding architecture constraints to a PRP or PRD, planning a migration of a legacy app to the cloud, or assessing architectural technical debt. Do NOT use for local-only scripts or internal tools that will never run as a service; do NOT use for writing the PRP itself - use prp-generator.
 ---
 
 # Fifteen-Factor App Methodology
@@ -8,23 +8,6 @@ description: Cloud-native SaaS architecture methodology extending Twelve-Factor 
 ## Overview
 
 The Fifteen-Factor App methodology extends the original Twelve-Factor App principles (created by Heroku in 2012) with three additional factors essential for modern cloud-native applications: API First, Telemetry, and Security.
-
-This methodology provides architectural principles and guidelines for building software-as-a-service applications that are:
-
-- **Performant** - Optimised for speed and efficiency
-- **Scalable** - Designed for horizontal scaling without significant changes
-- **Manageable** - Easy to deploy, monitor, and maintain
-- **Resilient** - Robust against failures with graceful degradation
-
-## When to Apply This Methodology
-
-Apply the Fifteen-Factor principles during:
-
-1. **Architecture Planning** - When designing new applications or microservices
-2. **PRP/PRD Creation** - When documenting technical requirements and specifications
-3. **Code Reviews** - When evaluating whether implementations follow best practices
-4. **Migration Planning** - When modernising legacy applications for cloud deployment
-5. **Technical Debt Assessment** - When identifying architectural improvements
 
 ## The Fifteen Factors at a Glance
 

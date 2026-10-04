@@ -1,6 +1,6 @@
 # Codebase Analysis Guide
 
-Detailed guidance for Phase 2 of PRP generation. This covers the systematic process of analysing an existing codebase to understand patterns, conventions, and integration points.
+Detailed guidance for step 2 (analyse the codebase) of PRP generation. This covers the systematic process of analysing an existing codebase to understand patterns, conventions, and integration points.
 
 ## 1. Search for Similar Features
 

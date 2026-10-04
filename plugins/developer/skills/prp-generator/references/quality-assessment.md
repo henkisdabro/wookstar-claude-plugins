@@ -1,12 +1,8 @@
 # Quality Assessment for PRP Generation
 
-Detailed guidance for Phase 4 (Ultra-Thinking) and quality validation of Product Requirement Plans.
+Questions for step 4 (stress-test the plan) and the checklist to run before delivering a PRP.
 
-## Ultra-Thinking Analysis
-
-**STOP AND THINK DEEPLY BEFORE WRITING THE PRP.**
-
-This is the most important phase. Spend significant time analysing the following areas.
+## Stress-test questions
 
 ### 1. Integration Analysis
 

@@ -1,144 +1,86 @@
 ---
 name: prp-generator
-description: Generate comprehensive Product Requirement Plans (PRPs) for feature implementation with thorough codebase analysis and external research. Use when the user requests a PRP, PRD, or detailed implementation plan for a new feature. Conducts systematic research, identifies patterns, and creates executable validation gates for one-pass implementation success. Do NOT use for client discovery, requirements gathering, or scope definition - those need a separate clarification pass before the PRP step.
+description: Writes a Product Requirement Plan (PRP) - a researched, self-contained implementation blueprint with executable validation gates, saved to PRPs/. Use when the user asks for a PRP or PRD, wants an implementation plan for a feature, says "plan out" or "spec out" a feature before coding, hands over a feature description file to turn into a plan, wants a one-pass implementation brief for another agent, or wants an existing plan researched and tightened. Do NOT use for client discovery, requirements gathering or scope definition - run a clarification pass first; do NOT use for implementing an existing PRP - use /execute-prp; do NOT use for cloud-native architecture review - use fifteen-factor-app.
 ---
 
 # PRP Generator
 
-## Overview
+The implementing agent receives only the PRP, its training data, the codebase and web search - not this conversation. Everything it needs to finish in one pass goes into the PRP: file paths with line numbers, documentation URLs with versions, gotchas, and validation gates it can run.
 
-Generates comprehensive Product Requirement Plans (PRPs) that enable AI agents to implement features in a single pass. Combines systematic codebase analysis with external research to create detailed, context-rich implementation blueprints.
+## 1. Understand the feature
 
-## When to Use
+Read the feature request in full (the file, if a path was given). Ask the user about anything unclear with AskUserQuestion: tech stack, integration points, persistence, acceptance criteria.
 
-- User requests a PRP, PRD, or detailed implementation plan
-- User asks to "plan out" or "design" a complex feature
-- Beginning significant feature development that benefits from structured planning
-- User provides a feature description file and asks for implementation guidance
+Done when you can state the problem and its acceptance criteria in two sentences the user has not contradicted.
 
-## Core Principle
+## 2. Analyse the codebase
 
-**Context is Everything**: The implementing agent only receives the PRP content, training data knowledge, codebase access, and WebSearch. Your PRP must be self-contained with all necessary context, specific references, and executable validation gates.
+Capture each of these, with `path:line` references:
 
-## Workflow
-
-### Phase 1: Understand the Feature
-
-1. **Read the feature request** - if a file path is given, read it completely; if verbal, clarify requirements
-2. **Clarify ambiguities** - use AskUserQuestion for unclear requirements, confirm tech stack, verify integration points
-3. **Identify the core problem** being solved and acceptance criteria
-
-### Phase 2: Codebase Analysis (Mandatory)
-
-**Goal**: Understand existing patterns, conventions, and integration points.
-
-Systematically analyse the codebase across five dimensions:
-
-| Area | What to Capture |
+| Area | What to capture |
 |------|----------------|
-| Similar features | File paths, line numbers, code snippets, adaptations needed |
+| Similar features | File paths, line ranges, snippets, adaptations needed |
 | Architecture | Directory conventions, component organisation, state management, API patterns |
-| Coding conventions | TypeScript usage, component patterns, styling, import ordering, naming |
-| Test patterns | Framework, file naming, mock strategies, coverage expectations |
-| Configuration | Dependencies, build setup, path aliases, TypeScript settings |
+| Coding conventions | Language idioms, component patterns, styling, import ordering, naming |
+| Test patterns | Framework, file naming, mock strategy, coverage expectations |
+| Configuration | Dependencies and their installed versions, build setup, path aliases |
 
-For detailed sub-steps, examples, and documentation templates, see [references/codebase-analysis-guide.md](references/codebase-analysis-guide.md).
+Sub-steps and documentation templates: [references/codebase-analysis-guide.md](references/codebase-analysis-guide.md).
 
-Also refer to [references/research_methodology.md](references/research_methodology.md) for the full research process.
+Done when every row has at least one concrete reference, or a note that the codebase has nothing relevant.
 
-### Phase 3: External Research (Mandatory)
+## 3. Research externally
 
-**Goal**: Find best practices, documentation, examples, and gotchas.
-
-Research across four areas:
-
-| Area | Key Actions |
+| Area | Key actions |
 |------|------------|
-| Library documentation | Find official docs for the SPECIFIC version from package.json; note version-specific gotchas |
-| Implementation examples | Search GitHub, StackOverflow, official examples; prefer recent, production-grade code |
-| Best practices | Search "[technology] best practices [current year]"; check OWASP for security |
-| Performance and security | Bundle size implications, runtime patterns, vulnerabilities, accessibility |
+| Library documentation | Official docs for the version installed in the project; version-specific gotchas |
+| Implementation examples | GitHub, official examples, recent production code |
+| Best practices | Current guidance for the stack; OWASP for anything security-touching |
+| Performance and security | Bundle size, runtime cost, known vulnerabilities, accessibility |
 
-Always document exact URLs, versions, and specific sections. See [references/research_methodology.md](references/research_methodology.md) for detailed guidance.
+Search strategies and how to judge sources: [references/research_methodology.md](references/research_methodology.md).
 
-### Phase 4: Ultra-Thinking (Critical)
+Done when each library the feature touches has a documentation URL and version recorded.
 
-**STOP AND THINK DEEPLY BEFORE WRITING THE PRP.**
+## 4. Stress-test the plan
 
-Analyse integration points, implementation ordering, validation strategy, and context completeness. Verify the PRP will enable one-pass implementation without questions.
+Before writing, work through integration points, step ordering, validation strategy and context completeness using the questions in [references/quality-assessment.md](references/quality-assessment.md).
 
-For the full set of analysis questions and the quality checklist, see [references/quality-assessment.md](references/quality-assessment.md).
+Done when you can answer "could an agent implement this without asking a question?" with yes, or you have gone back to steps 1-3 to close the gap.
 
-### Phase 5: Generate the PRP
+## 5. Write the PRP
 
-Use [assets/prp_template.md](assets/prp_template.md) as the base structure. Populate all sections:
+Fill [assets/prp_template.md](assets/prp_template.md). Every section is populated or removed with a reason; in particular:
 
-1. **Metadata** - feature name, timeline, confidence score (1-10), date
-2. **Executive Summary** - 2-3 sentences with core value proposition
-3. **Research Findings** - codebase analysis (file:line refs) and external research (URLs, versions)
-4. **Technical Specification** - architecture, components, data models, API endpoints
-5. **Implementation Blueprint** - prerequisites, step-by-step with pseudocode, file changes, error handling, edge cases
-6. **Testing Strategy** - unit, integration, and manual testing approaches
-7. **Validation Gates** - must be EXECUTABLE commands (e.g. `npm run test && npm run build`)
-8. **Success Criteria** - clear, measurable checklist
+- **Research Findings** - `path:line` references and URLs with versions from steps 2-3.
+- **Implementation Blueprint** - ordered steps with pseudocode, files to create or modify, error handling, edge cases.
+- **Validation Gates** - commands that run as written, using the project's real scripts (e.g. `pnpm test && pnpm build`).
+- **Success Criteria** - measurable checklist items.
 
-### Phase 6: Quality Scoring
+Done when no `[placeholder]` text remains in the file.
 
-Score the PRP for one-pass implementation success:
+## 6. Score
 
 | Score | Meaning |
 |-------|---------|
-| 9-10 | Exceptionally detailed, all context included, clear path, executable gates |
-| 7-8 | Very good, minor gaps, mostly clear implementation path |
-| 5-6 | Adequate, some ambiguity, may require clarification |
-| 3-4 | Incomplete research, missing context, unclear path |
-| 1-2 | Insufficient for implementation |
+| 9-10 | All context included, clear path, executable gates |
+| 7-8 | Minor gaps, mostly clear path |
+| 5-6 | Some ambiguity, implementer may need to ask |
+| 3-4 | Incomplete research, unclear path |
+| 1-2 | Not implementable |
 
-**If score is below 7**: Go back and improve the PRP before delivering.
+Done when the score is 7 or higher - below that, return to the weakest step and improve the PRP.
 
-### Phase 7: Save and Deliver
+## 7. Save and hand off
 
-1. **Save** the PRP to `PRPs/[feature-name].md` (kebab-case, create directory if needed)
-2. **Deliver summary** to user with: brief feature summary, file location, confidence score with rationale, and next steps
+Save to `PRPs/<feature-name>.md` (kebab-case; create the directory if needed). Tell the user the path, the confidence score with its rationale, and that `/execute-prp PRPs/<feature-name>.md` implements it.
 
-## Common Pitfalls
+## Common pitfalls
 
-| Pitfall | Bad | Good |
+| Pitfall | Weak | Strong |
 |---------|-----|------|
 | Vague references | "There's a similar component somewhere" | "See UserProfile at src/components/UserProfile.tsx:45-67" |
-| Missing versions | "Use React Query" | "Use @tanstack/react-query v5.28.0" |
-| Non-executable gates | "Run tests and make sure they pass" | `npm run test && npm run build` |
+| Missing versions | "Use React Query" | "Use @tanstack/react-query at the version in package.json (v5)" |
+| Non-executable gates | "Run tests and make sure they pass" | `pnpm test && pnpm build` |
 | Generic advice | "Follow React best practices" | "Use named exports (see src/components/Button.tsx:1)" |
-| Incomplete research | Skipping codebase analysis | Thoroughly document existing patterns |
-| Missing gotchas | Assuming smooth implementation | Document known issues and edge cases |
-
-## Example Usage
-
-**User**: "Create a PRP for adding dark mode support to the application"
-
-1. Clarify: "Should dark mode preference persist across sessions? Should it respect system preferences?"
-2. Research codebase for theme-related code
-3. Research external resources (dark mode best practices, library options)
-4. Ultra-think about implementation approach
-5. Generate comprehensive PRP using template
-6. Score the PRP
-7. Save to `PRPs/dark-mode-support.md`
-8. Deliver summary with confidence score
-
-## Resources
-
-| Resource | Description |
-|----------|------------|
-| [assets/prp_template.md](assets/prp_template.md) | Base template for all PRPs |
-| [references/research_methodology.md](references/research_methodology.md) | Detailed research guidance and best practices |
-| [references/codebase-analysis-guide.md](references/codebase-analysis-guide.md) | Detailed codebase analysis sub-steps and examples |
-| [references/quality-assessment.md](references/quality-assessment.md) | Ultra-thinking analysis questions and quality checklist |
-
-## Key Reminders
-
-- **Research is mandatory** - never skip codebase or external research
-- **Be specific** - always include file paths, line numbers, URLs, versions
-- **Think deeply** - Phase 4 (Ultra-Thinking) is critical for success
-- **Validate everything** - all validation gates must be executable
-- **Score honestly** - if confidence is below 7, improve the PRP
-- **Context is king** - the implementer only has what you put in the PRP
+| Missing gotchas | Assuming a smooth implementation | Known issues and edge cases listed per step |
