@@ -124,7 +124,7 @@ Gotchas:
 
 ## Campaigns
 
-Scripts read and modify campaigns; they cannot create them (use Bulk Uploads or the Google Ads API for that).
+The selector and builder APIs read and modify campaigns but have no campaign builder. To create a campaign from a script, send Google Ads API operations through `AdsApp.mutate` or `AdsApp.mutateAll`, or use Bulk Uploads.
 
 ```javascript
 const campaign = AdsApp.campaigns()

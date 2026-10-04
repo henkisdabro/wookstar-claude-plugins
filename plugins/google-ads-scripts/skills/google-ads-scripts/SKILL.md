@@ -55,7 +55,7 @@ function main() {
 
 ## Validation
 
-`scripts/validators.py` checks campaign names, keyword text (80 characters, 10 words), match types, campaign types, bids, budgets and currency/micros conversion before you hard-code them. Run `python3 scripts/validators.py` for a self-test, or import its functions.
+`scripts/validators.py` checks campaign names, keyword text (80 characters, 10 words), match types, campaign types, bids, budgets and currency/micros conversion before you hard-code them. Run `python3 "${CLAUDE_SKILL_DIR}/scripts/validators.py"` for a self-test, or import its functions.
 
 ## References
 
