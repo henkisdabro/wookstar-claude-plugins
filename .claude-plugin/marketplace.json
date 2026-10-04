@@ -710,10 +710,21 @@
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "category": "ai"
+    },
+    {
+      "name": "mcp-notion",
+      "source": "./plugins/mcp-notion",
+      "description": "[RETIRED] Notion publishes an official plugin for the same server. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "category": "productivity"
     }
   ],
   "renames": {
-    "mcp-notion": null,
     "mcp-cloudflare": null,
     "mcp-fetch": null
   }

@@ -1,0 +1,9 @@
+{
+  "name": "mcp-notion",
+  "description": "[RETIRED] Notion publishes an official plugin for the same server. This final version only shows a notice - uninstall it.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "2.0.0"
+}

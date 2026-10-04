@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"mcp-notion@wookstar-claude-plugins is retired. Notion publishes an official plugin for the same server. Replace it: claude plugin install notion@claude-plugins-official, then claude plugin uninstall mcp-notion@wookstar-claude-plugins - details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}
