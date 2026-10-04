@@ -414,26 +414,6 @@
       "mcpServers": "./.mcp.json"
     },
     {
-      "name": "mcp-notion",
-      "source": "./plugins/mcp-notion",
-      "description": "Notion workspace and database integration",
-      "version": "1.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "mcp",
-        "notion",
-        "workspace",
-        "notes",
-        "database"
-      ],
-      "category": "productivity",
-      "mcpServers": "./.mcp.json"
-    },
-    {
       "name": "mcp-open-meteo",
       "source": "./plugins/mcp-open-meteo",
       "description": "Weather and climate data (no API key required)",
@@ -753,6 +733,7 @@
   "renames": {
     "codex": null,
     "gemini": null,
-    "mcp-gemini-bridge": null
+    "mcp-gemini-bridge": null,
+    "mcp-notion": null
   }
 }
