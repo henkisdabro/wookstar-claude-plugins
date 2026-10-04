@@ -4,9 +4,17 @@
 
 ## How 7.0.0 reaches you
 
-Claude Code does not auto-update third-party marketplaces unless you turned that on, so you get 7.0.0 when you run `/plugin marketplace update wookstar-claude-plugins` (or `claude plugin marketplace update wookstar-claude-plugins`) and then update your plugins. If you enabled auto-update, Claude Code updates in the background and shows `Plugin updated: <name> · Run /reload-plugins to apply`.
+Claude Code does not auto-update third-party marketplaces unless you turned that on. Without it, refreshing the marketplace only updates the catalogue - update each plugin as well:
 
-After updating, startup notices tell you what needs doing:
+```bash
+claude plugin marketplace update wookstar-claude-plugins
+claude plugin update <plugin>@wookstar-claude-plugins   # once per plugin you keep
+```
+
+Inside Claude Code, `/plugin` does the same from its Installed tab. If you enabled auto-update, Claude Code updates in the background and shows `Plugin updated: <name> · Run /reload-plugins to apply`.
+
+The next time Claude Code starts after the update, notices tell you what needs doing. `/reload-plugins` loads the new versions but does not show them - restart to see them.
+
 
 - **A retired plugin** still installed shows a notice at every start naming its replacement and the uninstall command, until you uninstall it. Its final version contains nothing else.
 - **A credential plugin** with no settings yet (`mcp-n8n`, `mcp-coingecko`, `mcp-perplexity`, `mcp-mikrotik`, `mcp-google-workspace`) shows a notice at every start until you configure it. Without settings its MCP server does not start.
@@ -30,9 +38,9 @@ curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins
 
 The script:
 
-1. refreshes this marketplace
+1. refreshes this marketplace and updates every plugin you keep from it
 2. uninstalls every retired plugin you have at user scope and installs its official replacement, adding that marketplace if you lack it
-3. fills in the settings credential plugins now need - it reuses the shell variable 6.x read where you still have it set, and otherwise asks on the terminal, hiding secrets as you type
+3. fills in the settings credential plugins now need - it reuses the shell variable 6.x read where you still have it set, keeps `mcp-mikrotik` on port 2200 as 6.x did, and otherwise asks on the terminal, hiding secrets as you type
 4. prints the commands for anything installed at project or local scope, and suggestions for plugins that lost components
 
 It needs `claude` and `jq` on your `PATH`, is safe to run twice, and exits non-zero if any step failed.
@@ -102,7 +110,7 @@ The upgrade script does this for you. Afterwards you can unset the old variables
 | `mcp-coingecko` | demo API key | `COINGECKO_DEMO_API_KEY` |
 | `mcp-perplexity` | API key | `PERPLEXITY_API_KEY` |
 | `mcp-n8n` | instance URL and API key | `N8N_API_KEY` (the URL used to be hard-coded) |
-| `mcp-mikrotik` | host, username, password, port | `MIKROTIK_HOST`, `MIKROTIK_USER`, `MIKROTIK_PASSWORD`; port no longer defaults to 2200 |
+| `mcp-mikrotik` | host, username, password, port | `MIKROTIK_HOST`, `MIKROTIK_USER`, `MIKROTIK_PASSWORD`; the port defaults to 22 instead of the 2200 that 6.x hard-coded, so set `mikrotik_port` to 2200 if that is where your router listens (the script does) |
 | `mcp-google-workspace` | OAuth client ID and secret | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` |
 | `mcp-alphavantage` | nothing - sign in through `/mcp` (OAuth) | `ALPHAVANTAGEAPIKEY` |
 
