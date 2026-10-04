@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$CLAUDE_PLUGIN_OPTION_GOOGLE_OAUTH_CLIENT_ID\" ] && [ -n \"$CLAUDE_PLUGIN_OPTION_GOOGLE_OAUTH_CLIENT_SECRET\" ] || echo '{\"systemMessage\": \"mcp-google-workspace has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads GOOGLE_OAUTH_* variables from your shell. Run /plugin configure mcp-google-workspace@wookstar-claude-plugins (or claude plugin configure mcp-google-workspace@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}
