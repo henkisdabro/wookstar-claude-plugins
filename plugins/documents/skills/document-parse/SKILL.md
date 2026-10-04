@@ -63,7 +63,7 @@ docparse slides.pptx --describe              # AI descriptions of embedded image
 docparse report.docx --summarize             # AI summary
 docparse file.pdf --pdf-backend ai --ai MODEL   # multimodal AI parse; default model gemini-2.5-flash
 docparse in.docx --convert out.html          # targets: html docx pptx xlsx odt odp ods md qmd
-docparse notes.md --convert offer.docx --reference-doc letterhead.docx
+docparse notes.md --convert report.docx --reference-doc template.docx
 ```
 
 The JSON holds typed blocks (tables with merged cells, track changes, comments, headers and footers, speaker notes, one block set per sheet); the markdown is the LLM-ready rendering. Full option list: `docparse --help`.
