@@ -8,7 +8,7 @@ hooks:
     - matcher: "Write|Edit|MultiEdit"
       hooks:
         - type: command
-          command: "bun run ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts"
+          command: "command -v bun >/dev/null 2>&1 || exit 0; bun run ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts"
           timeout: 30
 ---
 
@@ -18,7 +18,7 @@ Bun-based preview server. Fragments are written in Markdown - the build script c
 
 ## Flow
 
-1. Write the `.fragment.md` directly to `data/writing/email_drafts/` in ONE Write tool call.
+1. Write the `.fragment.md` directly to the drafts directory (see **File naming**) in ONE Write tool call.
    **Do NOT write the email body inline in your response before the Write call.** Compose the
    draft mentally and write it straight to the file - the preview server renders it.
 2. After the Write tool returns, read the URL the hook wrote:
@@ -110,11 +110,11 @@ If a table truly has no natural header, use descriptive labels like `Item` / `Am
 ## File naming
 
 ```
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.fragment.md
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.html        # generated
+<drafts-dir>/YYYY-MM-DD_recipient_subject.fragment.md
+<drafts-dir>/YYYY-MM-DD_recipient_subject.html        # generated
 ```
 
-The hook fires on any `*.fragment.md` wherever it lives, so projects that keep drafts elsewhere work too - the path above is the recommended convention.
+`<drafts-dir>` is the drafts directory the project's CLAUDE.md or AGENTS.md names; if it names none, use the default `data/writing/email_drafts/` (relative to the project root). The hook fires on any `*.fragment.md` wherever it lives, so any directory works.
 
 ## Preview UI
 
@@ -190,4 +190,4 @@ Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. First-time setup 
 
 ## Platform support
 
-Works on macOS, Linux, WSL2 (Ubuntu), and native Windows. The hook is `auto-serve-fragment.ts` and runs under Bun on all platforms - `bun` must be on PATH. Browser opening is handled by `serve.ts` itself: `open` on macOS, `cmd /c start` on Windows, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `xdg-open` elsewhere. On minimal Linux setups without `xdg-open` handlers for `mailto:`/`whatsapp://`, the Open buttons may no-op - use the Copy buttons instead.
+Works on macOS, Linux, WSL2 (Ubuntu), and native Windows. The hook is `auto-serve-fragment.ts` and runs under Bun on all platforms. When `bun` is not on PATH the hook exits silently and nothing is previewed - run the **Fallback** preflight, which installs bun. Browser opening is handled by `serve.ts` itself: `open` on macOS, `cmd /c start` on Windows, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `xdg-open` elsewhere. On minimal Linux setups without `xdg-open` handlers for `mailto:`/`whatsapp://`, the Open buttons may no-op - use the Copy buttons instead.
