@@ -698,10 +698,21 @@
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "category": "ai"
+    },
+    {
+      "name": "mcp-gemini-bridge",
+      "source": "./plugins/mcp-gemini-bridge",
+      "description": "[RETIRED] It wraps Gemini CLI, which stopped serving individual accounts on 2026-06-18. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "category": "ai"
     }
   ],
   "renames": {
-    "mcp-gemini-bridge": null,
     "mcp-notion": null,
     "mcp-cloudflare": null,
     "mcp-fetch": null
