@@ -254,7 +254,7 @@
       "name": "mcp-alphavantage",
       "source": "./plugins/mcp-alphavantage",
       "description": "Stock market data, company information, and financial indicators via AlphaVantage",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
