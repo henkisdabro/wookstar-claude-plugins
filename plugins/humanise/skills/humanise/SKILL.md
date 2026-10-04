@@ -1,6 +1,6 @@
 ---
 name: humanise
-description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 34 patterns from Wikipedia's "Signs of AI writing". For grammar-only proofreading or spell checking, edit normally instead.
+description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 34 patterns from Wikipedia's "Signs of AI writing". Do NOT use for grammar-only proofreading or spell checking - edit normally; or for translating text - translate directly.
 allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 

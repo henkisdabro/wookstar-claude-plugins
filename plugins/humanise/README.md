@@ -12,6 +12,8 @@ Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cl
 
 Invoke with: "humanise this", "make this sound less AI", "remove AI patterns", "de-AI this text", "make this more natural".
 
+Not for grammar-only proofreading, spell checking or translation - ask for those directly.
+
 The skill:
 
 1. Calibrates on a sample of the author's own writing, when one is available
