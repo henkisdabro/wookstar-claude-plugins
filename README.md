@@ -1,6 +1,8 @@
 # Wookstar Claude Code Plugins
 
-A curated marketplace for [Claude Code](https://claude.ai/code) - **33 plugins** across development, analytics, AI, content, and ops. Pick what you need; everything is independently installable.
+A curated marketplace for [Claude Code](https://claude.ai/code) - **27 plugins** across development, analytics, content, data and ops. Pick what you need; everything is independently installable.
+
+> **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md).
 
 ---
 
@@ -8,13 +10,13 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **33 plugins**
 
 | Category | Plugins | What you get |
 |---|---:|---|
-| [Development](#development) | 6 | A full dev toolkit, Cloudflare platform access, React/Next.js rules, Shopify, browser userscripts, Google Apps Script |
+| [Development](#development) | 5 | PRP planning and containerisation, React/Next.js rules, Shopify themes, browser userscripts, Google Apps Script |
 | [Analytics](#analytics) | 3 | GTM, GA4, Google Ads automation |
-| [AI](#ai) | 4 | Gemini and Codex CLI agents, Gemini and Perplexity MCP servers |
-| [Productivity](#productivity) | 5 | Rich-text email drafts, Gmail/Drive/Calendar, Notion, n8n, Excalidraw |
-| [Content](#content) | 3 | Word/Excel/PDF processing, FFmpeg reference, AI-text humaniser |
+| [AI](#ai) | 1 | Perplexity search MCP server |
+| [Productivity](#productivity) | 4 | Rich-text email drafts, Gmail/Drive/Calendar, n8n, Excalidraw |
+| [Content](#content) | 3 | PDF extraction and forms, FFmpeg reference, AI-text humaniser |
 | [Data](#data) | 3 | Stocks, crypto, FX rates |
-| [Utilities](#utilities) | 4 | Timezone tools, HTTP fetcher, MikroTik routers, weather |
+| [Utilities](#utilities) | 3 | Timezone tools, MikroTik routers, weather |
 | [LSP servers](#lsp-servers) | 5 | Real-time diagnostics for Bash, CSS, HTML, JSON, YAML |
 
 > Two install surfaces - `/plugin install …` runs **inside** an active Claude Code session; `claude plugin install …` runs in a **plain terminal**. Both accept the same arguments. See [Installation Methods](#installation-methods) for the full mapping.
@@ -25,10 +27,9 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **33 plugins**
 
 ### Development
 
-- **`developer`** - Pro toolkit: 3 commands (`/containerize`, `/generate-prp`, `/execute-prp`) + 4 skills (webapp testing, Chrome DevTools, PRP generation, Fifteen-Factor App) + 5 MCP servers (Chrome DevTools, Playwright, Microsoft docs, Firecrawl, Context7).
-- **`mcp-cloudflare`** - Official Cloudflare MCP. 2,500+ API endpoints exposed through 2 tools (~1k tokens) for Workers, D1, KV, R2, DNS, Pages, WAF, Tunnels. OAuth.
-- **`react-best-practices`** - 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React/Next.js patterns.
-- **`shopify-developer`** - Liquid, theme dev (OS 2.0), GraphQL/REST APIs, app dev, Shopify Functions, Hydrogen, performance, debugging. API version 2026-01.
+- **`developer`** - PRP planning (`prp-generator`, `/execute-prp`), `/containerize`, and the Fifteen-Factor App methodology.
+- **`react-best-practices`** - Vercel Engineering's 70 React and Next.js performance rules, with local notes for React Compiler and Next.js 16 caching.
+- **`shopify-developer`** - Liquid, theme development (OS 2.0), Hydrogen, Functions and debugging. Live API lookup goes to Shopify's official `shopify-ai-toolkit`.
 - **`tampermonkey`** - Userscript development with 18 reference files - browser automation, page modification, web enhancement.
 - **`google-apps-script`** - Workspace automation: SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers.
 
@@ -40,24 +41,20 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **33 plugins**
 
 ### AI
 
-- **`gemini`** - Agent that drives Gemini CLI in headless mode. Use for second opinions, large-context analysis, code review, document summarisation.
-- **`codex`** - Agent that drives OpenAI Codex CLI. Use for second opinions, agentic code tasks, automated review, bug triage.
-- **`mcp-gemini-bridge`** - Google Gemini via MCP, browser auth.
 - **`mcp-perplexity`** - Perplexity AI search and information retrieval.
 
 ### Productivity
 
 - **`message`** - Rich-text email/WhatsApp drafts with **live browser preview**. Triggered by phrases like "draft an email to…" or "write a WhatsApp message…". Bun-powered preview server starts automatically.
 - **`mcp-google-workspace`** - Gmail, Drive, Calendar (OAuth).
-- **`mcp-notion`** - Notion workspace integration (browser auth).
 - **`mcp-n8n`** - n8n workflow automation.
 - **`mcp-excalidraw`** - Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, export to excalidraw.com.
 
 ### Content
 
-- **`documents`** - Word (.docx), Excel (.xlsx), PDF processing - tracked changes, forms, tables, OCR, formulas.
+- **`documents`** - PDF toolkit: fast text-layer extraction, forms, tables, OCR, merge and split. For Word, Excel and PowerPoint use Anthropic's `document-skills`.
 - **`ffmpeg`** - Video and audio CLI reference - filters, codecs (H.264/H.265/VP9), GPU acceleration, common workflows.
-- **`humanise`** - Strip 31 AI writing tells from text - inflated language, em-dash overuse, sycophantic tone, formulaic structure, placeholder text, leaked chatbot artifacts. Calibrates on a sample of your own writing, audits its own draft, and never invents a fact to make a vague sentence specific.
+- **`humanise`** - Strip 34 AI writing tells from text - inflated language, em-dash overuse, sycophantic tone, formulaic structure, placeholder text, leaked chatbot artifacts. Calibrates on a sample of your own writing, audits its own draft, and never invents a fact to make a vague sentence specific.
 
 ### Data
 
@@ -68,7 +65,6 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **33 plugins**
 ### Utilities
 
 - **`timezone-tools`** - Timezone conversions and time queries across IANA timezones.
-- **`mcp-fetch`** - Web content fetching and HTTP requests (no API key).
 - **`mcp-mikrotik`** - MikroTik router management and network automation.
 - **`mcp-open-meteo`** - Weather and climate data (no API key).
 
@@ -121,7 +117,6 @@ Pick from the [catalogue above](#plugin-catalogue). Pattern is always `<name>@wo
 ```bash
 # Core development
 /plugin install developer@wookstar-claude-plugins
-/plugin install mcp-cloudflare@wookstar-claude-plugins
 /plugin install react-best-practices@wookstar-claude-plugins
 
 # Analytics + email
@@ -143,7 +138,7 @@ Most plugins **trigger automatically** when you describe what you want in plain 
 
 The skill loads, generates the draft, and (for `message`) opens a live browser preview. For commands that have explicit slash forms (e.g. `/containerize` from the developer plugin), type the command directly.
 
-If a plugin needs an API key, see [Environment Variables](#environment-variables).
+If a plugin needs an API key or URL, Claude Code asks for it when you enable the plugin - see [Credentials](#credentials).
 
 ---
 
@@ -167,80 +162,21 @@ There are two ways to install and manage plugins. They do the same thing but run
 
 ---
 
-## Environment Variables
+## Credentials
 
-Many MCP-powered plugins need API keys or credentials. Set these in your shell profile (`~/.bashrc` or `~/.zshrc`).
+MCP plugins that need a key or URL declare it as plugin configuration: Claude Code prompts for the values when you enable the plugin, keeps secrets in your system keychain, and passes them to the server. Nothing goes in your shell profile.
 
-### Plugins that work without keys
+| Plugin | Asks for |
+|---|---|
+| `mcp-coingecko` | demo API key ([get one](https://www.coingecko.com/en/api)) |
+| `mcp-perplexity` | API key ([get one](https://www.perplexity.ai/settings/api)) |
+| `mcp-n8n` | instance URL and API key |
+| `mcp-mikrotik` | router host, SSH username, password, port |
+| `mcp-google-workspace` | OAuth client ID and secret |
 
-`mcp-fetch`, `mcp-open-meteo`, `mcp-currency-conversion`, `mcp-gemini-bridge` (browser auth), `mcp-notion` (browser auth), `google-tagmanager` (GTM MCP via Stape.ai, browser auth).
+`mcp-alphavantage`, `google-tagmanager` (Stape) and `mcp-excalidraw` sign in through OAuth - run `/mcp` and pick the server on first use. `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
 
-<details>
-<summary><strong>Required environment variables by plugin</strong> (click to expand)</summary>
-
-#### `developer`
-
-```bash
-# Optional - only needed if using these MCP servers
-export CONTEXT7_API_KEY="your-context7-key"      # https://upstash.com/context7
-export FIRECRAWL_API_KEY="your-firecrawl-key"    # https://firecrawl.dev/
-```
-
-#### `google-analytics`
-
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
-export GOOGLE_PROJECT_ID="your-gcp-project-id"
-# Get credentials: GCP Console > APIs & Services > Credentials > Service Account
-```
-
-#### `mcp-google-workspace`
-
-```bash
-export GOOGLE_OAUTH_CLIENT_ID="your-client-id"
-export GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
-# Get credentials: GCP Console > APIs & Services > Credentials > OAuth 2.0 Client
-```
-
-#### `mcp-mikrotik`
-
-```bash
-export MIKROTIK_HOST="your-router-ip"
-export MIKROTIK_USER="your-username"
-export MIKROTIK_PASSWORD="your-password"
-```
-
-#### `mcp-n8n`
-
-```bash
-export N8N_API_KEY="your-n8n-api-key"
-# Get from: n8n Settings > API > Create API Key
-```
-
-#### `mcp-alphavantage`
-
-```bash
-export ALPHAVANTAGEAPIKEY="your-alphavantage-key"
-# Free key: https://www.alphavantage.co/support/#api-key
-```
-
-#### `mcp-coingecko`
-
-```bash
-export COINGECKO_DEMO_API_KEY="your-coingecko-key"
-# Demo key: https://www.coingecko.com/en/api
-```
-
-#### `mcp-perplexity`
-
-```bash
-export PERPLEXITY_API_KEY="your-perplexity-key"
-# Get from: https://www.perplexity.ai/settings/api
-```
-
-</details>
-
-After setting variables, restart your terminal or `source ~/.bashrc` (or `~/.zshrc`). If `claude doctor` reports missing variables for a plugin you don't need, just `claude plugin uninstall <name>`.
+`google-analytics` is the exception: its server uses Google Application Default Credentials, so export `GOOGLE_APPLICATION_CREDENTIALS` (path to a credentials file) and `GOOGLE_CLOUD_PROJECT`. See its [README](./plugins/google-analytics/README.md).
 
 ---
 
@@ -252,15 +188,25 @@ Wookstar focuses on domain-specific skills. For core Claude Code capabilities, t
 /plugin marketplace add anthropics/claude-plugins-official
 ```
 
-Then pick from:
+It is added automatically the first time you start Claude Code interactively. Plugins that replaced parts of this marketplace in 7.0.0:
 
-- `feature-dev`, `code-review`, `pr-review-toolkit`, `agent-sdk-dev` - dev agents
-- `typescript-lsp`, `pyright-lsp` - LSPs not covered here
-- `claude-md-management`, `hookify`, `skill-creator`, `commit-commands`, `context7`, `playwright`, `ralph-loop` - meta-tools
+- `chrome-devtools-mcp`, `playwright`, `context7`, `firecrawl`, `microsoft-docs` - browser and docs tooling formerly bundled in `developer`
+- `notion`, `cloudflare` - formerly `mcp-notion` and `mcp-cloudflare`
+- `shopify-ai-toolkit` - live Shopify API lookup and validation
+- `document-skills` and `example-skills` from `anthropics/skills` (`/plugin marketplace add anthropics/skills`) - Word, Excel, PowerPoint, PDF and web-app testing
+- `codex` from `openai/codex-plugin-cc` - OpenAI Codex
 
 ---
 
 ## Upgrading
+
+### From 6.x to 7.0.0
+
+7.0.0 retires `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` and `mcp-fetch`, moves parts of `developer`, `documents` and `shopify-developer` to official plugins, and switches MCP plugins to prompted credentials. Run the upgrade script, or hand [MIGRATION.md](./MIGRATION.md) to Claude:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash
+```
 
 <details>
 <summary><strong>Upgrading from v5.x</strong> (only relevant if you installed before v6.0)</summary>
@@ -317,19 +263,19 @@ Add the marketplace and pre-enable plugins in `.claude/settings.json` so team me
 ```json
 {
   "extraKnownMarketplaces": {
-    "wookstar": {
+    "wookstar-claude-plugins": {
       "source": {
         "source": "github",
         "repo": "henkisdabro/wookstar-claude-plugins"
       }
     }
   },
-  "enabledPlugins": [
-    "developer@wookstar-claude-plugins",
-    "documents@wookstar-claude-plugins",
-    "google-tagmanager@wookstar-claude-plugins",
-    "google-analytics@wookstar-claude-plugins"
-  ]
+  "enabledPlugins": {
+    "developer@wookstar-claude-plugins": true,
+    "documents@wookstar-claude-plugins": true,
+    "google-tagmanager@wookstar-claude-plugins": true,
+    "google-analytics@wookstar-claude-plugins": true
+  }
 }
 ```
 
@@ -348,7 +294,7 @@ cd wookstar-claude-plugins
 /plugin install developer@wookstar-claude-plugins
 
 # After making changes
-/plugin marketplace update wookstar
+/plugin marketplace update wookstar-claude-plugins
 
 # Validate manifest
 claude plugin validate .
@@ -362,8 +308,8 @@ For contributor guidelines (manifest rules, MCP file references, LSP exception, 
 
 Per-plugin READMEs:
 
-- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [gemini](./plugins/gemini/README.md) · [codex](./plugins/codex/README.md) · [timezone-tools](./plugins/timezone-tools/README.md)
-- **MCP servers** - [mcp-cloudflare](./plugins/mcp-cloudflare/README.md) · [mcp-excalidraw](./plugins/mcp-excalidraw/README.md) · [mcp-fetch](./plugins/mcp-fetch/README.md) · [mcp-google-workspace](./plugins/mcp-google-workspace/README.md) · [mcp-mikrotik](./plugins/mcp-mikrotik/README.md) · [mcp-n8n](./plugins/mcp-n8n/README.md) · [mcp-notion](./plugins/mcp-notion/README.md) · [mcp-open-meteo](./plugins/mcp-open-meteo/README.md) · [mcp-gemini-bridge](./plugins/mcp-gemini-bridge/README.md) · [mcp-perplexity](./plugins/mcp-perplexity/README.md) · [mcp-alphavantage](./plugins/mcp-alphavantage/README.md) · [mcp-coingecko](./plugins/mcp-coingecko/README.md) · [mcp-currency-conversion](./plugins/mcp-currency-conversion/README.md)
+- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [timezone-tools](./plugins/timezone-tools/README.md)
+- **MCP servers** - [mcp-excalidraw](./plugins/mcp-excalidraw/README.md) · [mcp-google-workspace](./plugins/mcp-google-workspace/README.md) · [mcp-mikrotik](./plugins/mcp-mikrotik/README.md) · [mcp-n8n](./plugins/mcp-n8n/README.md) · [mcp-open-meteo](./plugins/mcp-open-meteo/README.md) · [mcp-perplexity](./plugins/mcp-perplexity/README.md) · [mcp-alphavantage](./plugins/mcp-alphavantage/README.md) · [mcp-coingecko](./plugins/mcp-coingecko/README.md) · [mcp-currency-conversion](./plugins/mcp-currency-conversion/README.md)
 - **LSP servers** - [lsp-bash](./plugins/lsp-bash/README.md) · [lsp-css](./plugins/lsp-css/README.md) · [lsp-html](./plugins/lsp-html/README.md) · [lsp-json](./plugins/lsp-json/README.md) · [lsp-yaml](./plugins/lsp-yaml/README.md)
 
 ---

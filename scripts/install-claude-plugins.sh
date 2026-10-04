@@ -108,46 +108,43 @@ PLUGINS_TO_ENABLE=(
     "plugin-dev@claude-plugins-official"  # Required for ultimate-skill-creator
 
     # =========================================================================
-    # Wookstar Plugins (wookstar-claude-plugins) - v6.0.0
+    # Wookstar Plugins (wookstar-claude-plugins) - v7.0.0
     # =========================================================================
-    # Core toolkits (disabled by default - enable as needed)
+    # All disabled by default - uncomment what you use. Upgrading from 6.x:
+    # run scripts/upgrade-v7.sh first.
+
+    # Skill toolkits
     # "developer@wookstar-claude-plugins"
     # "documents@wookstar-claude-plugins"
-    # "claudecode@wookstar-claude-plugins"
+    # "timezone-tools@wookstar-claude-plugins"
     # "shopify-developer@wookstar-claude-plugins"
-
-    # Standalone plugins (extracted from former productivity/marketing bundles)
     # "google-apps-script@wookstar-claude-plugins"
     # "tampermonkey@wookstar-claude-plugins"
-    # "git-worktrees@wookstar-claude-plugins"
     # "google-tagmanager@wookstar-claude-plugins"
     # "google-analytics@wookstar-claude-plugins"
     # "google-ads-scripts@wookstar-claude-plugins"
-    # "gemini@wookstar-claude-plugins"
-    # "codex@wookstar-claude-plugins"
-    # "timezone-tools@wookstar-claude-plugins"
     # "ffmpeg@wookstar-claude-plugins"
     # "message@wookstar-claude-plugins"
-    # "humanizer@wookstar-claude-plugins"
+    # "humanise@wookstar-claude-plugins"
     # "react-best-practices@wookstar-claude-plugins"
 
-    # Ultimate Skill Creator - requires plugin-dev to be installed first
-    # Provides: /create-skill-ultimate, /setup-skill-hook, skill-architect agent
-    # "ultimate-skill-creator@wookstar-claude-plugins"
-
-    # Individual MCP servers
-    "mcp-fetch@wookstar-claude-plugins"
-    # "mcp-google-workspace@wookstar-claude-plugins"
-    # "mcp-mikrotik@wookstar-claude-plugins"
-    # "mcp-n8n@wookstar-claude-plugins"
-    # "mcp-notion@wookstar-claude-plugins"
-    # "mcp-open-meteo@wookstar-claude-plugins"
-    # "mcp-gemini-bridge@wookstar-claude-plugins"
+    # MCP servers
     # "mcp-perplexity@wookstar-claude-plugins"
     # "mcp-excalidraw@wookstar-claude-plugins"
     # "mcp-alphavantage@wookstar-claude-plugins"
     # "mcp-coingecko@wookstar-claude-plugins"
     # "mcp-currency-conversion@wookstar-claude-plugins"
+    # "mcp-google-workspace@wookstar-claude-plugins"
+    # "mcp-mikrotik@wookstar-claude-plugins"
+    # "mcp-n8n@wookstar-claude-plugins"
+    # "mcp-open-meteo@wookstar-claude-plugins"
+
+    # LSP servers (install the language server binary first - see README)
+    # "lsp-css@wookstar-claude-plugins"
+    # "lsp-html@wookstar-claude-plugins"
+    # "lsp-json@wookstar-claude-plugins"
+    # "lsp-yaml@wookstar-claude-plugins"
+    # "lsp-bash@wookstar-claude-plugins"
 
     # =========================================================================
     # Claude Skills (claude-skills) - jezweb/claude-skills
