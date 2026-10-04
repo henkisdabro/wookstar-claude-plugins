@@ -13,7 +13,8 @@ that lost components. See MIGRATION.md.
 
 Usage: upgrade-v7.sh [--dry-run] [--no-install]
   --dry-run     print what would happen without changing anything
-  --no-install  uninstall retired plugins only; install and configure nothing
+  --no-install  update kept plugins and uninstall retired ones; install and
+                configure nothing
 
 Piped from curl, pass options after `bash -s --`:
   curl -fsSL <url>/upgrade-v7.sh | bash -s -- --dry-run
@@ -116,6 +117,7 @@ installed=$(claude plugin list --json </dev/null)
 # "<name> <scope>" for every plugin installed from this marketplace.
 ours=$(jq -r --arg mp "$MP" '.[] | select(.id | endswith("@" + $mp)) | "\(.id | split("@")[0]) \(.scope)"' <<<"$installed")
 has_plugin() { awk -v n="$1" '$1 == n { found = 1 } END { exit !found }' <<<"$ours"; }
+has_user_plugin() { awk -v n="$1" '$1 == n && $2 == "user" { found = 1 } END { exit !found }' <<<"$ours"; }
 
 echo "== Refreshing the $MP marketplace"
 run claude plugin marketplace update "$MP" || true
@@ -177,7 +179,20 @@ if [ "$INSTALL" = 1 ]; then
     has_plugin "$name" || continue
     any=1
     id="$name@$MP"
+    if ! has_user_plugin "$name"; then
+      other_scope+="  claude plugin configure $id   # after updating it in that project"$'\n'
+      continue
+    fi
     info=$(claude plugin configure "$id" --json </dev/null 2>/dev/null) || { echo "  $name: could not read its options - run: claude plugin configure $id"; continue; }
+    # 6.x versions declare no options, so an empty schema means the update has not landed.
+    if [ "$(jq '(.schema // {}) | length' <<<"$info")" = 0 ]; then
+      if [ "$DRY" = 1 ]; then
+        echo "  $name: needs settings once updated to 2.0.0 - a real run asks for them"
+      else
+        echo "  $name: still on a version without settings - run: claude plugin update $id, then run this script again"
+      fi
+      continue
+    fi
     missing=$(jq -r '.unconfigured[]?' <<<"$info")
     if [ -z "$missing" ]; then echo "  $name: already configured"; continue; fi
     values='{}'
