@@ -8,7 +8,7 @@ hooks:
     - matcher: "Write|Edit|MultiEdit"
       hooks:
         - type: command
-          command: "command -v bun >/dev/null 2>&1 || exit 0; bun run ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts"
+          command: "command -v bun >/dev/null 2>&1 || exit 0; bun run \"${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts\""
           timeout: 30
 ---
 
@@ -52,14 +52,14 @@ bun, installs dependencies, self-tests the build, and prints the exact serve
 command (and fails loudly with the fix if the environment is missing something):
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh
+bash "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh"
 ```
 
 Then serve (use `bun` if it is on PATH, otherwise `$HOME/.bun/bin/bun` - the
 preflight prints the resolved path):
 
 ```bash
-bun run ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts /path/to/name.fragment.md
+bun run "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts" /path/to/name.fragment.md
 ```
 
 Run with `run_in_background: true`. The server prints the output HTML path then the URL. Relay the URL to the user. On subsequent edits, the server hot-reloads automatically - do not re-run it.
