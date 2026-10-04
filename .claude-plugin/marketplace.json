@@ -406,7 +406,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Rich text message drafts for Gmail, mail apps, and WhatsApp with live Copy/Open lane preview",
-      "version": "3.0.1",
+      "version": "3.0.2",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

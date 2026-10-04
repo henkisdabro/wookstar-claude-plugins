@@ -30,6 +30,8 @@ Bun-based preview server. Fragments are written in Markdown - the build script c
 
 **The hook has already started the server and opened the browser by the time the Write tool returns.** Do NOT run `bun run serve.ts` yourself. Do NOT call `open <url>`. Do NOT launch a second server. The browser is already open.
 
+Edit a fragment only with Write or Edit. The hook fires on those tools alone, so a Bash or Python edit leaves the preview stale.
+
 **Always relay the preview URL to the user.** Read it from `.claude/.message-preview-url`. If that file is empty or missing, the hook did not start a server - run the manual **Fallback** below rather than guessing at a URL.
 
 **On revision** ("make it shorter", "change the tone"): use Read to load the fragment, Edit to apply changes. The running server hot-reloads over WebSocket (typically <100 ms; up to ~400 ms for editors that save atomically, which reload via the mtime poll). Do not echo the revised body - just confirm the change and include the same URL. Do NOT start a new server - the existing one is still running (and the `Edit` matcher on the hook will resurrect one if it had shut down).
