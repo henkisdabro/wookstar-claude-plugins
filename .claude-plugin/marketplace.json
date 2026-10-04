@@ -381,8 +381,8 @@
     {
       "name": "ffmpeg",
       "source": "./plugins/ffmpeg",
-      "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation - covers filters, codecs, GPU acceleration, and common workflows",
-      "version": "1.0.0",
+      "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -406,7 +406,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Rich text message drafts for Gmail, mail apps, and WhatsApp with live Copy/Open lane preview",
-      "version": "3.0.0",
+      "version": "3.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

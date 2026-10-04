@@ -169,19 +169,17 @@ ffmpeg -i input.mp4 \
 ```sh
 ffmpeg -i input.mp4 \
   -vf "select='gt(scene,0.4)'" \
-  -vsync 0 scene_%03d.jpg
+  -fps_mode passthrough scene_%03d.jpg
 ```
 
-[`-vsync 0`](https://www.ffmpeg.org/ffmpeg-filters.html#Examples-126) drops duplicate frames from the same scene.
-
-Note: `-vsync` is deprecated in newer ffmpeg versions; use `-fps_mode` instead. [Reference](https://ffmpeg.org/ffmpeg.html#:~:text=%2Dfps_mode)
+[`-fps_mode passthrough`](https://ffmpeg.org/ffmpeg.html#Advanced-Video-options) writes only the selected frames, instead of duplicating them to fill a constant frame rate.
 
 ### Keyframe-based tile
 
 ```sh
 ffmpeg -skip_frame nokey -i input.mp4 \
   -vf 'scale=640:480,tile=4x4' \
-  -an -vsync 0 keyframes_%03d.png
+  -an -fps_mode passthrough keyframes_%03d.png
 ```
 
 `-skip_frame nokey` - skip all non-keyframes.
@@ -191,7 +189,7 @@ ffmpeg -skip_frame nokey -i input.mp4 \
 ```sh
 ffmpeg -i input.mp4 \
   -vf "select=not(mod(n\,10)),scale=640:480,tile=4x2" \
-  -vsync 0 tile_%03d.png
+  -fps_mode passthrough tile_%03d.png
 ```
 
 Every 10th frame in 4x2 tiles. Remove `,tile=4x2` for individual frame images.
