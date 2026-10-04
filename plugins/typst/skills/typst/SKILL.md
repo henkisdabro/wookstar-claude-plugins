@@ -1,6 +1,6 @@
 ---
 name: typst
-description: Typst language reference - markup, math and code modes, set/show rules, layout, tables, templates, and PDF/HTML/PNG/SVG export, current to the latest stable release. Use when writing or editing a .typ file, fixing a Typst compile error, building a Typst table, figure or equation, writing a Typst template, exporting Typst to PDF/A, PDF/UA or HTML, migrating a document to a newer Typst release, or asking what changed in Typst. Do NOT use for Word (.docx) files or filling existing PDF forms - use Anthropic's document-skills (docx, pdf); do NOT use for extracting text from an existing PDF - use the documents plugin's pdf-extract.
+description: Typst language reference - markup, math and code modes, set/show rules, layout, tables, templates, and PDF/HTML/PNG/SVG export, current to the latest stable release. Use when writing or editing a .typ file, fixing a Typst compile error, building a Typst table, figure or equation, writing a Typst template, exporting Typst to PDF/A, PDF/UA or HTML, migrating a document to a newer Typst release, or asking what changed in Typst. Do NOT use for Word (.docx) files - use Anthropic's document-skills; for filling existing PDF forms - use the documents plugin's pdf-processing-pro; for extracting text from an existing PDF - use the documents plugin's pdf-extract.
 ---
 
 # Typst
