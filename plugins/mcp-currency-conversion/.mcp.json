@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "currency-conversion": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://currency-mcp.wesbos.com/sse"]
+      "type": "http",
+      "url": "https://currency-mcp.wesbos.com/mcp"
     }
   }
 }

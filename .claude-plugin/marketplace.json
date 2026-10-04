@@ -294,7 +294,7 @@
       "name": "mcp-currency-conversion",
       "source": "./plugins/mcp-currency-conversion",
       "description": "Real-time currency exchange rates and conversion (no API key required)",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
