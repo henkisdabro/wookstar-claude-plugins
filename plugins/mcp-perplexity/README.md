@@ -8,19 +8,6 @@ Perplexity AI-powered search and information retrieval.
 /plugin install mcp-perplexity@wookstar-claude-plugins
 ```
 
-## Required Environment Variables
+Claude Code prompts for your Perplexity API key when you enable the plugin and stores it in your system keychain. Get a key at https://www.perplexity.ai/settings/api.
 
-```bash
-PERPLEXITY_API_KEY=your_key_here
-```
-
-## API Key
-
-Get your API key at https://www.perplexity.ai/settings/api
-
-## Usage
-
-Once installed, use for:
-- AI-powered research and information gathering
-- Real-time information retrieval
-- Searching for latest news and developments
+Since 2.0.0 the `PERPLEXITY_API_KEY` shell variable is no longer read - enter the key at the prompt instead.
