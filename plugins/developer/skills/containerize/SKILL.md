@@ -26,7 +26,7 @@ Done when you can name the runtime, package manager, build command, start comman
 
 ## 2. Scaffold
 
-With no existing Dockerfile, and a runtime `docker init` covers (Node, Python, Go, Rust, Java, ASP.NET Core, PHP), run `docker init` as the starting point - it writes `Dockerfile`, `.dockerignore`, `compose.yaml` and `README.Docker.md`. It is interactive; when you cannot answer its prompts, write the files by hand from [references/patterns.md](references/patterns.md).
+With no existing Dockerfile, write the files by hand from [references/patterns.md](references/patterns.md). `docker init` prompts interactively and the Bash tool has no terminal, so offer it to the user as an alternative they run themselves - it scaffolds `Dockerfile`, `.dockerignore`, `compose.yaml` and `README.Docker.md` for Node, Python, Go, Rust, Java, ASP.NET Core and PHP.
 
 Done when the four files exist (or you have the hand-written equivalents open).
 
