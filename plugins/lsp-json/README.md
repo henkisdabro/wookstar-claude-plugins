@@ -1,4 +1,4 @@
-# json-lsp
+# lsp-json
 
 JSON and JSONC language server for Claude Code, powered by [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted).
 
@@ -21,7 +21,7 @@ vscode-json-language-server --version
 ### 2. Install the plugin
 
 ```bash
-/plugin install json-lsp@wookstar-claude-plugins
+/plugin install lsp-json@wookstar-claude-plugins
 ```
 
 ## Supported Files
@@ -41,4 +41,4 @@ vscode-json-language-server --version
 
 ## Notes
 
-`vscode-langservers-extracted` bundles the CSS, HTML, and JSON language servers together. Installing it once covers `css-lsp`, `html-lsp`, and `json-lsp`.
+`vscode-langservers-extracted` bundles the CSS, HTML, and JSON language servers together. Installing it once covers `lsp-css`, `lsp-html`, and `lsp-json`.

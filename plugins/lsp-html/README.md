@@ -1,4 +1,4 @@
-# html-lsp
+# lsp-html
 
 HTML language server for Claude Code, powered by [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted).
 
@@ -21,7 +21,7 @@ vscode-html-language-server --version
 ### 2. Install the plugin
 
 ```bash
-/plugin install html-lsp@wookstar-claude-plugins
+/plugin install lsp-html@wookstar-claude-plugins
 ```
 
 ## Supported Files
@@ -41,4 +41,4 @@ vscode-html-language-server --version
 
 ## Notes
 
-`vscode-langservers-extracted` bundles the CSS, HTML, and JSON language servers together. Installing it once covers `css-lsp`, `html-lsp`, and `json-lsp`.
+`vscode-langservers-extracted` bundles the CSS, HTML, and JSON language servers together. Installing it once covers `lsp-css`, `lsp-html`, and `lsp-json`.
