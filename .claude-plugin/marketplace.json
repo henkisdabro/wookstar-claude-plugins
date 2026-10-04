@@ -463,8 +463,8 @@
     {
       "name": "react-best-practices",
       "source": "./plugins/react-best-practices",
-      "description": "Comprehensive React and Next.js performance optimisation guide with 40+ rules for eliminating wasteful re-renders, optimising bundle size, and following modern React patterns",
-      "version": "1.0.1",
+      "description": "Vercel Engineering's React and Next.js performance rules, ranked by impact, with local notes for React Compiler and Next.js 16 caching.",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
