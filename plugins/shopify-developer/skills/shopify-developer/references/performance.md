@@ -1,6 +1,6 @@
 # Performance Optimisation Reference
 
-Expert guidance for optimising Shopify store performance including theme speed, asset optimisation, and Core Web Vitals.
+Theme speed, asset loading and Core Web Vitals for Liquid storefronts.
 
 ## Core Capabilities
 
@@ -8,96 +8,37 @@ Expert guidance for optimising Shopify store performance including theme speed, 
 
 Images are typically the largest assets - optimise aggressively.
 
-**Use Shopify CDN Image Sizing:**
-```liquid
-{# ❌ Don't load full-size images #}
-<img src="{{ product.featured_image.src }}" alt="{{ product.title }}">
+**Size every image through the CDN** with `image_url` and let `image_tag` write the markup. `image_tag` adds `width`, `height` (no layout shift), a `srcset` and `sizes`; the CDN negotiates WebP/AVIF automatically, so `<picture>` format switching is unnecessary. `img_url` is deprecated.
 
-{# ✅ Use img_url filter with appropriate size #}
-<img
-  src="{{ product.featured_image | img_url: '800x800' }}"
-  alt="{{ product.featured_image.alt | escape }}"
-  loading="lazy"
-  width="800"
-  height="800"
->
+```liquid
+{# Standard image: lazy, responsive #}
+{{
+  product.featured_image
+  | image_url: width: 1200
+  | image_tag:
+    loading: 'lazy',
+    widths: '400, 800, 1200',
+    sizes: '(min-width: 990px) 50vw, 100vw',
+    alt: product.featured_image.alt
+}}
+
+{# Above-the-fold hero: eager, high priority, preloaded via a Link header #}
+{{
+  section.settings.hero_image
+  | image_url: width: 2400
+  | image_tag:
+    loading: 'eager',
+    fetchpriority: 'high',
+    preload: true,
+    widths: '800, 1600, 2400',
+    sizes: '100vw'
+}}
 ```
 
-**Responsive Images:**
-```liquid
-<img
-  src="{{ image | img_url: '800x' }}"
-  srcset="
-    {{ image | img_url: '400x' }} 400w,
-    {{ image | img_url: '800x' }} 800w,
-    {{ image | img_url: '1200x' }} 1200w,
-    {{ image | img_url: '1600x' }} 1600w
-  "
-  sizes="(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px"
-  alt="{{ image.alt | escape }}"
-  loading="lazy"
-  width="800"
-  height="800"
->
-```
-
-**Modern Image Formats:**
-```liquid
-<picture>
-  {# WebP for modern browsers #}
-  <source
-    type="image/webp"
-    srcset="
-      {{ image | img_url: '400x', format: 'pjpg' }} 400w,
-      {{ image | img_url: '800x', format: 'pjpg' }} 800w
-    "
-  >
-
-  {# Fallback to JPEG #}
-  <img
-    src="{{ image | img_url: '800x' }}"
-    srcset="
-      {{ image | img_url: '400x' }} 400w,
-      {{ image | img_url: '800x' }} 800w
-    "
-    alt="{{ image.alt | escape }}"
-    loading="lazy"
-  >
-</picture>
-```
-
-**Lazy Loading:**
-```liquid
-{# Native lazy loading #}
-<img
-  src="{{ image | img_url: '800x' }}"
-  alt="{{ image.alt | escape }}"
-  loading="lazy"
-  decoding="async"
->
-
-{# Eager load above-the-fold images #}
-{% if forloop.index <= 3 %}
-  <img src="{{ image | img_url: '800x' }}" loading="eager">
-{% else %}
-  <img src="{{ image | img_url: '800x' }}" loading="lazy">
-{% endif %}
-```
-
-**Preload Critical Images:**
-```liquid
-{# In <head> for hero images #}
-<link
-  rel="preload"
-  as="image"
-  href="{{ section.settings.hero_image | img_url: '1920x' }}"
-  imagesrcset="
-    {{ section.settings.hero_image | img_url: '800x' }} 800w,
-    {{ section.settings.hero_image | img_url: '1920x' }} 1920w
-  "
-  imagesizes="100vw"
->
-```
+- Lazy-load everything except the LCP image; lazy-loading the hero is the most common LCP regression.
+- In product grids, eager-load only the first row (`forloop.index <= 4`) and lazy-load the rest.
+- `preload: true` belongs on at most one or two images per page.
+- `image_url` also takes `height:`, `crop:` and `format: 'pjpg'`; never request a width larger than the source.
 
 ### 2. JavaScript Optimisation
 
@@ -447,11 +388,8 @@ Improve Google's Core Web Vitals metrics.
 ```liquid
 {# Optimise largest element load time #}
 
-{# 1. Preload hero image #}
-<link rel="preload" as="image" href="{{ hero_image | img_url: '1920x' }}">
-
-{# 2. Use priority hint #}
-<img src="{{ hero_image | img_url: '1920x' }}" fetchpriority="high">
+{# 1 and 2. Preload the hero and give it high fetch priority #}
+{{ hero_image | image_url: width: 1920 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true }}
 
 {# 3. Optimise server response time (use Shopify CDN) #}
 
@@ -490,12 +428,8 @@ requestIdleCallback(() => {
 **Cumulative Layout Shift (CLS):**
 ```liquid
 {# 1. Always set width and height on images #}
-<img
-  src="{{ image | img_url: '800x' }}"
-  width="800"
-  height="600"
-  alt="Product"
->
+{{ image | image_url: width: 800 | image_tag: alt: 'Product' }}
+{# image_tag writes width and height from the image's real dimensions #}
 
 {# 2. Reserve space for dynamic content #}
 <div style="min-height: 400px;">
@@ -548,7 +482,7 @@ observer.observe({ entryTypes: ['longtask'] });
 ## Performance Checklist
 
 **Images:**
-- [ ] Use `img_url` filter with appropriate sizes
+- [ ] Use `image_url` + `image_tag` with `widths` and `sizes`
 - [ ] Implement responsive images with `srcset`
 - [ ] Add `loading="lazy"` to below-fold images
 - [ ] Set explicit `width` and `height` attributes

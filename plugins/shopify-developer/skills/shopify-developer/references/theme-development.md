@@ -1,6 +1,6 @@
 # Theme Development Reference
 
-Expert guidance for Shopify theme development including file structure, Online Store 2.0 architecture, sections, snippets, and configuration.
+File structure, Online Store 2.0 architecture, sections, blocks, snippets and settings.
 
 ## Core Capabilities
 
@@ -135,11 +135,7 @@ Sections are reusable content blocks with schema configuration:
 ```liquid
 <div class="hero" style="background-color: {{ section.settings.background_color }}">
   {% if section.settings.image %}
-    <img
-      src="{{ section.settings.image | img_url: '1920x' }}"
-      alt="{{ section.settings.heading }}"
-      loading="lazy"
-    >
+    {{ section.settings.image | image_url: width: 1920 | image_tag: alt: section.settings.heading, sizes: '100vw' }}
   {% endif %}
 
   <div class="hero__content">
@@ -384,11 +380,7 @@ Reusable template partials:
 <div class="product-card">
   <a href="{{ product.url }}">
     {% if product.featured_image %}
-      <img
-        src="{{ product.featured_image | img_url: '400x400' }}"
-        alt="{{ product.featured_image.alt | escape }}"
-        loading="lazy"
-      >
+      {{ product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy' }}
     {% else %}
       {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
     {% endif %}
@@ -863,7 +855,7 @@ Access in Liquid:
 
 ```liquid
 {% if settings.logo %}
-  <img src="{{ settings.logo | img_url: '300x' }}" alt="{{ shop.name }}">
+  {{ settings.logo | image_url: width: 300 | image_tag: alt: shop.name }}
 {% endif %}
 
 {{ settings.logo.width }}

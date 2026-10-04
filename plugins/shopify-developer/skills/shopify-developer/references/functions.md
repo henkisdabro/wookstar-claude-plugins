@@ -1,303 +1,46 @@
-# Shopify Functions Reference
+# Shopify Functions
 
-Shopify Functions replace Scripts as the way to customise backend logic. They run in a WebAssembly sandbox with strict performance guarantees.
+Functions are the only way to customise backend commerce logic. Shopify Scripts stopped executing on 30 June 2026 (editing closed on 15 April 2026), so any store still relying on a Script has lost that behaviour - rebuild it as a Function rather than debugging the Script.
 
-## Overview
+A Function is a WebAssembly module inside an app. Shopify runs it at a fixed point in cart/checkout with a JSON input you shape through a GraphQL input query, and it returns JSON operations. No network access, no state between runs.
 
-| Item | Value |
-|------|-------|
-| Runtime | WebAssembly (Wasm) |
-| Languages | Rust (recommended), JavaScript (via Javy) |
-| Execution limit | 11ms instruction count limit |
-| Memory limit | 64 KB linear memory |
-| Input/Output | JSON (stdin/stdout) |
-| API version | 2026-01 |
+## Function APIs
 
-## Function Types
+| API | Replaces in Scripts terms | Typical use |
+|-----|---------------------------|-------------|
+| Discount | Line item and shipping Scripts | Product, order and delivery discounts from one function |
+| Cart Transform | - | Bundles: expand, merge or update cart lines |
+| Cart and Checkout Validation | - | Block checkout with an error (quantity rules, B2B rules) |
+| Delivery Customization | Shipping Scripts (hide/rename/reorder) | Hide, rename or reorder delivery options |
+| Payment Customization | Payment Scripts | Hide, rename or reorder payment methods |
+| Fulfillment Constraints | - | Force items to ship together or from certain locations |
+| Order Routing (location rules) | - | Rank locations for fulfilment |
+| Pickup Point / Local Pickup Delivery Option Generators | - | Generate pickup options |
 
-| Type | Purpose | Replaces |
-|------|---------|----------|
-| `product_discounts` | Automatic product discounts | Shopify Scripts (line item) |
-| `order_discounts` | Order-level discounts | Shopify Scripts (order) |
-| `shipping_discounts` | Shipping rate discounts | Shopify Scripts (shipping) |
-| `payment_customization` | Hide/reorder payment methods | Shopify Scripts |
-| `delivery_customization` | Hide/reorder/rename delivery options | Shopify Scripts |
-| `cart_transform` | Merge/expand/update cart lines | New |
-| `fulfillment_constraints` | Constrain fulfillment locations | New |
-| `order_routing_location_rule` | Custom order routing | New |
-| `cart_checkout_validation` | Validate cart at checkout | New |
+Targets, input fields and output operations differ per API and per version: fetch the API's schema through the Dev MCP or <https://shopify.dev/docs/api/functions> before writing the input query or the output. The older separate Product, Order and Shipping Discount APIs are superseded by the single Discount API - port them when touching them.
 
-## Getting Started
+## Limits that shape the code
 
-### Create a Function
+Fixed: compiled binary 256 kB, linear memory 10,000 kB, stack 512 kB, logs 1 kB. Per run (scaled for carts up to 200 lines): 11 million instructions, 128 kB input, 20 kB output. Check <https://shopify.dev/docs/api/functions> if a limit error appears - Shopify adjusts them.
 
-```bash
-# Generate a new function extension
-shopify app generate extension --template discount_function_rust
-# or
-shopify app generate extension --template discount_function_javascript
+- **Rust** is Shopify's strong recommendation; JavaScript/TypeScript (compiled with Javy) works but burns instructions fast on large carts.
+- Instruction count scales with cart size - test with a 200-line cart, not a 3-line one.
+- Keep the input query minimal: input size counts, and every field adds parsing work.
+- Configuration comes from a metafield on the function owner (discount, customisation) declared as an input variable - never hardcode merchant values.
 
-# Structure created:
-extensions/my-discount/
-├── src/
-│   ├── main.rs          # Rust: function logic
-│   └── run.graphql      # Input query
-├── Cargo.toml           # Rust dependencies
-├── shopify.extension.toml
-└── schema.graphql       # Generated API schema
-```
+## Workflow
 
-### Input Query (run.graphql)
+1. `shopify app generate extension` and choose the Function API template and language. This writes `shopify.extension.toml`, the input query (`*.graphql`), the run source and `schema.graphql`.
+2. Set `api_version` in `shopify.extension.toml` to the latest stable (<https://shopify.dev/docs/api/usage/versioning>), then `shopify app function schema` to refresh `schema.graphql` and `shopify app function typegen` for typed input.
+3. Write the input query, validate it against the schema (Dev MCP), then the logic.
+4. Test locally: `shopify app function run` with a JSON input file, and `shopify app function replay` to rerun real executions captured during `shopify app dev`.
+5. `shopify app deploy`, then activate it in the admin (a discount, or the delivery/payment customisation settings) - deployment alone does not switch it on.
 
-Define what data your function receives:
+Done when `function run` passes on a large-cart fixture and the instruction count in the output is comfortably under the limit.
 
-```graphql
-query RunInput {
-  cart {
-    lines {
-      quantity
-      merchandise {
-        ... on ProductVariant {
-          id
-          product {
-            id
-            hasAnyTag(tags: ["VIP"])
-          }
-        }
-      }
-      cost {
-        amountPerQuantity {
-          amount
-          currencyCode
-        }
-      }
-    }
-  }
-  discountNode {
-    metafield(namespace: "discount", key: "config") {
-      value
-    }
-  }
-}
-```
+## Migrating from a retired Script
 
-### Rust Implementation
-
-```rust
-use shopify_function::prelude::*;
-use shopify_function::Result;
-
-#[shopify_function_target(rename = "function")]
-fn function(input: input::ResponseData) -> Result<output::FunctionRunResult> {
-    let config: serde_json::Value = serde_json::from_str(
-        input.discount_node.metafield
-            .as_ref()
-            .map(|m| m.value.as_str())
-            .unwrap_or("{}"),
-    )?;
-
-    let percentage = config.get("percentage")
-        .and_then(|v| v.as_f64())
-        .unwrap_or(0.0);
-
-    let targets: Vec<output::Target> = input
-        .cart
-        .lines
-        .iter()
-        .filter_map(|line| {
-            let variant = match &line.merchandise {
-                input::InputCartLinesMerchandise::ProductVariant(v) => v,
-                _ => return None,
-            };
-
-            if variant.product.has_any_tag {
-                Some(output::Target::ProductVariant(
-                    output::ProductVariantTarget {
-                        id: variant.id.clone(),
-                        quantity: None,
-                    },
-                ))
-            } else {
-                None
-            }
-        })
-        .collect();
-
-    if targets.is_empty() {
-        return Ok(output::FunctionRunResult {
-            discounts: vec![],
-            discount_application_strategy:
-                output::DiscountApplicationStrategy::FIRST,
-        });
-    }
-
-    Ok(output::FunctionRunResult {
-        discounts: vec![output::Discount {
-            message: Some(format!("{}% VIP discount", percentage)),
-            targets,
-            value: output::Value::Percentage(output::Percentage {
-                value: percentage.to_string(),
-            }),
-        }],
-        discount_application_strategy:
-            output::DiscountApplicationStrategy::FIRST,
-    })
-}
-```
-
-### JavaScript Implementation
-
-```javascript
-// src/run.js
-export function run(input) {
-  const config = JSON.parse(
-    input?.discountNode?.metafield?.value ?? "{}"
-  );
-
-  const percentage = parseFloat(config.percentage) || 0;
-
-  const targets = input.cart.lines
-    .filter((line) => {
-      return line.merchandise?.__typename === "ProductVariant"
-        && line.merchandise.product.hasAnyTag;
-    })
-    .map((line) => ({
-      productVariant: { id: line.merchandise.id },
-    }));
-
-  if (targets.length === 0) {
-    return { discounts: [], discountApplicationStrategy: "FIRST" };
-  }
-
-  return {
-    discounts: [
-      {
-        message: `${percentage}% VIP discount`,
-        targets,
-        value: {
-          percentage: { value: percentage.toString() },
-        },
-      },
-    ],
-    discountApplicationStrategy: "FIRST",
-  };
-}
-```
-
-## Configuration
-
-### shopify.extension.toml
-
-```toml
-api_version = "2026-01"
-
-[[extensions]]
-name = "VIP Discount"
-handle = "vip-discount"
-type = "function"
-
-  [extensions.build]
-  command = "cargo wasi build --release"
-  path = "target/wasm32-wasi/release/vip-discount.wasm"
-
-  # For JavaScript:
-  # command = "npx javy compile src/run.js -o dist/function.wasm"
-  # path = "dist/function.wasm"
-
-  [extensions.targeting]
-  target = "purchase.product-discount.run"
-
-  [extensions.ui]
-  handle = "vip-discount-ui"
-
-  [extensions.input.variables]
-  namespace = "discount"
-  key = "config"
-```
-
-## Testing
-
-### Unit tests (Rust)
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_no_discount_without_tag() {
-        let input = input::ResponseData {
-            cart: input::InputCart {
-                lines: vec![/* line without VIP tag */],
-            },
-            discount_node: input::InputDiscountNode {
-                metafield: Some(input::InputDiscountNodeMetafield {
-                    value: r#"{"percentage": 10}"#.to_string(),
-                }),
-            },
-        };
-
-        let result = function(input).unwrap();
-        assert!(result.discounts.is_empty());
-    }
-}
-```
-
-### Local testing
-
-```bash
-# Test with sample input
-shopify app function run --path extensions/my-discount
-
-# Build and preview
-shopify app dev
-```
-
-## Deployment
-
-```bash
-# Deploy function with app
-shopify app deploy
-
-# Functions are versioned with the app
-# Each deploy creates a new function version
-```
-
-## Migration from Scripts
-
-| Scripts | Functions |
-|---------|-----------|
-| Ruby-like DSL | Rust or JavaScript (Wasm) |
-| Online Store only | All channels (POS, B2B, headless) |
-| Limited to 3 types | 10+ function types |
-| No version control | Git-based, CI/CD ready |
-| Script Editor app | Shopify CLI |
-| Shopify-hosted | Developer-hosted logic |
-
-**Migration steps:**
-
-1. Identify Scripts in use (Settings > Apps > Script Editor)
-2. Map each Script to a Function type (see table above)
-3. Rewrite logic in Rust or JavaScript
-4. Test with `shopify app function run`
-5. Deploy and activate via Shopify admin
-6. Disable old Scripts
-
-## Performance Guidelines
-
-- Functions must complete within the instruction count limit (~11ms equivalent)
-- Minimise allocations - reuse buffers where possible
-- Avoid complex string operations in hot paths
-- Rust compiles to smaller, faster Wasm than JavaScript
-- Use `cargo wasi build --release` for optimised builds
-- Profile with `shopify app function run --export-timing`
-
-## Best Practices
-
-1. **Use Rust for production** - smaller binaries, faster execution
-2. **Use JavaScript for prototyping** - faster iteration, familiar syntax
-3. **Keep input queries minimal** - request only the fields you need
-4. **Store configuration in metafields** - avoid hardcoded values
-5. **Test edge cases** - empty carts, missing metafields, zero quantities
-6. **Version your functions** - use semantic versioning with app deploys
-7. **Monitor execution** - check function logs in Partner Dashboard
+1. Recover what the Script did - the Script Editor source if the merchant exported it, otherwise the observed checkout behaviour and the merchant's description.
+2. Map each Script to the Function API in the table above; one Script may become several Functions (for example a discount plus a delivery customisation).
+3. Move hardcoded values (tags, thresholds, codes) into the function's configuration metafield.
+4. Functions run on every channel that uses checkout (online store, headless, B2B), where Scripts ran on the online store only - confirm the merchant wants that reach.

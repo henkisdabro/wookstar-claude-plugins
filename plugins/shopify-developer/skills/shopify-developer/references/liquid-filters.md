@@ -588,19 +588,22 @@ Get theme asset CDN URL:
 {# Output: //cdn.shopify.com/s/files/1/0000/0000/t/1/assets/logo.png #}
 ```
 
-### img_url
+### image_url
 
-Generate image URL with size:
+Generate a CDN URL for an image object at a given size. Replaces the deprecated `img_url`.
 
 ```liquid
-{{ product.featured_image | img_url: '500x500' }}
-{# Resize to 500x500 #}
+{{ product.featured_image | image_url: width: 500 }}
+{{ product.featured_image | image_url: width: 500, height: 500, crop: 'center' }}
+{{ product.featured_image | image_url: width: 800, format: 'pjpg' }}
+```
 
-{{ product.featured_image | img_url: 'large' }}
-{# Named size: pico, icon, thumb, small, compact, medium, large, grande, 1024x1024, 2048x2048 #}
+### image_tag
 
-{{ product.featured_image | img_url: '500x500', crop: 'center' }}
-{# With crop #}
+Render an `<img>` with `width`, `height`, `srcset` and `sizes` from an `image_url` result.
+
+```liquid
+{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '400, 800', sizes: '50vw' }}
 ```
 
 ### link_to_type
