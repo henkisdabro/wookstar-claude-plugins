@@ -52,9 +52,9 @@ check_claude_installed() {
         print_error "Claude Code is not installed or not in PATH"
         echo ""
         echo "Please install Claude Code first:"
-        echo "  npm install -g @anthropic-ai/claude-code"
+        echo "  curl -fsSL https://claude.ai/install.sh | bash"
         echo ""
-        echo "Or visit: https://claude.ai/code"
+        echo "Or visit: https://code.claude.com/docs/en/setup"
         exit 1
     fi
     print_success "Claude Code is installed"
