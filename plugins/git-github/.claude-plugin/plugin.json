@@ -1,0 +1,10 @@
+{
+  "name": "git-github",
+  "description": "Git and GitHub conventions with a live GitHub Actions version check that resolves every uses: line from GitHub, plus a user-triggered /release workflow that bumps every version file, moves the changelog, tags and publishes a GitHub release after confirmation.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}
