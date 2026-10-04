@@ -1,7 +1,0 @@
-# Timezone Tools - Python Dependencies
-# Install with: pip install -r requirements.txt
-
-# Local timezone detection
-tzlocal>=5.0
-
-# Note: zoneinfo is built into Python 3.9+, no installation needed
