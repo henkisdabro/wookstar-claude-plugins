@@ -152,7 +152,7 @@ plt.show()
 | **Final** | **120** | **64** |
 
 ::: {.fragment}
-**3x faster, 4x less memory**
+**12x faster, 4x less memory**
 :::
 
 ## Key Takeaways
@@ -175,6 +175,6 @@ plt.show()
 Thank you!
 :::
 
-Slides: [your-url.com/slides](https://your-url.com/slides)
+Slides: [example.com/slides](https://example.com/slides)
 
 Code: [github.com/you/repo](https://github.com/you/repo)

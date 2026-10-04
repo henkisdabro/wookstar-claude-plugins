@@ -201,7 +201,7 @@ format:
 
 ```scss
 /*-- scss:defaults --*/
-$code-block-font-size: 0.6em;  # Default is 0.55em
+$code-block-font-size: 0.6em;  // Default is 0.55em
 ```
 
 ---
