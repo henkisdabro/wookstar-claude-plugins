@@ -5,5 +5,20 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "userConfig": {
+    "google_oauth_client_id": {
+      "type": "string",
+      "title": "Google OAuth client ID",
+      "description": "Desktop-app OAuth client ID from Google Cloud Console",
+      "required": true
+    },
+    "google_oauth_client_secret": {
+      "type": "string",
+      "title": "Google OAuth client secret",
+      "description": "Secret for the OAuth client above",
+      "required": true,
+      "sensitive": true
+    }
+  }
 }

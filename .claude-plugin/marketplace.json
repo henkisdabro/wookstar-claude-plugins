@@ -314,7 +314,7 @@
       "name": "mcp-google-workspace",
       "source": "./plugins/mcp-google-workspace",
       "description": "Google Workspace integration (Gmail, Drive, Calendar)",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
