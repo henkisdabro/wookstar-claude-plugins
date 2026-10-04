@@ -212,25 +212,6 @@
       "category": "analytics"
     },
     {
-      "name": "mcp-gemini-bridge",
-      "source": "./plugins/mcp-gemini-bridge",
-      "description": "Google Gemini AI model integration via MCP",
-      "version": "1.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "mcp",
-        "gemini",
-        "ai",
-        "google"
-      ],
-      "category": "ai",
-      "mcpServers": "./.mcp.json"
-    },
-    {
       "name": "mcp-perplexity",
       "source": "./plugins/mcp-perplexity",
       "description": "Perplexity AI-powered search and information retrieval",
@@ -771,6 +752,7 @@
   ],
   "renames": {
     "codex": null,
-    "gemini": null
+    "gemini": null,
+    "mcp-gemini-bridge": null
   }
 }
