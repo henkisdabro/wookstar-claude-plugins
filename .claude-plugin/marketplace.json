@@ -233,26 +233,6 @@
       "category": "ai"
     },
     {
-      "name": "codex",
-      "source": "./plugins/codex",
-      "description": "Expert guidance for OpenAI Codex CLI non-interactive mode operations - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration",
-      "version": "1.1.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "codex",
-        "openai",
-        "cli",
-        "automation",
-        "scripting",
-        "ci-cd"
-      ],
-      "category": "ai"
-    },
-    {
       "name": "mcp-gemini-bridge",
       "source": "./plugins/mcp-gemini-bridge",
       "description": "Google Gemini AI model integration via MCP",
@@ -809,5 +789,8 @@
       },
       "strict": false
     }
-  ]
+  ],
+  "renames": {
+    "codex": null
+  }
 }
