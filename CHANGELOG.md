@@ -33,7 +33,7 @@ Upgrading from 6.x: run `scripts/upgrade-v7.sh` or follow [MIGRATION.md](./MIGRA
 Retired plugins ship a final 2.0.0 that contains only a startup notice. A later release removes them from the marketplace.
 
 - `codex` - use OpenAI's official plugin, `codex@openai-codex`.
-- `gemini` and `mcp-gemini-bridge` - Gemini CLI stopped serving individual accounts on 2026-06-18. There is no official replacement.
+- `gemini` and `mcp-gemini-bridge` - Gemini CLI stopped serving individual accounts on 2026-06-18. Google's successor is Antigravity CLI; there is no official Claude Code plugin for it.
 - `mcp-notion` and `mcp-cloudflare` - use `notion` and `cloudflare` from `claude-plugins-official`, which connect to the same servers.
 - `mcp-fetch` - the built-in WebFetch tool in Claude Code covers it.
 - `documents` 2.0.0: the `docx` and `xlsx` skills. They were copies of Anthropic's skills under a licence this public repo may not redistribute. Use `document-skills@anthropic-agent-skills`.

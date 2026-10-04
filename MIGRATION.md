@@ -69,7 +69,7 @@ by listing what changed and telling me to restart Claude Code.
 | Retired | Replacement | Install |
 |---|---|---|
 | `codex` | OpenAI's official Codex plugin | `claude plugin marketplace add openai/codex-plugin-cc` then `claude plugin install codex@openai-codex` |
-| `gemini` | None. Gemini CLI stopped serving individual accounts on 2026-06-18 and Google is moving to Antigravity CLI. | - |
+| `gemini` | None for Claude Code. Gemini CLI stopped serving individual accounts on 2026-06-18; Google's successor is Antigravity CLI (`agy`). | - |
 | `mcp-gemini-bridge` | None - it wraps Gemini CLI. | - |
 | `mcp-notion` | Notion's official plugin (same server, `mcp.notion.com`) | `claude plugin install notion@claude-plugins-official` |
 | `mcp-cloudflare` | Cloudflare's official plugin (same server, plus Workers and Wrangler skills) | `claude plugin install cloudflare@claude-plugins-official` |
@@ -90,7 +90,7 @@ These plugins stay, but parts of them moved to official plugins.
 | `developer` | `/generate-prp` command | The `prp-generator` skill (same job, working template) | already included |
 | `shopify-developer` | Admin and Storefront API reference bulk | Shopify's `shopify-ai-toolkit` for live schema lookup and validation | `claude plugin install shopify-ai-toolkit@claude-plugins-official` |
 
-`docx` and `xlsx` were removed for licensing as well as staleness: they were copies of Anthropic's source-available skills, which this public repo may not redistribute.
+`docx` and `xlsx` were removed for licensing as well as staleness: they were copies of Anthropic's skills, whose licence reserves all rights, so this public repo may not redistribute them.
 
 `/containerize` and `/execute-prp` still work - they are now skills you invoke by name rather than commands, so they cost no context until you call them.
 

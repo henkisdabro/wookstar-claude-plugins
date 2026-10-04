@@ -33,7 +33,7 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **32 active pl
 - **`git-github`** - Commits, workflows and a user-triggered `/release`, with a script that resolves the current version of every GitHub Action from the GitHub API.
 - **`react-best-practices`** - Vercel Engineering's 70 React and Next.js performance rules, with local notes for React Compiler and Next.js 16 caching.
 - **`shopify-developer`** - Liquid, theme development (OS 2.0), Hydrogen, Functions and debugging. Live API lookup goes to Shopify's official `shopify-ai-toolkit`.
-- **`tampermonkey`** - Userscript development with 18 reference files - browser automation, page modification, web enhancement.
+- **`tampermonkey`** - Userscript development with 19 reference files - browser automation, page modification, web enhancement.
 - **`google-apps-script`** - Workspace automation: SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers.
 
 ### Analytics
@@ -65,7 +65,7 @@ A curated marketplace for [Claude Code](https://claude.ai/code) - **32 active pl
 
 ### Data
 
-- **`mcp-alphavantage`** - Stock market data, company info, financial indicators (free API key).
+- **`mcp-alphavantage`** - Stock market data, company info, financial indicators (OAuth sign-in through `/mcp`).
 - **`mcp-coingecko`** - Cryptocurrency prices and market data (demo API key).
 - **`mcp-currency-conversion`** - Real-time FX exchange rates (no API key).
 
@@ -85,7 +85,7 @@ Real-time diagnostics, completions, and hover docs. **Two-step install for each:
 | **`lsp-css`** | `.css`, `.scss`, `.less` | `npm i -g vscode-langservers-extracted` |
 | **`lsp-html`** | `.html`, `.htm` | `npm i -g vscode-langservers-extracted` |
 | **`lsp-json`** | `.json`, `.jsonc` | `npm i -g vscode-langservers-extracted` |
-| **`lsp-yaml`** | `.yaml`, `.yml` (auto-detects GitHub Actions, Docker Compose, Kubernetes, 900+ schemas) | `npm i -g yaml-language-server` |
+| **`lsp-yaml`** | `.yaml`, `.yml` (auto-detects GitHub Actions, Docker Compose, Kubernetes, 1,500+ schemas) | `npm i -g yaml-language-server` |
 
 > `lsp-css`, `lsp-html`, and `lsp-json` share the same `vscode-langservers-extracted` package - one npm install covers all three.
 
@@ -324,19 +324,10 @@ Per-plugin READMEs:
 
 ---
 
-## Marketplace stats
-
-- **Version:** 6.7.0 (see [`marketplace.json`](./.claude-plugin/marketplace.json) for the authoritative current value)
-- **Plugins:** 34
-- **Components:** 2 agents, 3 commands, 18 skills, 16 embedded MCP servers, 6 LSP servers
-- **Categories:** development, analytics, ai, productivity, documents, media, writing, data, utilities, lsp
-
----
-
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/henkisdabro/wookstar-claude-plugins/issues)
-- **Docs:** [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code)
+- **Docs:** [Claude Code Documentation](https://code.claude.com/docs)
 
 ## License
 

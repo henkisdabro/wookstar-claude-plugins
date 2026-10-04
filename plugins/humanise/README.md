@@ -2,7 +2,7 @@
 
 Remove AI tell-tales from text. Detects and eliminates 34 patterns of AI-generated writing including inflated language, promotional tone, AI vocabulary, vague expressions of connection, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks and leaked chatbot citation artifacts.
 
-Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cleanup. Last checked against the source: 2026-08-21.
+Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cleanup. Last checked against the source: 2026-10-04.
 
 ## Skills
 
