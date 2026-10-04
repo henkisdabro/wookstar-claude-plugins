@@ -60,6 +60,13 @@ Retired plugins ship a final 2.0.0 that contains only a startup notice. A later 
   - V8 is the only runtime.
   - Retired services are flagged.
   - Quotas are corrected.
+- `humanise` 4.6.0:
+  - Synced to Wikipedia's Signs of AI writing as of 2026-10-04.
+  - #20 catches recommended-usage disclaimers ("should be treated as X rather than Y").
+  - #9 notes that ChatGPT and Claude now produce "X rather than Y", not only Grok.
+  - #2 adds "was identified by" and the awards-and-recognition section as a structural sign.
+  - A stored voice profile now counts as a calibration sample.
+- `message` 3.0.2 tells Claude to edit fragments only with Write or Edit, since the preview hook ignores other tools.
 - `timezone-tools` 1.2.0: `convert_time.py` takes an optional date, so conversions across a daylight-saving change use that date's offset.
 - `tampermonkey` 2.1.0:
   - Covers the Allow User Scripts toggle that Tampermonkey 5.5.1 requires.
@@ -79,7 +86,7 @@ Retired plugins ship a final 2.0.0 that contains only a startup notice. A later 
   - The server config passes `GOOGLE_CLOUD_PROJECT`, empty when unset rather than a literal placeholder.
 - `google-ads-scripts` 1.1.0: removes calls to methods that do not exist, and handles costs in account currency rather than micros.
 - `documents` 2.0.0: `pdf-processing-pro` scripts run with `uv run` and no install step. Previously they needed a pip step that pointed at a missing `requirements.txt`.
-- `message` 3.0.1: the preview hook no longer errors on every file write when bun is missing, and works from install paths with spaces.
+- `message` 3.0.2: the preview hook no longer errors on every file write when bun is missing, and works from install paths with spaces.
 - `documents`, `google-ads-scripts` and `google-apps-script` call their bundled scripts through `CLAUDE_SKILL_DIR`, so they run from any directory. `message` does the same through `CLAUDE_PLUGIN_ROOT`.
 - `ffmpeg` 1.0.1: replaces `-vsync`, which FFmpeg 9.0 removed.
-- `humanise` 4.5.1: the description now routes proofreading and translation elsewhere.
+- `humanise` 4.6.0: the description now routes proofreading and translation elsewhere.
