@@ -5,21 +5,21 @@ description: PDF toolkit of uv-runnable scripts for forms, tables, OCR, merging,
 
 # PDF Processing Pro
 
-Every script carries PEP 723 inline metadata, so `uv run scripts/<name>.py` installs its dependencies on first run. Paths are relative to this skill's directory. All scripts take `--help` and share exit codes: 0 success, 1 file not found, 2 invalid input, 3 processing error, 4 validation failed or nothing found.
+Every script carries PEP 723 inline metadata, so `uv run "${CLAUDE_SKILL_DIR}/scripts/<name>.py"` installs its dependencies on first run. All scripts take `--help` and share exit codes: 0 success, 1 file not found, 2 invalid input, 3 processing error, 4 validation failed or nothing found.
 
 ## Scripts
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| analyze_form.py | Form fields, types, options, positions as JSON | `uv run scripts/analyze_form.py input.pdf [--output schema.json] [--summary]` |
-| validate_form.py | Check data JSON against an analyze_form schema | `uv run scripts/validate_form.py data.json schema.json` |
-| fill_form.py | Fill a form from data JSON | `uv run scripts/fill_form.py input.pdf data.json output.pdf [--validate] [--flatten]` |
-| flatten_form.py | Make filled fields read-only | `uv run scripts/flatten_form.py filled.pdf final.pdf` |
-| extract_tables.py | Tables to CSV or one Excel sheet per table | `uv run scripts/extract_tables.py input.pdf [--output tables.csv] [--format csv\|excel] [--pages 1-5]` |
-| extract_text.py | Text, optionally layout-preserving | `uv run scripts/extract_text.py input.pdf [--output text.txt] [--preserve-formatting] [--pages 1-5]` |
-| merge_pdfs.py | Merge in argument order | `uv run scripts/merge_pdfs.py a.pdf b.pdf --output merged.pdf` |
-| split_pdf.py | One file per page | `uv run scripts/split_pdf.py input.pdf --output-dir pages/` |
-| validate_pdf.py | Integrity, encryption, text layer, form-field count | `uv run scripts/validate_pdf.py input.pdf` |
+| analyze_form.py | Form fields, types, options, positions as JSON | `uv run "${CLAUDE_SKILL_DIR}/scripts/analyze_form.py" input.pdf [--output schema.json] [--summary]` |
+| validate_form.py | Check data JSON against an analyze_form schema | `uv run "${CLAUDE_SKILL_DIR}/scripts/validate_form.py" data.json schema.json` |
+| fill_form.py | Fill a form from data JSON | `uv run "${CLAUDE_SKILL_DIR}/scripts/fill_form.py" input.pdf data.json output.pdf [--validate] [--flatten]` |
+| flatten_form.py | Make filled fields read-only | `uv run "${CLAUDE_SKILL_DIR}/scripts/flatten_form.py" filled.pdf final.pdf` |
+| extract_tables.py | Tables to CSV or one Excel sheet per table | `uv run "${CLAUDE_SKILL_DIR}/scripts/extract_tables.py" input.pdf [--output tables.csv] [--format csv\|excel] [--pages 1-5]` |
+| extract_text.py | Text, optionally layout-preserving | `uv run "${CLAUDE_SKILL_DIR}/scripts/extract_text.py" input.pdf [--output text.txt] [--preserve-formatting] [--pages 1-5]` |
+| merge_pdfs.py | Merge in argument order | `uv run "${CLAUDE_SKILL_DIR}/scripts/merge_pdfs.py" a.pdf b.pdf --output merged.pdf` |
+| split_pdf.py | One file per page | `uv run "${CLAUDE_SKILL_DIR}/scripts/split_pdf.py" input.pdf --output-dir pages/` |
+| validate_pdf.py | Integrity, encryption, text layer, form-field count | `uv run "${CLAUDE_SKILL_DIR}/scripts/validate_pdf.py" input.pdf` |
 
 ## Workflow
 
