@@ -1,6 +1,6 @@
 {
   "name": "lsp-css",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CSS/SCSS/Less Language Server via vscode-langservers-extracted",
   "author": {
     "name": "henkisdabro",
@@ -9,7 +9,9 @@
   "lspServers": {
     "css": {
       "command": "vscode-css-language-server",
-      "args": ["--stdio"],
+      "args": [
+        "--stdio"
+      ],
       "transport": "stdio",
       "extensionToLanguage": {
         ".css": "css",

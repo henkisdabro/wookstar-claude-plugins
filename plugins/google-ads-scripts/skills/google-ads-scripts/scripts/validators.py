@@ -171,7 +171,11 @@ class GoogleAdsValidators:
         Returns:
             (is_valid, error_message)
         """
-        valid_types = ['SEARCH', 'DISPLAY', 'SHOPPING', 'VIDEO', 'PERFORMANCE_MAX']
+        # AdvertisingChannelType values (campaign.advertising_channel_type)
+        valid_types = [
+            'SEARCH', 'DISPLAY', 'SHOPPING', 'HOTEL', 'VIDEO', 'MULTI_CHANNEL',
+            'LOCAL', 'SMART', 'PERFORMANCE_MAX', 'LOCAL_SERVICES', 'TRAVEL', 'DEMAND_GEN',
+        ]
 
         if campaign_type not in valid_types:
             return False, f"Campaign type must be one of {valid_types}"
@@ -192,8 +196,13 @@ class GoogleAdsValidators:
         if not text or not isinstance(text, str):
             return False, "Keyword text must be a non-empty string"
 
-        if len(text) < 1 or len(text) > 80:
-            return False, f"Keyword text must be 1-80 characters (got {len(text)})"
+        # Match-type punctuation ([exact], "phrase") is not part of the keyword itself
+        bare = text.strip().strip('[]"')
+        if len(bare) < 1 or len(bare) > 80:
+            return False, f"Keyword text must be 1-80 characters (got {len(bare)})"
+
+        if len(bare.split()) > 10:
+            return False, f"Keyword text must be 10 words or fewer (got {len(bare.split())})"
 
         return True, None
 
@@ -253,16 +262,16 @@ class GoogleAdsValidators:
             if not is_valid:
                 errors.append(error)
 
-        # Validate dates
+        # Validate dates - Campaign.setStartDate/setEndDate take YYYYMMDD strings
         if 'start_date' in updates and 'end_date' in updates:
             try:
                 from datetime import datetime
-                start = datetime.fromisoformat(updates['start_date'])
-                end = datetime.fromisoformat(updates['end_date'])
-                if end <= start:
-                    errors.append("End date must be after start date")
+                start = datetime.strptime(updates['start_date'], '%Y%m%d')
+                end = datetime.strptime(updates['end_date'], '%Y%m%d')
+                if end < start:
+                    errors.append("End date must not be before start date")
             except ValueError:
-                errors.append("Invalid date format (use YYYY-MM-DD)")
+                errors.append("Invalid date format (use YYYYMMDD)")
 
         return ValidationResult(
             is_valid=len(errors) == 0,

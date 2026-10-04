@@ -205,6 +205,8 @@ Configure environments via Admin > Environments:
 3. Configure server-side client(s)
 4. Update web container to send data to server container
 
+For hosting, custom domains, clients and the GA4 server tag, see [server-side.md](server-side.md).
+
 ## Multi-Container Setup
 
 ### When to Use Multiple Containers

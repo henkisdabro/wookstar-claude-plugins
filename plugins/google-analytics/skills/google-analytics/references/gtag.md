@@ -1,6 +1,6 @@
 # GA4 gtag.js Direct Implementation
 
-Expert guidance for implementing GA4 using gtag.js directly without Google Tag Manager.
+Covers implementing GA4 using gtag.js directly without Google Tag Manager.
 
 ## Overview
 

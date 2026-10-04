@@ -1,6 +1,6 @@
 # GA4 DebugView Testing and Validation
 
-Comprehensive guide to testing and validating GA4 implementation using DebugView.
+Covers testing and validating GA4 implementation using DebugView.
 
 ## Overview
 

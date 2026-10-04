@@ -5,132 +5,43 @@ description: Get current time in any timezone and convert times between timezone
 
 # Timezone Tools
 
-Get current time in any timezone and convert times between different timezones using IANA timezone database.
+Three standard-library Python scripts (3.9+, `zoneinfo`) over the IANA timezone database. Nothing to install on macOS or Linux.
 
-## Quick Start
+## Steps
 
-### Get current time in a timezone
+1. **Resolve each place to an IANA name** (`America/New_York`, not `EST`). If unsure, search:
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/list_timezones.py" "perth"
+   ```
+   Done when every place in the question maps to one IANA name. [data/common_timezones.json](data/common_timezones.json) lists major cities.
 
-```bash
-python scripts/get_time.py "America/New_York"
-```
+2. **Current time** ("what time is it in Tokyo?"):
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/get_time.py" "Asia/Tokyo"
+   ```
+   Prints timezone, ISO datetime, weekday and DST status.
 
-### Convert time between timezones
+3. **Conversion** ("2pm New York in Perth?"): source zone, 24-hour `HH:MM`, target zone, then an optional `YYYY-MM-DD` date of the source time:
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/convert_time.py" "America/New_York" "14:00" "Australia/Perth" 2026-11-02
+   ```
+   Without the date the time is taken as today in the source zone. Pass the date whenever the question is about a specific day - offsets change at DST boundaries, so today's offset can be wrong for next week's meeting. Prints source and target datetimes with weekday, DST status, and the difference in hours.
 
-```bash
-python scripts/convert_time.py "America/New_York" "14:30" "Australia/Perth"
-```
+   On a DST changeover day the script adds a `Warning:` line: a skipped time (clocks forward) is shifted to the real time it lands on, and a repeated time (clocks back) shows both readings and uses the first. Pass that warning on to the user.
 
-### Search for timezone names
+Done when the answer quotes the script's output time, including the weekday if it crosses midnight.
 
-```bash
-python scripts/list_timezones.py "perth"
-```
-
-## Instructions
-
-When the user asks about time or timezones:
-
-1. **For current time queries** (e.g., "What time is it in Tokyo?"):
-   - Use `scripts/get_time.py` with IANA timezone name
-   - If unsure of timezone name, search first with `list_timezones.py`
-   - Script outputs: timezone, datetime, day of week, DST status
-
-2. **For time conversions** (e.g., "What's 2pm EST in Perth time?"):
-   - Use `scripts/convert_time.py` with source timezone, time (HH:MM 24-hour), target timezone
-   - Script shows source time, target time, and time difference
-   - Automatically handles DST changes
-
-3. **For timezone searches**:
-   - Use `scripts/list_timezones.py` with city/country name
-   - Returns matching IANA timezone names
-
-## Common Timezones Reference
-
-For quick reference, see [data/common_timezones.json](data/common_timezones.json) which includes major cities worldwide, with Perth prominently featured.
-
-**User's local timezone**: The scripts automatically detect your local timezone using `tzlocal`.
-
-## Examples
-
-### Example 1: Current time query
-
-User: "What time is it in Perth?"
+## Example
 
 ```bash
-python scripts/list_timezones.py "perth"
-# Output: Australia/Perth
-
-python scripts/get_time.py "Australia/Perth"
-# Output:
-# Timezone: Australia/Perth
-# Current time: 2025-11-07T15:30:45
-# Day: Thursday
-# DST: No
-```
-
-### Example 2: Time conversion
-
-User: "I have a meeting at 2pm New York time, what time is that in Perth?"
-
-```bash
-python scripts/convert_time.py "America/New_York" "14:00" "Australia/Perth"
-# Output:
-# Source: America/New_York - 2025-11-07T14:00:00 (Thursday, DST: No)
-# Target: Australia/Perth - 2025-11-08T03:00:00 (Friday, DST: No)
+python3 "${CLAUDE_SKILL_DIR}/scripts/convert_time.py" "America/New_York" "14:00" "Australia/Perth" 2026-11-02
+# Source: America/New_York - 2026-11-02T14:00:00-05:00 (Monday, DST: No)
+# Target: Australia/Perth - 2026-11-03T03:00:00+08:00 (Tuesday, DST: No)
 # Time difference: +13.0h
 ```
 
-### Example 3: Multiple timezone search
-
-User: "What are the timezone codes for London, Tokyo, and Sydney?"
-
-```bash
-python scripts/list_timezones.py "london"
-python scripts/list_timezones.py "tokyo"
-python scripts/list_timezones.py "sydney"
-# Outputs:
-# Europe/London
-# Asia/Tokyo
-# Australia/Sydney
-```
-
-## Time Format
-
-- All times use **24-hour format** (HH:MM): `14:30` not `2:30 PM`
-- ISO 8601 datetime format for output: `2025-11-07T14:30:45`
-- IANA timezone names (e.g., `America/New_York`, not `EST`)
-
 ## Troubleshooting
 
-### "Invalid timezone" error
-
-- Use IANA timezone names: `America/New_York` not `EST` or `Eastern`
-- Search with `list_timezones.py` if unsure
-- Check [data/common_timezones.json](data/common_timezones.json) for reference
-
-### "Invalid time format" error
-
-- Use 24-hour format: `14:30` not `2:30 PM`
-- Format must be `HH:MM` with colon separator
-
-### Missing dependencies
-
-Install required Python packages:
-
-```bash
-pip install tzlocal
-```
-
-## Dependencies
-
-- Python 3.9+
-- `tzlocal>=5.0` - for local timezone detection
-- `zoneinfo` - built-in Python 3.9+ (IANA timezone database)
-
-## Notes
-
-- Scripts automatically handle Daylight Saving Time (DST)
-- Local timezone is auto-detected from system
-- All timezone data uses IANA Time Zone Database
-- Perth, Australia timezone: `Australia/Perth` (UTC+8, no DST)
+- **"Invalid timezone"** - use an IANA name; search with `list_timezones.py`. On Windows, which ships no IANA database, `zoneinfo` needs the `tzdata` package: run the scripts as `uv run --with tzdata python ...`.
+- **"Invalid time format"** - 24-hour `HH:MM`: `14:30`, not `2:30 PM`.
+- **"Invalid date format"** - `YYYY-MM-DD`.

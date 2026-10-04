@@ -2,9 +2,12 @@
   "mcpServers": {
     "perplexity": {
       "command": "npx",
-      "args": ["-y", "@perplexity-ai/mcp-server"],
+      "args": [
+        "-y",
+        "@perplexity-ai/mcp-server"
+      ],
       "env": {
-        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+        "PERPLEXITY_API_KEY": "${user_config.perplexity_api_key}"
       }
     }
   }

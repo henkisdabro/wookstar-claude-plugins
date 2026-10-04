@@ -1,51 +1,32 @@
-# Hydrogen Reference
+# Hydrogen
 
-Hydrogen is Shopify's framework for building custom headless storefronts, powered by React Router 7 (since Hydrogen 2025.5.0, replacing Remix).
+Hydrogen is Shopify's headless storefront framework: React Router 7 in framework mode, the Storefront and Customer Account APIs, and Oxygen hosting. Releases are versioned by Storefront API quarter (`YYYY.M.patch`); check the installed `@shopify/hydrogen` version and the [changelog](https://github.com/Shopify/hydrogen/blob/main/packages/hydrogen/CHANGELOG.md) before changing anything.
 
-## Overview
+A framework-agnostic "next Hydrogen" exists as an early developer preview (the `preview` branch of the Shopify/hydrogen repo). It is not production-ready - build on the stable React Router package unless the user explicitly opts into the preview.
 
-| Item | Value |
-|------|-------|
-| Framework | React Router 7 (formerly Remix) |
-| React version | React 19 |
-| API | Storefront API (GraphQL) |
-| Hosting | Shopify Oxygen (default) or any Node.js host |
-| CLI | `npx shopify hydrogen` |
-| Docs | [hydrogen.shopify.dev](https://hydrogen.shopify.dev) |
+## Upgrading
 
-## Getting Started
+Run `npx shopify hydrogen upgrade` inside the project; it steps through each release and prints the required code changes. Each quarterly release bumps the Storefront and Customer Account API versions, so read that quarter's API changelog too.
 
-### Create a Hydrogen project
+### 2026.4 breaking changes
+
+- **Storefront API proxy is always on.** `proxyStandardRoutes` was removed from `createRequestHandler`, and the handler throws if the load context has no `storefront` instance. Delete the option and make sure the context passed to `getLoadContext` (the skeleton's `createHydrogenRouterContext`) supplies `storefront`.
+- **Backend consent mode is the default.** The Customer Privacy API now uses server-set cookies through the Storefront API proxy instead of the legacy JavaScript `_tracking_consent` cookie. Custom consent banners and any code reading `_tracking_consent` must move to the `customerPrivacy` API.
+- **The proxy is load-bearing for analytics.** From 2026.4.6, consent and analytics require the same-origin proxy that Hydrogen's `createRequestHandler` (from `@shopify/hydrogen` or `@shopify/hydrogen/oxygen`) provides. A `server.ts` still on the deprecated `@shopify/remix-oxygen` handler, or a custom server without the proxy, loses consent: analytics stay off and the privacy banner never shows. `consent.sameDomainForStorefrontApi` is now ignored (treated as `true`).
+- Deprecated no-ops to remove: `Analytics.Provider` `cookieDomain`, and `useShopifyCookies` options `hasUserConsent`, `domain`, `ignoreDeprecatedCookies`. The `_shopify_y` and `_shopify_s` cookies are no longer created.
+- Storefront API: JSON metafield writes are capped at 128 KB from 2026-04; cart mutations return `MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR` when a Cart Transform Function fails.
+
+Source: <https://shopify.dev/changelog/hydrogen-april-2026-release>.
+
+## Getting started
 
 ```bash
-# Create new project
-npx shopify hydrogen init
-
-# Options:
-# - Template: skeleton, demo-store
-# - Language: TypeScript (recommended), JavaScript
-# - Styling: Tailwind CSS, vanilla CSS
-
-# Project structure:
-my-store/
-├── app/
-│   ├── components/          # Shared components
-│   ├── lib/                 # Utilities and helpers
-│   ├── routes/              # File-based routing
-│   │   ├── _index.tsx       # Homepage
-│   │   ├── products.$handle.tsx  # Product page
-│   │   ├── collections.$handle.tsx
-│   │   └── cart.tsx
-│   ├── entry.client.tsx     # Client entry
-│   ├── entry.server.tsx     # Server entry
-│   └── root.tsx             # Root layout
-├── public/                  # Static assets
-├── .env                     # Environment variables
-├── hydrogen.config.ts       # Hydrogen config
-├── react-router.config.ts   # Route config
-├── package.json
-└── vite.config.ts
+npm create @shopify/hydrogen@latest   # skeleton template, TypeScript, Vite
+npx shopify hydrogen link             # connect to a store's Hydrogen channel
+npx shopify hydrogen dev              # local dev on MiniOxygen
 ```
+
+Project shape (skeleton): `app/root.tsx`, `app/routes/` (flat-file routes such as `products.$handle.tsx`), `app/lib/context.ts` (builds the Hydrogen context: `storefront`, `customerAccount`, `cart`, `session`), `server.ts` (Oxygen worker entry calling `createRequestHandler`), `react-router.config.ts`, `vite.config.ts`.
 
 ### Environment variables
 
@@ -199,9 +180,9 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 ```tsx
 // Built-in cache strategies
-storefront.CacheNone()     // No caching (default for mutations)
-storefront.CacheShort()    // 1 second stale, 60 seconds max
-storefront.CacheLong()     // 1 hour stale, 1 day max
+storefront.CacheNone()     // no-store
+storefront.CacheShort()    // max-age 1s, stale-while-revalidate 9s (the default for queries)
+storefront.CacheLong()     // max-age 1h, stale-while-revalidate 23h
 storefront.CacheCustom({
   mode: 'public',
   maxAge: 60,              // seconds
@@ -322,56 +303,19 @@ export const meta = ({ data }) => {
 
 ## Deployment
 
-### Shopify Oxygen (recommended)
-
 ```bash
-# Deploy to Oxygen
-npx shopify hydrogen deploy
-
-# Environment variables managed in Shopify admin:
-# Settings > Hydrogen > Environment variables
+npx shopify hydrogen deploy      # build and deploy to Oxygen
+npx shopify hydrogen env pull    # sync Oxygen environment variables into .env
 ```
 
-### Self-hosted (Cloudflare Workers, Vercel, etc.)
+Oxygen is the default host. Self-hosting on another worker or Node runtime is possible, but the server must still use Hydrogen's `createRequestHandler` so the Storefront API proxy, consent and analytics keep working (see 2026.4 above).
 
-```bash
-# Build for production
-npm run build
+The skeleton's `vite.config.ts` registers `hydrogen()`, `oxygen()` (from `@shopify/mini-oxygen/vite`) and `reactRouter()` - keep all three when adding plugins such as Tailwind.
 
-# Cloudflare Workers
-npx wrangler deploy
+## Practices
 
-# Node.js server
-npm start
-```
-
-### Vite configuration
-
-```typescript
-// vite.config.ts
-import { defineConfig } from 'vite';
-import { hydrogen } from '@shopify/hydrogen/vite';
-import { reactRouter } from '@react-router/dev/vite';
-import tailwindcss from '@tailwindcss/vite';
-
-export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    hydrogen(),
-    reactRouter(),
-  ],
-});
-```
-
-## Best Practices
-
-1. **Use cache strategies** - `CacheLong()` for collections, `CacheShort()` for cart
-2. **Minimise Storefront API queries** - request only needed fields
-3. **Use `defer`** for non-critical data to improve time-to-first-byte
-4. **Implement SEO** with `getSeoMeta` on all public routes
-5. **Use Hydrogen components** (Image, Money) for built-in optimisations
-6. **Handle loading states** with `useFetcher` for cart operations
-7. **Set up analytics** with Hydrogen's built-in analytics utilities
-8. **Test with Oxygen** before deploying to production
-9. **Use TypeScript** for type safety with Storefront API responses
-10. **Keep queries colocated** with route files for maintainability
+1. Pick a cache strategy per query: `CacheLong()` for catalogue data that changes rarely, the default `CacheShort()` otherwise; never cache customer or cart data.
+2. For non-critical data, return the un-awaited promise from the loader and render it with `<Suspense>` and `<Await>` - React Router 7 has no `defer()`.
+3. Colocate each GraphQL query with its route and run `npx shopify hydrogen codegen` for typed results.
+4. Use `getSeoMeta` on public routes and Hydrogen's `Image` and `Money` components.
+5. Keep analytics behind `Analytics.Provider` and the Customer Privacy API; do not set tracking cookies yourself.

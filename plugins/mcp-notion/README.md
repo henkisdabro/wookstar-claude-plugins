@@ -1,15 +1,10 @@
-# MCP Notion
+# mcp-notion (retired)
 
-Notion workspace and database integration.
-
-## Installation
+Notion publishes an official plugin for the same server.
 
 ```bash
-/plugin install mcp-notion@wookstar-claude-plugins
+claude plugin install notion@claude-plugins-official
+claude plugin uninstall mcp-notion@wookstar-claude-plugins
 ```
 
-## Configuration
-
-This MCP server uses HTTP transport via Notion's official MCP endpoint.
-
-No environment variables required - authentication handled through Notion's MCP service.
+This version contains nothing but a startup notice pointing here. It will be removed from the marketplace in a later release. See [MIGRATION.md](https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md).

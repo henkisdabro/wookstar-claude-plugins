@@ -1,75 +1,33 @@
----
-name: "Google Apps Script - Mission Critical Reference"
-description: "Enterprise-grade, offline-accessible comprehensive guide for Google Apps Script development. Covers all built-in services (SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, etc.), complete API reference, triggers, error handling, authorization scopes, performance optimization, and advanced patterns. Designed as the sole authoritative source for mission-critical automation when network infrastructure is unavailable."
-version: "2025-11-ENTERPRISE"
-last_updated: "November 2025"
-security_classification: "REFERENCE"
----
+# Google Apps Script API Reference
 
-# GOOGLE APPS SCRIPT ENTERPRISE REFERENCE
-## Mission-Critical Documentation
+Built-in services, triggers, authorisation and limits. Every runtime is V8 - Rhino was shut down on 31 January 2026, so ES5-only workarounds are unnecessary. Google lists retired services at https://developers.google.com/apps-script/guides/support/sunset; check there before reaching for anything not documented below.
 
-**Document Version:** 2025-11-ENTERPRISE  
-**Last Updated:** November 10, 2025  
-**Offline Accessibility:** GUARANTEED  
-**Verification Status:** Official Google Documentation Cross-Referenced  
+## Contents
 
----
-
-## TABLE OF CONTENTS
-
-1. [Enterprise Skill Overview](#enterprise-skill-overview)
-2. [Core Architecture](#core-architecture)
-3. [Complete Built-in Services Reference](#complete-built-in-services-reference)
-4. [SpreadsheetApp - Complete Reference](#spreadsheetapp---complete-reference)
-5. [DocumentApp - Complete Reference](#documentapp---complete-reference)
-6. [GmailApp & MailApp - Complete Reference](#gmailapp--mailapp---complete-reference)
-7. [DriveApp - Complete Reference](#driveapp---complete-reference)
-8. [CalendarApp - Complete Reference](#calendarapp---complete-reference)
-9. [Triggers - Complete Reference](#triggers---complete-reference)
-10. [Advanced Services & Utilities](#advanced-services--utilities)
-11. [Authorization & Security](#authorization--security)
-12. [Error Handling & Debugging](#error-handling--debugging)
-13. [Performance Optimization](#performance-optimization)
-14. [Best Practices & Patterns](#best-practices--patterns)
+1. [Core Architecture](#core-architecture)
+2. [Built-in Services](#built-in-services)
+3. [SpreadsheetApp](#spreadsheetapp)
+4. [DocumentApp](#documentapp)
+5. [GmailApp and MailApp](#gmailapp-and-mailapp)
+6. [DriveApp](#driveapp)
+7. [CalendarApp](#calendarapp)
+8. [Triggers](#triggers)
+9. [Advanced Services and Utilities](#advanced-services-and-utilities)
+10. [Authorisation](#authorisation)
+11. [Error Handling and Debugging](#error-handling-and-debugging)
+12. [Performance](#performance)
+13. [Patterns](#patterns)
+14. [Quotas and Limits](#quotas-and-limits)
 
 ---
 
-## ENTERPRISE SKILL OVERVIEW
-
-### Activation Criteria
-
-This skill activates when developers need:
-- Google Sheets automation with Apps Script
-- Gmail/email automation and management
-- Google Drive file operations
-- Document/Presentation generation
-- Calendar automation
-- Form processing and integration
-- Cross-Google-Workspace automation
-- Custom functions and add-ons
-- Trigger implementation
-- Error handling and debugging
-
-### Document Guarantees
-
-✓ NO external links required  
-✓ ALL built-in services documented  
-✓ COMPLETE API patterns included  
-✓ ALL error scenarios covered  
-✓ Production-ready code examples  
-✓ Security hardening included  
-✓ Performance optimization strategies  
-
----
-
-## CORE ARCHITECTURE
+## Core Architecture
 
 ### Google Apps Script Execution Model
 
 **Sandboxed JavaScript Runtime:**
 - Server-side execution
-- V8 runtime (modern JavaScript ES6+)
+- V8 runtime (modern JavaScript; the only runtime since Rhino's shutdown on 31 January 2026)
 - 6-minute execution timeout per function
 - Automatic service authorization
 
@@ -106,21 +64,11 @@ This skill activates when developers need:
 
 ### Script Execution Limits
 
-| Limit | Value | Impact |
-|-------|-------|--------|
-| **Execution timeout** | 6 minutes | Functions must complete within this time |
-| **Spreadsheet read operations** | 300 per 100 seconds | Rate limit per user |
-| **Spreadsheet write operations** | 60 per 100 seconds | Rate limit per user |
-| **Email sends** | 100 per day (business) | Daily quota |
-| **Drive operations** | Depends on API | Use batch operations |
-| **Cache lifetime** | 25 minutes | Auto-deleted after timeout |
-| **Properties storage** | Unlimited (5GB practical) | Persistent storage |
+See [Quotas and Limits](#quotas-and-limits) for the full table. The two that shape most designs: 6 minutes per execution, and 30 seconds per custom function call.
 
 ---
 
-## COMPLETE BUILT-IN SERVICES REFERENCE
-
-### Service Availability Matrix
+## Built-in Services
 
 | Service | Type | Purpose |
 |---------|------|---------|
@@ -128,23 +76,22 @@ This skill activates when developers need:
 | **DocumentApp** | Built-in | Google Docs creation/editing |
 | **FormApp** | Built-in | Google Forms management |
 | **SlidesApp** | Built-in | Google Slides creation |
-| **GmailApp** | Built-in | Gmail operations (deprecated for email sending) |
-| **MailApp** | Built-in | Email sending (preferred) |
+| **GmailApp** | Built-in | Gmail read, search, labels, drafts and sending |
+| **MailApp** | Built-in | Send-only email (narrower `script.send_mail` scope) |
 | **CalendarApp** | Built-in | Google Calendar management |
 | **DriveApp** | Built-in | Google Drive file operations |
-| **ContactsApp** | Built-in | Google Contacts (deprecated) |
 | **Logger** | Built-in | Debug logging (console.log alternative) |
 | **PropertiesService** | Built-in | Persistent key-value storage |
-| **CacheService** | Built-in | Temporary key-value cache (25 min TTL) |
+| **CacheService** | Built-in | Temporary key-value cache (10 min default, 6 h max) |
 | **UrlFetchApp** | Built-in | HTTP requests to external APIs |
 | **Utilities** | Built-in | Encoding, hashing, compression |
 | **ScriptApp** | Built-in | Trigger management |
 | **Session** | Built-in | User session information |
-| **Browser** | Built-in | UI dialogs and alerts |
+| **Browser** | Built-in | Sheets-only dialogs; prefer `SpreadsheetApp.getUi()` |
 
 ---
 
-## SPREADSHEETAPP - COMPLETE REFERENCE
+## SpreadsheetApp
 
 ### Core Concepts
 
@@ -246,7 +193,7 @@ range.setFormulas([['=A1', '=B1']]);                 // Array of formulas
 
 **Clear ranges:**
 ```javascript
-range.clear();                          // Clear contents
+range.clear();                          // Clear contents and formatting
 range.clearContent();                   // Clear values only
 range.clearFormat();                    // Clear formatting only
 ```
@@ -419,7 +366,7 @@ if (filter) {
 
 ---
 
-## DOCUMENTAPP - COMPLETE REFERENCE
+## DocumentApp
 
 ### Document Operations
 
@@ -433,7 +380,7 @@ const body = doc.getBody();
 **Open document:**
 ```javascript
 const doc = DocumentApp.openById('DOCUMENT_ID');
-const doc = DriveApp.getFileById('FILE_ID').getAs(MimeType.GOOGLE_DOCS);
+const doc = DocumentApp.openByUrl('https://docs.google.com/document/d/DOCUMENT_ID/edit');
 ```
 
 **Get active document (in bound script):**
@@ -476,7 +423,7 @@ text.setForegroundColor(0, 10, '#ff0000');
 ```javascript
 const paragraph = body.getParagraphs()[0];
 paragraph.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
-paragraph.setHeadingAttributes(DocumentApp.ParagraphHeading.HEADING1);
+paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1);
 paragraph.setIndentFirstLine(36);            // First line indent
 paragraph.setIndentStart(18);                // Left indent
 paragraph.setIndentEnd(18);                  // Right indent
@@ -496,8 +443,11 @@ body.appendImage(imageBlob)
 
 **Insert links:**
 ```javascript
-const text = body.appendParagraph('Click here');
-text.setLinkUrl(0, 10, 'https://example.com');
+// Whole paragraph
+body.appendParagraph('Click here').setLinkUrl('https://example.com');
+
+// Part of a paragraph (offsets are inclusive)
+body.appendParagraph('Read the docs').editAsText().setLinkUrl(9, 12, 'https://example.com');
 ```
 
 ### Tables
@@ -543,11 +493,10 @@ body.setMarginLeft(72);
 body.setMarginRight(72);
 ```
 
-**Page orientation:**
+**Page size:**
 ```javascript
-const margins = doc.getMarginTop();
-doc.setPageHeight(792);         // 11 inches
-doc.setPageWidth(612);          // 8.5 inches
+body.setPageHeight(792);        // 11 inches, in points
+body.setPageWidth(612);         // 8.5 inches
 ```
 
 ### Finding and Replacing
@@ -565,9 +514,11 @@ body.replaceText('old', 'new');
 
 ---
 
-## GMAILAPP & MAILAPP - COMPLETE REFERENCE
+## GmailApp and MailApp
 
-### Sending Email (MailApp - Preferred)
+### Sending Email (MailApp)
+
+MailApp only sends, so it needs the narrower `script.send_mail` scope. Use GmailApp when the script also reads, searches, labels or drafts mail - it sends too (`GmailApp.sendEmail`, `thread.reply`).
 
 **Basic email:**
 ```javascript
@@ -612,7 +563,7 @@ MailApp.sendEmail('recipient@example.com', 'Subject', 'See attachment', {
 });
 ```
 
-### GmailApp (Advanced Operations - Deprecated for Sending)
+### GmailApp (Reading, Labels, Drafts)
 
 **Search emails:**
 ```javascript
@@ -642,12 +593,12 @@ messages.forEach(message => {
 
 **Label operations:**
 ```javascript
-const label = GmailApp.getUserLabelByName('MyLabel');
+const label = GmailApp.getUserLabelByName('MyLabel');  // null if it doesn't exist
 const threads = label.getThreads();
 
 // Add label
 const thread = GmailApp.getInboxThreads()[0];
-const newLabel = GmailApp.getUserLabelByName('Archive');
+const newLabel = GmailApp.getUserLabelByName('Archive') || GmailApp.createLabel('Archive');
 thread.addLabel(newLabel);
 
 // Remove label
@@ -678,7 +629,7 @@ thread.moveToTrash();
 
 ---
 
-## DRIVEAPP - COMPLETE REFERENCE
+## DriveApp
 
 ### File Operations
 
@@ -692,8 +643,7 @@ const fileId = file.getId();
 **Open file:**
 ```javascript
 const file = DriveApp.getFileById('FILE_ID');
-const file = DriveApp.getFileByName('filename.txt');
-const files = DriveApp.getFilesByName('filename.txt');  // Returns iterator
+const files = DriveApp.getFilesByName('filename.txt');  // Iterator - names are not unique
 ```
 
 **File properties:**
@@ -820,9 +770,10 @@ editors.forEach(user => {
 const viewers = file.getViewers();
 ```
 
-**Share with entire domain:**
+**Link sharing:**
 ```javascript
-file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);  // Anyone with the link
+file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);  // Your Workspace domain
 ```
 
 ### Search
@@ -836,7 +787,7 @@ const files = DriveApp.searchFiles("'FOLDER_ID' in parents and trashed = false")
 
 ---
 
-## CALENDARAPP - COMPLETE REFERENCE
+## CalendarApp
 
 ### Calendar Operations
 
@@ -860,21 +811,23 @@ const timeZone = calendar.getTimeZone();
 
 **Create event:**
 ```javascript
-const startTime = new Date(2025, 10, 15, 9, 0);  // Nov 15, 2025 at 9 AM
-const endTime = new Date(2025, 10, 15, 10, 0);  // Nov 15, 2025 at 10 AM
+const startTime = new Date();
+startTime.setDate(startTime.getDate() + 1);       // Tomorrow
+startTime.setHours(9, 0, 0, 0);                   // 9 AM, script time zone
+const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);  // 1 hour later
 const event = calendar.createEvent('Meeting', startTime, endTime);
 ```
 
 **All-day event:**
 ```javascript
-const event = calendar.createAllDayEvent('All-Day Event', new Date(2025, 10, 15));
+const event = calendar.createAllDayEvent('All-Day Event', startTime);
 ```
 
 **Event with multiple days:**
 ```javascript
-const startDate = new Date(2025, 10, 15);
-const endDate = new Date(2025, 10, 18);
-const event = calendar.createAllDayEventSeries('Multi-day Event', startDate, endDate);
+// End date is exclusive: this spans three days
+const endDate = new Date(startTime.getTime() + 3 * 24 * 60 * 60 * 1000);
+const event = calendar.createAllDayEvent('Multi-day Event', startTime, endDate);
 ```
 
 **Recurring events:**
@@ -904,13 +857,12 @@ const recurrence = CalendarApp.newRecurrence()
 
 **Get events:**
 ```javascript
-const events = calendar.getEvents(new Date(2025, 10, 1), new Date(2025, 10, 30));
-const event = calendar.getEventById('EVENT_ID');
+// Next 7 days
+const now = new Date();
+const weekAhead = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+const events = calendar.getEvents(now, weekAhead);
 
-// Events in time range
-const start = new Date(2025, 10, 15, 9, 0);
-const end = new Date(2025, 10, 15, 17, 0);
-const events = calendar.getEvents(start, end);
+const event = calendar.getEventById('EVENT_ID');
 ```
 
 ### Event Details
@@ -932,7 +884,7 @@ event.setTitle('New Title');
 event.setDescription('Event description');
 event.setLocation('Meeting Room 123');
 event.setTime(newStart, newEnd);
-event.setColor('#ff0000');
+event.setColor(CalendarApp.EventColor.RED);  // Enum, not a hex colour
 ```
 
 **Add guests:**
@@ -967,7 +919,7 @@ event.deleteEvent();
 
 ---
 
-## TRIGGERS - COMPLETE REFERENCE
+## Triggers
 
 ### Simple Triggers (No Authorization Needed)
 
@@ -1038,9 +990,10 @@ function createTimeTriggers() {
 function createEventTriggers() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   
-  // On any change in spreadsheet
+  // On any change in spreadsheet (structure as well as values)
   ScriptApp.newTrigger('myFunction')
-    .onOpen(spreadsheet)
+    .forSpreadsheet(spreadsheet)
+    .onChange()
     .create();
   
   // On form submit
@@ -1080,7 +1033,7 @@ triggers.forEach(trigger => {
 
 ---
 
-## ADVANCED SERVICES & UTILITIES
+## Advanced Services and Utilities
 
 ### UrlFetchApp (HTTP Requests)
 
@@ -1123,12 +1076,11 @@ const options = {
 const response = UrlFetchApp.fetch('https://api.example.com/protected', options);
 ```
 
-**Timeout handling:**
+**Non-2xx handling** (UrlFetchApp has no timeout option; a slow call counts against the 6-minute execution limit):
 ```javascript
 const options = {
   method: 'GET',
-  muteHttpExceptions: true,  // Don't throw on error
-  timeout: 30  // 30 second timeout
+  muteHttpExceptions: true  // Return 4xx/5xx responses instead of throwing
 };
 
 try {
@@ -1149,7 +1101,7 @@ try {
 ```javascript
 const text = 'Hello World';
 const encoded = Utilities.base64Encode(text);
-const decoded = Utilities.base64Decode(encoded);
+const decoded = Utilities.newBlob(Utilities.base64Decode(encoded)).getDataAsString();
 ```
 
 **Hashing:**
@@ -1169,11 +1121,9 @@ const md5 = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, text);
 const uuid = Utilities.getUuid();  // Generate unique ID
 ```
 
-**Encoding:**
+**URL encoding** (Utilities has no URL encoder; use the JavaScript built-in):
 ```javascript
-const text = 'Hello@World!';
-const encoded = Utilities.urlEncode(text);
-const escapedCsv = Utilities.csvEscape(text);
+const encoded = encodeURIComponent('Hello@World!');
 ```
 
 ### PropertiesService (Persistent Storage)
@@ -1207,14 +1157,14 @@ const userProperties = PropertiesService.getUserProperties();
 // Separate storage per user
 ```
 
-### CacheService (Temporary Storage - 25 Min TTL)
+### CacheService (Temporary Storage)
 
 **Script cache:**
 ```javascript
 const cache = CacheService.getScriptCache();
 
-// Set (duration in seconds, max 21600 = 6 hours)
-cache.put('key', 'value', 600);  // 10 minutes
+// Set (seconds; default 600, max 21600 = 6 hours; value max 100 KB)
+cache.put('key', 'value', 600);
 
 // Get
 const value = cache.get('key');
@@ -1226,8 +1176,8 @@ cache.removeAll(['key1', 'key2']);
 
 **Difference from Properties:**
 ```
-PropertiesService: Persistent, unlimited storage, ~9MB practical limit
-CacheService: Temporary, 25-minute TTL, faster access
+PropertiesService: Persistent; 9 KB per value, 500 KB per property store
+CacheService: Temporary (10 min default, 6 h max), may be evicted early, faster access
 ```
 
 ### Logger (Debugging)
@@ -1238,19 +1188,19 @@ Logger.log('Simple message');
 Logger.log('Value: ' + value);
 Logger.log('Object: ' + JSON.stringify(object));
 
-// View logs: View > Logs or Ctrl+Enter
+// View logs: Executions panel, or the log pane after a run from the editor
 ```
 
-**Log levels:**
+**Log levels** (`console` writes to Cloud Logging with a severity; `Logger` does not):
 ```javascript
-Logger.log('Info');       // Standard
-Logger.log('Warning');    // Warning
-Logger.log('Error');      // Error
+console.info('Info');
+console.warn('Warning');
+console.error('Error');
 ```
 
 ---
 
-## AUTHORIZATION & SECURITY
+## Authorisation
 
 ### OAuth Scopes
 
@@ -1313,7 +1263,8 @@ https://www.googleapis.com/auth/script.send_mail
 **Check authorization:**
 ```javascript
 const info = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
-const isAuthorized = info.isAuthorizationRequired();
+const needsAuth = info.getAuthorizationStatus() === ScriptApp.AuthorizationStatus.REQUIRED;
+const authUrl = info.getAuthorizationUrl();  // Send the user here when needsAuth
 ```
 
 **Request authorization:**
@@ -1330,7 +1281,7 @@ ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL);
 
 ---
 
-## ERROR HANDLING & DEBUGGING
+## Error Handling and Debugging
 
 ### Try-Catch-Finally
 
@@ -1408,7 +1359,7 @@ if (DEBUG) {
 
 ---
 
-## PERFORMANCE OPTIMIZATION
+## Performance
 
 ### Spreadsheet Operations
 
@@ -1455,7 +1406,7 @@ function getFastData() {
 
 ---
 
-## BEST PRACTICES & PATTERNS
+## Patterns
 
 ### Error-Resistant Script Template
 
@@ -1575,20 +1526,21 @@ function respectRateLimits(items, batchSize = 100) {
 
 ---
 
-## QUOTAS AND LIMITS REFERENCE
+## Quotas and Limits
 
-| Limit | Value |
-|-------|-------|
-| Execution time | 6 minutes |
-| Spreadsheet reads | 300 per 100 seconds |
-| Spreadsheet writes | 60 per 100 seconds |
-| Emails per day | 100 (business) |
-| Cache duration | 25 minutes |
-| Properties size | ~5 GB |
-| Script timeout | 6 minutes |
+From https://developers.google.com/apps-script/guides/services/quotas - Google changes these without notice, so check there when a design depends on one.
 
----
-
-**End of Google Apps Script Mission-Critical Reference**
-
-*Use this as your authoritative offline guide for all Apps Script development needs.*
+| Limit | Consumer (gmail.com) | Google Workspace |
+|-------|----------------------|------------------|
+| Script runtime | 6 min / execution | 6 min / execution |
+| Custom function runtime | 30 s / execution | 30 s / execution |
+| Triggers total runtime | 90 min / day | 6 h / day |
+| Simultaneous executions | 30 / user | 30 / user |
+| Triggers | 20 / user / script | 20 / user / script |
+| Email recipients | 100 / day | 1,500 / day |
+| URL Fetch calls | 20,000 / day | 100,000 / day |
+| Properties read/write | 50,000 / day | 500,000 / day |
+| Properties value size | 9 KB / value | 9 KB / value |
+| Properties total storage | 500 KB / store | 500 KB / store |
+| Cache | 100 KB / value, 1,000 items, 6 h max | same |
+| Spreadsheet size | 10 million cells | 10 million cells |

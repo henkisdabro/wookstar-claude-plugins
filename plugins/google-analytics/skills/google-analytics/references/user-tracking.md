@@ -1,6 +1,6 @@
 # GA4 User ID and Cross-Device Tracking
 
-Complete guide to User ID implementation, user properties, and cross-device tracking in GA4.
+Covers User ID implementation, user properties, and cross-device tracking in GA4.
 
 ## Overview
 

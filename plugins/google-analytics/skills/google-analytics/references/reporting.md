@@ -1,6 +1,6 @@
 # GA4 Reporting and Data Analysis
 
-Comprehensive guide to GA4 standard reports, Explorations, and data analysis techniques.
+Covers GA4 standard reports, Explorations, and data analysis techniques.
 
 ## Overview
 

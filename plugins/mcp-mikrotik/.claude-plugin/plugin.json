@@ -5,5 +5,33 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "userConfig": {
+    "mikrotik_host": {
+      "type": "string",
+      "title": "Router host",
+      "description": "Hostname or IP address of the MikroTik router",
+      "required": true
+    },
+    "mikrotik_username": {
+      "type": "string",
+      "title": "SSH username",
+      "description": "RouterOS user the server logs in as",
+      "required": true
+    },
+    "mikrotik_password": {
+      "type": "string",
+      "title": "SSH password",
+      "description": "Password for that user",
+      "required": true,
+      "sensitive": true
+    },
+    "mikrotik_port": {
+      "type": "number",
+      "title": "SSH port",
+      "description": "RouterOS SSH port",
+      "required": true,
+      "default": 22
+    }
+  }
 }

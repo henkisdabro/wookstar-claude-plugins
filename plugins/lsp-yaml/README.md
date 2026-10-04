@@ -1,4 +1,4 @@
-# yaml-lsp
+# lsp-yaml
 
 YAML language server for Claude Code, powered by [yaml-language-server](https://github.com/redhat-developer/yaml-language-server).
 
@@ -21,7 +21,7 @@ yaml-language-server --version
 ### 2. Install the plugin
 
 ```bash
-/plugin install yaml-lsp@wookstar-claude-plugins
+/plugin install lsp-yaml@wookstar-claude-plugins
 ```
 
 ## Supported Files

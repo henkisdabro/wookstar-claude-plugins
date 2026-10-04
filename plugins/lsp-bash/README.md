@@ -1,6 +1,6 @@
-# bash-lsp
+# lsp-bash
 
-Bash and shell script language server for Claude Code, powered by [bash-language-server](https://github.com/bash-lsp/bash-language-server).
+Bash and shell script language server for Claude Code, powered by [bash-language-server](https://github.com/lsp-bash/bash-language-server).
 
 Provides diagnostics via ShellCheck, completions, hover documentation, and go-to-definition for `.sh` and `.bash` files.
 
@@ -36,7 +36,7 @@ winget install koalaman.shellcheck
 ### 3. Install the plugin
 
 ```bash
-/plugin install bash-lsp@wookstar-claude-plugins
+/plugin install lsp-bash@wookstar-claude-plugins
 ```
 
 ## Supported Files

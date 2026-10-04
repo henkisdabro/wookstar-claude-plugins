@@ -1,9 +1,9 @@
 {
   "name": "shopify-developer",
-  "description": "Complete Shopify development reference covering Liquid templating, theme development (OS 2.0), GraphQL/REST APIs, app development, Shopify Functions, Hydrogen, performance optimisation, and debugging. Single unified skill with progressive disclosure via 11 reference files. API version 2026-01.",
+  "description": "Shopify development reference for Liquid, Online Store 2.0 themes, theme performance, debugging, Hydrogen, apps and Functions. Defers live GraphQL schema lookup and validation to Shopify's official shopify-ai-toolkit plugin and Dev MCP server.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.0.0"
+  "version": "3.0.0"
 }

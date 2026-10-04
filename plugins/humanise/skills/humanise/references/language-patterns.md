@@ -14,7 +14,7 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 **Mid-2025 onward (GPT-5 era):** emphasizing, enhance, highlighting, showcasing, plus notability-related terms (independent coverage, media outlets)
 
-**Model-specific traits:** Grok overuses "causal", "empirical", "correlate", and continues overusing "underscore" (as of 2026). Grok also favours the "X rather than Y" negative parallelism (see #9). ChatGPT/DeepSeek use curly quotation marks; Gemini/Claude typically avoid them. ChatGPT and Grok lean harder on broader-context framing (see #1) than Gemini and Claude do; Gemini and Claude tend to run shorter.
+**Model-specific traits:** Grok overuses "causal", "empirical", "correlate", and continues overusing "underscore" (as of 2026). Grok favours the "X rather than Y" negative parallelism (see #9), though since September 2026 Wikipedia records it in ChatGPT and Claude output too. ChatGPT/DeepSeek use curly quotation marks; Gemini/Claude typically avoid them. ChatGPT and Grok lean harder on broader-context framing (see #1) than Gemini and Claude do; Gemini and Claude tend to run shorter.
 
 **All-era high-frequency words:** Additionally, boasts (meaning "has"), bolstered, crucial, deep dive, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), meticulous/meticulously, pivotal, robust, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
 
@@ -50,7 +50,7 @@ Different LLM generations favour different words. Recognising the era helps iden
 
 - **(A) "Not just X, but also Y"** - additive: "Not only ... but ...", "It is not just ..., it's ...".
 - **(B) "Not X, but Y"** - corrective, denying the first characteristic outright: "It's not X, it's Y", "no ..., no ..., just ...".
-- **(C) "X rather than Y"** - the reversed construction; particularly common in Grok output.
+- **(C) "X rather than Y"** - the reversed construction, which Wikipedia now heads "Y rather than X" to match (B). Particularly common in Grok output, and since September 2026 also documented in ChatGPT and Claude output. Its 2026 variant is a usage disclaimer - "should be treated as religious tradition rather than as an archaeological explanation" - covered under #20.
 
 It also runs across sentence boundaries, where the second sentence quietly corrects the first: "He hailed from the esteemed Duse family, renowned for their theatrical legacy. Eugenio's life, however, took a path that intertwined both personal ambition and familial complexities." Look for a "however" or "rather" doing the same work as the "not".
 

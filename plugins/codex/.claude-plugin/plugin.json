@@ -1,9 +1,9 @@
 {
   "name": "codex",
-  "description": "Expert guidance for OpenAI Codex CLI non-interactive mode operations - running prompts programmatically, parsing output formats, building automation scripts, and CI/CD integration",
+  "description": "[RETIRED] OpenAI now publishes an official Codex plugin. This final version only shows a notice - uninstall it.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.1.0"
+  "version": "2.0.0"
 }

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-2.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"Upgraded from an earlier version? documents 2.0.0 no longer includes the docx and xlsx skills. For Word, Excel and PowerPoint install Anthropic document-skills: claude plugin marketplace add anthropics/skills, then claude plugin install document-skills@anthropic-agent-skills. Details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Research Methodology for PRP Generation
 
-This document provides detailed guidance on conducting thorough research for creating comprehensive Product Requirement Plans.
+How to research a Product Requirement Plan so the implementer needs nothing else.
 
 ## Research Philosophy
 

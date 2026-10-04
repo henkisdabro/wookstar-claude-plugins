@@ -18,7 +18,7 @@ for (let i = 1; i <= 1000; i++) {
 
 ## 2. Cache Frequently Accessed Data
 
-Use CacheService for temporary data (25 min TTL):
+Use CacheService for temporary data (10 min default, 6 h max, 100 KB per value; entries can be evicted early, so always handle a miss):
 
 ```javascript
 function getCachedData(key) {

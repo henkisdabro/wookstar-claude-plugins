@@ -194,13 +194,13 @@ Product object (on product pages):
 {{ product.featured_image.width }}
 {{ product.featured_image.height }}
 {{ product.featured_image.alt }}
-{{ product.featured_image | img_url: '500x500' }}
+{{ product.featured_image | image_url: width: 500 }}
 
 {{ product.images }}               {# Array of all images #}
 {{ product.images.size }}          {# Image count #}
 
 {% for image in product.images %}
-  <img src="{{ image | img_url: '300x300' }}" alt="{{ image.alt }}">
+  {{ image | image_url: width: 300 | image_tag: alt: image.alt }}
 {% endfor %}
 
 {{ product.media }}                {# Array of all media (images, videos, 3D) #}
@@ -297,7 +297,7 @@ Collection object (on collection pages):
 {# Image #}
 {{ collection.image }}             {# Featured image object #}
 {{ collection.image.src }}
-{{ collection.image | img_url: '1024x1024' }}
+{{ collection.image | image_url: width: 1024 }}
 
 {# Products #}
 {{ collection.products }}          {# Array of products #}
@@ -581,7 +581,7 @@ Article object (blog post pages):
 {# Image #}
 {{ article.image }}                {# Featured image #}
 {{ article.image.src }}
-{{ article.image | img_url: 'large' }}
+{{ article.image | image_url: width: 480 }}
 
 {# Comments #}
 {{ article.comments }}             {# Array of comments #}

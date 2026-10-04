@@ -1,9 +1,17 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pdfplumber",
+#     "pandas",
+#     "openpyxl",
+# ]
+# ///
 """
 Extract tables from a PDF to CSV or Excel.
 
 Usage:
-    python extract_tables.py input.pdf [--output tables.csv] [--format csv|excel] [--pages 1-5]
+    uv run extract_tables.py input.pdf [--output tables.csv] [--format csv|excel] [--pages 1-5]
 
 CSV output writes all tables to one file, separated by blank lines.
 Excel output writes one sheet per table (requires openpyxl).
@@ -27,7 +35,7 @@ try:
     import pdfplumber
     import pandas as pd
 except ImportError as e:
-    print(f"Error: missing dependency ({e.name}). Run: pip install pdfplumber pandas",
+    print(f"Error: missing dependency ({e.name}). Run this script with: uv run {__file__}",
           file=sys.stderr)
     sys.exit(3)
 

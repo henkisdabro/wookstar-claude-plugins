@@ -1,6 +1,6 @@
 {
   "name": "lsp-bash",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Bash/Shell Language Server",
   "author": {
     "name": "henkisdabro",
@@ -9,7 +9,9 @@
   "lspServers": {
     "bash": {
       "command": "bash-language-server",
-      "args": ["start"],
+      "args": [
+        "start"
+      ],
       "transport": "stdio",
       "extensionToLanguage": {
         ".sh": "shellscript",

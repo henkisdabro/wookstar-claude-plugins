@@ -1,6 +1,6 @@
 # GA4 Measurement Protocol
 
-Complete guide to GA4 Measurement Protocol for server-side event tracking.
+Covers GA4 Measurement Protocol for server-side event tracking.
 
 ## Overview
 
@@ -33,6 +33,14 @@ POST https://www.google-analytics.com/debug/mp/collect
 ```
 
 **Key Difference:** Debug returns validation messages without storing data.
+
+### EU Endpoint
+
+```
+POST https://region1.google-analytics.com/mp/collect
+```
+
+Use this to keep collection within the EU.
 
 ## Authentication
 
@@ -82,8 +90,8 @@ Content-Type: application/json
     }
   },
   "consent": {
-    "ad_storage": "granted",
-    "analytics_storage": "granted"
+    "ad_user_data": "GRANTED",
+    "ad_personalization": "GRANTED"
   },
   "events": [
     {
@@ -115,8 +123,13 @@ Content-Type: application/json
 | user_id | string | User ID for cross-device |
 | timestamp_micros | integer | Event timestamp (microseconds) |
 | user_properties | object | User-level properties |
-| consent | object | Consent status |
-| non_personalized_ads | boolean | Disable ad personalisation |
+| consent | object | `ad_user_data` and `ad_personalization`, each `GRANTED` or `DENIED` |
+| user_data | object | User-provided data (hashed email/phone/address) for enhanced conversions |
+| user_location | object | Geographic data (city, region_id, country_id, ...) |
+| ip_override | string | IP address GA uses to derive location |
+| device | object | Device information (category, language, screen_resolution, ...) |
+| validation_behavior | string | `RELAXED` (default) or `ENFORCE_RECOMMENDATIONS` |
+| non_personalized_ads | boolean | Deprecated - use `consent.ad_personalization` instead |
 
 ## Common Event Parameters
 
@@ -347,7 +360,7 @@ curl -X POST "https://www.google-analytics.com/debug/mp/collect?measurement_id=G
 
 - No validationMessages = payload valid
 - Status 200 = request processed
-- Production returns 204 (no content)
+- Production returns a 2xx (usually 204) for every received request, valid or not - it never reports malformed payloads, so validate against the debug endpoint
 
 ## Validation Codes
 
@@ -423,7 +436,7 @@ def send_with_retry(payload, max_retries=3):
 ```python
 import time
 
-# For historical data (max 3 days past)
+# For historical data (max 72 hours past; future timestamps are not accepted)
 timestamp_micros = int(time.time() * 1_000_000)
 
 payload = {
@@ -439,8 +452,8 @@ payload = {
 payload = {
     "client_id": "client_123",
     "consent": {
-        "ad_storage": "denied",
-        "analytics_storage": "granted"
+        "ad_user_data": "DENIED",
+        "ad_personalization": "DENIED"
     },
     "events": [...]
 }
@@ -456,7 +469,10 @@ payload = {
 | Parameter value length | 100 characters |
 | Parameters per event | 25 |
 | User properties per request | 25 |
-| Timestamp range | 3 days past, 72 hours future |
+| User property name / value length | 24 / 36 characters |
+| Parameter value length (GA4 360) | 500 characters |
+| Request body size | 130 kB |
+| Timestamp backdating | 72 hours |
 
 ## Common Issues
 

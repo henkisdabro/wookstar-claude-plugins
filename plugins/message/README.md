@@ -4,7 +4,7 @@ Rich text message drafts for Gmail, desktop mail apps, and WhatsApp with live br
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) runtime on PATH
+- [Bun](https://bun.sh) runtime on PATH. Without it the preview hook exits silently (no error on every write) and no preview opens; the preflight below installs it.
 
 Dependencies install automatically on first use (the hook runs `bun install` in the skill's scripts directory). To set up manually, or to self-test the environment:
 
@@ -77,7 +77,7 @@ Copy buttons use the Clipboard API's HTML MIME type - paste into Gmail, Outlook,
 
 ## Workflow
 
-1. Claude writes a `.fragment.md` (recommended: `data/writing/email_drafts/`; the hook fires on any `*.fragment.md`)
+1. Claude writes a `.fragment.md` to the drafts directory - `data/writing/email_drafts/` by default; name a different one in your project's CLAUDE.md or AGENTS.md to override it (the hook fires on any `*.fragment.md`)
 2. The PostToolUse hook (`auto-serve-fragment.ts`, runs under Bun) auto-builds and launches the preview server; the server opens the browser once, the instant its port is ready
 3. Edits to the fragment hot-reload in under 100 ms via WebSocket (atomic-save editors reload via a 300 ms mtime poll)
 4. Use the lane Copy/Open buttons to send via Gmail, your mail app, or WhatsApp

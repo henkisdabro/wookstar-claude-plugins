@@ -1,0 +1,10 @@
+{
+  "name": "model-id-upgrade",
+  "description": "Find and upgrade stale Claude model IDs across skills, agents, configs and code after a new Claude release. Read-only ripgrep scan that separates records (logs, changelogs, transcripts) from targets, an approval gate, then ID-only edits.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}

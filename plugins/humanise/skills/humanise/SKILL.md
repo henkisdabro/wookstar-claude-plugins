@@ -1,12 +1,12 @@
 ---
 name: humanise
-description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 34 patterns from Wikipedia's "Signs of AI writing". For grammar-only proofreading or spell checking, edit normally instead.
+description: Humanise text by removing AI writing patterns so it reads as human-written. Use when the user asks to humanise, de-AI or de-slop a draft, says it reads like a robot or like ChatGPT wrote it, or wants a press-release voice given a pulse. Applies 34 patterns from Wikipedia's "Signs of AI writing". Do NOT use for grammar-only proofreading or spell checking - edit normally; or for translating text - translate directly.
 allowed-tools: Read, Write, Edit, Grep, Glob, AskUserQuestion
 ---
 
 # Humaniser: remove AI writing patterns
 
-Based on Wikipedia's "Signs of AI writing", maintained by WikiProject AI Cleanup. Last checked against the Wikipedia source: 2026-09-09.
+Based on Wikipedia's "Signs of AI writing", maintained by WikiProject AI Cleanup. Last checked against the Wikipedia source: 2026-10-04.
 
 > Removing AI patterns is table stakes. The job is giving the text a **pulse**.
 
@@ -44,6 +44,8 @@ If the author's own writing is available, read it before rewriting anything. A s
 Take from the sample: sentence lengths, vocabulary level, how paragraphs open, punctuation habits, recurring phrases, and how they get from one idea to the next. Match those habits rather than merely deleting patterns. Keep casual words casual and deliberate quirks intact.
 
 **A sample outranks every pattern rule here, including the em dash rule in #13.** If the author uses em dashes, match their frequency. If they open paragraphs with "So," keep it. A tell is only a tell in writing that is not theirs.
+
+**A stored voice profile counts as a sample.** Where the user keeps one for this author and genre - a reference file distilled from their own writing - read it before drafting. A profile is strongest when built from a piece the author wrote alongside a draft they rejected, so keep the rejected version and note what changed.
 
 ## Pulse
 
@@ -106,7 +108,7 @@ Identify patterns here, then read the linked reference for rewriting guidance an
 |---|---------|-------------|
 | 7 | AI vocabulary words (era-specific) | 2023: delve, tapestry, bolstered; 2024: align with, fostering, pivotal; 2025+: enhance, showcasing |
 | 8 | Copula avoidance | serves as, stands as, boasts, features, offers [a] |
-| 9 | Negative parallelisms (three subtypes) | "Not only...but also..." / "It's not X, it's Y" / "X rather than Y" (Grok) |
+| 9 | Negative parallelisms (three subtypes) | "Not only...but also..." / "It's not X, it's Y" / "X rather than Y" (Grok; also ChatGPT, Claude) |
 | 10 | Rule of three | three-item lists forced into every sentence |
 | 12 | False ranges | from X to Y where X and Y aren't on a scale |
 | 32 | Vague expression of connection | associated with, in connection with, in association with, connected to |
@@ -132,7 +134,7 @@ Identify patterns here, then read the linked reference for rewriting guidance an
 | # | Pattern | Key Signals |
 |---|---------|-------------|
 | 19 | Chat artifacts | I hope this helps, Let me know, Here is a... |
-| 20 | Knowledge-cutoff disclaimers | as of my last knowledge update, based on available information (bare "as of [date]" dropped Sept 2026) |
+| 20 | Knowledge-cutoff, source-gap and usage disclaimers | as of my last knowledge update, based on available information, should be treated as X rather than Y (bare "as of [date]" dropped Sept 2026) |
 | 21 | Sycophantic tone | Great question!, You're absolutely right! |
 | 27 | Subject lines pasted into content | email-style subject lines left in body text |
 | 28 | Placeholder text and templates | [Name], 2025-XX-XX, unfilled Mad Libs blanks |

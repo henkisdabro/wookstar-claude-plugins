@@ -1,29 +1,18 @@
 # Developer Toolkit
 
-Complete development toolkit with commands, testing skills, and powerful MCP integrations.
+Planning, implementation and containerisation skills for application development.
 
-## What's Included
+## What's included
 
-### Commands (3)
+### Skills you run by name
 
-- **/containerize** - Create production-ready Docker configurations
-- **/generate-prp** - Generate Progressive Refinement Plans for complex features
-- **/execute-prp** - Execute previously generated PRPs
+- **/containerize** - Dockerfile, `.dockerignore` and `compose.yaml` for the current project: multi-stage builds, BuildKit cache mounts, pinned base images, non-root user, healthchecks. Aware of pnpm, uv and Bun.
+- **/execute-prp** - Implement a feature from a PRP file and drive it until every validation gate passes.
 
-### Skills (4)
+### Skills Claude picks up automatically
 
-- **webapp-testing** - Web application testing toolkit with Playwright
-- **devtools** - Chrome DevTools MCP setup guide for browser debugging and automation
-- **prp-generator** - Generate comprehensive Product Requirement Plans with research methodology
-- **fifteen-factor-app** - SaaS architecture principles (extends the Twelve-Factor App methodology)
-
-### MCP Servers (5)
-
-- **chrome-devtools** - Chrome DevTools Protocol integration
-- **context7** - Context-aware code understanding
-- **firecrawl** - Advanced web scraping and crawling
-- **microsoft-docs** - Microsoft documentation access
-- **playwright** - Browser automation and testing
+- **prp-generator** - Writes a researched Product Requirement Plan with executable validation gates, saved to `PRPs/`.
+- **fifteen-factor-app** - Twelve-Factor plus API First, Telemetry and Security, for cloud-native SaaS architecture and reviews.
 
 ## Installation
 
@@ -31,68 +20,36 @@ Complete development toolkit with commands, testing skills, and powerful MCP int
 /plugin install developer@wookstar-claude-plugins
 ```
 
-## Required Environment Variables
-
-Create a `.env` file in your project root:
+## Usage
 
 ```bash
-# Context7 (optional)
-CONTEXT7_API_KEY=your_key_here
+# Plan a feature, then implement it
+"Write a PRP for user authentication"
+/execute-prp PRPs/user-authentication.md
 
-# Firecrawl (optional)
-FIRECRAWL_API_KEY=your_key_here
-```
-
-## Usage Examples
-
-```bash
-# Generate a Progressive Refinement Plan
-/generate-prp "Build user authentication module"
-
-# Execute the generated plan
-/execute-prp
-
-# Container-ise your application
+# Containerise the project
 /containerize
 
-# Playwright testing
-"Test the checkout flow in our web app"
-
-# Use Chrome DevTools
-"Debug this JavaScript performance issue"
-
 # Architecture guidance
-"Help me design this service following fifteen-factor principles"
+"Review this service against the fifteen factors"
 ```
 
-## Skill Details
+## Moved to official plugins
 
-### fifteen-factor-app
+These used to ship here. Install the maintained versions instead:
 
-Extends the original Twelve-Factor App methodology with three additional factors for modern cloud-native applications:
+| Removed from this plugin | Replacement |
+|--------------------------|-------------|
+| `webapp-testing` skill | `example-skills` from the `anthropics/skills` marketplace |
+| `devtools` skill and `chrome-devtools` MCP server | `chrome-devtools-mcp` from `claude-plugins-official` |
+| `playwright` MCP server | `playwright` from `claude-plugins-official` |
+| `context7` MCP server | `context7` from `claude-plugins-official` |
+| `firecrawl` MCP server | `firecrawl` from `claude-plugins-official` |
+| `microsoft-docs` MCP server | `microsoft-docs` from `claude-plugins-official` |
+| `/generate-prp` command | the `prp-generator` skill above - ask for a PRP |
 
-- **API First** - Design APIs before implementation
-- **Telemetry** - Built-in observability and monitoring
-- **Security** - Security as a first-class concern
-
-Use when planning SaaS architecture, creating PRPs/PRDs, or evaluating application designs.
-
-### prp-generator
-
-Generates comprehensive Product Requirement Plans with:
-
-- Research methodology documentation
-- Structured requirement templates
-- Implementation guidance
-- Risk assessment frameworks
-
-## When to Use
-
-This toolkit is ideal for:
-
-- Browser automation and testing
-- Accessing technical documentation
-- Web scraping and data extraction
-- Generating comprehensive project plans
-- SaaS architecture design and review
-- Container-ising applications for deployment
+```bash
+/plugin marketplace add anthropics/skills
+/plugin install example-skills@anthropic-agent-skills
+/plugin install chrome-devtools-mcp@claude-plugins-official
+```

@@ -1,9 +1,9 @@
 {
   "name": "mcp-gemini-bridge",
-  "description": "Google Gemini AI model integration via MCP",
+  "description": "[RETIRED] It wraps Gemini CLI, which stopped serving individual accounts on 2026-06-18. This final version only shows a notice - uninstall it.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0"
 }

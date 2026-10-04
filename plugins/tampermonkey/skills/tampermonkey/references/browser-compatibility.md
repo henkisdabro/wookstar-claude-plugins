@@ -8,8 +8,9 @@ Cross-browser differences and compatibility matrix for Tampermonkey userscripts.
 
 | Feature | Chrome | Firefox | Edge | Safari | Opera |
 |---------|--------|---------|------|--------|-------|
-| **Tampermonkey** | ✅ | ✅ | ✅ | ⚠️ Userscripts app | ✅ |
-| **Manifest Version** | V3 | V2 | V3 | N/A | V3 |
+| **Tampermonkey** | ✅ | ✅ | ✅ | ✅ App Store (paid) | ✅ |
+| **MV3 userscript limits** | Yes | No | Yes | - | Yes |
+| **"Allow User Scripts" / Developer Mode needed** | Yes | No | Yes | No | Yes |
 
 ### API Compatibility
 
@@ -33,9 +34,9 @@ Cross-browser differences and compatibility matrix for Tampermonkey userscripts.
 
 | Feature | Chrome | Firefox | Notes |
 |---------|--------|---------|-------|
-| `@sandbox raw` | ✅ | ✅ | Page context |
-| `@sandbox JavaScript` | ✅ | ✅ USERSCRIPT_WORLD | Firefox has special context |
-| `@sandbox DOM` | ✅ | ✅ | Isolated context |
+| `@sandbox raw` | ✅ | ✅ | Page context (MAIN_WORLD); the default when `@sandbox` is omitted |
+| `@sandbox JavaScript` | ✅ page context | ✅ USERSCRIPT_WORLD | Only Firefox gets the special context; other browsers fall back to `raw` |
+| `@sandbox DOM` | ✅ | ✅ | Extension content-script context (ISOLATED_WORLD) |
 | `document-start` timing | ⚠️ | ✅ | Firefox more reliable |
 | `cloneInto` | ❌ | ✅ | Firefox only |
 | `exportFunction` | ❌ | ✅ | Firefox only |
@@ -44,13 +45,19 @@ Cross-browser differences and compatibility matrix for Tampermonkey userscripts.
 
 ## Manifest V3 Limitations (Chrome/Edge)
 
-Chrome and Edge use Manifest V3, which restricts certain features:
+Chrome, Edge and other Chromium browsers run the Manifest V3 build of Tampermonkey, which restricts certain features:
+
+### The user must allow userscripts
+
+No script runs until the user enables **Allow User Scripts** on Tampermonkey's extension details page (Chrome 138+), or Developer Mode on `chrome://extensions` / `edge://extensions` where that toggle is absent. Tampermonkey 5.5.1 made this permission mandatory for injection. When a user reports that nothing runs at all, ask about this before debugging the script. See [Tampermonkey FAQ Q209](https://www.tampermonkey.net/faq.php?q=Q209).
 
 ### What Doesn't Work in MV3
 
-1. **@webRequest** - Request interception is blocked
+1. **`@webRequest` / `GM_webRequest`** - not available in MV3 builds since Tampermonkey 5.2
 2. **Some background script patterns** - Persistent background pages removed
 3. **Certain CSP bypass methods** - More restricted
+
+Users who still need an MV2 build are covered by [FAQ Q408](https://www.tampermonkey.net/faq.php?q=Q408); Chrome has been removing the policy that allows it, so do not design scripts around it.
 
 ### Workarounds
 
@@ -113,7 +120,7 @@ exportToPage('myFunction', (arg) => console.log('Called with:', arg));
 
 ### Firefox Containers
 
-Firefox supports container tabs for privacy isolation.
+Firefox supports container tabs for privacy isolation. Tampermonkey 5.5.1 dropped Firefox's contextual-identities permission again ([gh:2792](https://github.com/Tampermonkey/tampermonkey/issues/2792)), because holding it forced container tabs on for every user. Scripts can therefore no longer open container tabs or start downloads in a container; test container-based `@run-in` on the user's installed version before relying on it.
 
 ```javascript
 // @run-in container-id-2
@@ -128,32 +135,7 @@ console.log('Container:', GM_info.container);
 
 ## Safari Support
 
-Safari uses a third-party app called "Userscripts" (not Tampermonkey).
-
-### Key Differences
-
-| Feature | Safari Userscripts | Tampermonkey |
-|---------|-------------------|--------------|
-| Installation | Mac App Store | Browser extension |
-| @grant support | Limited | Full |
-| GM_* APIs | Subset | Full |
-| Auto-update | Manual | Automatic |
-
-### Writing Safari-Compatible Scripts
-
-```javascript
-// Check if running in Safari Userscripts app
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-// Use only widely-supported APIs
-// @grant GM_getValue
-// @grant GM_setValue
-// @grant GM_xmlhttpRequest
-
-// Avoid Safari-incompatible features
-// @grant GM_webRequest  // May not work
-// @grant GM_audio       // May not work
-```
+Tampermonkey is available for Safari as a paid App Store extension; it has its own release line and changelog. Some APIs (notably `GM_webRequest`) are unavailable, so stick to widely supported grants and use feature detection (below) for anything else. Test on Safari before promising support.
 
 ---
 
@@ -211,7 +193,7 @@ Before releasing a script:
 1. ✅ Test in Chrome (most common)
 2. ✅ Test in Firefox (second most common)
 3. ✅ Test in Edge (uses same engine as Chrome)
-4. ⚠️ Test in Safari if targeting Mac users
+4. ⚠️ Test in Safari (Tampermonkey for Safari) if targeting Mac users
 
 ---
 
@@ -264,6 +246,7 @@ Some features require specific Tampermonkey versions:
 | `GM_notification.tag` | 5.0+ |
 | `@run-in` | 5.3+ |
 | `GM_setValues/getValues` | 5.3+ |
+| "Allow User Scripts" permission mandatory (Chrome/Edge) | 5.5.1 |
 
 ```javascript
 // Check Tampermonkey version

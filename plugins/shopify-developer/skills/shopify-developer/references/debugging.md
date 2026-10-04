@@ -1,653 +1,89 @@
-# Debugging and Troubleshooting Reference
+# Debugging
 
-Expert guidance for debugging Shopify themes, apps, and API integrations with practical solutions to common issues.
+Find the symptom, apply the check. Every fix ends with the original symptom gone in the same context it appeared (same template, same market, same theme editor state).
 
-## Core Capabilities
+## Tools worth reaching for
 
-### 1. Liquid Debugging
+| Tool | For |
+|------|-----|
+| `shopify theme dev` | Local preview with hot reload; Liquid errors render inline in the page as `Liquid error (sections/x.liquid line 12): ...` |
+| `shopify theme check` | Static lint: unknown filters, missing assets, deprecated tags, performance anti-patterns. Run before anything else |
+| `shopify theme console` | Liquid REPL against a real store - evaluate `{{ product | json }}` without editing files |
+| Shopify Theme Inspector for Chrome | Liquid render profiling (flame graph per section/snippet) |
+| `shopify-ai-toolkit` / `@shopify/dev-mcp` | Validate a GraphQL query or Liquid snippet against the live schema |
+| `shopify app function run` / `replay` | Re-run a Function with real input |
+| `X-Shopify-API-Version` response header | Confirms which API version actually served the request |
 
-Debug Liquid template errors and rendering issues.
+Dump a value while debugging with `<script>console.log({{ product | json }})</script>` or `<pre>{{ section.settings | json }}</pre>`, and remove it before shipping.
 
-**Enable Theme Preview:**
-```
-1. Go to Online Store > Themes
-2. Click "Customise" on your theme
-3. Open browser DevTools (F12)
-4. Check Console for Liquid errors
-```
+## Liquid
 
-**Common Liquid Errors:**
+| Symptom | Cause and fix |
+|---------|---------------|
+| Output is blank, no error | The object is nil in this context (`product` on a collection template, a deleted metafield, a setting never saved). Guard with `{% if %}` or `default:`. Liquid fails silently on nil property access |
+| `Liquid error: ... Unknown filter` | Typo or a filter from another Liquid dialect (`format_money` is `money`). Check [liquid-filters.md](liquid-filters.md) |
+| `{% section %}` errors inside a section file | Sections cannot render other sections. Use `{% render %}` for a snippet, or add the section through the JSON template |
+| Variable missing inside a snippet | `{% render %}` has an isolated scope - pass every value as a parameter (`{% render 'card', product: product %}`). Old `{% include %}` code leaked parent scope; converting to `render` exposes it |
+| `Liquid error: Memory limits exceeded` / slow render | Nested loops over large collections or `all_products`. Paginate, limit, or move to a section rendered on demand |
+| Image URL broken or wrong size | `img_url` is deprecated; use `image_url: width: N` and `image_tag` |
+| Money shows 1999 instead of $19.99 | Prices are integers in the minor unit; pipe through `money` |
 
-**Syntax Error:**
-```liquid
-{# ❌ Error: Missing endif #}
-{% if product.available %}
-  <button>Add to Cart</button>
-{# Missing {% endif %} #}
+## Theme editor
 
-{# ✅ Fixed #}
-{% if product.available %}
-  <button>Add to Cart</button>
-{% endif %}
-```
+| Symptom | Cause and fix |
+|---------|---------------|
+| Section missing from "Add section" | Schema lacks `presets`, or `enabled_on`/`disabled_on` excludes this template |
+| Setting changes do nothing | Markup hardcodes the value instead of reading `section.settings.<id>`, or the setting `id` was renamed (saved values live in the JSON template under the old id) |
+| Clicking a block does not select it | Block wrapper lacks `{{ block.shopify_attributes }}` |
+| JavaScript stops working after an edit in the editor | The editor re-renders sections without a page load. Re-initialise on `shopify:section:load` and clean up on `shopify:section:unload` |
+| Schema saves rejected | Invalid JSON in `{% schema %}` (trailing comma) or a `default` that fails the setting type's validation |
 
-**Undefined Variable:**
-```liquid
-{# ❌ Error: product undefined on collection page #}
-{{ product.title }}
+## Theme cart (Ajax API)
 
-{# ✅ Fixed: Check context #}
-{% if product %}
-  {{ product.title }}
-{% else %}
-  {# Not on product page #}
-{% endif %}
-```
+| Symptom | Cause and fix |
+|---------|---------------|
+| `/cart/add.js` returns 404 or 422 "Cannot find variant" | Sent a product ID; `id` must be the variant ID |
+| 422 with a `description` | Sold out, over a quantity rule, or a Cart Transform/validation Function refused it. Show `description` to the shopper |
+| Cart icon or drawer stale after add | Request the sections in the same call (`sections` param) and swap the returned HTML; a separate `/cart.js` fetch races |
+| Wrong locale or currency after a cart call | Calls used `/cart/...` instead of `window.Shopify.routes.root + 'cart/...'` |
+| `SyntaxError: Unexpected token <` | The endpoint returned an HTML page (bad path, password page, redirect), not JSON |
 
-**Invalid Filter:**
-```liquid
-{# ❌ Error: Unknown filter #}
-{{ product.price | format_money }}
+## GraphQL APIs
 
-{# ✅ Fixed: Correct filter name #}
-{{ product.price | money }}
-```
+| Symptom | Cause and fix |
+|---------|---------------|
+| 200 response, but nothing changed | Read the mutation's `userErrors` - input was rejected |
+| `errors[].extensions.code: THROTTLED` | Over the cost budget. Read `extensions.cost.throttleStatus`, wait for restore, reduce `first:` on nested connections |
+| `ACCESS_DENIED` or 403 | Missing scope. Add it in `shopify.app.toml`, deploy, and have the merchant re-approve |
+| 401 / `UNAUTHENTICATED` | Wrong header (`X-Shopify-Access-Token` for Admin, `X-Shopify-Storefront-Access-Token` for Storefront) or a revoked/expired token |
+| `Field 'x' doesn't exist on type 'Y'` | Field renamed or removed in this version, or never existed. Validate with the Dev MCP against the version you request |
+| Behaviour changed with no code change | Your pinned version was retired and Shopify fell forward. Compare `X-Shopify-API-Version` with what you sent |
 
-**Debug Output:**
-```liquid
-{# Output variable as JSON #}
-{{ product | json }}
+## Webhooks
 
-{# Check variable type #}
-{{ product.class }}
+| Symptom | Cause and fix |
+|---------|---------------|
+| HMAC never matches | Hashing re-serialised JSON. Use the raw body bytes, the app's client secret, base64 HMAC-SHA256, and `crypto.timingSafeEqual` |
+| Duplicate processing | Shopify delivers at least once. Deduplicate on `X-Shopify-Webhook-Id` |
+| Deliveries stop | Endpoint was slow or erroring and the subscription failed out. Return 200 fast, queue the work, check delivery metrics in the app's dashboard |
+| Payload shape unexpected | `[webhooks] api_version` in `shopify.app.toml` differs from the version the code was written against |
 
-{# Check if variable exists #}
-{% if product %}
-  Product exists
-{% else %}
-  Product is nil
-{% endif %}
-
-{# Output all properties #}
-<pre>{{ product | json }}</pre>
-```
-
-**Console Logging from Liquid:**
-```liquid
-<script>
-  console.log('Product ID:', {{ product.id }});
-  console.log('Product data:', {{ product | json }});
-  console.log('Cart:', {{ cart | json }});
-</script>
-```
-
-### 2. JavaScript Debugging
-
-Debug JavaScript errors in themes and apps.
-
-**Browser Console:**
 ```javascript
-// Log to console
-console.log('Debug:', variable);
-console.error('Error:', error);
-console.warn('Warning:', warning);
+import crypto from 'node:crypto';
 
-// Log object properties
-console.table(data);
-
-// Group related logs
-console.group('Cart Operations');
-console.log('Cart ID:', cartId);
-console.log('Items:', items);
-console.groupEnd();
-
-// Time operations
-console.time('API Call');
-await fetch('/api/data');
-console.timeEnd('API Call');
-
-// Stack trace
-console.trace('Execution path');
-```
-
-**Breakpoints:**
-```javascript
-// Programmatic breakpoint
-debugger;
-
-// Set in browser DevTools:
-// Sources tab > Click line number
-```
-
-**Error Handling:**
-```javascript
-// ❌ Unhandled error
-const data = await fetch('/api/data').then(r => r.json());
-
-// ✅ Proper error handling
-try {
-  const response = await fetch('/api/data');
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  console.log('Data:', data);
-} catch (error) {
-  console.error('Failed to fetch data:', error);
-  // Show user-friendly error message
-  alert('Failed to load data. Please try again.');
+export function verifyShopifyWebhook(rawBody, hmacHeader, secret) {
+  const digest = crypto.createHmac('sha256', secret).update(rawBody).digest();
+  const received = Buffer.from(hmacHeader ?? '', 'base64');
+  return received.length === digest.length && crypto.timingSafeEqual(digest, received);
 }
 ```
 
-**Network Debugging:**
-```
-1. Open DevTools > Network tab
-2. Filter by XHR or Fetch
-3. Click request to see:
-   - Request headers
-   - Request payload
-   - Response headers
-   - Response body
-   - Timing information
-```
-
-### 3. API Error Debugging
-
-Debug GraphQL and REST API errors.
-
-**GraphQL Errors:**
-
-Error response format:
-```json
-{
-  "errors": [
-    {
-      "message": "Field 'invalidField' doesn't exist on type 'Product'",
-      "locations": [{ "line": 3, "column": 5 }],
-      "path": ["product", "invalidField"],
-      "extensions": {
-        "code": "FIELD_NOT_FOUND",
-        "typeName": "Product"
-      }
-    }
-  ],
-  "data": null
-}
-```
-
-**Check for errors BEFORE accessing data:**
-```javascript
-const response = await fetch(graphqlEndpoint, {
-  method: 'POST',
-  headers: {
-    'X-Shopify-Access-Token': accessToken,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ query, variables }),
-});
-
-const { data, errors } = await response.json();
-
-// ✅ Always check errors first
-if (errors) {
-  console.error('GraphQL Errors:');
-  errors.forEach(error => {
-    console.error('Message:', error.message);
-    console.error('Location:', error.locations);
-    console.error('Path:', error.path);
-    console.error('Code:', error.extensions?.code);
-  });
-  throw new Error(errors[0].message);
-}
-
-// Now safe to use data
-console.log('Products:', data.products);
-```
-
-**Common GraphQL Errors:**
-
-**Authentication Error:**
-```json
-{
-  "errors": [{
-    "message": "Access denied",
-    "extensions": { "code": "UNAUTHENTICATED" }
-  }]
-}
-```
-
-**Fix:** Check access token:
-```javascript
-// Verify token is valid
-const token = 'shpat_...';
-
-// Check token format (should start with shpat_)
-if (!token.startsWith('shpat_')) {
-  console.error('Invalid token format');
-}
-
-// Verify in headers
-headers: {
-  'X-Shopify-Access-Token': token,  // ✅ Correct header
-  'Authorization': `Bearer ${token}`, // ❌ Wrong for Admin API
-}
-```
-
-**Field Not Found:**
-```json
-{
-  "errors": [{
-    "message": "Field 'invalidField' doesn't exist on type 'Product'"
-  }]
-}
-```
-
-**Fix:** Check field name in API docs:
-```graphql
-# ❌ Wrong field name
-query {
-  product(id: "gid://shopify/Product/123") {
-    invalidField
-  }
-}
-
-# ✅ Correct field name
-query {
-  product(id: "gid://shopify/Product/123") {
-    title
-    handle
-    status
-  }
-}
-```
-
-**Rate Limit Error:**
-```javascript
-// Check rate limit header
-const response = await fetch(graphqlEndpoint, options);
-
-const rateLimit = response.headers.get('X-Shopify-GraphQL-Admin-Api-Call-Limit');
-console.log('Rate limit:', rateLimit); // "42/50"
-
-if (response.status === 429) {
-  const retryAfter = response.headers.get('Retry-After');
-  console.log(`Rate limited. Retry after ${retryAfter} seconds`);
-}
-```
-
-**REST API Errors:**
-
-**404 Not Found:**
-```javascript
-const response = await fetch(`https://${shop}/admin/api/2026-01/products/999999.json`, {
-  headers: { 'X-Shopify-Access-Token': token },
-});
-
-if (response.status === 404) {
-  console.error('Product not found');
-  // Check:
-  // 1. Product ID is correct
-  // 2. Product exists in store
-  // 3. Using correct endpoint
-}
-```
-
-**422 Unprocessable Entity:**
-```json
-{
-  "errors": {
-    "title": ["can't be blank"],
-    "price": ["must be greater than 0"]
-  }
-}
-```
-
-**Fix:** Validate input:
-```javascript
-const response = await fetch(endpoint, {
-  method: 'POST',
-  headers: {
-    'X-Shopify-Access-Token': token,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    product: {
-      title: '',  // ❌ Empty title
-      price: -10, // ❌ Negative price
-    },
-  }),
-});
-
-if (response.status === 422) {
-  const { errors } = await response.json();
-  console.error('Validation errors:', errors);
-
-  // Fix data
-  const validProduct = {
-    title: 'Product Name',  // ✅ Valid title
-    price: 19.99,           // ✅ Valid price
-  };
-}
-```
-
-### 4. Cart Debugging
-
-Debug cart and Ajax API issues.
-
-**Cart Not Updating:**
-```javascript
-// ❌ Common mistake: Wrong variant ID
-fetch('/cart/add.js', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    id: '123',  // ❌ Wrong: using product ID instead of variant ID
-    quantity: 1,
-  }),
-});
-
-// ✅ Fixed: Use variant ID
-fetch('/cart/add.js', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    id: 123456789,  // ✅ Variant ID (numeric)
-    quantity: 1,
-  }),
-})
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => {
-        console.error('Cart error:', err);
-        throw err;
-      });
-    }
-    return response.json();
-  })
-  .then(item => {
-    console.log('Added to cart:', item);
-    // Update cart UI
-  })
-  .catch(error => {
-    console.error('Failed to add to cart:', error);
-  });
-```
-
-**Get Current Cart:**
-```javascript
-// Debug current cart state
-fetch('/cart.js')
-  .then(r => r.json())
-  .then(cart => {
-    console.log('Cart:', cart);
-    console.log('Item count:', cart.item_count);
-    console.log('Total:', cart.total_price);
-    console.log('Items:', cart.items);
-
-    cart.items.forEach(item => {
-      console.log('Item:', item.product_id, item.variant_id, item.quantity);
-    });
-  });
-```
-
-**Cart AJAX Errors:**
-```javascript
-// Common error: Insufficient inventory
-{
-  "status": 422,
-  "message": "You can only add 5 of this item to your cart",
-  "description": "Cannot add more than 5 to cart"
-}
-
-// Fix: Check inventory before adding
-const variant = product.variants.find(v => v.id === variantId);
-
-if (variant.inventory_quantity < quantity) {
-  alert(`Only ${variant.inventory_quantity} available`);
-} else {
-  // Add to cart
-}
-```
-
-### 5. Theme Preview Debugging
-
-Debug issues in the theme customiser.
-
-**Theme Editor Console:**
-```
-1. Open theme customiser
-2. Open DevTools (F12)
-3. Check Console for errors
-4. Look for:
-   - Liquid errors (red text)
-   - JavaScript errors
-   - Network failures
-```
-
-**Section Not Rendering:**
-```liquid
-{# Check section schema #}
-{% schema %}
-{
-  "name": "My Section",
-  "settings": [...]  {# ✅ Must have settings #}
-}
-{% endschema %}
-
-{# ❌ Missing schema = won't show in customiser #}
-```
-
-**Settings Not Updating:**
-```liquid
-{# ❌ Wrong: Using hardcoded value #}
-<h1>Hardcoded Title</h1>
-
-{# ✅ Fixed: Use setting #}
-<h1>{{ section.settings.title }}</h1>
-
-{% schema %}
-{
-  "name": "Hero",
-  "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Welcome"
-    }
-  ]
-}
-{% endschema %}
-```
-
-**Block Attributes Missing:**
-```liquid
-{# ❌ Missing shopify_attributes #}
-<div class="block">
-  {{ block.settings.text }}
-</div>
-
-{# ✅ Fixed: Add shopify_attributes for theme editor #}
-<div class="block" {{ block.shopify_attributes }}>
-  {{ block.settings.text }}
-</div>
-```
-
-### 6. Webhook Debugging
-
-Debug webhook delivery and processing.
-
-**Webhook Not Received:**
-
-Check in Shopify Admin:
-```
-1. Settings > Notifications > Webhooks
-2. Click webhook
-3. Check "Recent deliveries"
-4. Look for delivery status:
-   - ✅ Success (200 OK)
-   - ❌ Failed (4xx/5xx errors)
-```
-
-**Verify Webhook HMAC:**
-```javascript
-import crypto from 'crypto';
-
-function verifyWebhook(body, hmac, secret) {
-  const hash = crypto
-    .createHmac('sha256', secret)
-    .update(body, 'utf8')
-    .digest('base64');
-
-  return hash === hmac;
-}
-
-// Express example
-app.post('/webhooks/orders', (req, res) => {
-  const hmac = req.headers['x-shopify-hmac-sha256'];
-  const body = JSON.stringify(req.body);
-
-  if (!verifyWebhook(body, hmac, process.env.SHOPIFY_WEBHOOK_SECRET)) {
-    console.error('Invalid webhook HMAC');
-    return res.status(401).send('Unauthorised');
-  }
-
-  console.log('Webhook verified');
-
-  // Process webhook
-  const order = req.body;
-  console.log('Order:', order.id, order.email);
-
-  // Respond quickly (< 5 seconds)
-  res.status(200).send('OK');
-});
-```
-
-**Webhook Timeout:**
-```javascript
-// ❌ Processing takes too long (> 5 seconds)
-app.post('/webhooks/orders', async (req, res) => {
-  await processOrder(req.body);  // Slow operation
-  res.send('OK');  // Response delayed
-});
-
-// ✅ Respond immediately, process async
-app.post('/webhooks/orders', async (req, res) => {
-  const order = req.body;
-
-  // Respond quickly
-  res.status(200).send('OK');
-
-  // Process in background
-  processOrder(order).catch(console.error);
-});
-```
-
-### 7. Common Error Messages
-
-**Liquid Errors:**
-
-```
-Error: Liquid syntax error: Unknown tag 'section'
-Fix: Use {% section %} only in JSON templates, not .liquid files
-```
-
-```
-Error: undefined method 'title' for nil:NilClass
-Fix: Variable is nil. Add {% if %} check or provide default:
-{{ product.title | default: "No title" }}
-```
-
-```
-Error: Exceeded maximum number of allowed iterations
-Fix: Infinite loop detected. Check loop conditions.
-```
-
-**JavaScript Errors:**
-
-```
-TypeError: Cannot read property 'forEach' of undefined
-Fix: Array is undefined. Check:
-if (items && Array.isArray(items)) {
-  items.forEach(item => { ... });
-}
-```
-
-```
-ReferenceError: $ is not defined
-Fix: jQuery not loaded or script runs before jQuery loads
-```
-
-```
-SyntaxError: Unexpected token <
-Fix: API returned HTML error page instead of JSON. Check API endpoint.
-```
-
-**API Errors:**
-
-```
-Access denied - check your access scopes
-Fix: App needs additional permissions. Update scopes in Partner Dashboard.
-```
-
-```
-Throttled: Exceeded API rate limit
-Fix: Implement rate limit handling with exponential backoff.
-```
-
-```
-Field doesn't exist on type
-Fix: Check API version and field availability in docs.
-```
-
-## Debugging Toolkit
-
-**Browser DevTools:**
-```
-- Console: View errors and logs
-- Network: Inspect API requests
-- Sources: Set breakpoints
-- Application: View cookies, localStorage
-- Performance: Profile page load
-```
-
-**Shopify Tools:**
-```
-- Theme Preview: Test changes before publishing
-- Theme Inspector: View section data
-- API Explorer: Test GraphQL queries
-- Webhook Logs: Check delivery status
-```
-
-**Useful Console Commands:**
-```javascript
-// Get all form data
-new FormData(document.querySelector('form'))
-
-// View all cookies
-document.cookie
-
-// Check localStorage
-localStorage
-
-// View all global variables
-console.log(window)
-
-// Get computed styles
-getComputedStyle(element)
-```
-
-## Best Practices
-
-1. **Always check for errors** before accessing data (API responses)
-2. **Use try-catch blocks** for all async operations
-3. **Log meaningful messages** with context
-4. **Verify HMAC** for all webhooks
-5. **Test in theme preview** before publishing
-6. **Monitor API rate limits** and implement backoff
-7. **Handle edge cases** (nil values, empty arrays)
-8. **Use browser DevTools** for network debugging
-9. **Check API version** compatibility
-10. **Validate input** before API calls
+In the React Router app template, `authenticate.webhook(request)` does this for you.
+
+## Hydrogen
+
+| Symptom | Cause and fix |
+|---------|---------------|
+| Request handler throws about a missing `storefront` | 2026.4+ requires a `storefront` instance in the load context. See [hydrogen.md](hydrogen.md) |
+| Privacy banner missing, analytics silent | The server is not using Hydrogen's `createRequestHandler` (for example the old `@shopify/remix-oxygen` one), so the Storefront API proxy and consent never load |
+| Customer Account login fails locally | OAuth needs the `*.tryhydrogen.dev` tunnel: `npx shopify hydrogen dev --customer-account-push` |

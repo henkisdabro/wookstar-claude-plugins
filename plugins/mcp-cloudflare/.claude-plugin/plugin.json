@@ -1,9 +1,9 @@
 {
   "name": "mcp-cloudflare",
-  "description": "Official Cloudflare MCP server - 2,500+ API endpoints via Code Mode in just 2 tools (~1k tokens). Full platform access including Workers, Pages, D1, KV, R2, DNS, Zones, and more",
+  "description": "[RETIRED] Cloudflare publishes an official plugin for the same server, plus Workers and Wrangler skills. This final version only shows a notice - uninstall it.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0"
 }

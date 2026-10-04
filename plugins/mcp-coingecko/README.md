@@ -1,6 +1,6 @@
 # MCP CoinGecko
 
-Cryptocurrency prices, market data, and historical trends via CoinGecko.
+Cryptocurrency prices, market data and historical trends via CoinGecko (read-only tools).
 
 ## Installation
 
@@ -8,20 +8,6 @@ Cryptocurrency prices, market data, and historical trends via CoinGecko.
 /plugin install mcp-coingecko@wookstar-claude-plugins
 ```
 
-## Required Environment Variables
+Claude Code prompts for your CoinGecko demo API key when you enable the plugin and stores it in your system keychain. Get a free demo key at https://www.coingecko.com/en/api.
 
-```bash
-COINGECKO_DEMO_API_KEY=your_key_here
-```
-
-## API Key
-
-Get your demo API key at https://www.coingecko.com/en/api
-
-## Usage
-
-Once installed, use for:
-- Cryptocurrency price queries
-- Market cap comparisons
-- Historical trend analysis
-- Portfolio tracking
+Since 2.0.0 the `COINGECKO_DEMO_API_KEY` shell variable is no longer read - enter the key at the prompt instead.

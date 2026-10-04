@@ -2,17 +2,18 @@
 """Convert time between timezones."""
 
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 
-def convert_time(source_tz: str, time_str: str, target_tz: str) -> None:
+def convert_time(source_tz: str, time_str: str, target_tz: str, date_str=None) -> None:
     """Convert time from source timezone to target timezone.
 
     Args:
         source_tz: Source IANA timezone name (e.g., 'America/New_York')
         time_str: Time to convert in 24-hour format (HH:MM)
         target_tz: Target IANA timezone name (e.g., 'Australia/Perth')
+        date_str: Date of the source time (YYYY-MM-DD); defaults to today in source_tz
     """
     try:
         # Parse timezone names
@@ -27,16 +28,48 @@ def convert_time(source_tz: str, time_str: str, target_tz: str) -> None:
             print("Expected format: HH:MM (24-hour, e.g., '14:30')", file=sys.stderr)
             sys.exit(1)
 
-        # Create datetime for today in source timezone
-        now = datetime.now(source_timezone)
+        # Date of the source time: given, or today in the source timezone
+        if date_str:
+            try:
+                day = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                print(f"Error: Invalid date format '{date_str}'", file=sys.stderr)
+                print("Expected format: YYYY-MM-DD (e.g., '2026-03-29')", file=sys.stderr)
+                sys.exit(1)
+        else:
+            day = datetime.now(source_timezone).date()
         source_time = datetime(
-            now.year,
-            now.month,
-            now.day,
+            day.year,
+            day.month,
+            day.day,
             parsed_time.hour,
             parsed_time.minute,
             tzinfo=source_timezone,
         )
+
+        # DST edge cases on the chosen date
+        warnings = []
+        normalised = source_time.astimezone(timezone.utc).astimezone(source_timezone)
+        if normalised.replace(tzinfo=None) != source_time.replace(tzinfo=None):
+            # Gap: the wall time was skipped when clocks went forward
+            warnings.append(
+                f"Warning: {time_str} does not exist in {source_tz} on {day.isoformat()} "
+                f"(clocks go forward); using {normalised.strftime('%H:%M')} "
+                f"{normalised.isoformat(timespec='seconds')[-6:]} instead"
+            )
+            source_time = normalised
+        else:
+            later = source_time.replace(fold=1)
+            if later.utcoffset() != source_time.utcoffset():
+                # Overlap: the wall time happens twice when clocks go back
+                warnings.append(
+                    f"Warning: {time_str} occurs twice in {source_tz} on {day.isoformat()} "
+                    f"(clocks go back). First: {source_time.isoformat(timespec='seconds')} -> "
+                    f"{source_time.astimezone(target_timezone).isoformat(timespec='seconds')}; "
+                    f"second: {later.isoformat(timespec='seconds')} -> "
+                    f"{later.astimezone(target_timezone).isoformat(timespec='seconds')}. "
+                    f"Using the first."
+                )
 
         # Convert to target timezone
         target_time = source_time.astimezone(target_timezone)
@@ -62,6 +95,8 @@ def convert_time(source_tz: str, time_str: str, target_tz: str) -> None:
         print(f"Target: {target_tz} - {target_time.isoformat(timespec='seconds')} "
               f"({target_time.strftime('%A')}, DST: {'Yes' if target_dst else 'No'})")
         print(f"Time difference: {time_diff_str}")
+        for warning in warnings:
+            print(warning)
 
     except Exception as e:
         if "ZoneInfo" in str(type(e).__name__):
@@ -72,17 +107,14 @@ def convert_time(source_tz: str, time_str: str, target_tz: str) -> None:
 
 
 def main():
-    if len(sys.argv) != 4:
-        print("Usage: python convert_time.py <source_tz> <time> <target_tz>", file=sys.stderr)
-        print("Example: python convert_time.py 'America/New_York' '14:30' 'Australia/Perth'",
+    if len(sys.argv) not in (4, 5):
+        print("Usage: python convert_time.py <source_tz> <time> <target_tz> [YYYY-MM-DD]",
+              file=sys.stderr)
+        print("Example: python convert_time.py 'America/New_York' '14:30' 'Australia/Perth' 2026-11-02",
               file=sys.stderr)
         sys.exit(1)
 
-    source_tz = sys.argv[1]
-    time_str = sys.argv[2]
-    target_tz = sys.argv[3]
-
-    convert_time(source_tz, time_str, target_tz)
+    convert_time(*sys.argv[1:])
 
 
 if __name__ == "__main__":

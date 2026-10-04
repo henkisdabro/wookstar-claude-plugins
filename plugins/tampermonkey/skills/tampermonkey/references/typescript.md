@@ -234,4 +234,4 @@ button.click();
 - The `@types/tampermonkey` package covers both GM_* and GM.* APIs
 - `GM_info` is typed as `Tampermonkey.ScriptInfo` and available without `@grant`
 - For `unsafeWindow`, cast carefully: `(unsafeWindow as Window & { myLib: MyLib }).myLib`
-- When using `@grant none`, the sandbox is disabled and `GM_*` functions are unavailable — TypeScript won't catch this at compile time
+- When using `@grant none`, the sandbox is disabled and `GM_*` functions are unavailable - TypeScript won't catch this at compile time

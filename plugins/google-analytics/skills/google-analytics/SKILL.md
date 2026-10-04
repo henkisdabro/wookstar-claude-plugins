@@ -1,27 +1,13 @@
 ---
 name: google-analytics
-description: Comprehensive Google Analytics 4 guide covering property setup, events, custom events, recommended events, custom dimensions, user tracking, audiences, reporting, BigQuery integration, gtag.js implementation, GTM integration, Measurement Protocol, DebugView, privacy compliance, and data management. Use when working with GA4 implementation, tracking, configuration, debugging, BigQuery export queries, gtag/dataLayer setup, or any GA4-related tasks. Do NOT use for Universal Analytics (sunset July 2024), Adobe Analytics, Mixpanel, Amplitude, or other non-GA4 platforms. Do NOT use for ad-platform reporting (use google-ads-scripts for that).
+description: Google Analytics 4 implementation and analysis reference. Use when querying live GA4 report data, setting up a GA4 property or data stream, installing gtag.js, designing event or ecommerce tracking, registering custom dimensions or audiences, sending server-side events via Measurement Protocol, linking GA4 to BigQuery and understanding the export schema, debugging with DebugView, or configuring Consent Mode and data retention. Do NOT use for general GTM container work such as triggers, variables, custom templates or server-side containers - use google-tagmanager; Google Ads scripting or ad reporting - use google-ads-scripts; writing or running SQL against GA4 export tables - use the bigquery skill; Universal Analytics or non-Google analytics tools.
 ---
 
-# Google Analytics 4 Complete Guide
+# Google Analytics 4
 
-## Overview
+GA4 is event-based: every interaction is an event with parameters. Pick the reference from the decision tree below and read it before answering anything beyond the Quick Start.
 
-Google Analytics 4 (GA4) is Google's event-based analytics platform for measuring user interactions across websites and applications. Every user interaction is tracked as an event with associated parameters, providing flexible cross-platform measurement.
-
-## When to Use This Skill
-
-Invoke this skill for any GA4-related task:
-
-- Setting up GA4 properties, data streams, and Measurement IDs
-- Installing GA4 via gtag.js, GTM, or CMS plugins
-- Implementing event tracking (automatic, recommended, custom, ecommerce)
-- Creating custom dimensions, audiences, and reports
-- Exporting data to BigQuery for SQL analysis
-- Server-side tracking via Measurement Protocol
-- User ID and cross-device tracking
-- Privacy compliance, Consent Mode, and GDPR/CCPA
-- Testing and debugging with DebugView
+The bundled `analytics-mcp` server (Google's official GA MCP) is read-only: it runs Data API reports, funnel and realtime reports, and reads account, property, custom-definition and Google Ads link details. Use it to answer questions about live GA4 data; configuration changes are made in the GA4 UI or through the Admin API outside this server.
 
 ## Quick Start
 
@@ -58,7 +44,8 @@ Making parameters appear in reports?        -> references/custom-dimensions.md
 Implementing User ID / cross-device?        -> references/user-tracking.md
 Building audiences for remarketing?         -> references/audiences.md
 Analysing data in GA4 reports?              -> references/reporting.md
-Exporting to BigQuery for SQL analysis?     -> references/bigquery.md
+Linking BigQuery / export schema?           -> references/bigquery.md
+Querying export data with SQL?              -> the bigquery skill
 Installing via gtag.js directly?            -> references/gtag.md
 Setting up GA4 in Google Tag Manager?       -> references/gtm-integration.md
 Sending events from server/backend?         -> references/measurement-protocol.md
@@ -84,10 +71,10 @@ GA4 tracks everything as events in four categories:
 
 | Limit | Value |
 |-------|-------|
-| Event names per property | 500 distinct |
+| Distinct event names | 500 per app stream (no limit for web) |
 | Parameters per event | 25 |
 | Event name length | 40 characters |
-| Parameter name/value length | 40 / 100 characters |
+| Parameter name/value length | 40 / 100 characters (page_location 1,000) |
 | Custom dimensions (event/user/item) | 50 / 25 / 10 |
 | Audiences per property | 100 |
 

@@ -1,0 +1,20 @@
+---
+title: "Presentation Title"
+author: "Your Name"
+date: today
+format: revealjs
+---
+
+## First Slide
+
+Your content here
+
+## Second Slide
+
+- Point one
+- Point two
+- Point three
+
+## Third Slide
+
+More content

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"codex@wookstar-claude-plugins is retired. OpenAI now publishes an official Codex plugin. Replace it: claude plugin marketplace add openai/codex-plugin-cc && claude plugin install codex@openai-codex, then claude plugin uninstall codex@wookstar-claude-plugins - details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

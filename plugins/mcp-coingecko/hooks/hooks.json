@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"${CLAUDE_PLUGIN_OPTION_COINGECKO_DEMO_API_KEY:-}\" ] || echo '{\"systemMessage\": \"mcp-coingecko has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads COINGECKO_DEMO_API_KEY from your shell. Run /plugin configure mcp-coingecko@wookstar-claude-plugins (or claude plugin configure mcp-coingecko@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

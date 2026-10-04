@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Validate PDF integrity.
 
 Usage:
-    python validate_pdf.py input.pdf
+    uv run validate_pdf.py input.pdf
 
 Checks that the file parses as a PDF, reports page count, encryption
 status, metadata, and whether a text layer or form fields are present.
@@ -27,7 +33,7 @@ from typing import Any, Dict
 try:
     from pypdf import PdfReader
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print(f"Error: pypdf not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

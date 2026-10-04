@@ -13,6 +13,10 @@ from dataclasses import dataclass
 import re
 from datetime import datetime
 
+# [Sheet!]start[:end], where a cell may be A1, A (whole column) or 1 (whole row),
+# so A1, A1:B10, A2:D, A:A, 1:1 and 'My Sheet'!A1:C5 all match.
+A1_PATTERN = r"^(?:(?P<sheet>'[^']+'|[\w]+)!)?(?P<start>[A-Z]+\d*|\d+)(?::(?P<end>[A-Z]+\d*|\d+))?$"
+
 
 @dataclass
 class ValidationResult:
@@ -30,7 +34,7 @@ class GoogleAppsScriptValidators:
     """Comprehensive validation for Google Apps Script operations"""
 
     # Spreadsheet limits
-    MAX_ROWS = 1000000  # 1 million rows
+    MAX_CELLS = 10000000  # 10 million cells per spreadsheet (there is no separate row cap)
     MAX_COLS = 18278    # Maximum columns (ZZZ in A1 notation)
     MAX_CELL_CHARS = 50000  # Maximum characters per cell
 
@@ -39,7 +43,8 @@ class GoogleAppsScriptValidators:
         """
         Validate Google Sheets ID format.
 
-        Google Sheets IDs are 44-character alphanumeric strings.
+        Google Sheets IDs are URL-safe strings, usually 44 characters long;
+        the length is not guaranteed, so only a lower bound is checked.
 
         Args:
             sheet_id: The spreadsheet ID
@@ -50,11 +55,8 @@ class GoogleAppsScriptValidators:
         if not sheet_id or not isinstance(sheet_id, str):
             return False, "Spreadsheet ID must be a non-empty string"
 
-        if len(sheet_id) != 44:
-            return False, f"Spreadsheet ID must be 44 characters (got {len(sheet_id)})"
-
-        if not re.match(r'^[a-zA-Z0-9_-]{44}$', sheet_id):
-            return False, "Spreadsheet ID contains invalid characters"
+        if not re.match(r'^[a-zA-Z0-9_-]{25,}$', sheet_id):
+            return False, "Spreadsheet ID must be 25+ URL-safe characters (letters, digits, _ and -)"
 
         return True, None
 
@@ -68,6 +70,7 @@ class GoogleAppsScriptValidators:
         - A1:B10 (range)
         - Sheet1!A1 (sheet-qualified cell)
         - Sheet1!A1:B10 (sheet-qualified range)
+        - A2:D, A:A, 1:1 (open-ended column and row ranges)
 
         Args:
             notation: The A1 notation string
@@ -78,11 +81,7 @@ class GoogleAppsScriptValidators:
         if not notation or not isinstance(notation, str):
             return False, "A1 notation must be a non-empty string"
 
-        # Pattern for A1 notation
-        # Supports: A1, A1:B10, Sheet1!A1, 'Sheet Name'!A1:B10
-        pattern = r"^(?:'?[\w\s]+'?!)?[A-Z]+\d+(?::[A-Z]+\d+)?$"
-
-        if not re.match(pattern, notation):
+        if not re.match(A1_PATTERN, notation):
             return False, f"Invalid A1 notation: {notation}"
 
         return True, None
@@ -102,11 +101,14 @@ class GoogleAppsScriptValidators:
         if not isinstance(rows, int) or not isinstance(cols, int):
             return False, "Rows and columns must be integers"
 
-        if rows < 1 or rows > cls.MAX_ROWS:
-            return False, f"Rows must be 1-{cls.MAX_ROWS} (got {rows})"
+        if rows < 1 or cols < 1:
+            return False, f"Rows and columns must be at least 1 (got {rows}x{cols})"
 
-        if cols < 1 or cols > cls.MAX_COLS:
+        if cols > cls.MAX_COLS:
             return False, f"Columns must be 1-{cls.MAX_COLS} (got {cols})"
+
+        if rows * cols > cls.MAX_CELLS:
+            return False, f"Range of {rows * cols} cells exceeds the {cls.MAX_CELLS} cell limit"
 
         return True, None
 
@@ -276,9 +278,7 @@ class GoogleAppsScriptValidators:
         Returns:
             Dictionary with parsed components or None if invalid
         """
-        # Match pattern: [Sheet!]A1[:B10]
-        pattern = r"^(?:(?P<sheet>'?[\w\s]+'?)!)?(?P<start>[A-Z]+\d+)(?::(?P<end>[A-Z]+\d+))?$"
-        match = re.match(pattern, notation)
+        match = re.match(A1_PATTERN, notation)
 
         if not match:
             return None
@@ -371,6 +371,7 @@ if __name__ == "__main__":
     notations = [
         'A1',
         'A1:B10',
+        'A2:D',
         'Sheet1!A1',
         "'My Sheet'!A1:C5"
     ]

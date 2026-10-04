@@ -65,8 +65,8 @@ git push -u origin main
 ```json
 {
   "dependencies": {
-    "express": "^4.18.0",
-    "lodash": "^4.17.21"
+    "express": "^5.2.1",
+    "lodash": "^4.18.1"
   }
 }
 ```
@@ -74,8 +74,8 @@ git push -u origin main
 **pip (Python):**
 
 ```text
-flask==2.3.0
-requests==2.31.0
+flask==3.1.3
+requests==2.34.2
 ```
 
 ### Key Points
@@ -226,11 +226,11 @@ From a Java perspective, Spring Boot is an example as it by default comes with a
 **Docker:**
 
 ```bash
-docker run --restart always --name mysql8.0 \
+docker run --restart always --name mysql8.4 \
   --net dev-network \
   -v /tools/ext-docker/mysqlext:/var/lib/mysql \
   -p 3306:3306 \
-  -d -e MYSQL_ROOT_PASSWORD=some-pass mysql:8.0
+  -d -e MYSQL_ROOT_PASSWORD=some-pass mysql:8.4
 ```
 
 ### Key Points
@@ -313,7 +313,8 @@ Separate log generation from log processing.
 
 ```groovy
 dependencies {
-    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    // SLF4J with Logback (log4j 1.x is end-of-life); pulls in slf4j-api
+    implementation 'ch.qos.logback:logback-classic:1.6.5'
 }
 ```
 

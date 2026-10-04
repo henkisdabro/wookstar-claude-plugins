@@ -1,20 +1,9 @@
-# MCP Gemini Bridge
+# mcp-gemini-bridge (retired)
 
-Google Gemini AI model integration via MCP.
-
-## Installation
+It wraps Gemini CLI, which stopped serving individual accounts on 2026-06-18.
 
 ```bash
-/plugin install mcp-gemini-bridge@wookstar-claude-plugins
+claude plugin uninstall mcp-gemini-bridge@wookstar-claude-plugins
 ```
 
-## Configuration
-
-No API key required - authentication handled via uvx.
-
-## Usage
-
-Once installed, use Gemini for:
-- Multi-modal tasks (text and images)
-- Comparing AI model outputs
-- Alternative AI perspectives
+This version contains nothing but a startup notice pointing here. It will be removed from the marketplace in a later release. See [MIGRATION.md](https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md).

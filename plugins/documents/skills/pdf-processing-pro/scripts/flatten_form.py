@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Flatten a filled PDF form by making all fields read-only.
 
 Usage:
-    python flatten_form.py filled.pdf final.pdf
+    uv run flatten_form.py filled.pdf final.pdf
 
 Filled values remain visible but fields can no longer be edited in
 PDF viewers.
@@ -25,7 +31,7 @@ try:
     from pypdf import PdfReader, PdfWriter
     from pypdf.generic import NameObject, NumberObject
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print(f"Error: pypdf not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

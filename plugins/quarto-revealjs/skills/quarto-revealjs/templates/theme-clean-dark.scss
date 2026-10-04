@@ -1,0 +1,296 @@
+/*-- scss:defaults --*/
+
+// Fonts - Inter from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !default;
+$font-family-monospace: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace !default;
+
+// Font sizes - compact for better fit
+$presentation-font-size-root: 28px !default;
+$presentation-line-height: 1.35 !default;
+$presentation-font-smaller: 0.75 !default;
+
+// Colours - dark and modern
+$body-bg: #0f172a !default;
+$body-color: #e2e8f0 !default;
+$link-color: #60a5fa !default;
+$link-color-hover: #93c5fd !default;
+$text-muted: #94a3b8 !default;
+$selection-bg: rgba(96, 165, 250, 0.3) !default;
+$selection-color: #ffffff !default;
+
+// Accent colour
+$accent-color: #60a5fa !default;
+$accent-light: rgba(96, 165, 250, 0.15) !default;
+$accent-dark: #1e3a5f !default;
+
+// Headings
+$presentation-heading-font: "Inter", sans-serif !default;
+$presentation-heading-color: #f1f5f9 !default;
+$presentation-heading-font-weight: 600 !default;
+$presentation-heading-letter-spacing: -0.02em !default;
+$presentation-heading-line-height: 1.2 !default;
+$presentation-heading-text-transform: none !default;
+
+$presentation-h1-font-size: 2em !default;
+$presentation-h2-font-size: 1.3em !default;
+$presentation-h3-font-size: 1.1em !default;
+$presentation-h4-font-size: 0.95em !default;
+
+// Code blocks
+$code-block-bg: #1e293b !default;
+$code-block-border-color: #334155 !default;
+$code-block-font-size: 0.55em !default;
+$code-color: #a5b4fc !default;
+$code-bg: #1e293b !default;
+
+// Layout
+$border-color: #334155 !default;
+$border-width: 1px !default;
+$border-radius: 8px !default;
+$presentation-block-margin: 16px !default;
+$presentation-slide-text-align: left !default;
+$presentation-title-slide-text-align: left !default;
+
+/*-- scss:rules --*/
+
+// Base slide styling
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slide {
+  padding: 30px 50px;
+}
+
+// Headings
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.reveal h2 {
+  margin-bottom: 0.8em;
+  padding-bottom: 0.4em;
+  border-bottom: 2px solid $accent-dark;
+}
+
+.reveal h3 {
+  color: $accent-color;
+  margin-top: 1em;
+}
+
+// Paragraphs and lists
+.reveal p {
+  margin-bottom: 0.8em;
+}
+
+.reveal ul,
+.reveal ol {
+  margin-left: 0;
+  padding-left: 1.2em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.reveal li::marker {
+  color: $accent-color;
+}
+
+// Nested lists
+.reveal ul ul,
+.reveal ol ol,
+.reveal ul ol,
+.reveal ol ul {
+  margin-top: 0.4em;
+  font-size: 0.9em;
+}
+
+// Blockquotes
+.reveal blockquote {
+  background: $accent-light;
+  border-left: 4px solid $accent-color;
+  border-radius: 0 $border-radius $border-radius 0;
+  padding: 1em 1.5em;
+  margin: 1em 0;
+  font-style: normal;
+  font-size: 0.95em;
+  color: $body-color;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal blockquote p {
+  margin: 0;
+  color: $body-color;
+}
+
+// Code blocks
+.reveal pre {
+  border-radius: $border-radius;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid $border-color;
+}
+
+.reveal pre code {
+  padding: 1em;
+  border-radius: $border-radius;
+  line-height: 1.5;
+}
+
+// Inline code
+.reveal code {
+  background: $code-bg;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: $code-color;
+}
+
+.reveal pre code {
+  background: $code-block-bg;
+  color: #e2e8f0;
+}
+
+// Tables
+.reveal table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.8em;
+  margin: 1em 0;
+}
+
+.reveal table th {
+  background: $accent-dark;
+  color: white;
+  font-weight: 600;
+  padding: 0.7em 1em;
+  text-align: left;
+}
+
+.reveal table th:first-child {
+  border-radius: $border-radius 0 0 0;
+}
+
+.reveal table th:last-child {
+  border-radius: 0 $border-radius 0 0;
+}
+
+.reveal table td {
+  padding: 0.6em 1em;
+  border-bottom: 1px solid $border-color;
+}
+
+.reveal table tr:last-child td {
+  border-bottom: none;
+}
+
+.reveal table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+// Links
+.reveal a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.reveal a:hover {
+  border-bottom-color: $link-color;
+}
+
+// Title slide
+.reveal .title-slide {
+  text-align: left;
+}
+
+.reveal .title-slide h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-bottom: 0.3em;
+  border-bottom: none;
+}
+
+.reveal .title-slide .subtitle {
+  font-size: 1.1em;
+  color: $text-muted;
+  font-weight: 400;
+  margin-bottom: 1.5em;
+}
+
+.reveal .title-slide .author {
+  font-size: 1em;
+  font-weight: 500;
+  color: $body-color;
+}
+
+.reveal .title-slide .date {
+  font-size: 0.85em;
+  color: $text-muted;
+}
+
+// Footer and logo
+.reveal .footer {
+  font-size: 0.5em;
+  color: $text-muted;
+}
+
+// Progress bar
+.reveal .progress {
+  height: 3px;
+  background: $accent-dark;
+}
+
+.reveal .progress span {
+  background: $accent-color;
+}
+
+// Slide number
+.reveal .slide-number {
+  font-family: $font-family-sans-serif;
+  font-size: 0.5em;
+  color: $text-muted;
+  background: transparent;
+}
+
+// Fragments
+.reveal .fragment.highlight-current-blue.current-fragment {
+  color: $accent-color;
+}
+
+// Columns
+.reveal .columns {
+  gap: 2em;
+}
+
+// Fit text
+.reveal .r-fit-text {
+  font-weight: 600;
+}
+
+// Strong/bold
+.reveal strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+// Horizontal rule
+.reveal hr {
+  border: none;
+  height: 2px;
+  background: $border-color;
+  margin: 1.5em 0;
+}
+
+// Mermaid diagrams
+.reveal .mermaid {
+  background: transparent;
+}

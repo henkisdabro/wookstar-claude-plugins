@@ -1,6 +1,6 @@
 {
   "name": "lsp-json",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "JSON Language Server via vscode-langservers-extracted",
   "author": {
     "name": "henkisdabro",
@@ -9,7 +9,9 @@
   "lspServers": {
     "json": {
       "command": "vscode-json-language-server",
-      "args": ["--stdio"],
+      "args": [
+        "--stdio"
+      ],
       "transport": "stdio",
       "extensionToLanguage": {
         ".json": "json",
@@ -19,15 +21,23 @@
         "provideFormatter": true,
         "schemas": [
           {
-            "fileMatch": ["wrangler.jsonc", "wrangler.json"],
+            "fileMatch": [
+              "wrangler.jsonc",
+              "wrangler.json"
+            ],
             "url": "https://www.unpkg.com/wrangler/config-schema.json"
           },
           {
-            "fileMatch": ["tsconfig.json", "tsconfig.*.json"],
+            "fileMatch": [
+              "tsconfig.json",
+              "tsconfig.*.json"
+            ],
             "url": "https://www.schemastore.org/tsconfig.json"
           },
           {
-            "fileMatch": ["package.json"],
+            "fileMatch": [
+              "package.json"
+            ],
             "url": "https://www.schemastore.org/package.json"
           }
         ]

@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "gtm-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://gtm-mcp.stape.ai/mcp"]
+      "type": "http",
+      "url": "https://gtm-mcp.stape.ai/mcp"
     }
   }
 }

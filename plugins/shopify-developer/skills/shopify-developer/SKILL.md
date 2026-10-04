@@ -1,135 +1,67 @@
 ---
 name: shopify-developer
-description: Complete Shopify development reference for Liquid templating, theme development (OS 2.0), GraphQL Admin API, Storefront API, custom app development, Shopify Functions, Hydrogen, performance optimisation, and debugging. Use when working with .liquid files, creating theme sections and blocks, writing GraphQL queries or mutations for Shopify, building Shopify apps with CLI and Polaris, implementing cart operations via Ajax API, optimising Core Web Vitals for Shopify stores, debugging Liquid or API errors, configuring settings_schema.json, accessing Shopify objects (product, collection, cart, customer), using Liquid filters, creating app extensions, working with webhooks, migrating from Scripts to Functions, or building headless storefronts with Hydrogen and React Router 7. Covers API version 2026-01. Do NOT use for WooCommerce, Magento, BigCommerce, or other non-Shopify e-commerce platforms.
+description: Shopify theme, Liquid, Hydrogen and app development reference, with live API lookups handed to Shopify's own tooling. Use when editing .liquid files, building OS 2.0 sections, blocks or JSON templates, wiring theme cart behaviour with the Ajax API, speeding up a slow Shopify storefront, debugging Liquid or theme editor errors, building or upgrading a Hydrogen storefront, scaffolding a Shopify app or extension, writing Shopify Functions, or picking a Shopify API version. Do NOT use for WooCommerce, Magento, BigCommerce or other platforms - answer from general knowledge; Do NOT use for exact GraphQL field or schema lookups - use the shopify-ai-toolkit plugin or @shopify/dev-mcp.
 ---
 
-# Shopify Developer Reference
+# Shopify Developer
 
-Comprehensive reference for professional Shopify development - API version **2026-01**.
+Knowledge for Liquid themes, Hydrogen and Shopify apps. Exact API schemas change every quarter, so this skill carries orientation and gotchas; Shopify's own tooling carries the live schema.
 
-## Quick Reference
+## Workflow
 
-| Item | Value |
-|------|-------|
-| API version | `2026-01` (stable) |
-| GraphQL Admin | `POST https://{store}.myshopify.com/admin/api/2026-01/graphql.json` |
-| Storefront API | `POST https://{store}.myshopify.com/api/2026-01/graphql.json` |
-| Ajax API (theme) | `/cart.js`, `/cart/add.js`, `/cart/change.js` |
-| CLI install | `npm install -g @shopify/cli` |
-| Theme dev | `shopify theme dev --store {store}.myshopify.com` |
-| App dev | `shopify app dev` |
-| Deploy | `shopify app deploy` |
-| Docs | [shopify.dev](https://shopify.dev) |
+1. **Pick the branch** from the table below and read only those reference files. Done when you have read every file the task's branch lists.
+2. **Pin the API version.** Any code that names a version (`api_version` in a TOML file, an endpoint URL, `ApiVersion.*`) takes the latest stable version from <https://shopify.dev/docs/api/usage/versioning>, or the version the project already pins if the task is not an upgrade. Done when every version string you write was read from that page or the project, never from memory.
+3. **Validate against the live schema** when the change touches GraphQL (Admin, Storefront, Customer Account, Function input queries) or Liquid you are unsure of: use the `shopify-ai-toolkit` plugin or `@shopify/dev-mcp` (setup below). If neither is installed, tell the user, give them the install command, and mark the GraphQL as unvalidated. Done when each query or mutation was validated, or flagged as unvalidated in your reply.
+4. **Run the project's own check** - `shopify theme check` for themes, `shopify app build` or the project's typecheck for apps and Hydrogen. Done when it passes or the remaining failures are reported.
 
-## Choose Your Path
+## Branches
 
-Read the reference file(s) that match your task:
+| Task | Read |
+|------|------|
+| Writing or fixing `.liquid` | [liquid-syntax.md](references/liquid-syntax.md), then [liquid-filters.md](references/liquid-filters.md) or [liquid-objects.md](references/liquid-objects.md) as needed |
+| Sections, blocks, JSON templates, settings schema, theme structure | [theme-development.md](references/theme-development.md) |
+| Theme cart (`/cart/*.js`), calling any Shopify API, rate limits, webhooks | [api.md](references/api.md) |
+| Slow storefront, Core Web Vitals, image sizing | [performance.md](references/performance.md) |
+| Something broken: Liquid errors, theme editor, cart, API or webhook failures | [debugging.md](references/debugging.md) |
+| Headless storefront, Hydrogen upgrade, Oxygen | [hydrogen.md](references/hydrogen.md) |
+| New or existing Shopify app, extensions, admin UI | [app-development.md](references/app-development.md) |
+| Discounts, delivery/payment customisation, cart validation, anything that used to be a Script | [functions.md](references/functions.md) |
 
-**Liquid templating** - writing or debugging `.liquid` files:
+## Live schema and docs: Shopify's tooling
 
-- [references/liquid-syntax.md](references/liquid-syntax.md) - Tags, control flow, iteration, whitespace, LiquidDoc
-- [references/liquid-filters.md](references/liquid-filters.md) - All filter categories with examples
-- [references/liquid-objects.md](references/liquid-objects.md) - Product, collection, cart, customer, and global objects
+For field names, argument shapes, deprecations and validation, defer to Shopify's official tooling instead of the reference files:
 
-**Theme development** - building or customising themes:
+```bash
+# Claude Code plugin (skills plus the Dev MCP server)
+claude plugin install shopify-ai-toolkit@claude-plugins-official
 
-- [references/theme-development.md](references/theme-development.md) - OS 2.0 architecture, sections, blocks, JSON templates, settings schema
+# Dev MCP server on its own
+claude mcp add --transport stdio shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest
+```
 
-**API integration** - fetching or modifying data programmatically:
+Both validate GraphQL against Shopify's schemas and validate Liquid. Check <https://shopify.dev/docs/apps/build/devmcp> if a command fails - the install line is Shopify's to change.
 
-- [references/api-admin.md](references/api-admin.md) - GraphQL Admin API (primary), REST (legacy), OAuth, webhooks, rate limiting
-- [references/api-storefront.md](references/api-storefront.md) - Storefront API, Ajax API, cart operations
+## API versioning rule
 
-**App development** - building Shopify apps:
+Shopify releases an API version every quarter, named `YYYY-01`, `YYYY-04`, `YYYY-07`, `YYYY-10`, each supported for at least 12 months. A request for an unsupported version is served by the oldest supported one, which silently changes behaviour. There is no permanent "current" version to remember: look it up at <https://shopify.dev/docs/api/usage/versioning> each time.
 
-- [references/app-development.md](references/app-development.md) - Shopify CLI, extensions, Polaris Web Components, App Bridge
+## Retired platform features
 
-**Serverless logic** - custom business rules:
+| Gone | Use instead |
+|------|-------------|
+| Shopify Scripts - stopped executing 30 June 2026 | Shopify Functions ([functions.md](references/functions.md)) |
+| `checkout.liquid` | Checkout UI extensions and Functions |
+| REST Admin API for new work | GraphQL Admin API |
+| Polaris React (`@shopify/polaris`, deprecated on npm) | Polaris web components (`<s-page>`, `<s-button>`) |
+| Shopify Remix app template | React Router app template (`@shopify/shopify-app-react-router`) |
+| `img_url` filter | `image_url` plus `image_tag` |
+| `{% include %}` | `{% render %}` |
 
-- [references/functions.md](references/functions.md) - Shopify Functions (replacing Scripts), Rust/JS targets, deployment
-
-**Headless commerce** - custom storefronts:
-
-- [references/hydrogen.md](references/hydrogen.md) - Hydrogen framework, React Router 7, Storefront API integration
-
-**Optimisation and troubleshooting**:
-
-- [references/performance.md](references/performance.md) - Images, JS, CSS, fonts, Liquid, Core Web Vitals
-- [references/debugging.md](references/debugging.md) - Liquid errors, API errors, cart issues, webhook failures
-
-## Deprecation Notices
-
-| Deprecated | Replacement | Deadline |
-|------------|-------------|----------|
-| Shopify Scripts | Shopify Functions | August 2025 (migration), sundown TBD |
-| checkout.liquid | Checkout Extensibility | August 2024 (Plus), done |
-| REST Admin API | GraphQL Admin API | Active deprecation (no removal date yet) |
-| Legacy custom apps | New auth model | January 2025 (done) |
-| Polaris React | Polaris Web Components | Active migration |
-| Remix (app framework) | React Router 7 | Hydrogen 2025.5.0+ |
-
-## Liquid Essentials
-
-Three syntax types:
+## Liquid at a glance
 
 ```liquid
-{{ product.title | upcase }}                    {# Output with filter #}
-{% if product.available %}In stock{% endif %}   {# Logic tag #}
-{% assign sale = product.price | times: 0.8 %}  {# Assignment #}
-{%- if condition -%}Stripped whitespace{%- endif -%}
+{{ product.title | escape }}
+{%- if product.available -%}In stock{%- endif -%}
+{% render 'product-card', product: product %}
+{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
 ```
-
-Key patterns:
-
-```liquid
-{% for product in collection.products limit: 5 %}
-  {% render 'product-card', product: product %}
-{% endfor %}
-
-{% paginate collection.products by 12 %}
-  {% for product in paginate.collection.products %}...{% endfor %}
-  {{ paginate | default_pagination }}
-{% endpaginate %}
-```
-
-## API Essentials
-
-```javascript
-// GraphQL Admin - always use GraphQL over REST
-const response = await fetch(
-  `https://${store}.myshopify.com/admin/api/2026-01/graphql.json`,
-  {
-    method: 'POST',
-    headers: {
-      'X-Shopify-Access-Token': accessToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query, variables }),
-  }
-);
-const { data, errors } = await response.json();
-if (errors) throw new Error(errors[0].message);
-
-// Ajax API (theme-only cart operations)
-fetch('/cart/add.js', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ id: variantId, quantity: 1 }),
-});
-```
-
-## Reference Files
-
-| File | Lines | Coverage |
-|------|-------|----------|
-| [liquid-syntax.md](references/liquid-syntax.md) | ~600 | Tags, control flow, iteration, variables, whitespace, LiquidDoc |
-| [liquid-filters.md](references/liquid-filters.md) | ~870 | String, numeric, array, Shopify-specific, date, URL, colour filters |
-| [liquid-objects.md](references/liquid-objects.md) | ~695 | All Shopify objects: product, variant, collection, cart, customer, order, etc. |
-| [theme-development.md](references/theme-development.md) | ~1200 | File structure, JSON templates, sections, blocks, settings schema, layout |
-| [api-admin.md](references/api-admin.md) | ~595 | GraphQL queries/mutations, REST (legacy), OAuth, webhooks, rate limiting |
-| [api-storefront.md](references/api-storefront.md) | ~235 | Storefront API, Ajax API, cart operations, Customer Account API |
-| [app-development.md](references/app-development.md) | ~760 | CLI, app architecture, extensions, Polaris Web Components, deployment |
-| [functions.md](references/functions.md) | ~300 | Function types, Rust/JS targets, CLI workflow, Scripts migration |
-| [hydrogen.md](references/hydrogen.md) | ~375 | Setup, routing, data loading, Storefront API, deployment |
-| [performance.md](references/performance.md) | ~605 | Images, JS, CSS, fonts, Liquid, third-party scripts, Core Web Vitals |
-| [debugging.md](references/debugging.md) | ~650 | Liquid, JavaScript, API, cart, webhook, theme editor troubleshooting |

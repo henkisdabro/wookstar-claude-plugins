@@ -32,10 +32,12 @@ def get_current_time(timezone_name: str) -> None:
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python get_time.py <timezone>", file=sys.stderr)
-        print("Example: python get_time.py 'America/New_York'", file=sys.stderr)
-        sys.exit(1)
+    help_requested = sys.argv[1:] in (["-h"], ["--help"])
+    if help_requested or len(sys.argv) != 2:
+        out = sys.stdout if help_requested else sys.stderr
+        print("Usage: python get_time.py <timezone>", file=out)
+        print("Example: python get_time.py 'America/New_York'", file=out)
+        sys.exit(0 if help_requested else 1)
 
     timezone_name = sys.argv[1]
     get_current_time(timezone_name)

@@ -61,11 +61,11 @@ Special context created for userscripts, with enhanced capabilities.
 
 ## @sandbox Directive
 
-Control where your script runs using @sandbox.
+`@sandbox` (Tampermonkey 4.18+) states what the script needs access to, and Tampermonkey picks the world. If `@sandbox` is omitted, `raw` applies. Source: [documentation, @sandbox](https://www.tampermonkey.net/documentation.php?q=meta:sandbox) and [FAQ Q404](https://www.tampermonkey.net/faq.php?q=Q404).
 
 ### @sandbox raw
 
-Request to run in page context (MAIN_WORLD).
+Request to run in page context (MAIN_WORLD). This is the default. If the page's CSP blocks injection into MAIN_WORLD, Tampermonkey falls back to the other enabled sandboxes.
 
 ```javascript
 // @sandbox raw
@@ -82,7 +82,7 @@ pageFunction();  // Works
 
 ### @sandbox JavaScript
 
-Request access to unsafeWindow. May use USERSCRIPT_WORLD on Firefox.
+Request access to unsafeWindow. Firefox creates a USERSCRIPT_WORLD that bypasses the page's CSP but needs `cloneInto`/`exportFunction` to share objects with the page; every other browser falls back to `raw` (page context).
 
 ```javascript
 // @sandbox JavaScript
@@ -94,12 +94,13 @@ unsafeWindow.pageFunction();
 
 **Use when:**
 - You need unsafeWindow access
-- You want CSP bypass (Firefox)
-- Default for most scripts needing page interaction
+- You want CSP bypass (Firefox only)
 
 ### @sandbox DOM
 
-Only need DOM access, no page JavaScript access.
+Only need DOM access, no page JavaScript access. Where enabled, the script runs in the extension's content-script context (ISOLATED_WORLD); otherwise in any enabled context, since all of them grant DOM access.
+
+**Security caveat (FAQ Q404):** a script running in extension context has almost full extension permissions - it can even modify and install other userscripts. The isolation protects the script from the page, not the user from the script, so the security checklist applies with full force.
 
 ```javascript
 // @sandbox DOM
@@ -114,7 +115,7 @@ document.querySelector('#element').textContent = 'Modified';
 **Use when:**
 - Only modifying DOM/CSS
 - Don't need page JavaScript access
-- Want maximum isolation
+- Want the page unable to see or tamper with the script
 
 ---
 
@@ -292,13 +293,11 @@ const hasDirectAccess = window.somePageVariable !== undefined;
 
 ## Best Practices
 
-### 1. Start with @sandbox DOM
-
-If you only need DOM access, use the most restrictive mode:
+### 1. Use @sandbox DOM when the script only touches the DOM
 
 ```javascript
 // @sandbox DOM
-// Most isolated, safest
+// Isolated from the page - but runs with extension privileges (see caveat above)
 ```
 
 ### 2. Use @sandbox JavaScript for page interaction
@@ -329,7 +328,7 @@ function shareWithPage(name, value) {
 ### 4. Test in multiple browsers
 
 Different browsers may behave differently. Test in:
-- Chrome (Manifest V3)
+- Chrome (Manifest V3 - needs "Allow User Scripts" enabled)
 - Firefox
 - Edge
-- Safari (if using Userscripts app)
+- Safari (Tampermonkey for Safari)

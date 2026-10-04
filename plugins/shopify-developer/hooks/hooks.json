@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-3.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"Upgraded from an earlier version? shopify-developer 3.0.0 dropped its bulk Admin and Storefront API reference. For live schema lookup and validation install the official toolkit: claude plugin install shopify-ai-toolkit@claude-plugins-official. Details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
+          }
+        ]
+      }
+    ]
+  }
+}

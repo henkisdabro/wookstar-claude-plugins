@@ -8,7 +8,7 @@ hooks:
     - matcher: "Write|Edit|MultiEdit"
       hooks:
         - type: command
-          command: "bun run ${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts"
+          command: "command -v bun >/dev/null 2>&1 || exit 0; bun run \"${CLAUDE_PLUGIN_ROOT}/hooks/auto-serve-fragment.ts\""
           timeout: 30
 ---
 
@@ -18,7 +18,7 @@ Bun-based preview server. Fragments are written in Markdown - the build script c
 
 ## Flow
 
-1. Write the `.fragment.md` directly to `data/writing/email_drafts/` in ONE Write tool call.
+1. Write the `.fragment.md` directly to the drafts directory (see **File naming**) in ONE Write tool call.
    **Do NOT write the email body inline in your response before the Write call.** Compose the
    draft mentally and write it straight to the file - the preview server renders it.
 2. After the Write tool returns, read the URL the hook wrote:
@@ -29,6 +29,8 @@ Bun-based preview server. Fragments are written in Markdown - the build script c
    `Draft ready: email to Sam re invoice follow-up → http://127.0.0.1:XXXX`
 
 **The hook has already started the server and opened the browser by the time the Write tool returns.** Do NOT run `bun run serve.ts` yourself. Do NOT call `open <url>`. Do NOT launch a second server. The browser is already open.
+
+Edit a fragment only with Write or Edit. The hook fires on those tools alone, so a Bash or Python edit leaves the preview stale.
 
 **Always relay the preview URL to the user.** Read it from `.claude/.message-preview-url`. If that file is empty or missing, the hook did not start a server - run the manual **Fallback** below rather than guessing at a URL.
 
@@ -52,14 +54,14 @@ bun, installs dependencies, self-tests the build, and prints the exact serve
 command (and fails loudly with the fix if the environment is missing something):
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh
+bash "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh"
 ```
 
 Then serve (use `bun` if it is on PATH, otherwise `$HOME/.bun/bin/bun` - the
 preflight prints the resolved path):
 
 ```bash
-bun run ${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts /path/to/name.fragment.md
+bun run "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts" /path/to/name.fragment.md
 ```
 
 Run with `run_in_background: true`. The server prints the output HTML path then the URL. Relay the URL to the user. On subsequent edits, the server hot-reloads automatically - do not re-run it.
@@ -110,11 +112,11 @@ If a table truly has no natural header, use descriptive labels like `Item` / `Am
 ## File naming
 
 ```
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.fragment.md
-data/writing/email_drafts/YYYY-MM-DD_recipient_subject.html        # generated
+<drafts-dir>/YYYY-MM-DD_recipient_subject.fragment.md
+<drafts-dir>/YYYY-MM-DD_recipient_subject.html        # generated
 ```
 
-The hook fires on any `*.fragment.md` wherever it lives, so projects that keep drafts elsewhere work too - the path above is the recommended convention.
+`<drafts-dir>` is the drafts directory the project's CLAUDE.md or AGENTS.md names; if it names none, use the default `data/writing/email_drafts/` (relative to the project root). The hook fires on any `*.fragment.md` wherever it lives, so any directory works.
 
 ## Preview UI
 
@@ -186,8 +188,8 @@ audit/adjust the transform output.
 
 ## Development
 
-Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. First-time setup on any machine: `bash scripts/preflight.sh` - it installs bun + dependencies and self-tests, or fails loudly with the fix. Then `bun` commands work (fall back to `$HOME/.bun/bin/bun` if bun is not on PATH). Run tests: `cd skills/message && bun test`. Build-only without serving: `bun run scripts/serve.ts <fragment> --build-only`.
+Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. First-time setup on any machine: `bash "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh"` - it installs bun + dependencies and self-tests, or fails loudly with the fix. Then `bun` commands work (fall back to `$HOME/.bun/bin/bun` if bun is not on PATH). Run tests: `cd "${CLAUDE_PLUGIN_ROOT}/skills/message" && bun test`. Build-only without serving: `bun run "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts" <fragment> --build-only`.
 
 ## Platform support
 
-Works on macOS, Linux, WSL2 (Ubuntu), and native Windows. The hook is `auto-serve-fragment.ts` and runs under Bun on all platforms - `bun` must be on PATH. Browser opening is handled by `serve.ts` itself: `open` on macOS, `cmd /c start` on Windows, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `xdg-open` elsewhere. On minimal Linux setups without `xdg-open` handlers for `mailto:`/`whatsapp://`, the Open buttons may no-op - use the Copy buttons instead.
+Works on macOS, Linux, WSL2 (Ubuntu), and native Windows. The hook is `auto-serve-fragment.ts` and runs under Bun on all platforms. When `bun` is not on PATH the hook exits silently and nothing is previewed - run the **Fallback** preflight, which installs bun. Browser opening is handled by `serve.ts` itself: `open` on macOS, `cmd /c start` on Windows, `cmd.exe /c start` on WSL2 (opens the Windows host browser via shared localhost), `xdg-open` elsewhere. On minimal Linux setups without `xdg-open` handlers for `mailto:`/`whatsapp://`, the Open buttons may no-op - use the Copy buttons instead.

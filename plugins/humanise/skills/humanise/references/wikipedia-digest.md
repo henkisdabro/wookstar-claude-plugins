@@ -1,8 +1,8 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-09-09
-Last checked: 2026-09-09 (six changes applied - see below)
-Previously fetched: 2026-08-21, 2026-08-02
+Last fetched: 2026-10-04
+Last checked: 2026-10-04 (four changes applied - see below)
+Previously fetched: 2026-09-09, 2026-08-21, 2026-08-02
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
@@ -31,19 +31,20 @@ This file is a structured digest of the Wikipedia article used to build this ski
 
 ---
 
-## Pattern Digest (as of 2026-09-09)
+## Pattern Digest (as of 2026-10-04)
 
 ### Content Patterns
 
 | # (Wiki) | # (Skill) | Pattern Name | Key Signals |
 |-----------|-----------|--------------|-------------|
 | 5 | 1 | Undue emphasis on significance/legacy/broader trends | stands as, testament, pivotal, broader, indelible mark, evolving landscape |
-| 6 | 2 | Undue emphasis on notability/attribution/media coverage | independent coverage, music/business/tech outlets, profiled in, social media presence, leading expert |
+| 6 | 2 | Undue emphasis on notability/attribution/media coverage | independent coverage, music/business/tech outlets, profiled in, was identified by, social media presence, leading expert |
 | 7 | 3 | Superficial analyses (-ing endings) | highlighting, ensuring, reflecting, symbolizing, contributing to, showcasing, valuable insights, align/resonate with |
 | 8 | 4 | Promotional/advertisement-like language | boasts, vibrant, nestled, featuring, diverse array, showcasing, exemplifies, commitment to |
 | 10 | 5 | Vague attributions and overgeneralisation | Experts argue, Industry reports, Some critics argue, Observers have cited |
+| new | 32 | Vague expression of connection or association | in connection with/to, connected with/to, in association with, associated with (WP:AICONNECT; moved here from "Language and grammar" on 2026-09-28 - the skill keeps it in language-patterns.md) |
 | 11 | 6 | Outline-like challenges and future prospects | Despite its..., Despite these challenges, Future Outlook |
-| 12 | - | Leads treating titles as proper nouns | Wikipedia-specific; not included in skill |
+| - | 2 (noted) | "Awards and recognition" section | X-and-Y section headings, "Awards and recognition" above all; far more common than in human writing even against promotional-tagged articles (strengthened 2026-09-28) |
 
 Note: Wiki section 9 ("Vague See Also sections") appears to have been removed from the article since the 2026-03-03 snapshot. It was Wikipedia-specific and was never included in the skill.
 
@@ -53,8 +54,8 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 |-----------|-----------|--------------|-------------|
 | 14 | 7 | AI vocabulary words (era-specific) | See era breakdown below |
 | 15 | 8 | Copula avoidance (is/are) | serves as, stands as, marks, functions as, operates as, represents, boasts, features, maintains, offers, refers to |
-| new | 32 | Vague expression of connection or association | in connection with/to, connected with/to, in association with, associated with (WP:AICONNECT, added 2026-08-19; sits between copula avoidance and negative parallelisms) |
-| 16 | 9 | Negative parallelisms (3 subtypes) | (A) Not just X but also Y, (B) Not X, but Y, (C) X rather than Y (Grok); also runs across sentence boundaries via "however" |
+| 16 | 9 | Negative parallelisms (3 subtypes) | (A) Not just X but also Y, (B) Not X, but Y, (C) heading renamed "Y rather than X" 2026-09-28 (Grok, and since 2026-09 also ChatGPT and Claude); also runs across sentence boundaries via "however" |
+| 12 | - | Leads treating titles as proper nouns | Wikipedia-specific; not included in skill. Moved here from "Content" on 2026-09-28 |
 | 19 | 10 | Rule of three | three-item lists, triadic structures |
 
 ### Style Patterns
@@ -85,7 +86,7 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 | # (Wiki) | # (Skill) | Pattern Name | Key Signals |
 |-----------|-----------|--------------|-------------|
 | 32 | 19 | Collaborative communication artifacts | I hope this helps, Let me know, Here is a... |
-| 33 | 20 | Knowledge-cutoff disclaimers | as of my last knowledge update, based on available information. Bare *as of [date]* removed by Wikipedia 2026-09 |
+| 33 | 20 | Disclaimers about knowledge cutoffs, source availability, or recommended usage | as of my last knowledge update, based on available information, *[claim] should be treated as ... rather than ...*. Section renamed and usage disclaimers added 2026-09-28. Bare *as of [date]* removed by Wikipedia 2026-09 |
 | 34 | 28 | Phrasal templates and placeholder text | [Name], 2025-XX-XX, unfilled blanks |
 | Edit summaries (4 subsections) | 34 | Procedural self-congratulation in change summaries | refined, streamlined, enhanced, ensured adherence to, preserved, retained, avoided, improved clarity and flow. Generalised from Wikipedia edit summaries to commit messages, PR descriptions, changelogs |
 
@@ -146,11 +147,61 @@ Additionally (especially sentence-initial), align with, boasts (meaning "has"), 
 
 - **ChatGPT/DeepSeek**: Curly quotation marks and apostrophes
 - **Gemini/Claude**: Typically avoid curly quotes
-- **Grok**: Overuses "causal", "empirical", "correlate"; still overusing "underscore" as of 2026; favours the "X rather than Y" negative parallelism (subtype C)
+- **Grok**: Overuses "causal", "empirical", "correlate"; still overusing "underscore" as of 2026; favours the "X rather than Y" negative parallelism (subtype C), which Wikipedia since 2026-09-28 also records in ChatGPT and Claude output
 - **Comment/discussion tell**: overuse of "concrete" ("concrete evidence", "concrete examples") in AI-detection debates
 - **All models**: Rule of three, copula avoidance, negative parallelisms
 - **Idiolect**: ChatGPT and Grok lean into broader-context framing; Gemini and Claude run more concise. ChatGPT is likely the most-used chatbot for Wikipedia edits.
 - **Em dash suppression**: OpenAI GPT-5.1 (Nov 2025) actively suppresses em dashes, so their absence proves nothing
+
+---
+
+## Changes from 2026-09-09 to 2026-10-04
+
+Article checked at revision 1378298730 (2026-10-03T21:44Z) against baseline revision 1373840632
+(2026-09-08T06:40Z, the revision current at the last check). Article grew 220,401 to 221,067 bytes
+across 34 edits. Much of it is churn: two vandalism runs reverted, page protection added on
+2026-09-12, shortcut and hatnote templates reordered, example blocks moved to `{{quote frame}}`, the
+comment-specific search links moved to WP:AITALKSIGNS. Four portable changes, all applied:
+
+1. **Disclaimers section widened to "recommended usage"** (2026-09-28). Renamed from
+   "Knowledge-cutoff disclaimers and speculation about gaps in sources" to "Disclaimers about
+   knowledge cutoffs, source availability, or recommended usage". New words to watch:
+   *[claim] should be treated as ... rather than ...*. As of 2026, chatbots append disclaimers on
+   how a source should be used, framed as a "Y rather than X" negative parallelism - Wikipedia calls
+   it the successor to the GPT-4-era didactic disclaimers. Example from an August 2026 revision,
+   disclosed as ChatGPT or Claude. Applied to skill pattern **#20** as a third behaviour, with a
+   before/after, a SKILL.md row update and new eval case C4b. Not a new pattern - it is the same
+   disclaimer family Wikipedia already files under one heading.
+2. **"X rather than Y" no longer Grok-only** (2026-09-28). Heading renamed "Y rather than X" to
+   mirror "Not X, but Y", and the text now says the construction is also present in ChatGPT and
+   Claude output. Applied to skill pattern **#9** subtype C, the #7 model-traits note and SKILL.md.
+3. **Canned notability gained *was identified by*** (2026-09-24, "aiattr variant"). Added to
+   skill pattern **#2**.
+4. **"Awards and recognition" section strengthened** (2026-09-28): now described as much more
+   common than in human writing even against articles tagged as promotional. The subsection
+   predates the 2026-09 sync but was never carried; added to skill pattern **#2** as a structural
+   sign, explicitly not sufficient alone.
+
+Considered and not adopted:
+
+- **Section moves** (2026-09-28): "Vague expression of connection or association" moved from
+  "Language and grammar" to "Content"; "Leads treating titles as proper nouns" moved the other way.
+  Tables above updated. Skill #32 stays in language-patterns.md - the move changes Wikipedia's
+  filing, not the pattern, and renumbering would churn every cross-reference.
+- **#32 caveat dropped on Wikipedia** ("indirection alone is not enough") because the page-wide
+  disclaimer already says it. The skill keeps its own caution, since it has no such preamble.
+- **New examples only**: a June 2026 *Ne Zha* revision added under "Not X, but Y" (it combines
+  subtypes A and C) and under "Rule of three". No change to either definition.
+- **Detection-ability wording corrected** (2026-10-03): the 90% figure is now stated with its 3.3%
+  false-positive rate. Updated under Key Insights; the skill makes no detector claims.
+- Wikipedia-only: G15 renamed "Unambiguously LLM-generated pages"; non-existent categories now
+  note that recent LLMs drop punctuation and words in category markup; internal formatting "code"
+  reworded to "metadata"; comment-specific indicators trimmed and pointed at the talk-page
+  guidelines.
+
+AI vocabulary box, era lists, "Ineffective indicators", "Signs of human writing", "Historical
+indicators" and the edit-summary subsections are unchanged apart from the above. Skill pattern
+count stays at 34.
 
 ---
 
@@ -324,7 +375,7 @@ inverse constructions.
 ## Key Insights from Wikipedia
 
 - "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
-- AI detection tools have non-trivial error rates; heavy LLM users achieve ~90% accuracy, casual users barely exceed random chance
+- AI detection tools have non-trivial error rates. In a 2025 preprint, expert annotators correctly identified 90% of AI-generated text and misidentified 3.3% of human text as AI; participants who rarely used LLMs did only slightly better than chance (wording corrected on Wikipedia 2026-10-03)
 - Surface-level fixes (removing boldface, correcting markup) may just obscure detection; actual problems require addressing deeper issues
 - One study documented a 10% reduction in "is/are" usage in text post-2022
 - Not all flagged text is AI-generated; humans sometimes write similarly

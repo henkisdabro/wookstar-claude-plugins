@@ -5,14 +5,23 @@ A Claude Code plugin marketplace. No build step, no tests: every plugin is a dir
 
 Verify a change with `claude plugin validate .` (clean at HEAD, warnings included), then exercise
 it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugins`, and
-`/plugin marketplace update wookstar` to pick up later edits.
+`/plugin marketplace update wookstar-claude-plugins` to pick up later edits.
 
 Bump the plugin's `version` whenever its content changes - that is what busts the install cache for
 people who already have it. Bump it in **`plugins/<name>/.claude-plugin/plugin.json`**, which is the
 field that decides the installed version, and update the marketplace entry to match. Bumping only
 the marketplace entry does nothing: at install time plugin.json wins and the entry version is
-silently ignored, so the cache never busts and the change never reaches anyone. All 33 plugins
-currently agree across both files; `claude plugin validate .` warns on any pair that drifts.
+silently ignored, so the cache never busts and the change never reaches anyone. Every plugin
+currently agrees across both files; `claude plugin validate .` warns on any pair that drifts.
+
+Retire a plugin in two releases, because updates arrive without release notes and a bare removal
+only flips installed copies to `disabled`. First ship a final major version holding nothing but a
+`SessionStart` hook whose `systemMessage` names the replacement and the uninstall command, with a
+`[RETIRED]` description and a row in `MIGRATION.md`. A later release deletes the directory and entry
+and adds `"<name>": null` to the marketplace's top-level `renames`. When a release removes skills
+from a plugin that stays, or adds required `userConfig`, give that plugin a startup notice too:
+once per version via a marker file in `${CLAUDE_PLUGIN_DATA}`, or for missing settings, while the
+`CLAUDE_PLUGIN_OPTION_<KEY>` variables are empty.
 
 ## This repo is public
 
@@ -32,6 +41,13 @@ git ls-files -z | xargs -0 grep -EIin \
 It scans every tracked file rather than a hand-listed set of paths, so it cannot go stale as the
 repo grows - and it covers this file, which a path list left out and which is the likeliest place
 for a real name to land.
+
+## MCP credentials
+
+Credentials come from `userConfig` in the plugin's `plugin.json`, referenced in `.mcp.json` as
+`${user_config.<key>}` with `"sensitive": true` on secrets. Claude Code prompts at enable time and
+keeps secrets in the keychain. Pass keys through `env` or `headers` - an `args` entry shows in `ps`
+and a URL query string lands in proxy logs - and use a remote server's own OAuth where it offers one.
 
 ## Three things that are declared in two places
 

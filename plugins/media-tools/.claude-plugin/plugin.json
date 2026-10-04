@@ -1,0 +1,10 @@
+{
+  "name": "media-tools",
+  "description": "Search YouTube and download captions or audio with yt-dlp, then transcribe audio locally with Whisper (mlx-whisper on Apple Silicon, openai-whisper elsewhere)",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}

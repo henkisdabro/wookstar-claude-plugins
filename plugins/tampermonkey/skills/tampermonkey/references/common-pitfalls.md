@@ -396,15 +396,18 @@ Scripts that work in Chrome may break in Firefox.
 
 ---
 
-## Pitfall 15: Script Not Running After Tampermonkey v5.4.1 Update
+## Pitfall 15: Script Never Runs in Chrome or Edge
 
-Tampermonkey v5.4.1+ requires explicit user permission to inject scripts into pages.
+Under Manifest V3, Chrome-based browsers only let an extension execute userscripts once the user has granted a second, explicit permission. Tampermonkey 5.5.1 made this mandatory for injection.
 
-**Symptom:** Script was working, stopped after Tampermonkey updated.
+**Symptom:** The script is enabled and its `@match` is right, but nothing runs on any page - typically right after installing or updating Tampermonkey.
 
-**Fix:** Click the Tampermonkey icon → "Allow extension to access this site" (or configure globally in Dashboard → Settings → Script Injection).
+**Fix:**
 
-**Why this changed:** Browser vendors (Chrome MV3) now require extensions to request explicit permission before injecting content into pages.
+- Chrome 138 and later: right-click the Tampermonkey icon -> **Manage Extension** -> enable **Allow User Scripts**.
+- Older Chrome, and Edge where the toggle is absent: open `chrome://extensions` (or `edge://extensions`) and enable **Developer Mode**.
+
+Source: [Tampermonkey FAQ Q209](https://www.tampermonkey.net/faq.php?q=Q209). Firefox is not affected.
 
 ---
 

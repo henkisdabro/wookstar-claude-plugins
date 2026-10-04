@@ -5,5 +5,14 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "userConfig": {
+    "perplexity_api_key": {
+      "type": "string",
+      "title": "Perplexity API key",
+      "description": "From https://www.perplexity.ai/settings/api",
+      "required": true,
+      "sensitive": true
+    }
+  }
 }

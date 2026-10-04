@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"${CLAUDE_PLUGIN_OPTION_MIKROTIK_HOST:-}\" ] && [ -n \"${CLAUDE_PLUGIN_OPTION_MIKROTIK_USERNAME:-}\" ] && [ -n \"${CLAUDE_PLUGIN_OPTION_MIKROTIK_PASSWORD:-}\" ] || echo '{\"systemMessage\": \"mcp-mikrotik has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads MIKROTIK_* variables from your shell. Run /plugin configure mcp-mikrotik@wookstar-claude-plugins (or claude plugin configure mcp-mikrotik@wookstar-claude-plugins in a terminal), then restart Claude Code. 6.x always used SSH port 2200 - set mikrotik_port to match your router.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

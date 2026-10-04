@@ -272,3 +272,5 @@ YYYY-MM-DD_recipient_subject.html            (output - build script writes)
 ```
 data/writing/email_drafts/
 ```
+
+This is the default; a project overrides it by naming its own drafts directory in CLAUDE.md or AGENTS.md.

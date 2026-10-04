@@ -1,6 +1,6 @@
 # GA4 Data Management and Admin Settings
 
-Expert guidance for GA4 Admin settings including data retention, filters, user access, and property configuration.
+Covers GA4 Admin settings including data retention, filters, user access, and property configuration.
 
 ## Overview
 

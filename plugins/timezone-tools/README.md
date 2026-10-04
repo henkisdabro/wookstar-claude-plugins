@@ -43,7 +43,7 @@ Get current time in any timezone and convert times between different timezones.
 **Scripts included:**
 
 - `get_time.py` - Get current time in a specified timezone
-- `convert_time.py` - Convert time between two timezones
+- `convert_time.py` - Convert time between two timezones, optionally on a given date (`YYYY-MM-DD`) so DST-boundary conversions use the right offset
 - `list_timezones.py` - Search for timezone names
 
 **Time format:**
@@ -54,15 +54,8 @@ Get current time in any timezone and convert times between different timezones.
 
 ## Dependencies
 
-- Python 3.9+
-- `tzlocal>=5.0` - for local timezone detection
-- `zoneinfo` - built-in Python 3.9+ (IANA timezone database)
-
-Install with:
-
-```bash
-pip install tzlocal
-```
+- Python 3.9+ - the scripts use only the standard library (`zoneinfo`)
+- Windows only: the `tzdata` package, since Windows ships no IANA database (`uv run --with tzdata python ...`)
 
 ## When to Use
 

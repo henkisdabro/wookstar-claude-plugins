@@ -1,6 +1,6 @@
 # MCP MikroTik
 
-MikroTik router management and network automation.
+MikroTik router management and network automation over SSH via [mcp-server-mikrotik](https://github.com/jeff-nasseri/mikrotik-mcp).
 
 ## Installation
 
@@ -8,14 +8,8 @@ MikroTik router management and network automation.
 /plugin install mcp-mikrotik@wookstar-claude-plugins
 ```
 
-## Configuration
+Claude Code prompts for the router host, SSH username, password and port (default 22) when you enable the plugin; the password goes to your system keychain.
 
-Requires the following environment variables:
+Since 2.0.0 credentials reach the server as environment variables rather than command-line arguments, so the password no longer shows in `ps` output. The `MIKROTIK_USER` shell variable and the hard-coded port 2200 are gone - enter your values at the prompt.
 
-- `MIKROTIK_HOST`: MikroTik router hostname or IP
-- `MIKROTIK_USER`: SSH username
-- `MIKROTIK_PASSWORD`: SSH password
-
-Default port: 2200
-
-Uses `uvx mcp-server-mikrotik` command.
+Use a dedicated RouterOS user with the narrowest group that covers what you ask Claude to do.
