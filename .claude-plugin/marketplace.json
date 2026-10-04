@@ -674,10 +674,21 @@
         }
       },
       "strict": false
+    },
+    {
+      "name": "codex",
+      "source": "./plugins/codex",
+      "description": "[RETIRED] OpenAI now publishes an official Codex plugin. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "category": "ai"
     }
   ],
   "renames": {
-    "codex": null,
     "gemini": null,
     "mcp-gemini-bridge": null,
     "mcp-notion": null,

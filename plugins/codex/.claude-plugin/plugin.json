@@ -1,0 +1,9 @@
+{
+  "name": "codex",
+  "description": "[RETIRED] OpenAI now publishes an official Codex plugin. This final version only shows a notice - uninstall it.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "2.0.0"
+}
