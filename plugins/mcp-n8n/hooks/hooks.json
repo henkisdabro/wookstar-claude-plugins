@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$CLAUDE_PLUGIN_OPTION_N8N_API_URL\" ] && [ -n \"$CLAUDE_PLUGIN_OPTION_N8N_API_KEY\" ] || echo '{\"systemMessage\": \"mcp-n8n has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads N8N_API_KEY from your shell. Run /plugin configure mcp-n8n@wookstar-claude-plugins (or claude plugin configure mcp-n8n@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}
