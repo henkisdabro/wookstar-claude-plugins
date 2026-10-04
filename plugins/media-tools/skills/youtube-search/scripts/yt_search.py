@@ -27,8 +27,8 @@ def parse_args():
     parser.add_argument("--sort", choices=["relevance", "date", "views"], default="relevance",
                         help="Sort order (default: relevance; 'date' implies --full)")
     parser.add_argument("--min-views", type=int, default=None, help="Minimum view count")
-    parser.add_argument("--min-duration", type=int, default=None, help="Minimum duration in seconds")
-    parser.add_argument("--max-duration", type=int, default=None, help="Maximum duration in seconds")
+    parser.add_argument("--min-duration", type=int, default=None, help="Minimum duration in seconds (videos of unknown duration are kept)")
+    parser.add_argument("--max-duration", type=int, default=None, help="Maximum duration in seconds (videos of unknown duration are kept)")
     parser.add_argument("--channel", type=str, default=None,
                         help="Filter to channel name (case-insensitive substring match)")
     parser.add_argument("--json", action="store_true", help="Output JSON instead of Markdown")
@@ -145,7 +145,8 @@ def apply_filters(results: list[dict], args, full_mode: bool) -> list[dict]:
         if args.min_views and (v["view_count"] or 0) < args.min_views:
             continue
         dur = v["duration"]
-        if args.min_duration and (dur or 0) < args.min_duration:
+        # Unknown durations (often live streams) pass both duration filters
+        if args.min_duration and dur and dur < args.min_duration:
             continue
         if args.max_duration and dur and dur > args.max_duration:
             continue
