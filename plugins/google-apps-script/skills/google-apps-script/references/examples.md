@@ -1,6 +1,6 @@
 # Google Apps Script - Code Examples
 
-Detailed, production-ready examples for common Google Apps Script automation tasks.
+Examples for common Google Apps Script automation tasks.
 
 ## Example 1: Automated Spreadsheet Report
 
@@ -25,11 +25,11 @@ function generateWeeklyReport() {
   // Write summary
   const summarySheet = ss.getSheetByName('Summary') || ss.insertSheet('Summary');
   summarySheet.clear();
-  summarySheet.appendRow(['Name', 'Total Value', 'Status']);
 
-  report.forEach(item => {
-    summarySheet.appendRow([item.name, item.value, item.status]);
-  });
+  // One batch write instead of an appendRow per record
+  const rows = [['Name', 'Total Value', 'Status']]
+    .concat(report.map(item => [item.name, item.value, item.status]));
+  summarySheet.getRange(1, 1, rows.length, rows[0].length).setValues(rows);
 
   // Email notification
   MailApp.sendEmail({
@@ -58,7 +58,7 @@ function processUnreadEmails() {
 
     // Mark as read and label
     thread.markRead();
-    const label = GmailApp.getUserLabelByName('Auto-Responded');
+    const label = GmailApp.getUserLabelByName('Auto-Responded') || GmailApp.createLabel('Auto-Responded');
     thread.addLabel(label);
   });
 }

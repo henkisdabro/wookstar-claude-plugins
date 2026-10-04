@@ -365,16 +365,17 @@ function initializeAllTriggers() {
  * Use when resetting or cleaning up
  */
 function removeAllTriggers() {
-  const confirmation = Browser.msgBox(
+  const ui = SpreadsheetApp.getUi();
+  const confirmation = ui.alert(
     'Confirm Deletion',
     'Are you sure you want to delete ALL triggers?',
-    Browser.Buttons.YES_NO
+    ui.ButtonSet.YES_NO
   );
 
-  if (confirmation === 'yes') {
+  if (confirmation === ui.Button.YES) {
     deleteAllTriggers();
-    Browser.msgBox('All triggers deleted');
+    ui.alert('All triggers deleted');
   } else {
-    Browser.msgBox('Deletion cancelled');
+    ui.alert('Deletion cancelled');
   }
 }

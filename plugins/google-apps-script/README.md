@@ -1,12 +1,12 @@
 # Google Apps Script
 
-Comprehensive Google Apps Script development guide for Claude Code, covering all built-in services and Workspace automation.
+A Claude Code skill for writing Google Apps Script that automates Google Workspace: Sheets, Docs, Gmail, Drive, Calendar and Forms.
 
 ## What's Included
 
 ### Skills (1)
 
-- **google-apps-script** - Complete development guide with API reference
+- **google-apps-script** - a six-step workflow (binding, batched I/O, the 6-minute limit, idempotent triggers, narrow scopes, visible failure), plus a service reference, examples, templates and a Python validator for IDs and A1 notation
 
 ## Installation
 
@@ -16,35 +16,18 @@ Comprehensive Google Apps Script development guide for Claude Code, covering all
 
 ## Coverage
 
-- **SpreadsheetApp** - Sheets manipulation, ranges, values, formatting
-- **DocumentApp** - Docs creation and editing
-- **GmailApp** - Email automation
-- **DriveApp** - File and folder management
-- **CalendarApp** - Calendar events and scheduling
-- **FormApp** - Google Forms creation and responses
-- **SlidesApp** - Presentation automation
-- **Triggers** - Time-based and event-driven automation
-- **Web Apps** - Deploy scripts as web applications
-- **Add-ons** - Build Workspace add-ons
+- **Built-in services** - SpreadsheetApp, DocumentApp, GmailApp, MailApp, DriveApp, CalendarApp, FormApp
+- **Triggers** - simple and installable, time-based and event-based
+- **Storage** - PropertiesService and CacheService, with their real limits
+- **HTTP** - UrlFetchApp for external APIs
+- **Authorisation** - OAuth scopes in `appsscript.json`
+- **Runtime** - V8 only (Rhino was shut down on 31 January 2026); retired services such as ContactsApp and classic Sites are flagged with their replacements
+- **Quotas** - consumer vs Workspace limits from Google's quota page
 
 ## Usage Examples
 
 ```bash
-# Create a spreadsheet automation
 "Write an Apps Script to send weekly reports from a Google Sheet"
-
-# Gmail automation
 "Create a script that auto-labels incoming emails by sender domain"
-
-# Calendar integration
 "Write code to create calendar events from spreadsheet data"
 ```
-
-## Reference Materials
-
-The skill includes a comprehensive API reference covering:
-
-- All built-in services and their methods
-- Best practices for Workspace automation
-- Error handling patterns
-- Quota and limits guidance

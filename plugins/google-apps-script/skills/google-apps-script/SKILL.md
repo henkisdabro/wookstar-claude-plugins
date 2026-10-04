@@ -1,85 +1,64 @@
 ---
 name: google-apps-script
-description: Comprehensive guide for Google Apps Script development covering all built-in services (SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp), triggers, authorisation, error handling, and performance optimisation. Use when automating Google Sheets operations, creating Google Docs, managing Gmail/email, working with Google Drive files, automating Calendar events, implementing triggers (time-based, event-based), building custom functions, creating add-ons, handling OAuth scopes, optimising Apps Script performance, working with UrlFetchApp for API calls, using PropertiesService for persistent storage, or implementing CacheService for temporary data. Covers batch operations, error recovery, and JavaScript ES6+ runtime. Do NOT use for standalone Node.js scripts, Google Cloud Functions, Cloud Run, or any non-Apps-Script JavaScript runtime - those use different APIs and quotas.
+description: Google Apps Script development for automating Google Workspace - Sheets, Docs, Gmail, Drive, Calendar and Forms - with built-in services, triggers and the appsscript.json manifest. Use when writing or fixing a .gs file, automating a Google Sheet, sending or processing Gmail from a script, setting up time-based or on-edit triggers, writing a custom spreadsheet function, calling an external API with UrlFetchApp, or scoping OAuth in appsscript.json. Do NOT use for Google Ads scripts - use google-ads-scripts. Do NOT use for Node.js, Cloud Functions, Cloud Run or REST clients of the Workspace APIs - those use different APIs and quotas.
 ---
 
 # Google Apps Script
 
-## Overview
+Server-side JavaScript that runs on Google's infrastructure with built-in, auto-authorised services for Workspace. V8 is the only runtime: Rhino was shut down on 31 January 2026, so write modern JavaScript (`const`/`let`, arrow functions, classes, template literals, destructuring) and set `"runtimeVersion": "V8"` in `appsscript.json` if a legacy manifest still says `DEPRECATED_ES5`.
 
-Cloud-based JavaScript platform for automating Google Workspace services. Server-side V8 runtime with automatic OAuth integration across Sheets, Docs, Gmail, Drive, Calendar, and more.
+## Steps
 
-## Core Services
+1. **Pick the binding and entry point.** Container-bound scripts (opened from a Sheet, Doc or Form) can use `getActiveSpreadsheet()` / `getActiveDocument()` and simple triggers (`onOpen`, `onEdit`). Standalone scripts and anything run from a time trigger must open files by ID or URL. Done when every file access in the plan uses a call that works in the chosen binding.
 
-1. **SpreadsheetApp** - Google Sheets automation (read, write, format, data validation)
-2. **DocumentApp** - Google Docs creation and editing
-3. **GmailApp & MailApp** - Email operations (send, search, manage labels)
-4. **DriveApp** - File and folder management, sharing, permissions
-5. **CalendarApp** - Calendar events, recurring appointments, reminders
-6. **Triggers & ScriptApp** - Time-based and event-driven automation
+2. **Write against the service, batching I/O.** Read a whole range with `getValues()`, transform in memory, write back once with `setValues()`. Cache expensive lookups with CacheService and persist config or cursors with PropertiesService. Done when no `getValue`/`setValue`/`appendRow` sits inside a loop over rows.
 
-## Quick Start
+3. **Fit the 6-minute limit.** Each execution stops at 6 minutes (custom functions at 30 seconds). For larger jobs, process a slice, save a cursor in PropertiesService, and let a time trigger pick up the next slice. Done when the worst-case run is bounded by a batch size, not the data size.
+
+4. **Set triggers idempotently.** Before `ScriptApp.newTrigger(...)`, delete existing triggers for the same handler so re-running setup never duplicates them. Done when running the setup function twice leaves one trigger per handler.
+
+5. **Narrow the scopes.** List `oauthScopes` explicitly in `appsscript.json`, preferring `spreadsheets.currentonly`, `drive.file` and `script.send_mail` over their broad counterparts. Done when every scope in the manifest maps to a call the script makes.
+
+6. **Handle failure visibly.** Wrap trigger handlers in try/catch, log with `console.error` (it reaches Cloud Logging with severity), and notify by email or an error sheet - a failed time trigger is otherwise silent. Done when every trigger handler has a catch that records the error somewhere a human will see it.
+
+## Quick start
 
 ```javascript
 function generateWeeklyReport() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName('Data');
-  const data = sheet.getRange('A2:D').getValues();
+  const rows = ss.getSheetByName('Data').getRange('A2:C').getValues()
+    .filter(row => row[0]);
 
-  const report = data.filter(row => row[0]);
-  const summarySheet = ss.getSheetByName('Summary') || ss.insertSheet('Summary');
-  summarySheet.clear();
-  summarySheet.appendRow(['Name', 'Value', 'Status']);
-  report.forEach(row => summarySheet.appendRow([row[0], row[1], row[2]]));
+  const summary = ss.getSheetByName('Summary') || ss.insertSheet('Summary');
+  summary.clear();
+  const out = [['Name', 'Value', 'Status'], ...rows];
+  summary.getRange(1, 1, out.length, out[0].length).setValues(out);
 
   MailApp.sendEmail({
     to: Session.getEffectiveUser().getEmail(),
-    subject: 'Weekly Report Generated',
-    body: `Report generated with ${report.length} records.`
+    subject: 'Weekly report generated',
+    body: `Report generated with ${rows.length} records.`
   });
 }
 ```
 
-## Best Practices
+## Gotchas
 
-- **Batch operations** - read/write ranges in bulk, never cell-by-cell in loops
-- **Cache data** - use CacheService (25 min TTL) for frequently accessed data
-- **Error handling** - wrap operations in try/catch, log errors to a sheet for audit trails
-- **Respect limits** - 6-minute execution timeout; split large jobs across triggers
-- **Minimise scopes** - request only necessary OAuth permissions in `appsscript.json`
-- **Persistent storage** - use PropertiesService for configuration and state
-- **Validate inputs** - always check objects exist before accessing properties
+- **Retired services.** ContactsApp (shut down 31 Jan 2025) - use the People advanced service. Classic Sites service (shut down 24 Sep 2024), UiApp (2019) and DocsList (2015) are gone - use HtmlService for UI and DriveApp for files. Google keeps the list at https://developers.google.com/apps-script/guides/support/sunset.
+- **GmailApp vs MailApp.** Both send. MailApp is send-only and needs the narrower `script.send_mail` scope; reach for GmailApp when the script also reads, searches, labels or drafts.
+- **CacheService** defaults to 10 minutes, caps at 6 hours and 100 KB per value, and can evict early - always handle a miss.
+- **Simple triggers** (`onOpen`, `onEdit`) run without authorisation, so they cannot send mail or open other files; use an installable trigger for that.
+- **Quotas differ by account.** Email recipients are 100/day on consumer accounts and 1,500/day on Workspace; trigger runtime is 90 min/day vs 6 h/day.
+- **Local development** with clasp: `.clasp.json` holds the `scriptId` and `rootDir`; `clasp push` uploads `.js`/`.gs` and `appsscript.json`.
 
-See [references/best-practices.md](references/best-practices.md) for detailed examples of each practice.
+## Validation
 
-## Validation & Testing
-
-Use the validation scripts in `scripts/` for pre-deployment checks:
-
-- **scripts/validators.py** - Validate spreadsheet operations, range notations, and data structures
-
-Debug with `Logger.log()` and view output via View > Logs (Cmd/Ctrl + Enter). Use breakpoints in the Apps Script editor for step-through debugging.
-
-## Integration with Other Skills
-
-- **google-ads-scripts** - Export Google Ads data to Sheets for reporting
-- **google-tagmanager** - Coordinate with GTM for tracking events triggered by Apps Script
-- **google-analytics** - Query GA4 BigQuery exports from Apps Script and write results to Sheets
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Execution timeout | Split work into smaller batches or use multiple triggers |
-| Authorisation error | Check OAuth scopes in manifest file |
-| Quota exceeded | Reduce API call frequency, use caching |
-| Null reference error | Validate objects exist before accessing properties |
+`scripts/validators.py` checks spreadsheet IDs, A1 notation (including open-ended ranges like `A2:D`), sheet names, cell values and the 10-million-cell limit before you hard-code them. Run with `python3 scripts/validators.py` for a self-test, or import its functions.
 
 ## References
 
-Detailed content is available in reference files (loaded on demand):
-
-- [references/apps-script-api-reference.md](references/apps-script-api-reference.md) - Complete API reference for all built-in services, triggers, authorisation, and performance optimisation
-- [references/examples.md](references/examples.md) - Production-ready code examples (spreadsheet reports, Gmail auto-responder, document generation, trigger setup)
-- [references/best-practices.md](references/best-practices.md) - Detailed best practices with code blocks for batch operations, caching, error handling, scopes, and persistence
-- [references/patterns.md](references/patterns.md) - Common reusable patterns (data validation, retry logic, form response processing)
+- [references/apps-script-api-reference.md](references/apps-script-api-reference.md) - read when you need a service's method signatures (SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, ScriptApp, UrlFetchApp, Utilities), OAuth scopes, or the full quota table.
+- [references/examples.md](references/examples.md) - read when building a report, Gmail auto-responder, document-from-template or daily trigger from scratch.
+- [references/best-practices.md](references/best-practices.md) - read when reviewing an existing script for batching, caching, error handling or scope problems.
+- [references/patterns.md](references/patterns.md) - read when adding data validation dropdowns, retry with backoff, or form-submit processing.
+- `assets/spreadsheet-automation-template.js` and `assets/trigger-setup-template.js` - copy as a starting point for a new Sheets automation or trigger manager.
