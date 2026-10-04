@@ -33,7 +33,7 @@
     {
       "name": "documents",
       "source": "./plugins/documents",
-      "description": "PDF toolkit: fast text-layer extraction plus uv-runnable scripts for forms, tables, OCR, merging, splitting and validation",
+      "description": "Document toolkit: fast PDF text extraction, OCR for scanned PDFs, structured parsing of PDFs and office files, plus uv-runnable scripts for forms, tables, merging, splitting and validation",
       "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
@@ -41,11 +41,14 @@
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "keywords": [
-        "documents",
         "pdf",
-        "forms",
         "ocr",
-        "office"
+        "ocrmypdf",
+        "tesseract",
+        "liteparse",
+        "docparse",
+        "document-parsing",
+        "forms"
       ],
       "category": "documents"
     },

@@ -1,6 +1,6 @@
 ---
 name: pdf-processing-pro
-description: PDF toolkit of uv-runnable scripts for forms, tables, OCR, merging, splitting and validation. Use when filling a PDF form from data, reading a form's fields, extracting tables to CSV or Excel, running OCR on a scanned PDF, merging or splitting PDFs, checking a PDF is valid, or batch-processing a folder of PDFs. Do NOT use for a quick read of a text-layer PDF - use pdf-extract; do NOT use for Word, Excel or PowerPoint files - use the document-skills plugin.
+description: PDF toolkit of uv-runnable scripts for forms, tables, merging, splitting and validation. Use when filling a PDF form from data, reading a form's fields, extracting tables to CSV or Excel, merging or splitting PDFs, checking a PDF is valid, or batch-processing a folder of PDFs through those steps. Do NOT use for a quick read of a text-layer PDF - use pdf-extract; for making a scanned PDF searchable - use ocr; for headings, layout or AI parsing of complex documents - use document-parse; for Word, Excel or PowerPoint files - use document-parse to read them or the document-skills plugin to author them.
 ---
 
 # PDF Processing Pro
@@ -23,11 +23,11 @@ Every script carries PEP 723 inline metadata, so `uv run "${CLAUDE_SKILL_DIR}/sc
 
 ## Workflow
 
-1. **Triage** - run `validate_pdf.py` on the input. Done when you know whether it is encrypted, has a text layer and has form fields. No text layer means a scan: go to step 3 with OCR.
+1. **Triage** - run `validate_pdf.py` on the input. Done when you know whether it is encrypted, has a text layer and has form fields. No text layer means a scan: run the ocr skill on it first, then come back with its output.
 2. **Pick the branch** and read its reference before writing any custom code:
    - Filling or reading a form - [references/forms.md](references/forms.md)
    - Tables that `extract_tables.py` misses or mangles - [references/tables.md](references/tables.md)
-   - Scanned or image-only pages - [references/ocr.md](references/ocr.md)
+   - Scanned pages that need a script-level OCR loop rather than the ocr skill - [references/ocr.md](references/ocr.md)
    - A folder of PDFs, or chaining scripts in automation - [references/workflows.md](references/workflows.md)
 3. **Run** the script for the branch. Done when it exits 0 and the output file exists.
 4. **Verify** - re-run `validate_pdf.py` on any PDF you wrote, and open or spot-check the CSV/text output against a page of the source. Done when the output matches the source on that spot-check.

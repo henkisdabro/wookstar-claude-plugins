@@ -1,6 +1,6 @@
 ---
 name: pdf-extract
-description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc). Uses pymupdf (fitz) - instant and deterministic. Use when you need to quickly pull raw text from a known text-layer PDF, e.g. "extract text from this PDF", "read this PDF", "get the content of", "what does this PDF say", "quickly read this PDF". Do NOT use for scanned/image PDFs or when you need structured output (tables, headings, OCR, AI analysis) - use the pdf-processing-pro skill in this plugin for those cases.
+description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc). Uses pymupdf (fitz) - instant and deterministic. Use when you need to quickly pull raw text from a known text-layer PDF, e.g. "extract text from this PDF", "read this PDF", "get the content of", "what does this PDF say", "quickly read this PDF". Do NOT use for scanned or image-only PDFs, or when this returns blank text - use ocr; for headings, tables, layout blocks or AI analysis of complex layouts - use document-parse; for forms, merging, splitting or table export to CSV/Excel - use pdf-processing-pro.
 allowed-tools: Bash, Read, Write
 ---
 
@@ -102,12 +102,10 @@ print(f'Creator: {meta.get(\"creator\", \"N/A\")}')
 - `get_text("html")` returns HTML with formatting preserved
 - The package caches after the first `uv run --with pymupdf` invocation - subsequent runs are instant
 
-## When to use this vs pdf-processing-pro
+## When another skill fits better
 
-| Use pdf-extract | Use pdf-processing-pro |
+| Situation | Skill |
 |---|---|
-| PDF created digitally (Word, Typst, LaTeX, wkhtmltopdf, WeasyPrint) | Scanned or image-based PDF (photo, fax, scan) |
-| Need raw text quickly - less than a second | Need structured output: tables, headings, forms |
-| Bulk/batch extraction without AI cost | OCR required (scanned documents) |
-| Offline, no API key, no extra dependencies | Form filling, validation, batch workflows |
-| Simple text content, no tables needed | Tables or structured layout are important |
+| Output is blank or near-empty - the PDF is a scan | ocr |
+| Need headings, tables, reading order or AI reading of charts | document-parse |
+| Filling forms, merging, splitting, tables to CSV/Excel | pdf-processing-pro |

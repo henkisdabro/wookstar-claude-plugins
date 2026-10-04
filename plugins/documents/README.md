@@ -1,13 +1,19 @@
 # Documents Toolkit
 
-PDF toolkit: fast text extraction, forms, tables, OCR, merging, splitting and validation.
+Fast PDF text extraction, OCR for scans, structured parsing of PDFs and office files, and scripts for forms, tables, merging, splitting and validation.
 
 ## What's included
 
 - **pdf-extract** - Fast, zero-AI text extraction from text-layer PDFs with pymupdf.
-- **pdf-processing-pro** - Scripts for forms (analyse, validate, fill, flatten), table extraction to CSV or Excel, OCR for scans, merge, split and integrity checks.
+- **ocr** - Adds a searchable text layer to scanned or image-only PDFs with [OCRmyPDF](https://github.com/ocrmypdf/OCRmyPDF) and Tesseract, with an optional plain-text sidecar.
+- **document-parse** - Structured JSON and markdown from complex documents: [LiteParse](https://github.com/run-llama/liteparse) (`lit`) for PDFs and images, [AILANG Parse](https://github.com/sunholo-data/ailang-parse) (`docparse`) for DOCX, PPTX, XLSX, ODF, EPUB and email files, format conversion, and opt-in AI parsing of charts and images.
+- **pdf-processing-pro** - Scripts for forms (analyse, validate, fill, flatten), table extraction to CSV or Excel, merge, split and integrity checks.
 
-Both run through [uv](https://docs.astral.sh/uv/): the scripts carry inline dependency metadata, so there is nothing to `pip install`. OCR also needs the `tesseract` binary.
+## Prerequisites
+
+- [uv](https://docs.astral.sh/uv/) for every skill: scripts carry inline dependency metadata and tools run through `uvx`, so there is nothing to `pip install`.
+- **ocr** needs Tesseract and Ghostscript (`brew install ocrmypdf` or `sudo apt install ocrmypdf unpaper` brings both); the skill lists Fedora and Windows too.
+- **document-parse** runs LiteParse through `uvx` with no further setup. `docparse` installs with its upstream script (see the skill); PDFs through `docparse` also need Poppler, and its AI features need Google Application Default Credentials.
 
 ## Installation
 
@@ -19,20 +25,23 @@ Both run through [uv](https://docs.astral.sh/uv/): the scripts carry inline depe
 
 ```bash
 "Quickly read the content of this PDF"
+"OCR this scanned book and make it searchable"
+"Parse this annual report into markdown with its tables and headings"
+"What changed in the tracked changes of this DOCX?"
+"Convert notes.md to a Word document"
 "Extract the tables from this report into Excel"
 "Fill out this PDF form from data.json"
-"Run OCR on this scanned document"
 "Merge these PDFs into one pack"
 ```
 
-## When to use which PDF skill
+## When to use which skill
 
-| Use **pdf-extract** | Use **pdf-processing-pro** |
+| Situation | Skill |
 |---|---|
-| Digitally created PDF (Word, Typst, LaTeX, wkhtmltopdf, WeasyPrint) | Scanned or image-based PDF |
-| You just need raw text - fast, deterministic, zero-AI | You need structured output: tables or forms |
-| Bulk batch extraction with no API cost | OCR is required (scans, photos) |
-| One short command, `uv run --with pymupdf` | Form filling, validation, merging, splitting |
+| Digitally created PDF, raw text needed fast | **pdf-extract** |
+| Scanned or image-only PDF, or pdf-extract came back blank | **ocr** |
+| Headings, tables, reading order or layout from a complex PDF; any DOCX, PPTX, XLSX, EPUB or email file; charts or handwriting needing AI; format conversion | **document-parse** |
+| Forms, tables to CSV/Excel, merging, splitting, validation | **pdf-processing-pro** |
 
 ## Moved to official plugins
 

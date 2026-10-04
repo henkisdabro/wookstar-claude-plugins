@@ -1,6 +1,6 @@
 {
   "name": "documents",
-  "description": "PDF toolkit: fast text-layer extraction plus uv-runnable scripts for forms, tables, OCR, merging, splitting and validation",
+  "description": "Document toolkit: fast PDF text extraction, OCR for scanned PDFs, structured parsing of PDFs and office files, plus uv-runnable scripts for forms, tables, merging, splitting and validation",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
