@@ -1,0 +1,9 @@
+{
+  "name": "gemini",
+  "description": "[RETIRED] Gemini CLI stopped serving individual accounts on 2026-06-18 and there is no official Gemini plugin for Claude Code. This final version only shows a notice - uninstall it.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "2.0.0"
+}

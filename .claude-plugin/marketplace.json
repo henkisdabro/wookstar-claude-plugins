@@ -686,10 +686,21 @@
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "category": "ai"
+    },
+    {
+      "name": "gemini",
+      "source": "./plugins/gemini",
+      "description": "[RETIRED] Gemini CLI stopped serving individual accounts on 2026-06-18 and there is no official Gemini plugin for Claude Code. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "category": "ai"
     }
   ],
   "renames": {
-    "gemini": null,
     "mcp-gemini-bridge": null,
     "mcp-notion": null,
     "mcp-cloudflare": null,
