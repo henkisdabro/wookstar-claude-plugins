@@ -251,30 +251,6 @@
       "mcpServers": "./.mcp.json"
     },
     {
-      "name": "mcp-cloudflare",
-      "source": "./plugins/mcp-cloudflare",
-      "description": "Official Cloudflare MCP server - 2,500+ API endpoints via Code Mode in just 2 tools (~1k tokens). Full platform access: Workers, Pages, D1, KV, R2, DNS, Zones, WAF, Tunnels, and more (uses OAuth)",
-      "version": "1.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "mcp",
-        "cloudflare",
-        "workers",
-        "pages",
-        "d1",
-        "kv",
-        "r2",
-        "dns",
-        "serverless"
-      ],
-      "category": "development",
-      "mcpServers": "./.mcp.json"
-    },
-    {
       "name": "mcp-alphavantage",
       "source": "./plugins/mcp-alphavantage",
       "description": "Stock market data, company information, and financial indicators via AlphaVantage",
@@ -734,6 +710,7 @@
     "codex": null,
     "gemini": null,
     "mcp-gemini-bridge": null,
-    "mcp-notion": null
+    "mcp-notion": null,
+    "mcp-cloudflare": null
   }
 }
