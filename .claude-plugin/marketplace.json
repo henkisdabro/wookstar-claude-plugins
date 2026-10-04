@@ -152,7 +152,7 @@
       "name": "google-tagmanager",
       "source": "./plugins/google-tagmanager",
       "description": "Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and GTM API",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

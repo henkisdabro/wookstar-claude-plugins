@@ -1,17 +1,13 @@
 ---
 name: google-tagmanager
-description: Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and API automation. Use when working with GTM implementation, configuration, dataLayer push design, custom tag/template building, server-side container setup, GTM API automation, optimisation, or troubleshooting. Do NOT use for direct gtag.js/GA4 setup that bypasses GTM (use the google-analytics skill), Adobe Launch, Tealium, or other non-GTM tag management systems.
+description: Google Tag Manager implementation reference for web and server containers. Use when installing a GTM container snippet, configuring tags, triggers or variables, designing dataLayer pushes, setting up Consent Mode in GTM, debugging with Preview mode or Tag Assistant, building a custom template, setting up a server-side (sGTM) container, or automating containers through the GTM API or the bundled Stape MCP server. Do NOT use for gtag.js installs that bypass GTM, GA4 reporting or BigQuery export - use google-analytics; Adobe Launch, Tealium or other tag managers.
 ---
 
 # Google Tag Manager
 
-## Overview
+Pick the reference file from the table at the end and read it before answering anything beyond the basics below.
 
-Expertise for Google Tag Manager (GTM) covering container setup, tag configuration, triggers, variables, data layer implementation, debugging, custom templates, and API automation. See the reference files below for detailed guidance on each topic.
-
-## When to Use This Skill
-
-Invoke when setting up or configuring GTM containers, tags, triggers, or variables; implementing the data layer; debugging with Preview mode or Tag Assistant; building custom templates; automating via the REST API; or optimising container performance and consent management.
+The bundled `gtm-mcp-server` is Stape's hosted GTM MCP server (a third party, not Google). Its tools can create, update and delete tags, triggers, variables and other entities, and create and publish container versions. Before calling a delete or publish action, state what will change and in which container and workspace, and let the user approve it.
 
 ## Quick Start
 
@@ -31,7 +27,7 @@ Tag ID: G-XXXXXXXXXX
 Trigger: All Pages
 ```
 
-See [tags.md](references/tags.md) for comprehensive tag documentation.
+See [tags.md](references/tags.md) for tag documentation.
 
 ### Data Layer Push
 
@@ -46,21 +42,6 @@ dataLayer.push({
 ```
 
 See [datalayer.md](references/datalayer.md) for data layer patterns.
-
-## Core Concepts
-
-**Tags** are snippets of code that execute on your site (e.g., GA4, Google Ads, Facebook Pixel).
-
-**Triggers** define when tags fire (e.g., page views, clicks, form submissions).
-
-**Variables** capture dynamic values for use in tags and triggers (e.g., page URL, click text, data layer values).
-
-```
-User Action --> Trigger Fires --> Tag Executes --> Data Sent
-     ^                                    |
-     |                                    v
-     +--- Variables provide values -------+
-```
 
 ## Common Workflows
 
@@ -83,6 +64,16 @@ User Action --> Trigger Fires --> Tag Executes --> Data Sent
 2. Create data layer variables and GA4 Event tags for each event
 3. Map variables to event parameters
 4. Test complete purchase flow and publish
+
+### Consent Mode v2
+
+Four consent types gate Google tags: `ad_storage`, `analytics_storage`, `ad_user_data` and `ad_personalization` (the last two are required for EEA/UK ad measurement and personalisation).
+
+1. Add the CMP's template from the Community Template Gallery (or build one with the `setDefaultConsentState` / `updateConsentState` template APIs - templates call these rather than `gtag('consent', ...)`).
+2. Fire it on the **Consent Initialization - All Pages** trigger so defaults (usually `denied`, optionally per region, with `wait_for_update`) are set before any other tag.
+3. The CMP updates consent when the user chooses; Google tags adjust automatically. For non-Google tags, set **Additional consent checks** in each tag's Consent Settings and use the container's **Consent Overview** to confirm every tag is covered.
+4. Choose basic mode (tags blocked until consent) or advanced mode (Google tags load and send cookieless pings while denied).
+5. In Preview, the Consent tab for each event shows default and update states - confirm defaults appear on Consent Initialization before the first tag fires.
 
 ### Debug Tag Not Firing
 
@@ -119,7 +110,8 @@ dataLayer.push({ 'event': 'page_view' });
 // User login
 dataLayer.push({ 'event': 'login', 'method': 'Google' });
 
-// Purchase
+// Purchase - clear the previous ecommerce object first
+dataLayer.push({ 'ecommerce': null });
 dataLayer.push({
   'event': 'purchase',
   'ecommerce': {
@@ -144,6 +136,7 @@ dataLayer.push({
 | Best practices, naming, performance, security | [best-practices.md](references/best-practices.md) |
 | Custom templates | [custom-templates.md](references/custom-templates.md) |
 | API automation | [api.md](references/api.md) |
+| Server-side containers: hosting, custom domain, clients, GA4 server tag | [server-side.md](references/server-side.md) |
 
 ## External Resources
 
