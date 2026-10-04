@@ -6,8 +6,8 @@ usage() {
   cat <<'EOF'
 Upgrade from wookstar-claude-plugins 6.x to 7.0.0.
 
-Uninstalls the retired plugins you have, installs the official replacement for
-each, fills in the settings that credential plugins now ask for (reusing your
+Updates the plugins you keep, uninstalls the retired ones and installs the
+official replacement for each, fills in the settings that credential plugins now ask for (reusing your
 old shell variables where it finds them), and lists suggestions for plugins
 that lost components. See MIGRATION.md.
 
@@ -82,7 +82,6 @@ marketplace_source() {
 legacy_var() {
   case $1 in
     n8n_api_key) echo N8N_API_KEY ;;
-    n8n_api_url) echo N8N_API_URL ;;
     coingecko_demo_api_key) echo COINGECKO_DEMO_API_KEY ;;
     perplexity_api_key) echo PERPLEXITY_API_KEY ;;
     mikrotik_host) echo MIKROTIK_HOST ;;
@@ -103,6 +102,10 @@ ensure_marketplace() {
 
 have_tty() { (: </dev/tty) 2>/dev/null; }
 
+if ! claude plugin marketplace list --json </dev/null >/dev/null 2>&1; then
+  echo "'claude plugin marketplace list --json' failed - update Claude Code and try again." >&2
+  exit 1
+fi
 if ! has_marketplace "$MP"; then
   echo "The $MP marketplace is not registered here - nothing to migrate."
   exit 0
@@ -139,6 +142,21 @@ for name in codex gemini mcp-gemini-bridge mcp-notion mcp-cloudflare mcp-fetch; 
 done
 [ "$any" = 0 ] && echo "  none installed"
 
+echo
+echo "== Updating the plugins you keep"
+any=0
+while read -r name scope; do
+  [ -z "$name" ] && continue
+  case $name in codex | gemini | mcp-gemini-bridge | mcp-notion | mcp-cloudflare | mcp-fetch) continue ;; esac
+  any=1
+  if [ "$scope" = user ]; then
+    run claude plugin update "$name@$MP" --scope user
+  else
+    other_scope+="  claude plugin update $name@$MP --scope $scope"$'\n'
+  fi
+done <<<"$ours"
+[ "$any" = 0 ] && echo "  none installed"
+
 if [ "$INSTALL" = 1 ] && [ -n "$to_install" ]; then
   echo
   echo "== Installing official replacements"
@@ -171,6 +189,9 @@ if [ "$INSTALL" = 1 ]; then
       if [ -n "$var" ] && [ -n "${!var:-}" ]; then
         val=${!var}
         echo "  $name: $title - using \$$var from your environment"
+      elif [ "$key" = mikrotik_port ]; then
+        val=2200
+        echo "  $name: $title - keeping 2200, the port 6.x always used"
       elif have_tty && [ "$DRY" = 0 ]; then
         if [ "$sensitive" = true ]; then
           read -r -s -p "  $name: $title (blank to skip): " val </dev/tty; echo
@@ -178,18 +199,19 @@ if [ "$INSTALL" = 1 ]; then
           read -r -p "  $name: $title (blank to skip): " val </dev/tty
         fi
       fi
-      [ -n "$val" ] && values=$(jq --arg k "$key" --arg v "$val" '. + {($k): $v}' <<<"$values")
+      # The secret travels through the environment and a pipe - never argv or a temp file.
+      [ -n "$val" ] && values=$(printf '%s' "$values" | V="$val" jq -c --arg k "$key" '. + {($k): env.V}')
     done
     if [ "$values" = '{}' ]; then
       echo "  $name: still needs $(tr '\n' ' ' <<<"$missing")- run: claude plugin configure $id"
     elif [ "$DRY" = 1 ]; then
-      echo "+ claude plugin configure $id --values-stdin   # $(jq -r 'keys | join(", ")' <<<"$values")"
-      left=$(jq -rn --argjson v "$values" --arg m "$missing" '$m | split("\n") | map(select(. as $k | $k != "" and ($v | has($k) | not))) | join(", ")')
+      echo "+ claude plugin configure $id --values-stdin   # $(printf '%s' "$values" | jq -r 'keys | join(", ")')"
+      left=$(printf '%s' "$values" | jq -r --arg m "$missing" '. as $v | $m | split("\n") | map(select(. as $k | $k != "" and ($v | has($k) | not))) | join(", ")')
       [ -n "$left" ] && echo "  $name: would still need $left"
     else
       echo "+ claude plugin configure $id --values-stdin"
-      if claude plugin configure "$id" --values-stdin <<<"$values" >/dev/null; then
-        left=$(claude plugin configure "$id" --json </dev/null 2>/dev/null | jq -r '.unconfigured | join(", ")')
+      if printf '%s' "$values" | claude plugin configure "$id" --values-stdin >/dev/null; then
+        left=$(claude plugin configure "$id" --json </dev/null 2>/dev/null | jq -r '(.unconfigured // []) | join(", ")')
         [ -n "$left" ] && echo "  $name: still needs $left - run: claude plugin configure $id"
       else
         echo "  ! failed - run: claude plugin configure $id" >&2
