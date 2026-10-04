@@ -813,6 +813,27 @@
         "apple-silicon"
       ],
       "category": "media"
+    },
+    {
+      "name": "typst",
+      "source": "./plugins/typst",
+      "description": "Typst language reference: markup, maths, set/show rules, layout, tables, templates and PDF/HTML/PNG/SVG export, current to Typst 0.15",
+      "version": "1.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "typst",
+        "typesetting",
+        "pdf",
+        "markup",
+        "templates",
+        "math",
+        "pdf-ua"
+      ],
+      "category": "documents"
     }
   ]
 }
