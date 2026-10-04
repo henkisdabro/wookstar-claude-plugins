@@ -1,8 +1,8 @@
 # Wookstar Claude Code Plugins
 
-A curated marketplace for [Claude Code](https://claude.ai/code) - **27 plugins** across development, analytics, content, data and ops. Pick what you need; everything is independently installable.
+A curated marketplace for [Claude Code](https://claude.ai/code) - **27 active plugins** across development, analytics, content, data and ops. Pick what you need; everything is independently installable.
 
-> **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md).
+> **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md). Retired plugins stay listed for one release as `[RETIRED]` entries that only show a notice.
 
 ---
 
@@ -174,7 +174,9 @@ MCP plugins that need a key or URL declare it as plugin configuration: Claude Co
 | `mcp-mikrotik` | router host, SSH username, password, port |
 | `mcp-google-workspace` | OAuth client ID and secret |
 
-`mcp-alphavantage`, `google-tagmanager` (Stape) and `mcp-excalidraw` sign in through OAuth - run `/mcp` and pick the server on first use. `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
+`mcp-alphavantage` and `google-tagmanager` (Stape) sign in through OAuth - run `/mcp` and pick the server on first use. `mcp-excalidraw`, `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
+
+Installed one of the plugins above before 7.0.0? Updating does not prompt - run `claude plugin configure <plugin>@wookstar-claude-plugins`, or let the upgrade script fill the values in. A startup notice reminds you until you do.
 
 `google-analytics` is the exception: its server uses Google Application Default Credentials, so export `GOOGLE_APPLICATION_CREDENTIALS` (path to a credentials file) and `GOOGLE_CLOUD_PROJECT`. See its [README](./plugins/google-analytics/README.md).
 
@@ -205,6 +207,7 @@ It is added automatically the first time you start Claude Code interactively. Pl
 7.0.0 retires `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` and `mcp-fetch`, moves parts of `developer`, `documents` and `shopify-developer` to official plugins, and switches MCP plugins to prompted credentials. Run the upgrade script, or hand [MIGRATION.md](./MIGRATION.md) to Claude:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash -s -- --dry-run   # preview
 curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash
 ```
 

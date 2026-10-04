@@ -14,9 +14,14 @@ the marketplace entry does nothing: at install time plugin.json wins and the ent
 silently ignored, so the cache never busts and the change never reaches anyone. Every plugin
 currently agrees across both files; `claude plugin validate .` warns on any pair that drifts.
 
-Removing a plugin takes more than deleting its directory and entry: add `"<name>": null` to the
-marketplace's top-level `renames`, so existing installs show a removal notice instead of a
-`not found` error on every session, and give it a row in `MIGRATION.md` naming the replacement.
+Retire a plugin in two releases, because updates arrive without release notes and a bare removal
+only flips installed copies to `disabled`. First ship a final major version holding nothing but a
+`SessionStart` hook whose `systemMessage` names the replacement and the uninstall command, with a
+`[RETIRED]` description and a row in `MIGRATION.md`. A later release deletes the directory and entry
+and adds `"<name>": null` to the marketplace's top-level `renames`. When a release removes skills
+from a plugin that stays, or adds required `userConfig`, give that plugin a startup notice too:
+once per version via a marker file in `${CLAUDE_PLUGIN_DATA}`, or for missing settings, while the
+`CLAUDE_PLUGIN_OPTION_<KEY>` variables are empty.
 
 ## This repo is public
 

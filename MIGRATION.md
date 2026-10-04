@@ -2,6 +2,16 @@
 
 7.0.0 retires the plugins and skills that Anthropic, OpenAI, Shopify and other vendors now publish officially, fixes how MCP plugins handle credentials, and rewrites the remaining skills for current Claude Code. The official versions are maintained by the people who build the underlying tools - prefer them.
 
+## How 7.0.0 reaches you
+
+Claude Code does not auto-update third-party marketplaces unless you turned that on, so you get 7.0.0 when you run `/plugin marketplace update wookstar-claude-plugins` (or `claude plugin marketplace update wookstar-claude-plugins`) and then update your plugins. If you enabled auto-update, Claude Code updates in the background and shows `Plugin updated: <name> · Run /reload-plugins to apply`.
+
+After updating, startup notices tell you what needs doing:
+
+- **A retired plugin** still installed shows a notice at every start naming its replacement and the uninstall command, until you uninstall it. Its final version contains nothing else.
+- **A credential plugin** with no settings yet (`mcp-n8n`, `mcp-coingecko`, `mcp-perplexity`, `mcp-mikrotik`, `mcp-google-workspace`) shows a notice at every start until you configure it. Without settings its MCP server does not start.
+- **`developer`, `documents` and `shopify-developer`** show one notice, once, listing what moved.
+
 ## Fastest path
 
 From a clone of this repo:
@@ -14,10 +24,18 @@ scripts/upgrade-v7.sh             # do it
 Without a clone:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash -s -- --dry-run
 curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash
 ```
 
-The script refreshes this marketplace, uninstalls every retired plugin you have at user scope, installs its official replacement, and prints the commands for anything installed at project or local scope plus suggestions for plugins that lost components. It needs `claude` and `jq` on your `PATH`.
+The script:
+
+1. refreshes this marketplace
+2. uninstalls every retired plugin you have at user scope and installs its official replacement, adding that marketplace if you lack it
+3. fills in the settings credential plugins now need - it reuses the shell variable 6.x read where you still have it set, and otherwise asks on the terminal, hiding secrets as you type
+4. prints the commands for anything installed at project or local scope, and suggestions for plugins that lost components
+
+It needs `claude` and `jq` on your `PATH`, is safe to run twice, and exits non-zero if any step failed.
 
 ## Or hand it to Claude
 
@@ -30,9 +48,12 @@ Run `claude plugin list --json`, then for every plugin from
 wookstar-claude-plugins in the "Retired plugins" table: uninstall it at the
 scope it is installed in, and install its replacement at the same scope,
 adding the replacement's marketplace first if `claude plugin marketplace list`
-lacks it. For kept plugins in the "Moved components" table, show me which
-replacements apply and ask before installing them. Finish by listing what
-changed and telling me to restart Claude Code.
+lacks it. For each credential plugin in the "Credential changes" table that I
+have installed, run `claude plugin configure <plugin>@wookstar-claude-plugins`
+and tell me which values are unset - ask me for them rather than guessing, and
+save them with `--values-stdin`. For kept plugins in the "Moved components"
+table, show me which replacements apply and ask before installing them. Finish
+by listing what changed and telling me to restart Claude Code.
 ```
 
 ## Retired plugins
@@ -46,7 +67,7 @@ changed and telling me to restart Claude Code.
 | `mcp-cloudflare` | Cloudflare's official plugin (same server, plus Workers and Wrangler skills) | `claude plugin install cloudflare@claude-plugins-official` |
 | `mcp-fetch` | Claude Code's built-in WebFetch tool | nothing to install |
 
-Uninstall each with `claude plugin uninstall <name>@wookstar-claude-plugins`, adding `--scope project` or `--scope local` if that is where you installed it. Claude Code shows `Removed from the "wookstar-claude-plugins" marketplace` for any retired plugin still enabled.
+Uninstall each with `claude plugin uninstall <name>@wookstar-claude-plugins`, adding `--scope project` or `--scope local` if that is where you installed it. Until you do, the retired plugin's final version shows a startup notice and does nothing else. A later release removes these names from the marketplace for good.
 
 ## Moved components
 
@@ -69,7 +90,12 @@ These plugins stay, but parts of them moved to official plugins.
 
 ## Credential changes
 
-These MCP plugins now ask for their settings when you enable them, and keep secrets in your system keychain instead of reading shell variables. Enter your values at the prompt, then unset the old variables.
+These MCP plugins now take their settings from plugin configuration and keep secrets in your system keychain instead of reading shell variables. A fresh install prompts when you enable the plugin. An existing install does **not** prompt on update - its MCP server stays off and a startup notice appears until you set the values with either of:
+
+- `/plugin configure <plugin>@wookstar-claude-plugins` inside Claude Code
+- `claude plugin configure <plugin>@wookstar-claude-plugins` in a terminal, which lists what is unset; add `--values-stdin` to pipe a JSON object of values
+
+The upgrade script does this for you. Afterwards you can unset the old variables.
 
 | Plugin | Now prompts for | Old variable no longer read |
 |---|---|---|
@@ -82,7 +108,7 @@ These MCP plugins now ask for their settings when you enable them, and keep secr
 
 `google-analytics` now passes `GOOGLE_CLOUD_PROJECT` (the variable Google's auth library reads) instead of `GOOGLE_PROJECT_ID`, which the server never used. If you exported `GOOGLE_PROJECT_ID`, export `GOOGLE_CLOUD_PROJECT` instead.
 
-`mcp-currency-conversion` and `google-tagmanager` now connect to their remote servers directly, so they no longer need Node or the `mcp-remote` proxy.
+`mcp-currency-conversion` and `google-tagmanager` now connect to their remote servers directly, so they no longer need Node or the `mcp-remote` proxy. For `google-tagmanager` that means signing in to Stape again: run `/mcp`, pick its server and complete the browser sign-in. Tokens that `mcp-remote` cached do not carry over.
 
 ## Everything else
 
