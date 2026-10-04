@@ -53,7 +53,7 @@ function generateWeeklyReport() {
 
 ## Validation
 
-`scripts/validators.py` checks spreadsheet IDs, A1 notation (including open-ended ranges like `A2:D`), sheet names, cell values and the 10-million-cell limit before you hard-code them. Run with `python3 scripts/validators.py` for a self-test, or import its functions.
+`scripts/validators.py` checks spreadsheet IDs, A1 notation (including open-ended ranges like `A2:D`), sheet names, cell values and the 10-million-cell limit before you hard-code them. Run with `python3 "${CLAUDE_SKILL_DIR}/scripts/validators.py"` for a self-test, or import its functions.
 
 ## References
 
