@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -n \"$CLAUDE_PLUGIN_OPTION_PERPLEXITY_API_KEY\" ] || echo '{\"systemMessage\": \"mcp-perplexity has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads PERPLEXITY_API_KEY from your shell. Run /plugin configure mcp-perplexity@wookstar-claude-plugins (or claude plugin configure mcp-perplexity@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+            "command": "[ -n \"${CLAUDE_PLUGIN_OPTION_PERPLEXITY_API_KEY:-}\" ] || echo '{\"systemMessage\": \"mcp-perplexity has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads PERPLEXITY_API_KEY from your shell. Run /plugin configure mcp-perplexity@wookstar-claude-plugins (or claude plugin configure mcp-perplexity@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
           }
         ]
       }
