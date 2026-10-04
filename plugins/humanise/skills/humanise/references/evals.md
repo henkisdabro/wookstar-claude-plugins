@@ -175,6 +175,28 @@ where the vagueness is the correct term of art.
 
 ---
 
+### C4b: Recommended-usage disclaimer (#20, 2026 form)
+
+**Input:**
+
+> The hall is said to have been built without nails. Such accounts should be treated as local
+> folklore rather than as a documented construction method. Records about its builder are not
+> widely available.
+
+**Patterns flagged:**
+
+- #20 Usage disclaimer: "should be treated as local folklore rather than as a documented construction method"
+- #20 Source-gap disclaimer: "Records about its builder are not widely available"
+- #9 Negative parallelism, subtype C: the "X rather than Y" frame carrying the disclaimer
+
+**Good output characteristics:**
+
+- Keeps the claim attributed ("is said to", "local tradition holds") and drops the instruction to the reader
+- Does not invent a builder, a date or a study to fill the gap
+- One plain sentence where there were three
+
+---
+
 ### C5: Filler and hedging patterns
 
 **Input:**

@@ -18,13 +18,13 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 ---
 
-## 20. Knowledge-Cutoff Disclaimers and Source-Gap Speculation
+## 20. Disclaimers: Knowledge Cutoffs, Source Gaps and Recommended Usage
 
-**Words to watch:** Up to my last training update, as of my last knowledge update, While specific details are limited/scarce..., not widely available/documented/disclosed, in the provided/available sources or search results, based on available information, likely exists, probably documented
+**Words to watch:** Up to my last training update, as of my last knowledge update, While specific details are limited/scarce..., not widely available/documented/disclosed, in the provided/available sources or search results, [claim] should be treated as ... rather than ..., based on available information, likely exists, probably documented
 
 **Removed September 2026:** bare "as of [date]" is no longer a signal. Wikipedia dropped it because it is ordinary dating language that humans and templates produce constantly. Only the self-referential versions - "as of my last knowledge update", "up to my last training update" - point at a model.
 
-**Problem:** Two related behaviours: (1) AI disclaimers about incomplete information get left in text; (2) RAG-enabled models speculate about undocumented information as if it probably exists somewhere - pairing hedges with "likely" or "probably" claims about sources that may not exist at all.
+**Problem:** Three related behaviours: (1) AI disclaimers about incomplete information get left in text; (2) RAG-enabled models speculate about undocumented information as if it probably exists somewhere - pairing hedges with "likely" or "probably" claims about sources that may not exist at all; (3) since 2026, models append a disclaimer telling the reader how to use a claim or source, usually as a "should be treated as X rather than Y" negative parallelism (#9, subtype C). Wikipedia files this third one as the current-model successor to the 2022-24 didactic disclaimers (#31), and its example was disclosed as ChatGPT or Claude output.
 
 **Before (cutoff disclaimer):**
 > While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
@@ -37,6 +37,14 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 **After:**
 > The company was founded in 1994.
+
+**Before (recommended-usage disclaimer):**
+> Local accounts say the stone has hung unsupported for centuries, though such claims should be treated as religious tradition rather than as an archaeological explanation.
+
+**After:**
+> Local tradition holds that the stone has hung unsupported for centuries.
+
+Attribution already marks the claim as tradition; the appended instruction to the reader is the model hedging its own sentence. Where the distinction matters, state it once as fact ("No archaeological study has examined the stone") if the source supports that - never invent it.
 
 ---
 
