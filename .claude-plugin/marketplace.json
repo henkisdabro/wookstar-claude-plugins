@@ -212,27 +212,6 @@
       "category": "analytics"
     },
     {
-      "name": "gemini",
-      "source": "./plugins/gemini",
-      "description": "Expert guidance for Gemini CLI headless mode - running prompts programmatically, parsing JSON/streaming output, building automation scripts, and CI/CD integration",
-      "version": "1.1.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "keywords": [
-        "gemini",
-        "cli",
-        "headless",
-        "automation",
-        "scripting",
-        "ci-cd",
-        "json"
-      ],
-      "category": "ai"
-    },
-    {
       "name": "mcp-gemini-bridge",
       "source": "./plugins/mcp-gemini-bridge",
       "description": "Google Gemini AI model integration via MCP",
@@ -791,6 +770,7 @@
     }
   ],
   "renames": {
-    "codex": null
+    "codex": null,
+    "gemini": null
   }
 }
