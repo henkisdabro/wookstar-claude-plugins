@@ -2,6 +2,8 @@
 
 A curated marketplace for [Claude Code](https://claude.ai/code) - **32 active plugins** across development, analytics, content, data and ops. Pick what you need; everything is independently installable.
 
+> **New in 7.0.0:** `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`, OCR and document parsing in `documents`, and GA4 BigQuery querying in `google-analytics`. Every skill was re-checked against current Claude Code and live vendor docs, and most were rewritten - see the [CHANGELOG](./CHANGELOG.md).
+>
 > **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md). Retired plugins stay listed for one release as `[RETIRED]` entries that only show a notice.
 
 ---
