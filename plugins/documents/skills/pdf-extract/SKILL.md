@@ -1,6 +1,6 @@
 ---
 name: pdf-extract
-description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc). Uses pymupdf (fitz) - instant and deterministic. Use when you need to quickly pull raw text from a known text-layer PDF, e.g. "extract text from this PDF", "read this PDF", "get the content of", "what does this PDF say", "quickly read this PDF". Do NOT use for scanned or image-only PDFs, or when this returns blank text - use ocr; for headings, tables, layout blocks or AI analysis of complex layouts - use document-parse; for forms, merging, splitting or table export to CSV/Excel - use pdf-processing-pro.
+description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc). Uses pymupdf - instant and deterministic. Use when you need to quickly pull raw text from a known text-layer PDF, e.g. "extract text from this PDF", "read this PDF", "get the content of", "what does this PDF say", "quickly read this PDF". Do NOT use for scanned or image-only PDFs, or when this returns blank text - use ocr; for headings, tables, layout blocks or AI analysis of complex layouts - use document-parse; for forms, merging, splitting or table export to CSV/Excel - use pdf-processing-pro.
 allowed-tools: Bash, Read, Write
 ---
 
@@ -17,8 +17,8 @@ Extract text from PDF files using pymupdf via `uv run --with pymupdf`.
 
 ```bash
 uv run --with pymupdf python3 -c "
-import fitz
-doc = fitz.open('/path/to/file.pdf')
+import pymupdf
+doc = pymupdf.open('/path/to/file.pdf')
 for page in doc:
     text = page.get_text().strip()
     if text:
@@ -31,9 +31,9 @@ for page in doc:
 
 ```bash
 uv run --with pymupdf python3 -c "
-import fitz
+import pymupdf
 
-doc = fitz.open('/path/to/file.pdf')
+doc = pymupdf.open('/path/to/file.pdf')
 pages = []
 for page in doc:
     text = page.get_text().strip()
@@ -51,9 +51,9 @@ print(f'Extracted {len(pages)} pages')
 
 ```bash
 uv run --with pymupdf python3 -c "
-import fitz
+import pymupdf
 
-doc = fitz.open('/path/to/file.pdf')
+doc = pymupdf.open('/path/to/file.pdf')
 # Pages are 0-indexed
 for i in range(2, 5):  # Pages 3-5
     text = doc[i].get_text().strip()
@@ -66,12 +66,12 @@ for i in range(2, 5):  # Pages 3-5
 
 ```bash
 uv run --with pymupdf python3 -c "
-import fitz
+import pymupdf
 import glob
 import os
 
 for pdf_path in glob.glob('/path/to/folder/*.pdf'):
-    doc = fitz.open(pdf_path)
+    doc = pymupdf.open(pdf_path)
     text = '\n\n'.join(p.get_text().strip() for p in doc if p.get_text().strip())
     out_path = pdf_path.rsplit('.', 1)[0] + '.txt'
     with open(out_path, 'w') as f:
@@ -84,8 +84,8 @@ for pdf_path in glob.glob('/path/to/folder/*.pdf'):
 
 ```bash
 uv run --with pymupdf python3 -c "
-import fitz
-doc = fitz.open('/path/to/file.pdf')
+import pymupdf
+doc = pymupdf.open('/path/to/file.pdf')
 meta = doc.metadata
 print(f'Title: {meta.get(\"title\", \"N/A\")}')
 print(f'Author: {meta.get(\"author\", \"N/A\")}')
@@ -96,7 +96,7 @@ print(f'Creator: {meta.get(\"creator\", \"N/A\")}')
 
 ## Key notes
 
-- pymupdf is imported as `fitz` (legacy naming from the MuPDF library)
+- Import it as `pymupdf`. The old `fitz` alias still works but is deprecated and will be removed.
 - Pages are 0-indexed: `doc[0]` is the first page
 - `get_text()` returns plain text; use `get_text("blocks")` for positioned blocks
 - `get_text("html")` returns HTML with formatting preserved

@@ -45,7 +45,7 @@ Fast PDF text extraction, OCR for scans, structured parsing of PDFs and office f
 
 ## Moved to official plugins
 
-The Word (`docx`) and Excel (`xlsx`) skills used to ship here. They are Anthropic's own skills under a proprietary licence, so this plugin no longer redistributes them. Install `document-skills` from the `anthropics/skills` marketplace for Word, Excel, PowerPoint and Anthropic's own PDF skill:
+The Word (`docx`) and Excel (`xlsx`) skills used to ship here. They are Anthropic's own skills, whose licence reserves all rights, so this plugin no longer redistributes them. Install `document-skills` from the `anthropics/skills` marketplace for Word, Excel, PowerPoint and Anthropic's own PDF skill:
 
 ```bash
 /plugin marketplace add anthropics/skills
