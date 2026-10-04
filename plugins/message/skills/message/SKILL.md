@@ -186,7 +186,7 @@ audit/adjust the transform output.
 
 ## Development
 
-Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. First-time setup on any machine: `bash scripts/preflight.sh` - it installs bun + dependencies and self-tests, or fails loudly with the fix. Then `bun` commands work (fall back to `$HOME/.bun/bin/bun` if bun is not on PATH). Run tests: `cd skills/message && bun test`. Build-only without serving: `bun run scripts/serve.ts <fragment> --build-only`.
+Code lives in `${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/`. First-time setup on any machine: `bash "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/preflight.sh"` - it installs bun + dependencies and self-tests, or fails loudly with the fix. Then `bun` commands work (fall back to `$HOME/.bun/bin/bun` if bun is not on PATH). Run tests: `cd "${CLAUDE_PLUGIN_ROOT}/skills/message" && bun test`. Build-only without serving: `bun run "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts" <fragment> --build-only`.
 
 ## Platform support
 
