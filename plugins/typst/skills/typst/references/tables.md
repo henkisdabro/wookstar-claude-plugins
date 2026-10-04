@@ -306,102 +306,36 @@ table.vline(stroke: blue, start: 1, end: 3)
 )
 ```
 
-## Header Styling Best Practices
+## Styling Header Cells
 
-### Why `show table.header` Doesn't Work for Styling
+`show table.header: it => { set text(...); upper(it) }` does not reliably restyle header content: a `set` rule inside a transformational show rule only affects content created in that scope, not the content passed in as `it`.
 
-**Important:** Using `show table.header: it => { set text(...); upper(it) }` does NOT reliably style header content. The `set text(...)` inside a transformational show rule only affects content created within that scope, not content passed in via `it`.
-
-This approach will NOT work:
 ```typst
-// BROKEN - set rules don't propagate to passed-in content
+// Does NOT restyle the header text
 show table.header: it => {
   set text(size: 8pt, fill: gray)
   upper(it)
 }
 ```
 
-### Recommended Approach: Helper Functions
-
-Create explicit helper functions for header cell styling:
+Style the cells explicitly with a helper instead. The same helper works for the label column of a key-value table:
 
 ```typst
-// Define header styling helper
-#let hdr(content) = text(
-  size: 8pt,
-  fill: rgb("#4b5563"),  // gray-600
-  weight: 600,
-  tracking: 0.03em,
-)[#upper(content)]
+#let hdr(content) = text(size: 8pt, weight: "bold", fill: gray.darken(40%))[#upper(content)]
 
-// Use in table headers
 #table(
   columns: 3,
-  table.header(
-    hdr[Name], hdr[Age], hdr[City],
-  ),
-  [Alice], [30], [London],
+  table.header(hdr[Name], hdr[Role], hdr[City]),
+  [Alice], [Engineer], [London],
 )
-```
 
-### Standard Cell Sizing
-
-For consistent table styling, set a global cell text size (typically 1pt smaller than body):
-
-```typst
-// In your document setup
-show table.cell: set text(size: 9pt)  // Body is 10pt
-```
-
-### Differentiating Table Types
-
-When a document has both **data tables** (with header rows) and **key-value tables** (with label columns), use different helpers:
-
-```typst
-// Header cells for data tables (row 0)
-#let hdr(content) = text(
-  size: 8pt,
-  fill: rgb("#4b5563"),
-  weight: 600,
-  tracking: 0.03em,
-)[#upper(content)]
-
-// Label cells for key-value tables (column 0)
-#let kv-label(content) = text(
-  size: 8pt,
-  fill: rgb("#4b5563"),
-  weight: 600,
-  tracking: 0.03em,
-)[#upper(content)]
-
-// Standard data cell
-#let cell(content) = text(size: 9pt)[#content]
-```
-
-**Data table example:**
-```typst
-#table(
-  columns: (1fr, 1fr),
-  fill: (x, y) => if y == 0 { rgb("#f3f4f6") } else { none },
-  table.header(hdr[Purpose], hdr[Details]),
-  cell[Review setup], cell[Assess configuration],
-)
-```
-
-**Key-value table example:**
-```typst
 #table(
   columns: (auto, 1fr),
-  fill: (x, y) => if x == 0 { rgb("#f3f4f6") } else { none },
-  kv-label[Start Date], cell[2026-02-09],
-  kv-label[Duration], cell[3 weeks],
+  fill: (x, _) => if x == 0 { gray.lighten(90%) },
+  hdr[Name], [Example],
+  hdr[Date], [2026-01-01],
 )
 ```
-
-This approach ensures:
-1. Explicit, predictable styling
-2. Different styling for different table types
-3. No interference from global show rules
 
 ## Common Table Patterns
 
@@ -473,13 +407,13 @@ This approach ensures:
     table.cell(fill: navy, text(white)[*Total*]),
   ),
 
-  [Consulting Services], [10 hrs], [\$150], [\$1,500],
-  [Development Work], [20 hrs], [\$100], [\$2,000],
+  [Item A], [2], [\$50], [\$100],
+  [Item B], [3], [\$100], [\$300],
   table.hline(),
-  table.cell(colspan: 3, align: right)[*Subtotal*], [\$3,500],
-  table.cell(colspan: 3, align: right)[*Tax (10%)*], [\$350],
+  table.cell(colspan: 3, align: right)[*Subtotal*], [\$400],
+  table.cell(colspan: 3, align: right)[*Tax*], [\$40],
   table.hline(stroke: 2pt),
-  table.cell(colspan: 3, align: right)[*Total*], [*\$3,850*],
+  table.cell(colspan: 3, align: right)[*Total*], [*\$440*],
 )
 ```
 
