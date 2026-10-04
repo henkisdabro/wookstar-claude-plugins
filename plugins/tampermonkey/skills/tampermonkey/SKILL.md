@@ -1,12 +1,12 @@
 ---
 name: tampermonkey
-description: "Write and debug Tampermonkey userscripts for browser automation, page modification, and web enhancement. Use whenever the user mentions userscripts, Tampermonkey, Greasemonkey, Violentmonkey, or wants to write a script that runs on a website - even if they don't say 'userscript' explicitly. Also trigger for: injecting JavaScript or CSS into web pages, modifying website behaviour, hiding page elements, form auto-fill, scraping page data, intercepting requests, detecting URL changes in SPAs, adding keyboard shortcuts to websites, tab audio control, or TypeScript userscripts. Covers all header tags (@match, @grant, @require, @run-in), GM_* synchronous APIs, GM.* promise-based APIs (recommended for new scripts), batch storage (GM.getValues/setValues v5.3+), binary data support (v5.4+), TypeScript setup via @types/tampermonkey, security sandboxing, and cross-browser compatibility (Chrome, Firefox, Edge). Do NOT use for Selenium/Puppeteer automation, browser extensions (WebExtensions/MV3), or server-side scripts."
+description: "Write and debug Tampermonkey userscripts - scripts that change or automate a website from inside the browser. Use when the user wants a userscript (Tampermonkey, Greasemonkey or Violentmonkey), wants JavaScript or CSS injected into a site they visit, wants page elements hidden or rearranged, wants a form auto-filled or page data scraped, needs to react to URL changes in a single-page app, needs cross-origin requests from a page script, has a userscript that does not run, or is setting one up in TypeScript. Do NOT use for Selenium, Puppeteer or Playwright automation - use a browser-automation tool; for building a browser extension (WebExtensions/Manifest V3) - write it as an extension; or for server-side scripts."
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
 # Tampermonkey Userscript Development
 
-Expert guidance for writing Tampermonkey userscripts - browser scripts that modify web pages, automate tasks, and enhance browsing experience.
+Userscripts are browser scripts that modify web pages and automate tasks.
 
 ## Quick Start Template
 
@@ -47,7 +47,7 @@ Expert guidance for writing Tampermonkey userscripts - browser scripts that modi
 
 (async () => {
     'use strict';
-    // Async entry point — use await with GM.* APIs
+    // Async entry point - use await with GM.* APIs
     const setting = await GM.getValue('myKey', 'default');
     console.log('Script loaded, setting:', setting);
 })();
@@ -198,7 +198,7 @@ Userscripts have limitations:
 - **Access cross-origin iframes** - Browser security prevents this
 - **Persist across machines** - GM storage is local to each browser
 - **Bypass all CSP** - Some very strict CSP cannot be bypassed
-- **Inject without permission** - Tampermonkey v5.4.1+ requires users to grant injection permission per-site or globally; scripts cannot bypass this requirement
+- **Inject without permission** - in Chrome and Edge the user must enable the "Allow User Scripts" toggle on the extension's details page (or Developer Mode on older browsers) before any script runs; a script cannot request or bypass this. If a script never runs, check this first - see [common-pitfalls.md](references/common-pitfalls.md) Pitfall 15
 
 Most limitations have **workarounds** - see [common-pitfalls.md](references/common-pitfalls.md).
 

@@ -6,7 +6,7 @@ Write Tampermonkey userscripts for browser automation, page modification, and we
 
 ### Skills (1)
 
-- **tampermonkey** - Complete userscript development guide with API reference
+- **tampermonkey** - Userscript development guide with API reference. Claude loads it automatically only while working with `*.user.js` files; elsewhere, invoke it with `/tampermonkey`.
 
 ## Installation
 
@@ -38,9 +38,9 @@ Write Tampermonkey userscripts for browser automation, page modification, and we
 
 ## Reference Materials
 
-The skill includes 18 reference files covering:
+The skill includes 19 reference files covering:
 
 - All Tampermonkey APIs and their usage
 - Greasemonkey compatibility
 - Security best practices
-- Cross-browser considerations
+- Cross-browser considerations, including the Chrome/Edge "Allow User Scripts" permission that Manifest V3 requires before any script runs
