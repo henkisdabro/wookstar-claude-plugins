@@ -374,7 +374,7 @@
       "name": "mcp-open-meteo",
       "source": "./plugins/mcp-open-meteo",
       "description": "Weather and climate data (no API key required)",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
