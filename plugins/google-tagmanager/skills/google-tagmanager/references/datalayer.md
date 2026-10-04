@@ -525,7 +525,7 @@ Never push personally identifiable information:
 // BAD - Contains PII
 window.dataLayer.push({
   'email': 'user@example.com',
-  'phone': '+61412345678'
+  'phone': '+61491570156'
 });
 
 // GOOD - Hash or pseudonymise
