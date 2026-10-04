@@ -5,5 +5,14 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "userConfig": {
+    "coingecko_demo_api_key": {
+      "type": "string",
+      "title": "CoinGecko demo API key",
+      "description": "Free demo key from https://www.coingecko.com/en/api",
+      "required": true,
+      "sensitive": true
+    }
+  }
 }
