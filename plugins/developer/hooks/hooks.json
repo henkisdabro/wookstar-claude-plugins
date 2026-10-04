@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-4.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && : > \"$f\" && echo '{\"systemMessage\": \"developer 4.0.0 moved webapp-testing, devtools and the five bundled MCP servers to official plugins, and /generate-prp is now the prp-generator skill. Install commands: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-4.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"Upgraded from an earlier version? developer 4.0.0 moved webapp-testing, devtools and the five bundled MCP servers to official plugins, and /generate-prp is now the prp-generator skill. Install commands: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
           }
         ]
       }
