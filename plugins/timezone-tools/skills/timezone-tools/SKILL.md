@@ -27,6 +27,8 @@ Three standard-library Python scripts (3.9+, `zoneinfo`) over the IANA timezone 
    ```
    Without the date the time is taken as today in the source zone. Pass the date whenever the question is about a specific day - offsets change at DST boundaries, so today's offset can be wrong for next week's meeting. Prints source and target datetimes with weekday, DST status, and the difference in hours.
 
+   On a DST changeover day the script adds a `Warning:` line: a skipped time (clocks forward) is shifted to the real time it lands on, and a repeated time (clocks back) shows both readings and uses the first. Pass that warning on to the user.
+
 Done when the answer quotes the script's output time, including the weekday if it crosses midnight.
 
 ## Example

@@ -2,7 +2,7 @@
 """Convert time between timezones."""
 
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 
@@ -47,6 +47,30 @@ def convert_time(source_tz: str, time_str: str, target_tz: str, date_str=None) -
             tzinfo=source_timezone,
         )
 
+        # DST edge cases on the chosen date
+        warnings = []
+        normalised = source_time.astimezone(timezone.utc).astimezone(source_timezone)
+        if normalised.replace(tzinfo=None) != source_time.replace(tzinfo=None):
+            # Gap: the wall time was skipped when clocks went forward
+            warnings.append(
+                f"Warning: {time_str} does not exist in {source_tz} on {day.isoformat()} "
+                f"(clocks go forward); using {normalised.strftime('%H:%M')} "
+                f"{normalised.isoformat(timespec='seconds')[-6:]} instead"
+            )
+            source_time = normalised
+        else:
+            later = source_time.replace(fold=1)
+            if later.utcoffset() != source_time.utcoffset():
+                # Overlap: the wall time happens twice when clocks go back
+                warnings.append(
+                    f"Warning: {time_str} occurs twice in {source_tz} on {day.isoformat()} "
+                    f"(clocks go back). First: {source_time.isoformat(timespec='seconds')} -> "
+                    f"{source_time.astimezone(target_timezone).isoformat(timespec='seconds')}; "
+                    f"second: {later.isoformat(timespec='seconds')} -> "
+                    f"{later.astimezone(target_timezone).isoformat(timespec='seconds')}. "
+                    f"Using the first."
+                )
+
         # Convert to target timezone
         target_time = source_time.astimezone(target_timezone)
 
@@ -71,6 +95,8 @@ def convert_time(source_tz: str, time_str: str, target_tz: str, date_str=None) -
         print(f"Target: {target_tz} - {target_time.isoformat(timespec='seconds')} "
               f"({target_time.strftime('%A')}, DST: {'Yes' if target_dst else 'No'})")
         print(f"Time difference: {time_diff_str}")
+        for warning in warnings:
+            print(warning)
 
     except Exception as e:
         if "ZoneInfo" in str(type(e).__name__):

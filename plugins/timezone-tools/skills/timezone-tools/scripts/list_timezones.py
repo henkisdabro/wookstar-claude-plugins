@@ -40,10 +40,12 @@ def list_timezones(search_term: str = "") -> None:
 
 
 def main():
-    if len(sys.argv) > 2:
-        print("Usage: python list_timezones.py [search_term]", file=sys.stderr)
-        print("Example: python list_timezones.py 'perth'", file=sys.stderr)
-        sys.exit(1)
+    help_requested = sys.argv[1:] in (["-h"], ["--help"])
+    if help_requested or len(sys.argv) > 2:
+        out = sys.stdout if help_requested else sys.stderr
+        print("Usage: python list_timezones.py [search_term]", file=out)
+        print("Example: python list_timezones.py 'perth'", file=out)
+        sys.exit(0 if help_requested else 1)
 
     search_term = sys.argv[1] if len(sys.argv) == 2 else ""
     list_timezones(search_term)
