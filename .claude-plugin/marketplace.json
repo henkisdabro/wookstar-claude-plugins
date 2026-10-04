@@ -5,8 +5,8 @@
     "email": "whom-wealthy.2z@icloud.com"
   },
   "metadata": {
-    "description": "Comprehensive Claude Code marketplace with specialised plugins for development, documents, analytics, e-commerce, AI integrations, and individual MCP server plugins",
-    "version": "6.9.1"
+    "description": "Claude Code plugins for analytics, Shopify, React, Google Workspace scripting, PDFs, media and MCP servers - with migration notes for plugins that moved to official marketplaces",
+    "version": "7.0.0"
   },
   "plugins": [
     {
