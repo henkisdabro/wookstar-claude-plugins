@@ -1,7 +1,7 @@
 /**
  * Campaign Optimizer Template
  *
- * Template for optimizing Google Ads campaigns based on performance metrics.
+ * Template for optimising Google Ads campaigns based on performance metrics.
  * Customize thresholds and logic to fit your business needs.
  *
  * Features:
@@ -20,22 +20,21 @@ const CONFIG = {
   MIN_CONVERSIONS: 5,              // Minimum conversions to evaluate
   TARGET_ROAS: 3.0,                // Target Return on Ad Spend (300%)
   LOW_ROAS_THRESHOLD: 2.0,         // ROAS below this triggers budget reduction
-  MIN_QUALITY_SCORE: 5,            // Minimum acceptable quality score
 
   // Budget adjustments
   BUDGET_INCREASE_FACTOR: 1.10,    // +10% for high performers
   BUDGET_DECREASE_FACTOR: 0.90,    // -10% for low performers
 
-  // Date range for analysis
+  // Date range for analysis (a GAQL DURING constant, e.g. LAST_7_DAYS, LAST_30_DAYS)
   DATE_RANGE: 'LAST_30_DAYS',
 
   // Reporting
   SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID',  // Replace with your Sheet ID
   LOG_SHEET_NAME: 'Campaign Optimizer Log',
-  NOTIFICATION_EMAIL: Session.getEffectiveUser().getEmail(),
+  NOTIFICATION_EMAIL: 'you@example.com',  // Replace with your address
 
   // Safety limits
-  DRY_RUN: false,                  // Set to true to preview changes without applying
+  DRY_RUN: true,                   // Set to false once the dry-run log looks right
   MAX_CAMPAIGNS_TO_PROCESS: 1000   // Prevent accidental large-scale changes
 };
 
@@ -52,7 +51,8 @@ function main() {
     // Initialize reporting
     const sheet = initializeReportingSheet();
 
-    // Get campaigns to optimize
+    // Campaign metrics from GAQL (Stats has no conversion value), then the entities to act on
+    const metrics = loadCampaignMetrics();
     const campaigns = getCampaignsToOptimize();
     Logger.log(`Found ${campaigns.totalNumEntities()} campaigns to evaluate`);
 
@@ -61,7 +61,7 @@ function main() {
     }
 
     // Process campaigns
-    const results = processCampaigns(campaigns);
+    const results = processCampaigns(campaigns, metrics);
 
     // Generate summary
     logResults(sheet, results);
@@ -78,14 +78,34 @@ function main() {
 // CAMPAIGN PROCESSING
 // ============================================================================
 
+function loadCampaignMetrics() {
+  const rows = AdsApp.search(`
+    SELECT campaign.id, metrics.cost_micros, metrics.conversions, metrics.conversions_value
+    FROM campaign
+    WHERE campaign.status = ENABLED
+      AND segments.date DURING ${CONFIG.DATE_RANGE}`);
+
+  const byId = {};
+  while (rows.hasNext()) {
+    const row = rows.next();
+    byId[row.campaign.id] = {
+      cost: Number(row.metrics.costMicros || 0) / 1e6,   // Micros -> currency
+      conversions: row.metrics.conversions || 0,
+      conversionValue: row.metrics.conversionsValue || 0
+    };
+  }
+  return byId;
+}
+
 function getCampaignsToOptimize() {
   return AdsApp.campaigns()
     .withCondition('campaign.status = ENABLED')
-    .orderBy('campaign.metrics.cost DESC')
+    .forDateRange(CONFIG.DATE_RANGE)
+    .orderBy('metrics.cost_micros DESC')
     .get();
 }
 
-function processCampaigns(campaigns) {
+function processCampaigns(campaigns, metrics) {
   const results = {
     evaluated: 0,
     paused: [],
@@ -100,7 +120,7 @@ function processCampaigns(campaigns) {
     results.evaluated++;
 
     try {
-      const decision = evaluateCampaign(campaign);
+      const decision = evaluateCampaign(campaign, metrics[campaign.getId()]);
 
       if (decision.action === 'PAUSE') {
         if (!CONFIG.DRY_RUN) {
@@ -112,7 +132,7 @@ function processCampaigns(campaigns) {
         });
       } else if (decision.action === 'INCREASE_BUDGET') {
         if (!CONFIG.DRY_RUN) {
-          increaseBudget(campaign, CONFIG.BUDGET_INCREASE_FACTOR);
+          scaleBudget(campaign, CONFIG.BUDGET_INCREASE_FACTOR);
         }
         results.budgetIncreased.push({
           name: campaign.getName(),
@@ -120,7 +140,7 @@ function processCampaigns(campaigns) {
         });
       } else if (decision.action === 'DECREASE_BUDGET') {
         if (!CONFIG.DRY_RUN) {
-          decreaseBudget(campaign, CONFIG.BUDGET_DECREASE_FACTOR);
+          scaleBudget(campaign, CONFIG.BUDGET_DECREASE_FACTOR);
         }
         results.budgetDecreased.push({
           name: campaign.getName(),
@@ -142,11 +162,12 @@ function processCampaigns(campaigns) {
   return results;
 }
 
-function evaluateCampaign(campaign) {
-  const stats = campaign.getStatsFor(CONFIG.DATE_RANGE);
-  const conversions = stats.getConversions();
-  const roas = stats.getReturnOnAdSpend();
-  const cost = stats.getCost() / 1000000;
+function evaluateCampaign(campaign, m) {
+  if (!m) {
+    return { action: 'NONE', reason: 'No metrics in date range' };
+  }
+  const { cost, conversions, conversionValue } = m;
+  const roas = cost > 0 ? conversionValue / cost : 0;
 
   // Insufficient data
   if (conversions < CONFIG.MIN_CONVERSIONS) {
@@ -157,7 +178,7 @@ function evaluateCampaign(campaign) {
   if (roas >= CONFIG.TARGET_ROAS) {
     return {
       action: 'INCREASE_BUDGET',
-      reason: `High ROAS (${roas.toFixed(2)}), Cost: $${cost.toFixed(2)}`
+      reason: `High ROAS (${roas.toFixed(2)}), Cost: ${cost.toFixed(2)}`
     };
   }
 
@@ -184,18 +205,18 @@ function evaluateCampaign(campaign) {
 // BUDGET MANAGEMENT
 // ============================================================================
 
-function increaseBudget(campaign, factor) {
-  const currentBudget = campaign.getBudget().getAmount();
-  const newBudget = Math.floor(currentBudget * factor);
-  campaign.getBudget().setAmount(newBudget);
-  Logger.log(`Increased budget for ${campaign.getName()}: ${currentBudget / 1000000} -> ${newBudget / 1000000}`);
-}
-
-function decreaseBudget(campaign, factor) {
-  const currentBudget = campaign.getBudget().getAmount();
-  const newBudget = Math.floor(currentBudget * factor);
-  campaign.getBudget().setAmount(newBudget);
-  Logger.log(`Decreased budget for ${campaign.getName()}: ${currentBudget / 1000000} -> ${newBudget / 1000000}`);
+// Budget amounts are in account currency, not micros.
+// Shared budgets are skipped: changing one would also change every campaign that shares it.
+function scaleBudget(campaign, factor) {
+  const budget = campaign.getBudget();
+  if (budget.isExplicitlyShared()) {
+    Logger.log(`Skipped shared budget for ${campaign.getName()}`);
+    return;
+  }
+  const currentBudget = budget.getAmount();
+  const newBudget = Math.round(currentBudget * factor * 100) / 100;
+  budget.setAmount(newBudget);
+  Logger.log(`Budget for ${campaign.getName()}: ${currentBudget} -> ${newBudget}`);
 }
 
 // ============================================================================

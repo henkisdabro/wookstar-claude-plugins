@@ -2,10 +2,11 @@
  * Bid Manager Template
  *
  * Template for automated keyword bid management based on performance metrics.
- * Implements intelligent bidding strategies with safety controls.
+ * Adjusts manual CPC keyword bids against a ROAS or CPA target, with safety limits.
+ * Bids are in account currency; keyword CPC bids only take effect under manual CPC.
  *
  * Features:
- * - Bid optimization based on ROAS/CPA targets
+ * - Bid optimisation based on ROAS/CPA targets
  * - Quality score-based bid adjustments
  * - Conversion-driven bid modifications
  * - Detailed audit logging
@@ -34,21 +35,21 @@ const CONFIG = {
   LOW_ROAS_THRESHOLD: 2.0,        // ROAS below this = low performer
   TARGET_QUALITY_SCORE: 7,        // Target quality score
 
-  // Bid limits
-  MIN_BID_MICROS: 50000,          // $0.05 minimum bid
-  MAX_BID_MICROS: 10000000,       // $10.00 maximum bid
+  // Bid limits (account currency)
+  MIN_BID: 0.05,                  // Minimum bid
+  MAX_BID: 10.00,                 // Maximum bid
   MAX_BID_CHANGE_PERCENT: 25,     // Maximum 25% bid change per run
 
-  // Date range
+  // Date range (a GAQL DURING constant, e.g. LAST_7_DAYS, LAST_30_DAYS)
   DATE_RANGE: 'LAST_30_DAYS',
 
   // Reporting
   SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID',  // Replace with your Sheet ID
   LOG_SHEET_NAME: 'Bid Manager Log',
-  NOTIFICATION_EMAIL: Session.getEffectiveUser().getEmail(),
+  NOTIFICATION_EMAIL: 'you@example.com',  // Replace with your address
 
   // Safety
-  DRY_RUN: false,                 // Set to true to preview bid changes
+  DRY_RUN: true,                  // Set to false once the dry-run log looks right
   MAX_KEYWORDS_TO_PROCESS: 5000   // Prevent accidental mass changes
 };
 
@@ -66,7 +67,8 @@ function main() {
     // Initialize reporting
     const sheet = initializeReportingSheet();
 
-    // Get keywords to optimize
+    // Keyword metrics from GAQL (Stats has no conversion value), then the entities to act on
+    const metrics = loadKeywordMetrics();
     const keywords = getKeywordsToOptimize();
     Logger.log(`Found ${keywords.totalNumEntities()} keywords to evaluate`);
 
@@ -75,7 +77,7 @@ function main() {
     }
 
     // Process keywords
-    const results = processKeywords(keywords);
+    const results = processKeywords(keywords, metrics);
 
     // Generate summary
     logResults(sheet, results);
@@ -92,15 +94,43 @@ function main() {
 // KEYWORD PROCESSING
 // ============================================================================
 
+function keywordKey(adGroupId, keywordId) {
+  return `${adGroupId}~${keywordId}`;
+}
+
+function loadKeywordMetrics() {
+  const rows = AdsApp.search(`
+    SELECT ad_group.id, ad_group_criterion.criterion_id,
+           metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value
+    FROM keyword_view
+    WHERE ad_group_criterion.status = ENABLED
+      AND metrics.clicks >= ${CONFIG.MIN_CLICKS}
+      AND segments.date DURING ${CONFIG.DATE_RANGE}`);
+
+  const byKey = {};
+  while (rows.hasNext()) {
+    const row = rows.next();
+    byKey[keywordKey(row.adGroup.id, row.adGroupCriterion.criterionId)] = {
+      clicks: Number(row.metrics.clicks || 0),
+      cost: Number(row.metrics.costMicros || 0) / 1e6,   // Micros -> currency
+      conversions: row.metrics.conversions || 0,
+      conversionValue: row.metrics.conversionsValue || 0
+    };
+  }
+  return byKey;
+}
+
 function getKeywordsToOptimize() {
   return AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition(`keyword.metrics.clicks >= ${CONFIG.MIN_CLICKS}`)
-    .orderBy('keyword.metrics.cost DESC')
+    .withCondition('ad_group_criterion.status = ENABLED')
+    .withCondition('campaign.bidding_strategy_type = MANUAL_CPC')
+    .withCondition(`metrics.clicks >= ${CONFIG.MIN_CLICKS}`)
+    .forDateRange(CONFIG.DATE_RANGE)
+    .orderBy('metrics.cost_micros DESC')
     .get();
 }
 
-function processKeywords(keywords) {
+function processKeywords(keywords, metrics) {
   const results = {
     evaluated: 0,
     increased: [],
@@ -115,7 +145,7 @@ function processKeywords(keywords) {
     results.evaluated++;
 
     try {
-      const decision = evaluateKeyword(keyword);
+      const decision = evaluateKeyword(keyword, metrics[keywordKey(keyword.getAdGroup().getId(), keyword.getId())]);
 
       if (decision.action === 'PAUSE') {
         if (!CONFIG.DRY_RUN) {
@@ -124,21 +154,21 @@ function processKeywords(keywords) {
         results.paused.push({
           text: keyword.getText(),
           campaign: keyword.getCampaign().getName(),
-          currentBid: keyword.getMaxCpc() / 1000000,
+          currentBid: keyword.bidding().getCpc(),
           reason: decision.reason
         });
-      } else if (decision.newBid && decision.newBid !== keyword.getMaxCpc()) {
-        const oldBid = keyword.getMaxCpc();
+      } else if (decision.newBid && decision.newBid !== keyword.bidding().getCpc()) {
+        const oldBid = keyword.bidding().getCpc();
 
         if (!CONFIG.DRY_RUN) {
-          keyword.setMaxCpc(decision.newBid);
+          keyword.bidding().setCpc(decision.newBid);
         }
 
         const changeRecord = {
           text: keyword.getText(),
           campaign: keyword.getCampaign().getName(),
-          oldBid: oldBid / 1000000,
-          newBid: decision.newBid / 1000000,
+          oldBid: oldBid,
+          newBid: decision.newBid,
           change: ((decision.newBid - oldBid) / oldBid * 100).toFixed(1) + '%',
           reason: decision.reason
         };
@@ -164,14 +194,17 @@ function processKeywords(keywords) {
   return results;
 }
 
-function evaluateKeyword(keyword) {
-  const stats = keyword.getStatsFor(CONFIG.DATE_RANGE);
-  const conversions = stats.getConversions();
-  const clicks = stats.getClicks();
-  const cost = stats.getCost();
-  const conversionValue = stats.getConversionValue();
-  const currentBid = keyword.getMaxCpc();
+function evaluateKeyword(keyword, m) {
+  if (!m) {
+    return { action: 'NONE', reason: 'No metrics in date range' };
+  }
+  const { conversions, cost, conversionValue } = m;
+  const currentBid = keyword.bidding().getCpc();   // Currency; guard against a missing keyword-level bid
   const qualityScore = keyword.getQualityScore();
+
+  if (currentBid === null) {
+    return { action: 'NONE', reason: "No keyword-level bid" };
+  }
 
   // Insufficient data
   if (conversions < CONFIG.MIN_CONVERSIONS) {
@@ -183,7 +216,7 @@ function evaluateKeyword(keyword) {
   let reason = [];
 
   if (CONFIG.STRATEGY === 'ROAS') {
-    const roas = cost > 0 ? conversionValue / (cost / 1000000) : 0;
+    const roas = cost > 0 ? conversionValue / cost : 0;
 
     if (roas >= CONFIG.HIGH_ROAS_THRESHOLD) {
       performanceMultiplier *= CONFIG.HIGH_PERFORMER_INCREASE;
@@ -193,14 +226,14 @@ function evaluateKeyword(keyword) {
       reason.push(`Low ROAS (${roas.toFixed(2)})`);
     }
   } else if (CONFIG.STRATEGY === 'CPA') {
-    const cpa = conversions > 0 ? (cost / 1000000) / conversions : Infinity;
+    const cpa = conversions > 0 ? cost / conversions : Infinity;
 
     if (cpa <= CONFIG.TARGET_CPA * 0.8) {
       performanceMultiplier *= CONFIG.HIGH_PERFORMER_INCREASE;
-      reason.push(`Low CPA ($${cpa.toFixed(2)})`);
+      reason.push(`Low CPA (${cpa.toFixed(2)})`);
     } else if (cpa > CONFIG.TARGET_CPA * 1.2) {
       performanceMultiplier *= CONFIG.LOW_PERFORMER_DECREASE;
-      reason.push(`High CPA ($${cpa.toFixed(2)})`);
+      reason.push(`High CPA (${cpa.toFixed(2)})`);
     }
   }
 
@@ -221,7 +254,7 @@ function evaluateKeyword(keyword) {
   }
 
   // Calculate new bid
-  const proposedBid = Math.floor(currentBid * performanceMultiplier);
+  const proposedBid = roundBid(currentBid * performanceMultiplier);
 
   // Apply safety limits
   const safeBid = applySafetyLimits(currentBid, proposedBid);
@@ -242,17 +275,21 @@ function evaluateKeyword(keyword) {
 // BID CALCULATION & SAFETY
 // ============================================================================
 
+function roundBid(bid) {
+  return Math.round(bid * 100) / 100;   // Two decimals in account currency
+}
+
 function applySafetyLimits(currentBid, proposedBid) {
   // Enforce minimum bid
-  if (proposedBid < CONFIG.MIN_BID_MICROS) {
-    Logger.log(`Proposed bid ${proposedBid} below minimum, using ${CONFIG.MIN_BID_MICROS}`);
-    return CONFIG.MIN_BID_MICROS;
+  if (proposedBid < CONFIG.MIN_BID) {
+    Logger.log(`Proposed bid ${proposedBid} below minimum, using ${CONFIG.MIN_BID}`);
+    return CONFIG.MIN_BID;
   }
 
   // Enforce maximum bid
-  if (proposedBid > CONFIG.MAX_BID_MICROS) {
-    Logger.log(`Proposed bid ${proposedBid} above maximum, using ${CONFIG.MAX_BID_MICROS}`);
-    return CONFIG.MAX_BID_MICROS;
+  if (proposedBid > CONFIG.MAX_BID) {
+    Logger.log(`Proposed bid ${proposedBid} above maximum, using ${CONFIG.MAX_BID}`);
+    return CONFIG.MAX_BID;
   }
 
   // Enforce maximum change percentage
@@ -260,8 +297,8 @@ function applySafetyLimits(currentBid, proposedBid) {
   if (changePercent > CONFIG.MAX_BID_CHANGE_PERCENT) {
     const maxChange = currentBid * (CONFIG.MAX_BID_CHANGE_PERCENT / 100);
     const cappedBid = proposedBid > currentBid
-      ? Math.floor(currentBid + maxChange)
-      : Math.floor(currentBid - maxChange);
+      ? roundBid(currentBid + maxChange)
+      : roundBid(currentBid - maxChange);
     Logger.log(`Change ${changePercent.toFixed(1)}% exceeds max ${CONFIG.MAX_BID_CHANGE_PERCENT}%, capping to ${cappedBid}`);
     return cappedBid;
   }
@@ -338,7 +375,7 @@ Bid Manager Results
 
 Mode: ${CONFIG.DRY_RUN ? 'DRY RUN (preview only)' : 'LIVE'}
 Strategy: ${CONFIG.STRATEGY}
-${CONFIG.STRATEGY === 'ROAS' ? `Target ROAS: ${CONFIG.TARGET_ROAS}` : `Target CPA: $${CONFIG.TARGET_CPA}`}
+${CONFIG.STRATEGY === 'ROAS' ? `Target ROAS: ${CONFIG.TARGET_ROAS}` : `Target CPA: ${CONFIG.TARGET_CPA}`}
 Date: ${new Date()}
 Keywords Evaluated: ${results.evaluated}
 
@@ -352,12 +389,12 @@ Errors: ${results.errors.length}
 
 Top Bid Increases:
 ${results.increased.slice(0, 10).map(item =>
-  `- ${item.text} (${item.campaign}): $${item.oldBid.toFixed(2)} → $${item.newBid.toFixed(2)} (${item.change}) - ${item.reason}`
+  `- ${item.text} (${item.campaign}): ${item.oldBid.toFixed(2)} -> ${item.newBid.toFixed(2)} (${item.change}) - ${item.reason}`
 ).join('\n')}
 
 Top Bid Decreases:
 ${results.decreased.slice(0, 10).map(item =>
-  `- ${item.text} (${item.campaign}): $${item.oldBid.toFixed(2)} → $${item.newBid.toFixed(2)} (${item.change}) - ${item.reason}`
+  `- ${item.text} (${item.campaign}): ${item.oldBid.toFixed(2)} -> ${item.newBid.toFixed(2)} (${item.change}) - ${item.reason}`
 ).join('\n')}
 
 Paused Keywords:

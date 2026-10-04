@@ -185,7 +185,7 @@
       "name": "google-ads-scripts",
       "source": "./plugins/google-ads-scripts",
       "description": "Expert guidance for Google Ads Script development including AdsApp API, campaign management, ad groups, keywords, reporting, and automation",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

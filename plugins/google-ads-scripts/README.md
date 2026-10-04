@@ -1,12 +1,12 @@
 # Google Ads Scripts
 
-Expert guidance for Google Ads Script development with Claude Code, covering AdsApp API, campaign management, keywords, bidding, reporting, and automation.
+A Claude Code skill for writing Google Ads Scripts - the JavaScript that runs inside Google Ads against the AdsApp API and GAQL.
 
 ## What's Included
 
 ### Skills (1)
 
-- **google-ads-scripts** - Complete Google Ads scripting guide
+- **google-ads-scripts** - a five-step workflow (pick selector or GAQL, filter on the server, get currency vs micros right, gate every mutation, fit the 30-minute limit), plus an API reference, examples, two dry-run-by-default templates and a Python validator
 
 ## Installation
 
@@ -16,31 +16,18 @@ Expert guidance for Google Ads Script development with Claude Code, covering Ads
 
 ## Coverage
 
-- **Campaign operations** - Create, modify, pause campaigns
-- **Ad groups** - Management and targeting
-- **Keywords** - Bidding, match types, negative keywords
-- **Bidding strategies** - Automated rules, ROAS optimisation
-- **Performance reporting** - Custom reports and dashboards
-- **Budget management** - Spend limits and pacing
-- **Quality scores** - Monitoring and optimisation
-- **Conversion tracking** - Integration and analysis
+- **Selectors** - campaigns, ad groups, keywords and ads with GAQL field-name conditions
+- **Reporting** - `AdsApp.search` and `AdsApp.report` with GAQL, exported to Google Sheets
+- **Bids and budgets** - keyword and ad-group CPC, campaign bidding strategies, shared-budget safety
+- **Quality score** - the score and its components via GAQL
+- **Targeting** - device, location and ad-schedule bid modifiers
+- **Manager accounts** - `AdsManagerApp` and `executeInParallel`
+- **Removed features** - the ad customizer and legacy extension sunset of 14 July 2025, and what replaces them
 
 ## Usage Examples
 
 ```bash
-# Automation
 "Write a script to pause low-performing keywords automatically"
-
-# Reporting
 "Create a weekly performance report sent via email"
-
-# Optimisation
 "Build a script to adjust bids based on ROAS targets"
-
-# Bulk operations
-"Write a script to update all ad copy across campaigns"
 ```
-
-## Reference Materials
-
-The skill includes a comprehensive API reference for the AdsApp object model and common automation patterns.

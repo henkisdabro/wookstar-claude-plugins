@@ -1,1379 +1,332 @@
----
-name: "Google Ads Script - Mission Critical Reference"
-description: "Enterprise-grade, offline-accessible comprehensive guide for Google Ads Script development. Covers AdsApp API, campaign management, ad groups, keywords, bidding, performance reporting, targeting options, advanced operations, error handling, and optimization patterns. Designed as the sole authoritative source for mission-critical Google Ads automation when network infrastructure is unavailable."
-version: "2025-11-ENTERPRISE"
-last_updated: "November 2025"
-security_classification: "REFERENCE"
----
+# Google Ads Scripts API Reference
 
-# GOOGLE ADS SCRIPT ENTERPRISE REFERENCE
-## Mission-Critical Documentation
+Method names and units for the `AdsApp` object model. Ads scripts run on the Google Ads API, and Google picks the API version for you - pin one only when `AdsApp.search` / `AdsApp.report` need a newer field, via their optional `apiVersion` argument. For anything not below, the class reference is at https://developers.google.com/google-ads/scripts/docs/reference/adsapp/adsapp.
 
-**Document Version:** 2025-11-ENTERPRISE  
-**Last Updated:** November 10, 2025  
-**API Version:** v22 (Current Stable)  
-**Offline Accessibility:** GUARANTEED  
-**Verification Status:** Official Google Ads Documentation Cross-Referenced  
+## Contents
 
----
-
-## TABLE OF CONTENTS
-
-1. [Enterprise Skill Overview](#enterprise-skill-overview)
-2. [Core Architecture](#core-architecture)
-3. [AdsApp API Fundamentals](#adsapp-api-fundamentals)
-4. [Campaign Operations](#campaign-operations)
-5. [Ad Group Management](#ad-group-management)
-6. [Keywords & Targeting](#keywords--targeting)
-7. [Ads Management](#ads-management)
-8. [Bidding Strategy](#bidding-strategy)
-9. [Performance Reporting](#performance-reporting)
-10. [Budget Management](#budget-management)
-11. [Advanced Targeting](#advanced-targeting)
-12. [Automated Rules & Alerts](#automated-rules--alerts)
-13. [Error Handling & Debugging](#error-handling--debugging)
-14. [Performance Optimization](#performance-optimization)
-15. [Best Practices](#best-practices)
+1. [Units: currency vs micros](#units-currency-vs-micros)
+2. [Selectors and conditions](#selectors-and-conditions)
+3. [GAQL reporting: AdsApp.search and AdsApp.report](#gaql-reporting-adsappsearch-and-adsappreport)
+4. [Campaigns](#campaigns)
+5. [Ad groups](#ad-groups)
+6. [Keywords](#keywords)
+7. [Ads](#ads)
+8. [Bidding](#bidding)
+9. [Budgets](#budgets)
+10. [Targeting and bid modifiers](#targeting-and-bid-modifiers)
+11. [Labels](#labels)
+12. [Manager accounts](#manager-accounts)
+13. [Removed features](#removed-features)
+14. [Limits](#limits)
 
 ---
 
-## ENTERPRISE SKILL OVERVIEW
+## Units: currency vs micros
 
-### Activation Criteria
+The single most common bug. Entity methods work in **account currency**; GAQL works in **micros** (1,000,000 micros = 1 unit of currency).
 
-This skill activates when developers need:
-- Campaign management automation
-- Keyword bid optimization
-- Performance-based campaign adjustments
-- Ad scheduling automation
-- Budget allocation and management
-- Quality score monitoring
-- Conversion tracking setup
-- Report generation and analysis
-- Pause/enable campaigns based on criteria
-- Bulk operations and batch updates
-
-### Document Guarantees
-
-✓ NO external links required  
-✓ ALL AdsApp operations documented  
-✓ COMPLETE API patterns included  
-✓ ALL error scenarios covered  
-✓ Production-ready code examples  
-✓ Optimization strategies included  
-✓ Performance metrics reference  
-✓ Advanced patterns explained  
+| Where | Unit | Example |
+|-------|------|---------|
+| `Stats.getCost()`, `getAverageCpc()`, `getAverageCpm()` | currency | `12.34` |
+| `Budget.getAmount()` / `setAmount()` | currency | `setAmount(50)` |
+| `keyword.bidding().getCpc()` / `setCpc()`, builder `withCpc()` | currency | `setCpc(1.25)` |
+| `withCondition('metrics.cost_micros > ...')`, `orderBy('metrics.cost_micros')` | micros | `> 100000000` = 100 |
+| GAQL rows from `AdsApp.search` / `AdsApp.report` (`*_micros` fields) | micros | `Number(row.metrics.costMicros) / 1e6` |
 
 ---
 
-## CORE ARCHITECTURE
+## Selectors and conditions
 
-### Google Ads Script Runtime Model
+Every collection follows selector -> iterator. Conditions and ordering use **GAQL field names** (`campaign.status`, `ad_group_criterion.status`, `metrics.clicks`), not the old AWQL names (`Status`, `Clicks`).
 
-**Execution Model:**
-- Runs in Google Ads editor
-- JavaScript ES6 compatible
-- Access to account-level data
-- Time-based and event-based triggers
-
-**Rate Limits and Quotas:**
-
-| Limit | Value | Impact |
-|-------|-------|--------|
-| **Script execution time** | 30 minutes | Per run timeout |
-| **API quota** | Depends on account | Shared with other tools |
-| **Read operations** | Unlimited (rate limited) | Account data access |
-| **Write operations** | Limited | Use batch operations |
-| **Daily budget spend** | Account budget | Cannot exceed daily limit |
-| **Monthly script runs** | Depends on triggers | Time-based limits |
-
-**AdsApp Object Hierarchy:**
-```
-AdsApp (Root)
-├── campaigns()                  # Campaign selector
-├── adGroups()                   # Ad group selector
-├── keywords()                   # Keyword selector
-├── ads()                        # Ad selector
-├── productGroups()              # Shopping product groups
-├── shoppingCampaigns()         # Shopping campaigns
-├── campaignTargeting()         # Campaign-level targeting
-├── currentAccount()            # Current account info
-├── report()                    # GAQL reporting
-└── mutate()                    # Batch mutations
-```
-
----
-
-## ADSAPP API FUNDAMENTALS
-
-### Core Concepts
-
-**Selector Pattern:**
 ```javascript
-// All campaigns
-const campaigns = AdsApp.campaigns().get();
-
-// With conditions
-const campaigns = AdsApp.campaigns()
+const keywords = AdsApp.keywords()
+  .withCondition('ad_group_criterion.status = ENABLED')
   .withCondition('campaign.status = ENABLED')
-  .withCondition('campaign.name CONTAINS "Sale"')
+  .withCondition('metrics.clicks > 10')
+  .forDateRange('LAST_30_DAYS')        // Required whenever a condition or orderBy uses metrics.*
+  .orderBy('metrics.cost_micros DESC')
+  .withLimit(500)
   .get();
 
-// Limit results
-const campaigns = AdsApp.campaigns()
-  .withLimit(100)
-  .get();
-
-// Order by
-const campaigns = AdsApp.campaigns()
-  .orderBy('campaign.metrics.clicks DESC')
-  .get();
-```
-
-**Iterator Pattern:**
-```javascript
-const campaigns = AdsApp.campaigns().get();
-
-while (campaigns.hasNext()) {
-  const campaign = campaigns.next();
-  // Process campaign
-}
-
-// Or convert to array
-const campaignsArray = [];
-while (campaigns.hasNext()) {
-  campaignsArray.push(campaigns.next());
+Logger.log(keywords.totalNumEntities());
+while (keywords.hasNext()) {
+  const keyword = keywords.next();
 }
 ```
 
-**Statistics:**
+**Field prefix by selector:**
+
+| Selector | Entity fields |
+|----------|---------------|
+| `AdsApp.campaigns()` | `campaign.*` |
+| `AdsApp.adGroups()` | `ad_group.*`, `campaign.*` |
+| `AdsApp.keywords()` | `ad_group_criterion.*` (e.g. `ad_group_criterion.keyword.text`, `ad_group_criterion.quality_info.quality_score`), `ad_group.*`, `campaign.*` |
+| `AdsApp.ads()` | `ad_group_ad.*`, `ad_group.*`, `campaign.*` |
+
+Metrics are always `metrics.*` (`metrics.clicks`, `metrics.impressions`, `metrics.ctr`, `metrics.conversions`, `metrics.cost_micros`).
+
+**Date ranges** for `forDateRange()` and `getStatsFor()`: `TODAY`, `YESTERDAY`, `LAST_7_DAYS`, `LAST_14_DAYS`, `LAST_30_DAYS`, `LAST_BUSINESS_WEEK`, `LAST_WEEK_SUN_SAT`, `LAST_WEEK_MON_SUN`, `THIS_WEEK_SUN_TODAY`, `THIS_WEEK_MON_TODAY`, `THIS_MONTH`, `LAST_MONTH`, `ALL_TIME`. Prefer these over hard-coded dates. For a custom window, compute `YYYYMMDD` strings relative to today:
+
 ```javascript
-const campaigns = AdsApp.campaigns().get();
-Logger.log('Total campaigns: ' + campaigns.totalNumEntities());
+function yyyymmdd(daysAgo) {
+  const tz = AdsApp.currentAccount().getTimeZone();
+  return Utilities.formatDate(new Date(Date.now() - daysAgo * 86400000), tz, 'yyyyMMdd');
+}
+const stats = campaign.getStatsFor(yyyymmdd(90), yyyymmdd(1));  // Last 90 days, excluding today
 ```
 
-### Date Range Strings
-
-```javascript
-// Predefined ranges
-getStatsFor('TODAY')
-getStatsFor('YESTERDAY')
-getStatsFor('LAST_7_DAYS')
-getStatsFor('LAST_14_DAYS')
-getStatsFor('LAST_30_DAYS')
-getStatsFor('LAST_90_DAYS')
-getStatsFor('THIS_MONTH')
-getStatsFor('LAST_MONTH')
-
-// Custom range
-const stats = campaign.getStatsFor('20250101', '20251110');
-```
+**Labels in conditions** take the label resource name: `campaign.labels CONTAINS ANY ('customers/1234567890/labels/123')`. Get it with `label.getResourceName()`.
 
 ---
 
-## CAMPAIGN OPERATIONS
+## GAQL reporting: AdsApp.search and AdsApp.report
 
-### Getting Campaigns
+Use GAQL whenever you need a metric the `Stats` object lacks (conversion value, impression share, quality-score components) or rows across many entities in one call. Both methods take the same query.
 
-**Basic retrieval:**
 ```javascript
-// Get all campaigns
-const campaigns = AdsApp.campaigns().get();
+const query = `
+  SELECT campaign.id, campaign.name,
+         metrics.cost_micros, metrics.conversions, metrics.conversions_value
+  FROM campaign
+  WHERE campaign.status = ENABLED
+    AND segments.date DURING LAST_30_DAYS`;
 
-// Get single campaign by name
-const campaignIterator = AdsApp.campaigns()
-  .withCondition('campaign.name = "My Campaign"')
-  .get();
-
-if (campaignIterator.hasNext()) {
-  const campaign = campaignIterator.next();
+// AdsApp.search - nested objects, lowerCamelCase keys
+const rows = AdsApp.search(query);
+while (rows.hasNext()) {
+  const row = rows.next();
+  const cost = Number(row.metrics.costMicros) / 1e6;
+  const roas = cost > 0 ? row.metrics.conversionsValue / cost : 0;
+  Logger.log(`${row.campaign.name}: ROAS ${roas.toFixed(2)}`);
 }
+
+// AdsApp.report - flat rows keyed by the query's snake_case field names
+const report = AdsApp.report(query);
+const it = report.rows();
+while (it.hasNext()) {
+  const row = it.next();
+  Logger.log(row['campaign.name'] + ' ' + row['metrics.conversions']);
+}
+
+// Straight to Sheets
+report.exportToSheet(SpreadsheetApp.openByUrl(SHEET_URL).getSheetByName('Raw'));
 ```
 
-**Filter campaigns:**
+Gotchas:
+
+- `AdsApp.search` returns **lowerCamelCase** keys (`row.adGroupCriterion.qualityInfo.qualityScore`) even though the query is snake_case. Fields with no value are omitted from the row, so guard with `?.` or a default.
+- Int64 fields such as `metrics.cost_micros` can arrive as strings - wrap in `Number()`.
+- Quality score lives on `keyword_view` / `ad_group_criterion`: `ad_group_criterion.quality_info.quality_score`, `.creative_quality_score`, `.post_click_quality_score`, `.search_predicted_ctr`. Field reference: https://developers.google.com/google-ads/api/fields/latest/ad_group_criterion.
+- Combine GAQL metrics with entity updates by keying on IDs, then fetch the entities with `.withIds([...])` (at most 10,000 IDs per selector).
+
+---
+
+## Campaigns
+
+Scripts read and modify campaigns; they cannot create them (use Bulk Uploads or the Google Ads API for that).
+
 ```javascript
-// Enabled campaigns only
-const campaigns = AdsApp.campaigns()
-  .withCondition('campaign.status = ENABLED')
-  .get();
+const campaign = AdsApp.campaigns()
+  .withCondition('campaign.name = "Brand - AU"')
+  .get().next();
 
-// By budget
-const campaigns = AdsApp.campaigns()
-  .withCondition('campaign.budget_information.budget_amount >= 100000000')
-  .get();
+campaign.getId(); campaign.getName(); campaign.getBiddingStrategyType();
+campaign.getStartDate(); campaign.getEndDate();   // { year, month, day } objects
+campaign.isEnabled(); campaign.isPaused(); campaign.isRemoved();
 
-// By type (SEARCH, DISPLAY, SHOPPING, VIDEO, PERFORMANCE_MAX)
-const campaigns = AdsApp.campaigns()
-  .withCondition('campaign.type = SEARCH')
-  .get();
-
-// Recently modified
-const campaigns = AdsApp.campaigns()
-  .withCondition('campaign.status = ENABLED')
-  .withCondition('campaign.name CONTAINS "Q4"')
-  .get();
-```
-
-### Campaign Properties
-
-**Get campaign info:**
-```javascript
-const campaign = campaigns.next();
-
-const id = campaign.getId();                    // Numeric ID
-const name = campaign.getName();                // Campaign name
-const status = campaign.getStatus();            // ENABLED, PAUSED, REMOVED
-const budget = campaign.getBudget().getAmount(); // Daily budget in micros
-const campaignType = campaign.getType();        // SEARCH, DISPLAY, etc.
-const startDate = campaign.getStartDate();      // Start date (YYYY-MM-DD)
-const endDate = campaign.getEndDate();          // End date
-const adServingOptimizationStatus = campaign.getAdServingOptimizationStatus();
-```
-
-**Statistics:**
-```javascript
-const stats = campaign.getStatsFor('LAST_30_DAYS');
-const cost = stats.getCost();                   // In micros (divide by 1,000,000)
-const clicks = stats.getClicks();
-const impressions = stats.getImpressions();
-const conversions = stats.getConversions();
-const ctr = stats.getClickThroughRate();        // As decimal (0-1)
-const cpc = stats.getAverageCpc();              // Average cost per click
-const cpa = stats.getAveragePageviews();        // NOTE: check specific metric
-```
-
-### Campaign Management
-
-**Create campaign:**
-```javascript
-// Build campaign
-const campaign = AdsApp.campaigns().newCampaignBuilder()
-  .withName('New Campaign')
-  .withStatus('PAUSED')
-  .withBudget(5000000)  // 5000 in local currency, in micros
-  .withType('SEARCH')
-  .build()
-  .getResult();
-```
-
-**Modify campaign:**
-```javascript
-campaign.setName('Updated Name');
-campaign.setStatus('ENABLED');  // ENABLED, PAUSED, REMOVED
-
-// Budget (in micros)
-campaign.getBudget().setAmount(10000000);  // 10000
-
-// Start/end dates
-campaign.setStartDate('2025-12-01');
-campaign.setEndDate('2025-12-31');
-```
-
-**Pause/enable:**
-```javascript
+campaign.setName('Brand - AU (2)');
+campaign.setEndDate('20271231');                  // YYYYMMDD string or { year, month, day }
 campaign.pause();
 campaign.enable();
-campaign.remove();  // Archive campaign
+
+campaign.createNegativeKeyword('[free shoes]');   // [exact], "phrase", plain = broad
 ```
 
-**Campaign labels:**
-```javascript
-campaign.applyLabel('MyLabel');
-campaign.removeLabel('MyLabel');
-const labels = campaign.labels();  // Get labels
-```
+Filter by channel with `campaign.advertising_channel_type = SEARCH` (also `DISPLAY`, `SHOPPING`, `VIDEO`, `PERFORMANCE_MAX`, `DEMAND_GEN`, and others). Performance Max, Shopping and Video campaigns have their own selectors: `AdsApp.performanceMaxCampaigns()`, `AdsApp.shoppingCampaigns()`, `AdsApp.videoCampaigns()`.
 
 ---
 
-## AD GROUP MANAGEMENT
+## Ad groups
 
-### Getting Ad Groups
-
-**Basic retrieval:**
-```javascript
-// All ad groups
-const adGroups = AdsApp.adGroups().get();
-
-// In specific campaign
-const adGroups = campaign.adGroups().get();
-
-// By name
-const adGroupIterator = AdsApp.adGroups()
-  .withCondition('ad_group.name = "Ad Group Name"')
-  .get();
-
-// By status
-const adGroups = AdsApp.adGroups()
-  .withCondition('ad_group.status = ENABLED')
-  .get();
-
-// By performance
-const adGroups = AdsApp.adGroups()
-  .withCondition('ad_group.metrics.avg_cpc > 200000')  // > 0.20 in local currency
-  .orderBy('ad_group.metrics.cost DESC')
-  .get();
-```
-
-### Ad Group Properties
-
-**Get info:**
-```javascript
-const adGroup = adGroups.next();
-
-const id = adGroup.getId();
-const name = adGroup.getName();
-const status = adGroup.getStatus();
-const campaign = adGroup.getCampaign();
-const cpiBid = adGroup.getCpcBid();  // Cost per click in micros
-const stats = adGroup.getStatsFor('LAST_7_DAYS');
-```
-
-**Statistics:**
-```javascript
-const stats = adGroup.getStatsFor('LAST_30_DAYS');
-const cost = stats.getCost();
-const clicks = stats.getClicks();
-const impressions = stats.getImpressions();
-const conversions = stats.getConversions();
-const conversionRate = stats.getConversionRate();
-const roas = stats.getReturnOnAdSpend();
-```
-
-### Ad Group Operations
-
-**Create ad group:**
 ```javascript
 const adGroup = campaign.newAdGroupBuilder()
-  .withName('New Ad Group')
+  .withName('Running Shoes')
   .withStatus('PAUSED')
-  .withCpc(50000)  // 0.50 in local currency, in micros
+  .withCpc(0.75)                    // Currency
   .build()
   .getResult();
+
+adGroup.bidding().getCpc();
+adGroup.bidding().setCpc(0.9);
+adGroup.setName('Running Shoes - Men');
+adGroup.pause();
+adGroup.createNegativeKeyword('"second hand"');
 ```
 
-**Modify ad group:**
+Builder operations return an operation: call `.isSuccessful()` / `.getErrors()` before `.getResult()` when failures matter.
+
+---
+
+## Keywords
+
 ```javascript
-adGroup.setName('Updated Name');
-adGroup.setStatus('ENABLED');  // ENABLED, PAUSED, REMOVED
-adGroup.bidding().setCpc(75000);  // 0.75
-```
-
-**Bidding:**
-```javascript
-// Get current bid
-const bid = adGroup.getCpcBid();
-
-// Set CPC bid
-adGroup.bidding().setCpc(50000);
-
-// Set max CPC
-adGroup.bidding().setMaxCpc(100000);
-```
-
-### Keywords in Ad Group
-
-**Get keywords:**
-```javascript
-// All keywords in ad group
-const keywords = adGroup.keywords().get();
-
-// Negative keywords
-const negativeKeywords = adGroup.negativeKeywords().get();
-```
-
-**Add keyword:**
-```javascript
-const keyword = adGroup.newKeywordBuilder()
-  .withText('blue shoes')
-  .withMatchType('BROAD')
+const op = adGroup.newKeywordBuilder()
+  .withText('[leather shoes]')      // Match type is in the text: [exact], "phrase", plain = broad
+  .withCpc(1.5)                     // Currency
   .withFinalUrl('https://example.com/shoes')
-  .withMaxCpc(50000)
-  .build()
-  .getResult();
-```
+  .build();
 
-**Remove keyword:**
-```javascript
-const keyword = adGroup.keywords().get().next();
+const keyword = op.getResult();
+keyword.getText();                  // '[leather shoes]'
+keyword.getMatchType();             // EXACT | PHRASE | BROAD
+keyword.getQualityScore();          // 1-10, or null when there is too little data
+keyword.getApprovalStatus();
+keyword.getFirstPageCpc();
+keyword.getTopOfPageCpc();
+keyword.bidding().getCpc();
+keyword.bidding().setCpc(1.75);
+keyword.urls().setFinalUrl('https://example.com/leather');
+keyword.pause();
 keyword.remove();
 ```
 
----
-
-## KEYWORDS & TARGETING
-
-### Keyword Operations
-
-**Get all keywords:**
-```javascript
-const keywords = AdsApp.keywords().get();
-
-// With conditions
-const keywords = AdsApp.keywords()
-  .withCondition('keyword.status = ENABLED')
-  .withCondition('keyword.match_type = EXACT')
-  .withCondition('keyword.text CONTAINS "shoe"')
-  .get();
-
-// By quality score
-const keywords = AdsApp.keywords()
-  .withCondition('keyword.quality_info.quality_score >= 7')
-  .get();
-
-// High cost keywords
-const keywords = AdsApp.keywords()
-  .withCondition('keyword.metrics.cost > 500000000')  // > 500 in local currency
-  .orderBy('keyword.metrics.cost DESC')
-  .get();
-```
-
-### Keyword Properties
-
-**Get keyword details:**
-```javascript
-const keyword = keywords.next();
-
-const id = keyword.getId();
-const text = keyword.getText();
-const matchType = keyword.getMatchType();  // EXACT, PHRASE, BROAD
-const maxCpc = keyword.getMaxCpc();        // In micros
-const status = keyword.getStatus();
-const destinationUrl = keyword.getDestinationUrl();
-const approvalStatus = keyword.getApprovalStatus();
-const disapprovalReasons = keyword.getDisapprovalReasons();  // Array
-```
-
-**Quality score:**
-```javascript
-const qualityScore = keyword.getQualityScore();         // 1-10 or null
-const creativeQualityScore = keyword.getCreativeQualityScore();
-const landingPageQualityScore = keyword.getLandingPageQualityScore();
-const postClickQualityScore = keyword.getPostClickQualityScore();
-```
-
-**Statistics:**
-```javascript
-const stats = keyword.getStatsFor('LAST_30_DAYS');
-const cost = stats.getCost();
-const clicks = stats.getClicks();
-const impressions = stats.getImpressions();
-const conversions = stats.getConversions();
-const avgCpc = stats.getAverageCpc();
-const searchImpressionShare = stats.getSearchImpressionShare();
-```
-
-### Keyword Management
-
-**Create keyword:**
-```javascript
-// In ad group
-const keyword = adGroup.newKeywordBuilder()
-  .withText('blue running shoes')
-  .withMatchType('PHRASE')
-  .withMaxCpc(50000)
-  .build()
-  .getResult();
-```
-
-**Modify keyword:**
-```javascript
-keyword.setMaxCpc(75000);
-keyword.setDestinationUrl('https://example.com/products');
-keyword.pause();
-keyword.enable();
-```
-
-**Match types:**
-```
-BROAD        // Matches query variations (default)
-PHRASE       // Matches phrase and close variations
-EXACT        // Matches exact phrase only
-```
-
-**Negative keywords:**
-```javascript
-// Create negative keyword
-const negativeKeyword = adGroup.newNegativeKeywordBuilder()
-  .withText('cheap')
-  .withMatchType('BROAD')
-  .build()
-  .getResult();
-
-// Campaign-level negative
-const campaignNegKeyword = campaign.newNegativeKeywordBuilder()
-  .withText('wholesale')
-  .withMatchType('EXACT')
-  .build()
-  .getResult();
-```
-
-### Targeting Options
-
-**Location targeting:**
-```javascript
-const campaign = AdsApp.campaigns().get().next();
-
-// Add location
-campaign.targeting()
-  .getLocationTarget()
-  .newLocationBuilder()
-  .withBidModifier(1.5)     // 50% higher bid
-  .build();
-
-// Get location targets
-const locations = campaign.targeting().getLocationTarget().get();
-```
-
-**Device targeting:**
-```javascript
-// Bid modifiers for devices
-campaign.targeting()
-  .getDeviceTarget()
-  .setBidModifier('MOBILE', 1.2);     // 20% higher for mobile
-
-campaign.targeting()
-  .getDeviceTarget()
-  .setBidModifier('TABLET', 0.8);    // 20% lower for tablet
-
-campaign.targeting()
-  .getDeviceTarget()
-  .setBidModifier('DESKTOP', 1.0);   // Standard bid
-```
-
-**Audience targeting:**
-```javascript
-// Add audience
-adGroup.targeting()
-  .getAudienceTarget()
-  .newAudienceBuilder()
-  .withAudienceId('1234567890')
-  .withBidModifier(1.5)
-  .build();
-```
+`Keyword` has no `getMaxCpc`/`setMaxCpc` and no quality-score component getters - use `bidding()` and GAQL respectively.
 
 ---
 
-## ADS MANAGEMENT
+## Ads
 
-### Ad Types
+Create Responsive Search Ads; Expanded Text Ads can no longer be created.
 
-**Responsive Search Ads (RSA):**
 ```javascript
-const ad = adGroup.newAd()
-  .responsiveSearchAdBuilder()
-  .addHeadline('Headline 1')
-  .addHeadline('Headline 2')
-  .addHeadline('Headline 3')
-  .addDescription('Description 1')
-  .addDescription('Description 2')
-  .addFinalUrl('https://example.com')
-  .build()
-  .getResult();
-```
+const op = adGroup.newAd().responsiveSearchAdBuilder()
+  .withHeadlines(['Leather Shoes', 'Free Delivery', { text: 'Shop Now', pinning: 'HEADLINE_1' }])
+  .withDescriptions(['Handmade in Italy.', 'Order by 3pm for next-day delivery.'])
+  .withPath1('shoes')
+  .withFinalUrl('https://example.com/shoes')
+  .build();
 
-**Expanded Text Ads (Legacy - still supported):**
-```javascript
-const ad = adGroup.newAd()
-  .expandedTextAdBuilder()
-  .setHeadlinePart1('Headline Part 1')
-  .setHeadlinePart2('Headline Part 2')
-  .setDescription1('Description 1')
-  .setDescription2('Description 2')
-  .setFinalUrl('https://example.com')
-  .build()
-  .getResult();
-```
-
-### Getting Ads
-
-**All ads:**
-```javascript
-const ads = AdsApp.ads().get();
-
-// By status
 const ads = AdsApp.ads()
-  .withCondition('ad.status = ENABLED')
+  .withCondition('ad_group_ad.status = ENABLED')
+  .withCondition('ad_group_ad.ad.type = RESPONSIVE_SEARCH_AD')
   .get();
-
-// By ad group
-const ads = adGroup.ads().get();
-
-// Pause low-performing ads
-const ads = AdsApp.ads()
-  .withCondition('ad.metrics.avg_cpc > 500000')  // > 0.50
-  .orderBy('ad.metrics.avg_cpc DESC')
-  .get();
+// ad.getType(), ad.isEnabled(), ad.pause(), ad.enable(), ad.remove(), ad.getStatsFor(...)
 ```
 
-### Ad Properties
+For dynamic text in RSAs, use asset-based customizers (`{CUSTOMIZER.name:default}`) managed in the Google Ads UI or API - the scripts-side `AdCustomizerSource` is gone (see [Removed features](#removed-features)).
 
-**Get ad details:**
+---
+
+## Bidding
+
+Keyword and ad-group CPC bids only take effect under a manual CPC strategy.
+
 ```javascript
-const ad = ads.next();
-
-const id = ad.getId();
-const status = ad.getStatus();
-const type = ad.getType();  // RESPONSIVE_SEARCH_AD, EXPANDED_TEXT_AD, etc.
-const creationTime = ad.getCreationTime();
-const updateTime = ad.getUpdateTime();
-const approvalStatus = ad.getApprovalStatus();
-```
-
-**Ad statistics:**
-```javascript
-const stats = ad.getStatsFor('LAST_7_DAYS');
-const impressions = stats.getImpressions();
-const clicks = stats.getClicks();
-const conversions = stats.getConversions();
-const ctr = stats.getClickThroughRate();
-```
-
-### Ad Management
-
-**Modify ad:**
-```javascript
-ad.pause();
-ad.enable();
-ad.remove();
-```
-
-**Ad labels:**
-```javascript
-ad.applyLabel('TopAd');
-ad.removeLabel('TopAd');
+const bidding = campaign.bidding();
+bidding.getStrategyType();                      // e.g. MANUAL_CPC, TARGET_CPA, MAXIMIZE_CONVERSION_VALUE
+bidding.setStrategy('MANUAL_CPC');
+bidding.setTargetCpa(25);                       // Currency
+bidding.setTargetRoas(4.0);                     // 4.0 = 400%
+bidding.setStrategy(AdsApp.biddingStrategies().withCondition('bidding_strategy.name = "Portfolio A"').get().next());
 ```
 
 ---
 
-## BIDDING STRATEGY
+## Budgets
 
-### Bid Types and Adjustments
-
-**CPC (Cost-Per-Click) Bidding:**
-```javascript
-// Set CPC at ad group level
-adGroup.bidding().setCpc(50000);  // 0.50 in local currency
-
-// Set CPC at keyword level
-keyword.setMaxCpc(75000);  // 0.75
-
-// Get current bid
-const bid = keyword.getMaxCpc();
-```
-
-**Enhanced CPC:**
-```javascript
-// Enable enhanced CPC
-campaign.bidding().setStrategy('ENHANCED_CPC');
-
-// Disable
-campaign.bidding().setStrategy('MANUAL_CPC');
-```
-
-**Target CPA (Cost Per Acquisition):**
-```javascript
-campaign.bidding().setStrategy('TARGET_CPA');
-campaign.bidding().setTargetCpa(50000);  // 50.00 in local currency
-```
-
-**Target ROAS (Return on Ad Spend):**
-```javascript
-campaign.bidding().setStrategy('MAXIMIZE_ROAS');
-campaign.bidding().setTargetRoas(3.0);  // 300% ROAS
-```
-
-**Bid Adjustments:**
-```javascript
-// Time-of-day bid modifiers
-adGroup.adSchedules()
-  .newAdScheduleBuilder()
-  .withDayOfWeek('MONDAY')
-  .withStartHour(9)
-  .withStartMinute(0)
-  .withEndHour(17)
-  .withEndMinute(0)
-  .withBidModifier(1.2)  // 20% higher during 9-5
-  .build();
-
-// Device bid modifiers
-adGroup.devices()
-  .get()
-  .next()
-  .setBidModifier(1.5);  // Mobile 50% higher
-
-// Location bid modifiers
-campaign.targeting()
-  .getLocationTarget()
-  .get()
-  .next()
-  .setBidModifier(1.2);  // 20% higher in specific location
-```
-
----
-
-## PERFORMANCE REPORTING
-
-### Statistics Methods
-
-**Common metrics:**
-```javascript
-const stats = campaign.getStatsFor('LAST_30_DAYS');
-
-// Click metrics
-stats.getClicks();
-stats.getImpressions();
-stats.getClickThroughRate();        // 0.05 = 5%
-
-// Cost metrics
-stats.getCost();                    // In micros
-stats.getAverageCpc();
-stats.getAverageCpm();
-
-// Conversion metrics
-stats.getConversions();
-stats.getConversionRate();          // 0.02 = 2%
-stats.getConversionValue();
-stats.getCostPerConversion();
-
-// ROI metrics
-stats.getReturnOnAdSpend();         // 2.5 = 250%
-stats.getAveragePageviews();
-stats.getAveragePosition();
-```
-
-### Generating Reports
-
-**Campaign performance report:**
-```javascript
-function generateCampaignReport() {
-  const campaigns = AdsApp.campaigns()
-    .withCondition('campaign.status = ENABLED')
-    .orderBy('campaign.metrics.cost DESC')
-    .get();
-  
-  const report = [];
-  while (campaigns.hasNext()) {
-    const campaign = campaigns.next();
-    const stats = campaign.getStatsFor('LAST_30_DAYS');
-    
-    report.push({
-      name: campaign.getName(),
-      cost: stats.getCost() / 1000000,  // Convert from micros
-      clicks: stats.getClicks(),
-      impressions: stats.getImpressions(),
-      conversions: stats.getConversions(),
-      cpc: stats.getAverageCpc() / 1000000,
-      roas: stats.getReturnOnAdSpend()
-    });
-  }
-  
-  return report;
-}
-```
-
-**Keyword performance report:**
-```javascript
-function generateKeywordReport() {
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .orderBy('keyword.metrics.clicks DESC')
-    .get();
-  
-  const report = [];
-  while (keywords.hasNext()) {
-    const keyword = keywords.next();
-    const stats = keyword.getStatsFor('LAST_7_DAYS');
-    
-    report.push({
-      text: keyword.getText(),
-      matchType: keyword.getMatchType(),
-      impressions: stats.getImpressions(),
-      clicks: stats.getClicks(),
-      cost: stats.getCost() / 1000000,
-      conversions: stats.getConversions(),
-      qualityScore: keyword.getQualityScore()
-    });
-  }
-  
-  return report;
-}
-```
-
-### Exporting Reports to Sheets
-
-```javascript
-function exportToSheets(data, sheetName) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(sheetName);
-  
-  // Create sheet if doesn't exist
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-  } else {
-    sheet.clear();
-  }
-  
-  // Get headers
-  const headers = Object.keys(data[0]);
-  sheet.appendRow(headers);
-  
-  // Add data
-  data.forEach(row => {
-    sheet.appendRow(headers.map(header => row[header]));
-  });
-}
-
-// Usage
-const report = generateCampaignReport();
-exportToSheets(report, 'Campaign Report');
-```
-
----
-
-## BUDGET MANAGEMENT
-
-### Campaign Budgets
-
-**Get budget:**
 ```javascript
 const budget = campaign.getBudget();
-const dailyBudget = budget.getAmount();  // In micros
+budget.getAmount();                // Currency, per day
+budget.setAmount(120);             // Currency
+budget.isExplicitlyShared();       // true = changing it affects every campaign in budget.campaigns()
+budget.getType();                  // DAILY or TOTAL
 ```
 
-**Set budget:**
+Check `isExplicitlyShared()` before scaling a budget per campaign, or one campaign's rule silently changes its siblings.
+
+---
+
+## Targeting and bid modifiers
+
 ```javascript
-// Set daily budget
-campaign.getBudget().setAmount(5000000);  // 5000 in local currency
+const targeting = campaign.targeting();
 
-// Budget in micros = amount in local currency * 1,000,000
-// Example: 50.00 USD = 50000000 micros
-```
+// Device
+targeting.platforms().mobile().get().next().setBidModifier(1.2);   // +20%
 
-**Budget info:**
-```javascript
-const budget = campaign.getBudget();
-const hasExplicitBudget = budget.isExplicitlyShared();
-const budgetPeriod = budget.getPeriod();  // DAILY
-```
+// Locations (Geo target constant IDs, e.g. 2036 = Australia)
+campaign.addLocation(2036, 1.1);
+targeting.targetedLocations().get().next().setBidModifier(0.9);
+campaign.excludeLocation(2554);
 
-### Budget Allocation
-
-**Distribute budget across campaigns:**
-```javascript
-function distributeBudget(totalBudgetMicros, campaignNames) {
-  const campaigns = AdsApp.campaigns()
-    .withCondition('campaign.status = ENABLED')
-    .get();
-  
-  const numCampaigns = campaignNames.length;
-  const budgetPerCampaign = totalBudgetMicros / numCampaigns;
-  
-  let campaignCount = 0;
-  while (campaigns.hasNext() && campaignCount < numCampaigns) {
-    const campaign = campaigns.next();
-    if (campaignNames.includes(campaign.getName())) {
-      campaign.getBudget().setAmount(budgetPerCampaign);
-      campaignCount++;
-    }
-  }
-}
-
-// Usage - 5000 total budget split across 5 campaigns = 1000 each
-distributeBudget(5000000000, ['Campaign1', 'Campaign2', 'Campaign3', 'Campaign4', 'Campaign5']);
-```
-
-### Spending Alerts
-
-**Monitor daily spend:**
-```javascript
-function checkDailySpend() {
-  const dailyLimit = 1000000000;  // 1000 in local currency
-  
-  const campaigns = AdsApp.campaigns()
-    .withCondition('campaign.status = ENABLED')
-    .get();
-  
-  while (campaigns.hasNext()) {
-    const campaign = campaigns.next();
-    const stats = campaign.getStatsFor('TODAY');
-    const spend = stats.getCost();
-    
-    if (spend > dailyLimit) {
-      campaign.pause();
-      Logger.log('Campaign ' + campaign.getName() + ' paused - spend limit exceeded');
-    }
-  }
-}
+// Ad schedule: dayOfWeek, startHour, startMinute, endHour, endMinute, bidModifier
+campaign.addAdSchedule('MONDAY', 9, 0, 17, 0, 1.2);
+targeting.adSchedules().get();       // Existing schedules
 ```
 
 ---
 
-## ADVANCED TARGETING
+## Labels
 
-### Audience Targeting
+A label must exist before you apply it.
 
-**Remarketing lists:**
 ```javascript
-// Create in-market audience targets
-const adGroup = AdsApp.adGroups().get().next();
-const targeting = adGroup.targeting();
-
-// Get audience targets
-const audiences = targeting.getAudienceTarget().get();
-```
-
-### Display Network Targeting
-
-**Placements:**
-```javascript
-// Add placement
-adGroup.display()
-  .newPlacementBuilder()
-  .withUrl('example.com')
-  .withMaxCpc(50000)
-  .build();
-
-// Negative placements
-adGroup.display()
-  .newNegativePlacementBuilder()
-  .withUrl('competitor.com')
-  .build();
-```
-
-**Topics:**
-```javascript
-// Add topic
-adGroup.display()
-  .newTopicBuilder()
-  .withTopicId('12345678')
-  .build();
-
-// Exclude topic
-adGroup.display()
-  .newNegativeTopicBuilder()
-  .withTopicId('12345678')
-  .build();
-```
-
-**Keywords:**
-```javascript
-// Contextual keyword
-adGroup.display()
-  .newDisplayKeywordBuilder()
-  .withText('shoes')
-  .build();
-
-// Negative display keyword
-adGroup.display()
-  .newNegativeDisplayKeywordBuilder()
-  .withText('cheap')
-  .build();
+if (!AdsApp.labels().withCondition("label.name = 'Paused by script'").get().hasNext()) {
+  AdsApp.createLabel('Paused by script');
+}
+keyword.applyLabel('Paused by script');
+keyword.removeLabel('Paused by script');
 ```
 
 ---
 
-## AUTOMATED RULES & ALERTS
-
-### Pause Low Performers
+## Manager accounts
 
 ```javascript
-function pauseLowPerformingKeywords() {
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.metrics.avg_cpc > 500000')  // > 0.50
-    .withCondition('keyword.metrics.conversions < 1')
-    .get();
-  
-  let pausedCount = 0;
-  while (keywords.hasNext()) {
-    const keyword = keywords.next();
-    keyword.pause();
-    pausedCount++;
-  }
-  
-  Logger.log('Paused ' + pausedCount + ' low-performing keywords');
-}
-```
-
-### Bid Optimization Script
-
-```javascript
-function optimizeBids() {
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.metrics.conversions > 5')
-    .get();
-  
-  const ROAS_TARGET = 2.0;  // 200%
-  
-  while (keywords.hasNext()) {
-    const keyword = keywords.next();
-    const stats = keyword.getStatsFor('LAST_30_DAYS');
-    const roas = stats.getReturnOnAdSpend();
-    const currentBid = keyword.getMaxCpc();
-    
-    if (roas > ROAS_TARGET) {
-      // Increase bid by 10%
-      keyword.setMaxCpc(currentBid * 1.1);
-    } else if (roas < 1.0) {
-      // Decrease bid by 5%
-      keyword.setMaxCpc(currentBid * 0.95);
-    }
-  }
-}
-```
-
-### Quality Score Monitoring
-
-```javascript
-function monitorQualityScores() {
-  const lowQualityKeywords = AdsApp.keywords()
-    .withCondition('keyword.quality_info.quality_score < 5')
-    .withCondition('keyword.status = ENABLED')
-    .orderBy('keyword.quality_info.quality_score ASC')
-    .get();
-  
-  Logger.log('Keywords with quality score < 5:');
-  while (lowQualityKeywords.hasNext()) {
-    const keyword = lowQualityKeywords.next();
-    Logger.log(keyword.getText() + ' - QS: ' + keyword.getQualityScore());
-  }
-}
-```
-
----
-
-## ERROR HANDLING & DEBUGGING
-
-### Try-Catch Pattern
-
-```javascript
-function safeAdsOperation() {
-  try {
-    const campaigns = AdsApp.campaigns()
-      .withCondition('campaign.name = "NonExistent"')
-      .get();
-    
-    while (campaigns.hasNext()) {
-      const campaign = campaigns.next();
-      // Process
-    }
-  } catch (error) {
-    Logger.log('Error in campaign operation: ' + error.message);
-  }
-}
-```
-
-### Null Checks
-
-```javascript
-function handleNullSafely() {
-  const campaigns = AdsApp.campaigns().get();
-  
-  while (campaigns.hasNext()) {
-    const campaign = campaigns.next();
-    
-    // Check for null/undefined
-    const budget = campaign.getBudget();
-    if (!budget) {
-      Logger.log('No budget for ' + campaign.getName());
-      continue;
-    }
-    
-    const amount = budget.getAmount();
-    if (amount === null || amount === undefined) {
-      Logger.log('Budget amount not set');
-      continue;
-    }
-  }
-}
-```
-
-### Logging Best Practices
-
-```javascript
-function logOperations() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const logSheet = ss.getSheetByName('ScriptLog') || ss.insertSheet('ScriptLog');
-  
-  try {
-    const campaigns = AdsApp.campaigns().get();
-    const count = campaigns.totalNumEntities();
-    logSheet.appendRow([new Date(), 'SUCCESS', 'Processed ' + count + ' campaigns']);
-  } catch (error) {
-    logSheet.appendRow([new Date(), 'ERROR', error.message, error.stack]);
-  }
-}
-```
-
----
-
-## PERFORMANCE OPTIMIZATION
-
-### Batch Operations
-
-**Process campaigns efficiently:**
-```javascript
-function optimizeBatchProcessing() {
-  // SLOW - Individual operations
-  const keywords = AdsApp.keywords().get();
-  while (keywords.hasNext()) {
-    const keyword = keywords.next();
-    if (keyword.getQualityScore() < 5) {
-      keyword.setMaxCpc(keyword.getMaxCpc() * 0.9);
-    }
-  }
-  
-  // FAST - Batch collect and process
-  const keywordsToUpdate = [];
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.quality_info.quality_score < 5')
-    .get();
-  
-  while (keywords.hasNext()) {
-    keywordsToUpdate.push(keywords.next());
-  }
-  
-  // Perform all updates
-  keywordsToUpdate.forEach(keyword => {
-    keyword.setMaxCpc(keyword.getMaxCpc() * 0.9);
-  });
-}
-```
-
-### Limiting Results
-
-```javascript
-function useEffectiveFiltering() {
-  // Get only what you need
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.metrics.clicks > 10')
-    .withCondition('keyword.metrics.conversions = 0')
-    .withLimit(1000)
-    .get();
-  
-  // Process limited results
-}
-```
-
-### Caching Results
-
-```javascript
-function cacheReportsToSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const cacheSheet = ss.getSheetByName('Cache') || ss.insertSheet('Cache');
-  
-  // Generate report (expensive operation)
-  const campaigns = AdsApp.campaigns().get();
-  const report = [];
-  
-  while (campaigns.hasNext()) {
-    const campaign = campaigns.next();
-    report.push([
-      campaign.getName(),
-      campaign.getStatsFor('LAST_7_DAYS').getCost() / 1000000
-    ]);
-  }
-  
-  // Cache to sheet
-  cacheSheet.clear();
-  cacheSheet.getRange(1, 1, report.length, 2).setValues(report);
-}
-```
-
----
-
-## BEST PRACTICES
-
-### Complete Automation Template
-
-```javascript
-/**
- * Main entry point for Google Ads automation
- */
 function main() {
-  try {
-    Logger.log('Starting Ads Script execution: ' + new Date());
-    
-    // Validate setup
-    validateAccountSetup();
-    
-    // Execute tasks
-    const results = {
-      paused: pauseLowQualityKeywords(),
-      optimized: optimizeHighPerformingKeywords(),
-      alerts: checkBudgetStatus()
-    };
-    
-    // Log results
-    logResults(results);
-    
-    Logger.log('Completed successfully');
-  } catch (error) {
-    handleError(error);
-  }
+  AdsManagerApp.accounts()
+    .withCondition("customer_client.descriptive_name CONTAINS 'AU'")
+    .withLimit(50)                                     // executeInParallel handles at most 50
+    .executeInParallel('processAccount', 'allDone');
 }
 
-/**
- * Validate script setup
- */
-function validateAccountSetup() {
-  const account = AdsApp.currentAccount();
-  if (!account) {
-    throw new Error('No account access');
-  }
+function processAccount() {
+  const account = AdsApp.currentAccount();             // Already switched for you
+  return JSON.stringify({ id: account.getCustomerId(), cost: account.getStatsFor('YESTERDAY').getCost() });
 }
 
-/**
- * Pause low quality keywords
- */
-function pauseLowQualityKeywords() {
-  let count = 0;
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.quality_info.quality_score < 4')
-    .get();
-  
-  while (keywords.hasNext()) {
-    keywords.next().pause();
-    count++;
-  }
-  
-  return count;
-}
-
-/**
- * Optimize high performers
- */
-function optimizeHighPerformingKeywords() {
-  let count = 0;
-  const keywords = AdsApp.keywords()
-    .withCondition('keyword.status = ENABLED')
-    .withCondition('keyword.metrics.cost_per_conversion < 500000')
-    .get();
-  
-  while (keywords.hasNext()) {
-    const keyword = keywords.next();
-    const bid = keyword.getMaxCpc();
-    keyword.setMaxCpc(bid * 1.05);  // 5% increase
-    count++;
-  }
-  
-  return count;
-}
-
-/**
- * Check budget status
- */
-function checkBudgetStatus() {
-  const alerts = [];
-  const campaigns = AdsApp.campaigns()
-    .withCondition('campaign.status = ENABLED')
-    .get();
-  
-  while (campaigns.hasNext()) {
-    const campaign = campaigns.next();
-    const stats = campaign.getStatsFor('TODAY');
-    const budget = campaign.getBudget().getAmount();
-    const spend = stats.getCost();
-    
-    if (spend > budget * 0.9) {
-      alerts.push(campaign.getName() + ': 90% of budget consumed');
-    }
-  }
-  
-  return alerts;
-}
-
-/**
- * Log results to sheet
- */
-function logResults(results) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName('Log') || ss.insertSheet('Log');
-  
-  sheet.appendRow([
-    new Date(),
-    results.paused + ' keywords paused',
-    results.optimized + ' keywords optimized',
-    results.alerts.length + ' alerts'
-  ]);
-}
-
-/**
- * Error handler
- */
-function handleError(error) {
-  Logger.log('ERROR: ' + error.message);
-  
-  // Send notification
-  MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 
-    'Ads Script Error', 
-    'Error: ' + error.message + '\n\n' + error.stack);
+function allDone(results) {
+  results.forEach(r => Logger.log(r.getReturnValue()));
 }
 ```
 
-### Code Organization
-
-```javascript
-// File: main.gs
-function main() {
-  CampaignOptimizer.run();
-  KeywordManager.run();
-  ReportGenerator.run();
-}
-
-// File: campaign-optimizer.gs
-const CampaignOptimizer = {
-  run: function() {
-    this.pauseUnderperformers();
-    this.optimizeHigh Performers();
-  },
-  
-  pauseUnderperformers: function() {
-    // Implementation
-  },
-  
-  optimizeHighPerformers: function() {
-    // Implementation
-  }
-};
-
-// File: keyword-manager.gs
-const KeywordManager = {
-  run: function() {
-    this.updateBids();
-    this.removeNegatives();
-  },
-  
-  updateBids: function() {
-    // Implementation
-  },
-  
-  removeNegatives: function() {
-    // Implementation
-  }
-};
-```
+For sequential work, iterate `AdsManagerApp.accounts().get()` and call `AdsManagerApp.select(account)` before each account's operations.
 
 ---
 
-## QUOTAS AND LIMITS
+## Removed features
 
-| Limit | Value | Notes |
-|-------|-------|-------|
-| **Execution time** | 30 minutes | Per script run |
-| **API calls** | Rate limited | Account limits vary |
-| **Campaigns per account** | Unlimited | Practical limit ~5000 |
-| **Ad groups per campaign** | Unlimited | Practical limit ~20000 |
-| **Keywords per ad group** | Unlimited | Practical limit ~5000 |
-| **Bid changes** | Unlimited | Subject to rate limiting |
-| **Budget changes** | Unlimited | Subject to rate limiting |
-| **Frequency of updates** | Once per hour | Recommended minimum |
+Since **14 July 2025** these throw sunset errors in scripts (the end of the Expanded Text Ad and feed-based extension migration):
+
+- `AdsApp.AdCustomizerSource`, `AdsApp.newAdCustomizerSourceBuilder()` and the items built from them - replace with asset-based customizers (`{CUSTOMIZER.name}`) set up in the Google Ads UI or API.
+- `withOnlyLegacy()` on extension selectors (feed-based sitelinks, callouts and so on) - use the asset-based extensions returned by the default selectors.
+
+Also gone or inert: creating Expanded Text Ads, `Stats.getAveragePosition()` (deprecated; use `metrics.top_impression_percentage` / `metrics.absolute_top_impression_percentage` via GAQL).
 
 ---
 
-**End of Google Ads Script Mission-Critical Reference**
+## Limits
 
-*Use this as your authoritative offline guide for all Google Ads Script development needs.*
+From https://developers.google.com/google-ads/scripts/docs/limits:
+
+| Limit | Value |
+|-------|-------|
+| Execution time | 30 minutes (manager scripts using `executeInParallel`: up to 60 minutes) |
+| Accounts per `executeInParallel` | 50 |
+| Results per iterator | 50,000 by default |
+| IDs per `withIds()` | 10,000 |
+| Logging output | truncated at 100 KB |
+| `executeInParallel` return value | 10 MB per account |
+| Authorised scripts per account | 250 |
+| Bulk upload file | 50 MB, one million rows |
