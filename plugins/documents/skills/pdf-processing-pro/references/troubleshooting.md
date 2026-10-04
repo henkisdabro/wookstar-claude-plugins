@@ -1,49 +1,36 @@
-# PDF Processing Troubleshooting
+# Troubleshooting
 
-Common issues and solutions for PDF processing scripts.
+## "not installed" or ModuleNotFoundError
 
-## Common issues
+The script was run with plain `python`. Run it with `uv run scripts/<name>.py` so uv reads the script's inline dependency block. For ad-hoc snippets, pass each package: `uv run --with pdfplumber python snippet.py`.
 
-### "Module not found" errors
+## `uv: command not found`
 
-```bash
-pip install -r requirements.txt
-```
+Install uv - <https://docs.astral.sh/uv/getting-started/installation/>.
 
-### Tesseract not found
+## Tesseract not found
 
-```bash
-# Install tesseract system package (see Dependencies in SKILL.md)
-```
+`pytesseract` wraps the `tesseract` binary, which must be installed separately - see [ocr.md](ocr.md).
 
-### Memory errors with large PDFs
+## Empty text or no tables on a PDF that clearly has content
 
-```python
-# Process page by page instead of loading entire PDF
-with pdfplumber.open("large.pdf") as pdf:
-    for page in pdf.pages:
-        text = page.extract_text()
-        # Process page immediately
-```
+The pages are images. `validate_pdf.py` reports `pages_with_text: 0`. Use [ocr.md](ocr.md).
 
-### Permission errors
+## Encrypted PDF
+
+`validate_pdf.py` reports `"encrypted": true`. Decrypt with the password first:
 
 ```bash
-chmod +x scripts/*.py
+uv run --with pypdf python -c "
+from pypdf import PdfReader, PdfWriter
+r = PdfReader('locked.pdf'); r.decrypt('PASSWORD')
+w = PdfWriter(clone_from=r); w.write('unlocked.pdf')"
 ```
 
-## Getting help
+## Memory pressure on very large PDFs
 
-All scripts support `--help`:
+Pass `--pages` to `extract_text.py` or `extract_tables.py` and process the document in ranges.
 
-```bash
-python scripts/analyze_form.py --help
-python scripts/extract_tables.py --help
-```
+## Any other failure
 
-For detailed documentation on specific topics, see:
-
-- [forms.md](forms.md) - Complete form processing guide
-- [tables.md](tables.md) - Advanced table extraction
-- [ocr.md](ocr.md) - Scanned PDF processing
-- [workflows.md](workflows.md) - Common workflows and best practices
+Re-run with `--verbose` for the traceback, and `--help` for the exact arguments.

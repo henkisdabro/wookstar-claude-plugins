@@ -1,114 +1,35 @@
 ---
 name: pdf-processing-pro
-description: Production-ready PDF processing with forms, tables, OCR, validation, and batch operations. Use when working with complex PDF workflows in production environments, processing large volumes of PDFs, or requiring robust error handling and validation. Do NOT use for simple text extraction - use pdf-extract for quick reads.
+description: PDF toolkit of uv-runnable scripts for forms, tables, OCR, merging, splitting and validation. Use when filling a PDF form from data, reading a form's fields, extracting tables to CSV or Excel, running OCR on a scanned PDF, merging or splitting PDFs, checking a PDF is valid, or batch-processing a folder of PDFs. Do NOT use for a quick read of a text-layer PDF - use pdf-extract; do NOT use for Word, Excel or PowerPoint files - use the document-skills plugin.
 ---
 
 # PDF Processing Pro
 
-Production-ready PDF processing toolkit with pre-built scripts, comprehensive error handling, and support for complex workflows.
+Every script carries PEP 723 inline metadata, so `uv run scripts/<name>.py` installs its dependencies on first run. Paths are relative to this skill's directory. All scripts take `--help` and share exit codes: 0 success, 1 file not found, 2 invalid input, 3 processing error, 4 validation failed or nothing found.
 
-## Quick start
-
-### Extract text from PDF
-
-```python
-import pdfplumber
-
-with pdfplumber.open("document.pdf") as pdf:
-    text = pdf.pages[0].extract_text()
-    print(text)
-```
-
-### Analyse PDF form (using included script)
-
-```bash
-python scripts/analyze_form.py input.pdf --output fields.json
-# Returns: JSON with all form fields, types, and positions
-```
-
-### Fill PDF form with validation
-
-```bash
-python scripts/fill_form.py input.pdf data.json output.pdf
-# Validates all fields before filling, includes error reporting
-```
-
-### Extract tables from PDF
-
-```bash
-python scripts/extract_tables.py report.pdf --output tables.csv
-# Extracts all tables with automatic column detection
-```
-
-## Features
-
-### Production-ready scripts
-
-- Error handling with detailed messages and proper exit codes
-- Input validation, type checking, and configurable logging
-- Full type annotations and CLI interface (`--help` on all scripts)
-
-### Comprehensive workflows
-
-- PDF forms, table extraction, OCR processing
-- Batch operations, pre/post-processing validation
-
-## Advanced topics
-
-### PDF form processing
-
-Complete form workflows including field analysis, dynamic filling, validation rules, multi-page forms, and checkbox/radio handling. See [references/forms.md](references/forms.md).
-
-### Table extraction
-
-Complex table extraction including multi-page tables, merged cells, nested tables, custom detection, and CSV/Excel export. See [references/tables.md](references/tables.md).
-
-### OCR processing
-
-Scanned PDFs and image-based documents including Tesseract integration, language support, image preprocessing, and confidence scoring. See [references/ocr.md](references/ocr.md).
-
-## Included scripts
+## Scripts
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| analyze_form.py | Extract form field info | `python scripts/analyze_form.py input.pdf [--output fields.json] [--verbose]` |
-| fill_form.py | Fill PDF forms with data | `python scripts/fill_form.py input.pdf data.json output.pdf [--validate]` |
-| validate_form.py | Validate form data before filling | `python scripts/validate_form.py data.json schema.json` |
-| extract_tables.py | Extract tables to CSV/Excel | `python scripts/extract_tables.py input.pdf [--output tables.csv] [--format csv\|excel]` |
-| extract_text.py | Extract text with formatting | `python scripts/extract_text.py input.pdf [--output text.txt] [--preserve-formatting]` |
-| merge_pdfs.py | Merge multiple PDFs | `python scripts/merge_pdfs.py file1.pdf file2.pdf --output merged.pdf` |
-| split_pdf.py | Split PDF into pages | `python scripts/split_pdf.py input.pdf --output-dir pages/` |
-| validate_pdf.py | Validate PDF integrity | `python scripts/validate_pdf.py input.pdf` |
-| flatten_form.py | Make filled form fields read-only | `python scripts/flatten_form.py filled.pdf final.pdf` |
+| analyze_form.py | Form fields, types, options, positions as JSON | `uv run scripts/analyze_form.py input.pdf [--output schema.json] [--summary]` |
+| validate_form.py | Check data JSON against an analyze_form schema | `uv run scripts/validate_form.py data.json schema.json` |
+| fill_form.py | Fill a form from data JSON | `uv run scripts/fill_form.py input.pdf data.json output.pdf [--validate] [--flatten]` |
+| flatten_form.py | Make filled fields read-only | `uv run scripts/flatten_form.py filled.pdf final.pdf` |
+| extract_tables.py | Tables to CSV or one Excel sheet per table | `uv run scripts/extract_tables.py input.pdf [--output tables.csv] [--format csv\|excel] [--pages 1-5]` |
+| extract_text.py | Text, optionally layout-preserving | `uv run scripts/extract_text.py input.pdf [--output text.txt] [--preserve-formatting] [--pages 1-5]` |
+| merge_pdfs.py | Merge in argument order | `uv run scripts/merge_pdfs.py a.pdf b.pdf --output merged.pdf` |
+| split_pdf.py | One file per page | `uv run scripts/split_pdf.py input.pdf --output-dir pages/` |
+| validate_pdf.py | Integrity, encryption, text layer, form-field count | `uv run scripts/validate_pdf.py input.pdf` |
 
-## Dependencies
+## Workflow
 
-All scripts require:
+1. **Triage** - run `validate_pdf.py` on the input. Done when you know whether it is encrypted, has a text layer and has form fields. No text layer means a scan: go to step 3 with OCR.
+2. **Pick the branch** and read its reference before writing any custom code:
+   - Filling or reading a form - [references/forms.md](references/forms.md)
+   - Tables that `extract_tables.py` misses or mangles - [references/tables.md](references/tables.md)
+   - Scanned or image-only pages - [references/ocr.md](references/ocr.md)
+   - A folder of PDFs, or chaining scripts in automation - [references/workflows.md](references/workflows.md)
+3. **Run** the script for the branch. Done when it exits 0 and the output file exists.
+4. **Verify** - re-run `validate_pdf.py` on any PDF you wrote, and open or spot-check the CSV/text output against a page of the source. Done when the output matches the source on that spot-check.
 
-```bash
-pip install pdfplumber pypdf pillow pytesseract pandas
-```
-
-Excel output from `extract_tables.py` additionally requires openpyxl:
-
-```bash
-pip install openpyxl
-```
-
-Optional for OCR:
-
-```bash
-# macOS: brew install tesseract
-# Ubuntu: apt-get install tesseract-ocr
-# Windows: Download from GitHub releases
-```
-
-## References
-
-| File | Contents |
-|------|----------|
-| [references/forms.md](references/forms.md) | Complete form processing guide |
-| [references/tables.md](references/tables.md) | Advanced table extraction |
-| [references/ocr.md](references/ocr.md) | Scanned PDF processing |
-| [references/workflows.md](references/workflows.md) | Common workflows, error handling, performance tips, best practices |
-| [references/troubleshooting.md](references/troubleshooting.md) | Troubleshooting common issues and getting help |
+If a script fails, check [references/troubleshooting.md](references/troubleshooting.md) before patching it.

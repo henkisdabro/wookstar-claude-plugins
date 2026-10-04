@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pdfplumber",
+# ]
+# ///
 """
 Extract text from a PDF using pdfplumber.
 
 Usage:
-    python extract_text.py input.pdf [--output text.txt] [--preserve-formatting] [--pages 1-5]
+    uv run extract_text.py input.pdf [--output text.txt] [--preserve-formatting] [--pages 1-5]
 
 --preserve-formatting keeps the visual layout (column positions, spacing)
 instead of returning flowed text.
@@ -25,7 +31,7 @@ from typing import List, Optional
 try:
     import pdfplumber
 except ImportError:
-    print("Error: pdfplumber not installed. Run: pip install pdfplumber", file=sys.stderr)
+    print("Error: pdfplumber not installed. Run this script with: uv run scripts/extract_text.py", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

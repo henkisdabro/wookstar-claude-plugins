@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Fill PDF form fields from a JSON data file.
 
 Usage:
-    python fill_form.py input.pdf data.json output.pdf [--validate] [--flatten]
+    uv run fill_form.py input.pdf data.json output.pdf [--validate] [--flatten]
 
 data.json maps field names to values:
     {"full_name": "John Doe", "agree_to_terms": true, "country": "Canada"}
@@ -29,7 +35,7 @@ from typing import Any, Dict, List
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print("Error: pypdf not installed. Run this script with: uv run scripts/fill_form.py", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

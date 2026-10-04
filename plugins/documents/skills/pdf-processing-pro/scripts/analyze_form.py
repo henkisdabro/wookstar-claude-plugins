@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Analyze PDF form fields and structure.
 
 Usage:
-    python analyze_form.py input.pdf [--output fields.json] [--verbose]
+    uv run analyze_form.py input.pdf [--output fields.json] [--verbose]
 
 Returns:
     JSON with all form fields, types, positions, and metadata
@@ -25,7 +31,7 @@ from typing import Dict, List, Optional, Any
 try:
     from pypdf import PdfReader
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print("Error: pypdf not installed. Run this script with: uv run scripts/analyze_form.py", file=sys.stderr)
     sys.exit(3)
 
 # Configure logging

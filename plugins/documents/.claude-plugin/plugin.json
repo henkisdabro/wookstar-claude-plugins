@@ -1,9 +1,9 @@
 {
   "name": "documents",
-  "description": "Professional document processing suite: 4 comprehensive skills for Word (.docx), Excel (.xlsx), and PDF files - create, edit, analyse, and process documents with advanced features like tracked changes, fast text-layer PDF extraction, forms, tables, OCR, and formulas",
+  "description": "PDF toolkit: fast text-layer extraction plus uv-runnable scripts for forms, tables, OCR, merging, splitting and validation",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.3.0"
+  "version": "2.0.0"
 }

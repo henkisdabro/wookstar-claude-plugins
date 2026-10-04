@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Merge multiple PDFs into one.
 
 Usage:
-    python merge_pdfs.py file1.pdf file2.pdf [file3.pdf ...] --output merged.pdf
+    uv run merge_pdfs.py file1.pdf file2.pdf [file3.pdf ...] --output merged.pdf
 
 Files are merged in the order given on the command line.
 
@@ -23,7 +29,7 @@ from pathlib import Path
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print("Error: pypdf not installed. Run this script with: uv run scripts/merge_pdfs.py", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

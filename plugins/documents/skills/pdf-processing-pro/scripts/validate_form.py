@@ -1,12 +1,16 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
 """
 Validate form data against a schema produced by analyze_form.py.
 
 Usage:
-    python validate_form.py data.json schema.json
+    uv run validate_form.py data.json schema.json
 
 schema.json is the output of:
-    python analyze_form.py template.pdf --output schema.json
+    uv run analyze_form.py template.pdf --output schema.json
 
 Checks performed:
     - Required fields are present and non-empty

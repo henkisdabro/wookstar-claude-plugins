@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "pypdf>=5",
+# ]
+# ///
 """
 Split a PDF into one file per page.
 
 Usage:
-    python split_pdf.py input.pdf [--output-dir pages/]
+    uv run split_pdf.py input.pdf [--output-dir pages/]
 
 Output files are named <stem>_page_001.pdf, <stem>_page_002.pdf, ...
 inside the output directory (created if missing).
@@ -24,7 +30,7 @@ from pathlib import Path
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
-    print("Error: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
+    print("Error: pypdf not installed. Run this script with: uv run scripts/split_pdf.py", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(
