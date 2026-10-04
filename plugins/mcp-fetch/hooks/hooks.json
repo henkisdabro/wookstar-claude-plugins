@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"mcp-fetch@wookstar-claude-plugins is retired. The built-in WebFetch tool in Claude Code does the same job. Remove it: claude plugin uninstall mcp-fetch@wookstar-claude-plugins - details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

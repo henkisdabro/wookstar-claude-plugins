@@ -734,9 +734,18 @@
       },
       "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
       "category": "development"
+    },
+    {
+      "name": "mcp-fetch",
+      "source": "./plugins/mcp-fetch",
+      "description": "[RETIRED] The built-in WebFetch tool in Claude Code does the same job. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "category": "utilities"
     }
-  ],
-  "renames": {
-    "mcp-fetch": null
-  }
+  ]
 }
