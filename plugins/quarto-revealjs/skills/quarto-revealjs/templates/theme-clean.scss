@@ -1,0 +1,437 @@
+/*-- scss:defaults --*/
+
+// Fonts - Inter and JetBrains Mono from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !default;
+$font-family-monospace: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace !default;
+
+// Font sizes - compact for better fit
+$presentation-font-size-root: 28px !default;
+$presentation-line-height: 1.35 !default;
+$presentation-font-smaller: 0.75 !default;
+
+// Colours - clean and modern
+$body-bg: #ffffff !default;
+$body-color: #1a1a2e !default;
+$link-color: #2563eb !default;
+$link-color-hover: #1d4ed8 !default;
+$text-muted: #64748b !default;
+$selection-bg: rgba(37, 99, 235, 0.2) !default;
+$selection-color: $body-color !default;
+
+// Accent colour
+$accent-color: #2563eb !default;
+$accent-light: #dbeafe !default;
+
+// Headings
+$presentation-heading-font: "Inter", sans-serif !default;
+$presentation-heading-color: #0f172a !default;
+$presentation-heading-font-weight: 600 !default;
+$presentation-heading-letter-spacing: -0.02em !default;
+$presentation-heading-line-height: 1.2 !default;
+$presentation-heading-text-transform: none !default;
+
+$presentation-h1-font-size: 2em !default;
+$presentation-h2-font-size: 1.3em !default;
+$presentation-h3-font-size: 1.1em !default;
+$presentation-h4-font-size: 0.95em !default;
+
+// Code blocks
+$code-block-bg: #f8fafc !default;
+$code-block-border-color: #e2e8f0 !default;
+$code-block-font-size: 0.55em !default;
+$code-color: #6366f1 !default;
+$code-bg: #f1f5f9 !default;
+
+// Layout
+$border-color: #e2e8f0 !default;
+$border-width: 1px !default;
+$border-radius: 8px !default;
+$presentation-block-margin: 16px !default;
+$presentation-slide-text-align: left !default;
+$presentation-title-slide-text-align: left !default;
+
+// Dark background variants
+$dark-bg-text-color: #f8fafc !default;
+$dark-bg-link-color: #60a5fa !default;
+$dark-bg-code-color: #a5b4fc !default;
+
+/*-- scss:rules --*/
+
+// Base slide styling
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slide {
+  padding: 30px 50px;
+}
+
+// Headings
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.reveal h2 {
+  margin-bottom: 0.8em;
+  padding-bottom: 0.4em;
+  border-bottom: 2px solid $accent-light;
+}
+
+.reveal h3 {
+  color: $accent-color;
+  margin-top: 1em;
+}
+
+// Paragraphs and lists
+.reveal p {
+  margin-bottom: 0.8em;
+}
+
+.reveal ul,
+.reveal ol {
+  margin-left: 0;
+  padding-left: 1.2em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.reveal li::marker {
+  color: $accent-color;
+}
+
+// Nested lists
+.reveal ul ul,
+.reveal ol ol,
+.reveal ul ol,
+.reveal ol ul {
+  margin-top: 0.4em;
+  font-size: 0.9em;
+}
+
+// Blockquotes
+.reveal blockquote {
+  background: $accent-light;
+  border-left: 4px solid $accent-color;
+  border-radius: 0 $border-radius $border-radius 0;
+  padding: 1em 1.5em;
+  margin: 1em 0;
+  font-style: normal;
+  font-size: 0.95em;
+  color: $body-color;
+  position: relative;
+  z-index: 1;
+}
+
+.reveal blockquote p {
+  margin: 0;
+  color: $body-color;
+}
+
+// Code blocks
+.reveal pre {
+  border-radius: $border-radius;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.reveal pre code {
+  padding: 1em;
+  border-radius: $border-radius;
+  line-height: 1.5;
+}
+
+// Inline code
+.reveal code {
+  background: $code-bg;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.reveal pre code {
+  background: $code-block-bg;
+}
+
+// Tables - with monospace numbers
+.reveal table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.8em;
+  margin: 1em 0;
+}
+
+.reveal table th {
+  background: $accent-color;
+  color: white;
+  font-weight: 600;
+  padding: 0.7em 1em;
+  text-align: left;
+}
+
+.reveal table th:first-child {
+  border-radius: $border-radius 0 0 0;
+}
+
+.reveal table th:last-child {
+  border-radius: 0 $border-radius 0 0;
+}
+
+.reveal table td {
+  padding: 0.6em 1em;
+  border-bottom: 1px solid $border-color;
+}
+
+.reveal table tr:last-child td {
+  border-bottom: none;
+}
+
+.reveal table tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+// Table numbers - monospace and right-aligned
+.reveal table td:nth-child(n+2),
+.reveal table th:nth-child(n+2) {
+  text-align: right;
+}
+
+.reveal table td {
+  font-variant-numeric: tabular-nums;
+  font-family: $font-family-monospace;
+}
+
+// Keep first column left-aligned with regular font
+.reveal table td:first-child {
+  text-align: left;
+  font-family: $font-family-sans-serif;
+}
+
+// Small table variant - more compact, pushed right
+.small-table {
+  margin-left: auto;
+  padding-left: 1em;
+}
+
+.small-table table {
+  font-size: 0.7em;
+  width: auto;
+  margin-left: auto;
+}
+
+.small-table table td,
+.small-table table th {
+  padding: 0.4em 0.8em;
+}
+
+// Links
+.reveal a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.reveal a:hover {
+  border-bottom-color: $link-color;
+}
+
+// Title slide
+.reveal .title-slide {
+  text-align: left;
+}
+
+.reveal .title-slide h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-bottom: 0.3em;
+  border-bottom: none;
+}
+
+.reveal .title-slide .subtitle {
+  font-size: 1.1em;
+  color: $text-muted;
+  font-weight: 400;
+  margin-bottom: 1.5em;
+}
+
+.reveal .title-slide .author {
+  font-size: 1em;
+  font-weight: 500;
+  color: $body-color;
+}
+
+.reveal .title-slide .date {
+  font-size: 0.85em;
+  color: $text-muted;
+}
+
+// Footer and logo
+.reveal .footer {
+  font-size: 0.5em;
+  color: $text-muted;
+}
+
+// Speaker notes indicator
+.reveal .speaker-notes-indicator {
+  color: $text-muted;
+}
+
+// Progress bar
+.reveal .progress {
+  height: 3px;
+  background: $accent-light;
+}
+
+.reveal .progress span {
+  background: $accent-color;
+}
+
+// Slide number
+.reveal .slide-number {
+  font-family: $font-family-sans-serif;
+  font-size: 0.5em;
+  color: $text-muted;
+  background: transparent;
+}
+
+// Fragments
+.reveal .fragment.highlight-current-blue.current-fragment {
+  color: $accent-color;
+}
+
+// Columns - proper spacing
+.reveal .columns {
+  gap: 2em;
+}
+
+// Fit text
+.reveal .r-fit-text {
+  font-weight: 600;
+}
+
+// Callouts
+.reveal .callout {
+  border-radius: $border-radius;
+  margin: 1em 0;
+}
+
+// Strong/bold
+.reveal strong {
+  font-weight: 600;
+  color: $presentation-heading-color;
+}
+
+// Horizontal rule
+.reveal hr {
+  border: none;
+  height: 2px;
+  background: $border-color;
+  margin: 1.5em 0;
+}
+
+// Mermaid diagrams - prevent text truncation and increase font size
+.reveal .mermaid {
+  overflow: visible !important;
+}
+
+.reveal .mermaid svg {
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+.reveal .mermaid foreignObject {
+  overflow: visible !important;
+}
+
+.reveal .mermaid .node,
+.reveal .mermaid .cluster,
+.reveal .mermaid .edgeLabel {
+  overflow: visible !important;
+}
+
+.reveal .mermaid .nodeLabel,
+.reveal .mermaid .edgeLabel,
+.reveal .mermaid .cluster-label {
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+// Mermaid font sizes - make everything larger
+.reveal .mermaid .nodeLabel {
+  font-size: 18px !important;
+}
+
+.reveal .mermaid .cluster-label {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+.reveal .mermaid .edgeLabel {
+  font-size: 16px !important;
+}
+
+.reveal .mermaid .title {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+}
+
+// Custom bar chart styling (HTML-based)
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-label {
+  width: 140px;
+  font-size: 0.7em;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bar-container {
+  flex: 1;
+  background: #f1f5f9;
+  border-radius: 4px;
+  height: 36px;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  color: white;
+  font-family: $font-family-monospace;
+  font-weight: 600;
+  font-size: 0.75em;
+  min-width: 60px;
+}
+
+.bar-fill.green { background: #22c55e; }
+.bar-fill.blue { background: #2563eb; }
+.bar-fill.amber { background: #f59e0b; }
+.bar-fill.red { background: #ef4444; }
+
+// Monospace for all numbers (currency, percentages)
+.reveal .mono {
+  font-family: $font-family-monospace;
+  font-variant-numeric: tabular-nums;
+}

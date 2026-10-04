@@ -1,0 +1,158 @@
+---
+title: "Meeting Title"
+subtitle: "Optional Subtitle"
+author: "Your Name"
+date: today
+format:
+  revealjs:
+    theme: theme-clean.scss
+    slide-number: c/t
+    footer: "Organisation Name"
+    chalkboard: false
+    scrollable: false
+    smaller: false
+    transition: fade
+    transition-speed: fast
+    controls: true
+    progress: true
+    history: true
+    width: 1600
+    height: 900
+    margin: 0.15
+    min-scale: 0.2
+    max-scale: 1.5
+    mermaid:
+      theme: neutral
+---
+
+## Agenda
+
+::: {.notes}
+**SAY FIRST:** Brief opening - welcome attendees, state purpose of meeting.
+
+**KEY MESSAGE:** Set expectations for what will be covered.
+:::
+
+1. Topic One
+2. Topic Two
+3. Topic Three
+4. Discussion / Questions
+
+---
+
+## Topic One
+
+::: {.notes}
+**SAY FIRST:** Introduce this topic and why it matters.
+
+**KEY MESSAGE:** The main point you want them to remember.
+
+---
+
+**Detail (if needed):**
+
+- Supporting point 1
+- Supporting point 2
+:::
+
+### Key Points
+
+::: {.incremental}
+- First important point
+- Second important point
+- Third important point
+:::
+
+---
+
+## Topic Two
+
+::: {.notes}
+**SAY FIRST:** Transition from previous topic.
+
+**KEY MESSAGE:** Core message for this section.
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Left Column**
+
+- Point A
+- Point B
+- Point C
+:::
+
+::: {.column width="50%"}
+**Right Column**
+
+- Point X
+- Point Y
+- Point Z
+:::
+
+::::
+
+---
+
+## Topic Three
+
+::: {.notes}
+**SAY FIRST:** Key quote or message to emphasise.
+
+**KEY MESSAGE:** Why this matters.
+:::
+
+> Important quote or key message goes here
+
+. . .
+
+Additional context that appears after a pause.
+
+---
+
+## Data Overview
+
+::: {.notes}
+**SAY FIRST:** Walk through the data - what does it tell us?
+
+**KEY MESSAGE:** Highlight the key insight from this data.
+:::
+
+| Metric | Current | Target | Status |
+|--------|--------:|-------:|:------:|
+| Revenue | $1.2M | $1.5M | Warning |
+| Users | 10,000 | 8,000 | Good |
+| NPS | 45 | 50 | Warning |
+
+---
+
+## Next Steps
+
+::: {.notes}
+**SAY FIRST:** Recap actions and owners.
+
+**KEY MESSAGE:** Clear accountability and timelines.
+:::
+
+::: {.incremental}
+1. **Action Item One** - Owner: Person A - Due: Date
+2. **Action Item Two** - Owner: Person B - Due: Date
+3. **Action Item Three** - Owner: Person C - Due: Date
+:::
+
+---
+
+## Questions?
+
+::: {.notes}
+**SAY FIRST:** "What questions do you have?"
+
+**CLOSING LINE:** Thank attendees, confirm next steps.
+:::
+
+. . .
+
+**Thank you!**
+
+Contact: your.email@example.com

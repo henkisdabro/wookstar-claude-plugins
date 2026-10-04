@@ -1,0 +1,180 @@
+---
+title: "Technical Presentation"
+subtitle: "A Deep Dive into the Topic"
+author: "Your Name"
+date: today
+format:
+  revealjs:
+    theme: theme-clean-dark.scss
+    slide-number: c/t
+    code-line-numbers: true
+    code-copy: hover
+    code-overflow: scroll
+    code-block-height: 450px
+    syntax-highlighting: github-dark
+    chalkboard: true
+    scrollable: true
+    transition: fade
+    transition-speed: fast
+    controls: true
+    progress: true
+    width: 1600
+    height: 900
+    margin: 0.15
+    min-scale: 0.2
+    max-scale: 1.5
+execute:
+  echo: true
+  warning: false
+jupyter: python3
+---
+
+## Overview
+
+1. Problem Statement
+2. Solution Architecture
+3. Implementation Details
+4. Demo
+5. Q&A
+
+## The Problem {background-color="#1a1a2e"}
+
+::: {.r-fit-text}
+What are we solving?
+:::
+
+## Problem Details
+
+:::: {.columns}
+::: {.column width="60%"}
+### Challenges
+
+- Challenge one
+- Challenge two
+- Challenge three
+:::
+
+::: {.column width="40%"}
+### Impact
+
+- Cost: $X
+- Time: Y hours
+- Risk: High
+:::
+::::
+
+## Solution Architecture
+
+```{mermaid}
+%%| fig-width: 10
+flowchart LR
+    A[Input] --> B[Process]
+    B --> C[Output]
+    B --> D[Cache]
+    D --> B
+```
+
+## Code Example {auto-animate=true}
+
+```python
+def process_data(data):
+    return data
+```
+
+## Code Example {auto-animate=true}
+
+```python
+def process_data(data):
+    # Add validation
+    if not data:
+        raise ValueError("Data required")
+    return data
+```
+
+## Code Example {auto-animate=true}
+
+```python
+def process_data(data):
+    # Add validation
+    if not data:
+        raise ValueError("Data required")
+
+    # Transform
+    result = transform(data)
+
+    # Return processed
+    return result
+```
+
+## Line-by-Line Walkthrough
+
+```{.python code-line-numbers="|1-2|4-5|7-8|10"}
+import pandas as pd
+from pathlib import Path
+
+# Load data
+data_path = Path("data/input.csv")
+df = pd.read_csv(data_path)
+
+# Process
+df = df.dropna()
+df["calculated"] = df["value"] * 2
+
+# Output
+df.to_csv("data/output.csv")
+```
+
+## Live Demo
+
+```{python}
+#| output-location: column
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.figure(figsize=(6, 4))
+plt.plot(x, y, 'b-', linewidth=2)
+plt.title("Sample Visualisation")
+plt.xlabel("X axis")
+plt.ylabel("Y axis")
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+## Performance Comparison
+
+| Approach | Time (ms) | Memory (MB) |
+|----------|-----------|-------------|
+| Baseline | 1500 | 256 |
+| Optimised | 450 | 128 |
+| **Final** | **120** | **64** |
+
+::: {.fragment}
+**3x faster, 4x less memory**
+:::
+
+## Key Takeaways
+
+::: {.incremental}
+1. **Point One** - Brief explanation
+2. **Point Two** - Brief explanation
+3. **Point Three** - Brief explanation
+:::
+
+## Resources
+
+- [Documentation](https://example.com/docs)
+- [GitHub Repository](https://github.com/example/repo)
+- [Related Paper](https://arxiv.org/example)
+
+## Questions? {background-color="#1a1a2e"}
+
+::: {.r-fit-text}
+Thank you!
+:::
+
+Slides: [your-url.com/slides](https://your-url.com/slides)
+
+Code: [github.com/you/repo](https://github.com/you/repo)

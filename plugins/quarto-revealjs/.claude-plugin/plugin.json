@@ -1,0 +1,10 @@
+{
+  "name": "quarto-revealjs",
+  "description": "Quarto Reveal.js slide decks: meeting and technical-talk templates, clean light and dark SCSS themes, speaker notes, code highlighting, Mermaid and PDF export",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}

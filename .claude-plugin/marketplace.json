@@ -834,6 +834,27 @@
         "pdf-ua"
       ],
       "category": "documents"
+    },
+    {
+      "name": "quarto-revealjs",
+      "source": "./plugins/quarto-revealjs",
+      "description": "Quarto Reveal.js slide decks: meeting and technical-talk templates, clean light and dark SCSS themes, speaker notes, code highlighting, Mermaid and PDF export",
+      "version": "1.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "quarto",
+        "revealjs",
+        "slides",
+        "presentation",
+        "qmd",
+        "speaker-notes",
+        "scss"
+      ],
+      "category": "documents"
     }
   ]
 }
