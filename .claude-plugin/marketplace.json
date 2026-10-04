@@ -335,7 +335,7 @@
       "name": "mcp-mikrotik",
       "source": "./plugins/mcp-mikrotik",
       "description": "MikroTik router management and network automation",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
