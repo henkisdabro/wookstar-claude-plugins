@@ -31,7 +31,7 @@ from typing import List, Optional
 try:
     import pdfplumber
 except ImportError:
-    print("Error: pdfplumber not installed. Run this script with: uv run scripts/extract_text.py", file=sys.stderr)
+    print(f"Error: pdfplumber not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

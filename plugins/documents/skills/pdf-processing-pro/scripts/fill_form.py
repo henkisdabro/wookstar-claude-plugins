@@ -35,7 +35,7 @@ from typing import Any, Dict, List
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
-    print("Error: pypdf not installed. Run this script with: uv run scripts/fill_form.py", file=sys.stderr)
+    print(f"Error: pypdf not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

@@ -20,7 +20,7 @@ Exit 4 from `extract_text.py` on a file means it needs OCR - see [ocr.md](ocr.md
 mkdir -p out
 for pdf in invoices/*.pdf; do
   name=$(basename "$pdf" .pdf)
-  uv run scripts/extract_tables.py "$pdf" --output "out/$name.csv"
+  uv run "${CLAUDE_SKILL_DIR}/scripts/extract_tables.py" "$pdf" --output "out/$name.csv"
   case $? in
     0) ;;
     4) echo "NO TABLES: $pdf" ;;
@@ -34,15 +34,15 @@ Done when every input has an output file or a logged reason it has none.
 ## Report data pull
 
 ```bash
-uv run scripts/extract_tables.py report.pdf --format excel --output report.xlsx
-uv run scripts/extract_text.py report.pdf --preserve-formatting --output report.txt
+uv run "${CLAUDE_SKILL_DIR}/scripts/extract_tables.py" report.pdf --format excel --output report.xlsx
+uv run "${CLAUDE_SKILL_DIR}/scripts/extract_text.py" report.pdf --preserve-formatting --output report.txt
 ```
 
 ## Assemble a document pack
 
 ```bash
-uv run scripts/merge_pdfs.py cover.pdf filled.pdf appendix.pdf --output pack.pdf
-uv run scripts/validate_pdf.py pack.pdf
+uv run "${CLAUDE_SKILL_DIR}/scripts/merge_pdfs.py" cover.pdf filled.pdf appendix.pdf --output pack.pdf
+uv run "${CLAUDE_SKILL_DIR}/scripts/validate_pdf.py" pack.pdf
 ```
 
 For a form-filling pipeline, follow the steps in [forms.md](forms.md).

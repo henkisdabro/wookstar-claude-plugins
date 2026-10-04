@@ -31,7 +31,7 @@ try:
     from pypdf import PdfReader, PdfWriter
     from pypdf.generic import NameObject, NumberObject
 except ImportError:
-    print("Error: pypdf not installed. Run this script with: uv run scripts/flatten_form.py", file=sys.stderr)
+    print(f"Error: pypdf not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

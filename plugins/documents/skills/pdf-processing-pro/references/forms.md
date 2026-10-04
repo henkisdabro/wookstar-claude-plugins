@@ -6,18 +6,18 @@ Commands run from the skill directory. The scripts handle AcroForm PDFs through 
 
 ```bash
 # 1. Read the fields - names, types, required flag, options, max_length
-uv run scripts/analyze_form.py template.pdf --output schema.json
+uv run "${CLAUDE_SKILL_DIR}/scripts/analyze_form.py" template.pdf --output schema.json
 
 # 2. Write data.json keyed by the exact field names from schema.json
 
 # 3. Check the data against the schema (exit 4 lists every problem)
-uv run scripts/validate_form.py data.json schema.json
+uv run "${CLAUDE_SKILL_DIR}/scripts/validate_form.py" data.json schema.json
 
 # 4. Fill; --validate re-checks against the live form, --flatten locks the fields
-uv run scripts/fill_form.py template.pdf data.json filled.pdf --validate --flatten
+uv run "${CLAUDE_SKILL_DIR}/scripts/fill_form.py" template.pdf data.json filled.pdf --validate --flatten
 
 # 5. Confirm the output is a valid PDF with the expected field count
-uv run scripts/validate_pdf.py filled.pdf
+uv run "${CLAUDE_SKILL_DIR}/scripts/validate_pdf.py" filled.pdf
 ```
 
 Done when step 3 exits 0 and step 5 reports `"valid": true`.
@@ -62,7 +62,7 @@ One template, one data file per submission:
 ```bash
 mkdir -p completed
 for data in submissions/*.json; do
-  uv run scripts/fill_form.py template.pdf "$data" "completed/$(basename "$data" .json).pdf" --validate \
+  uv run "${CLAUDE_SKILL_DIR}/scripts/fill_form.py" template.pdf "$data" "completed/$(basename "$data" .json).pdf" --validate \
     || echo "FAILED: $data (exit $?)"
 done
 ```

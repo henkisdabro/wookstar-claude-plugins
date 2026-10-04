@@ -33,7 +33,7 @@ from typing import Any, Dict
 try:
     from pypdf import PdfReader
 except ImportError:
-    print("Error: pypdf not installed. Run this script with: uv run scripts/validate_pdf.py", file=sys.stderr)
+    print(f"Error: pypdf not installed. Run this script with: uv run {__file__}", file=sys.stderr)
     sys.exit(3)
 
 logging.basicConfig(

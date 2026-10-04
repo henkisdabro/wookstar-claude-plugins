@@ -35,7 +35,7 @@ try:
     import pdfplumber
     import pandas as pd
 except ImportError as e:
-    print(f"Error: missing dependency ({e.name}). Run this script with: uv run scripts/extract_tables.py",
+    print(f"Error: missing dependency ({e.name}). Run this script with: uv run {__file__}",
           file=sys.stderr)
     sys.exit(3)
 

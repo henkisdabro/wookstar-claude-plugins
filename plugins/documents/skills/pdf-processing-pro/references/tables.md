@@ -1,6 +1,6 @@
 # PDF tables
 
-Start with `uv run scripts/extract_tables.py input.pdf --output tables.csv`. It uses pdfplumber's default detection and the first row of each table as the header. Reach for the code below only when its output is missing tables or splits columns wrongly. Run snippets with `uv run --with pdfplumber python snippet.py` (add `--with pandas` where used).
+Start with `uv run "${CLAUDE_SKILL_DIR}/scripts/extract_tables.py" input.pdf --output tables.csv`. It uses pdfplumber's default detection and the first row of each table as the header. Reach for the code below only when its output is missing tables or splits columns wrongly. Run snippets with `uv run --with pdfplumber python snippet.py` (add `--with pandas` where used).
 
 ## 1. See what pdfplumber sees
 

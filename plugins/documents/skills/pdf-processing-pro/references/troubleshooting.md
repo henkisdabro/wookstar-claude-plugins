@@ -2,7 +2,7 @@
 
 ## "not installed" or ModuleNotFoundError
 
-The script was run with plain `python`. Run it with `uv run scripts/<name>.py` so uv reads the script's inline dependency block. For ad-hoc snippets, pass each package: `uv run --with pdfplumber python snippet.py`.
+The script was run with plain `python`. Run it with `uv run "${CLAUDE_SKILL_DIR}/scripts/<name>.py"` so uv reads the script's inline dependency block. For ad-hoc snippets, pass each package: `uv run --with pdfplumber python snippet.py`.
 
 ## `uv: command not found`
 
