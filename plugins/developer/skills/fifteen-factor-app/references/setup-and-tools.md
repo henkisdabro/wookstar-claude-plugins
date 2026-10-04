@@ -150,16 +150,16 @@ services:
       - redis
 
   db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: app
       POSTGRES_USER: user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql  # 18+ mounts here, not .../data
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
 
 volumes:
   postgres_data:

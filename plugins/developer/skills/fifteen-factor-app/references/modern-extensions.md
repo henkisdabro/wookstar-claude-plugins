@@ -35,47 +35,31 @@ This reference contains detailed documentation for the three additional factors 
 
 ```groovy
 dependencies {
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+    // springdoc-openapi (Springfox is unmaintained); 3.x targets Spring Boot 4, 2.8.x Spring Boot 3
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
 }
 ```
 
-**Swagger Annotations:**
+**OpenAPI Annotations:**
 
 ```java
-@PUT
-@Path("/{contextName}/user/{userName}")
-@Consumes({ "application/json" })
-@Produces({ "application/json" })
-@ApiOperation(value = "", notes = "", response = UserProperty.class, tags = {})
-@ApiResponses(value = {
-    @ApiResponse(
-        code = 200,
-        message = "Successfully updated the user configuration",
-        response = UserProperty.class),
-
-    @ApiResponse(
-        code = 404,
-        message = "context or user not found",
-        response = UserProperty.class),
-
-    @ApiResponse(
-        code = 500,
-        message = "Server error",
-        response = UserProperty.class)
+@PutMapping("/{contextName}/user/{userName}")
+@Operation(summary = "Update a user's configuration")
+@ApiResponses({
+    @ApiResponse(responseCode = "200",
+        description = "Successfully updated the user configuration",
+        content = @Content(schema = @Schema(implementation = UserProperty.class))),
+    @ApiResponse(responseCode = "404", description = "Context or user not found"),
+    @ApiResponse(responseCode = "500", description = "Server error")
 })
-void updateUser(
-    @ApiParam(value = "context name", required = true)
-    @PathParam("contextName") String contextName,
+UserProperty updateUser(
+    @Parameter(description = "Context name", required = true)
+    @PathVariable String contextName,
 
-    @ApiParam(value = "User name", required = true)
-    @PathParam("userName") String userName,
+    @Parameter(description = "User name", required = true)
+    @PathVariable String userName,
 
-    @ApiParam(value = "The new user configuration", required = true)
-    UpdateUserRequest updateUserRequest,
-
-    @Context SecurityContext securityContext,
-    @Suspended final AsyncResponse asyncResponse);
+    @RequestBody UpdateUserRequest updateUserRequest);
 ```
 
 **OpenAPI 3.0 Specification:**
@@ -157,16 +141,11 @@ paths:
 
 ```groovy
 dependencies {
-    // Jaeger dependencies for distributed tracing
-    implementation group: 'io.opentracing.contrib',
-                   name: 'opentracing-spring-jaeger-cloud-starter',
-                   version: '3.1.2'
-    implementation group: 'io.opentracing.contrib',
-                   name: 'opentracing-spring-cloud-starter',
-                   version: '0.5.9'
+    // Distributed tracing - OpenTelemetry (OpenTracing is archived); export OTLP to Jaeger or Zipkin
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.32.0'
 
-    // Logging
-    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    // Logging - SLF4J with Logback (log4j 1.x is end-of-life); pulls in slf4j-api
+    implementation 'ch.qos.logback:logback-classic:1.6.5'
 
     // Health probe - Spring Boot Actuator
     implementation "org.springframework.boot:spring-boot-starter-actuator:${spring_boot_version}"
