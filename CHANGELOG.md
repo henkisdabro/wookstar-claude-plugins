@@ -10,6 +10,14 @@ Upgrading from 6.x: run `scripts/upgrade-v7.sh` or follow [MIGRATION.md](./MIGRA
 
 ### Added
 
+- New plugins:
+  - `git-github` 1.0.0: commit and workflow conventions, a live GitHub Actions version resolver (the actions-latest feed it used to read went empty on 2026-09-30), and a user-triggered `/release` that confirms before every push and publish.
+  - `model-id-upgrade` 1.0.0: scans for stale Claude model IDs, separates historical records from live targets, and edits only after approval.
+  - `typst` 1.0.0: Typst language reference, current to 0.15.1.
+  - `quarto-revealjs` 1.0.0: Quarto reveal.js slide decks with templates and themes, current to Quarto 1.10.
+  - `media-tools` 1.0.0: YouTube search and caption or audio download with yt-dlp, and local Whisper transcription.
+- `documents` 2.0.0 gains `ocr` (OCRmyPDF) and `document-parse` (LiteParse and AILANG Parse).
+- `google-analytics` 1.1.0 gains a `bigquery` skill for GA4 export querying through Google's official BigQuery MCP options.
 - Startup notices, because plugin updates arrive without release notes:
   - each retired plugin's final version names its replacement and the uninstall command at every start
   - the five credential plugins say which command sets their values while any required setting is missing
