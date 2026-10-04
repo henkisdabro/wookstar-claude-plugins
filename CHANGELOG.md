@@ -98,3 +98,7 @@ Retired plugins ship a final 2.0.0 that contains only a startup notice. A later 
 - `documents`, `google-ads-scripts` and `google-apps-script` call their bundled scripts through `CLAUDE_SKILL_DIR`, so they run from any directory. `message` does the same through `CLAUDE_PLUGIN_ROOT`.
 - `ffmpeg` 1.0.1: replaces `-vsync`, which FFmpeg 9.0 removed.
 - `humanise` 4.6.0: the description now routes proofreading and translation elsewhere.
+- LSP plugins (`lsp-bash`, `lsp-css`, `lsp-html` 1.0.2; `lsp-json`, `lsp-yaml` 1.1.2): the READMEs gave install commands for plugin names that do not exist.
+- `timezone-tools` 1.2.0 warns when a time falls in a daylight-saving gap or overlap, and its scripts answer `--help`.
+- `documents` 2.0.0: `pdf-extract` imports `pymupdf` instead of the deprecated `fitz` alias.
+- `developer` 4.0.0: fifteen-factor examples no longer use end-of-life log4j 1.x, Springfox or OpenTracing.
