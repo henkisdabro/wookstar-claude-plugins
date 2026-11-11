@@ -10,6 +10,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "marked": "18.0.3"
+    "marked": "18.1.3"
   }
 }

@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Changed
+
+- `message` 3.0.3: `marked` 18.0.3 → 18.1.3, parser bug fixes including two catastrophic-backtracking fixes. Rendered output for the skill's formatting rules is unchanged.
+
 ## [7.0.0] - 2026-10-04
 
 Upgrading from 6.x: run `scripts/upgrade-v7.sh` or follow [MIGRATION.md](./MIGRATION.md).
