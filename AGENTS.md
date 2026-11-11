@@ -1,11 +1,14 @@
 # wookstar-claude-plugins
 
-A Claude Code plugin marketplace. No build step, no tests: every plugin is a directory under
-`plugins/`, and it does not exist until it also has an entry in `.claude-plugin/marketplace.json`.
+A Claude Code plugin marketplace. No build step: every plugin is a directory under `plugins/`, and
+it does not exist until it also has an entry in `.claude-plugin/marketplace.json`. The only tests
+are the message plugin's - `bun run test` in `plugins/message/skills/message/scripts/`.
 
-Verify a change with `claude plugin validate .` (clean at HEAD, warnings included), then exercise
+Verify a change with `claude plugin validate .` (no errors or warnings at HEAD), then exercise
 it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugins`, and
-`/plugin marketplace update wookstar-claude-plugins` to pick up later edits.
+`/plugin marketplace update wookstar-claude-plugins` to pick up later edits. Its Advice block lists
+the retired plugins (see below) as lacking an install line; that is expected, since their READMEs
+carry only the uninstall line, and it does not change the verdict.
 
 Bump the plugin's `version` whenever its content changes - that is what busts the install cache for
 people who already have it. Bump it in **`plugins/<name>/.claude-plugin/plugin.json`**, which is the
