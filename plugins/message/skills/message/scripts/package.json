@@ -7,7 +7,7 @@
   "description": "Bun-based email/message preview server for the /message skill",
   "scripts": {
     "serve": "bun run serve.ts",
-    "test": "bun test"
+    "test": "bun test ../tests"
   },
   "dependencies": {
     "marked": "18.1.3"
