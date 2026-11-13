@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+## [7.1.0] - 2026-11-13
+
+Upgrading `message` to 4.0.0: its preview is now a destination picker titled Paste Ready, and new drafts go to `drafts/` unless your project's CLAUDE.md or AGENTS.md names a drafts directory. Fragments and every old shortcut keep working.
+
 ### Added
 
 - `message` 4.0.0:
