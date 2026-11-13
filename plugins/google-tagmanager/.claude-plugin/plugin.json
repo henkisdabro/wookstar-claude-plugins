@@ -1,6 +1,6 @@
 {
   "name": "google-tagmanager",
-  "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Works with the owntag gtm CLI, or with the optional mcp-google-tagmanager plugin",
+  "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Works with the owntag gtm CLI or Stape's GTM MCP server, neither bundled",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"

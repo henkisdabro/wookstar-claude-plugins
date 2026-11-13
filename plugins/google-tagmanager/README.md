@@ -13,7 +13,13 @@ Guardrails for working on Google Tag Manager with Claude Code. It does not re-te
 The skill carries no server of its own. To read and change a container it uses whichever of these you have:
 
 - **The `gtm` CLI** - [owntag/gtm-cli](https://github.com/owntag/gtm-cli), an open-source command-line client for the Tag Manager API (a third party, not Google). Suits scripting, CI, bulk audits and service-account access, and keeps container access on your machine. Ask Claude to install it, or run `npm install -g @owntag/gtm-cli` and `gtm auth login`.
-- **Stape's hosted GTM MCP server** - from the separate `mcp-google-tagmanager` plugin: `/plugin install mcp-google-tagmanager@wookstar-claude-plugins`. Before 3.0.0 it was bundled here.
+- **Stape's hosted GTM MCP server** - see [Stape's guide](https://stape.io/helpdesk/documentation/how-to-set-up-mcp-server-for-gtm). For Claude Code:
+
+  ```bash
+  claude mcp add --transport http --scope user gtm https://gtm-mcp.stape.io/mcp
+  ```
+
+  then run `/mcp`, pick `gtm` and sign in. Before 3.0.0 this plugin bundled it. It no longer does: the server is Stape's to document and change.
 
 Either can delete and publish. Claude states what will change and waits for your approval first.
 

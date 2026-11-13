@@ -22,6 +22,7 @@ description: Google Tag Manager guardrails - the overloaded vocabulary, the mist
 | [optimised-container.md](references/optimised-container.md) | The container has Destination tags or Shared settings, a migration is planned or just done, the task adds a Google product, or the install snippet is in question |
 | [pitfalls.md](references/pitfalls.md) | Every task (step 3) - one group each for installing, Google products, triggers, variables and data layer, Consent Mode (with its setup order), templates, server containers, debugging, API and governance, specs and audits |
 | [cli.md](references/cli.md) | Installing or using the `gtm` CLI |
+| [tool-setup.md](references/tool-setup.md) | The task needs a real container and the session has neither tool |
 | [vendor-docs.md](references/vendor-docs.md) | A step-by-step procedure this skill leaves to Google - the link for each topic |
 
 ## Automating a container
@@ -31,9 +32,9 @@ Two ways to read and change a container without the GTM UI. Both are third-party
 | Tool | Reach for it when |
 |---|---|
 | `gtm` CLI - [owntag/gtm-cli](https://github.com/owntag/gtm-cli), local binary | The default: scripting, CI, bulk audits and exports, service-account auth, and container access that stays on the user's machine |
-| `gtm-mcp-server` - Stape's hosted MCP server, from the optional `mcp-google-tagmanager` plugin, OAuth through `/mcp` | Its tools are present in the session |
+| Stape's hosted GTM MCP server, added by the user from Stape's guide | Its tools are present in the session |
 
-Use whichever the session has. With neither - no `gtm-mcp-server` tools and `command -v gtm` finds nothing - offer to install the CLI from [cli.md](references/cli.md).
+Use whichever the session has. With neither - no such tools and `command -v gtm` finds nothing - read [tool-setup.md](references/tool-setup.md) and offer the user the choice of the two.
 
 **Guardrail for both:** before a delete or a publish, state what will change and in which account, container and workspace, and wait for the user's approval.
 

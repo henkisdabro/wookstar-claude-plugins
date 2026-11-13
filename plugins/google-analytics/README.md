@@ -14,7 +14,13 @@ Guardrails for working on Google Analytics 4 with Claude Code, plus a skill for 
 The skills carry no server of their own. For live data and configuration they use whichever of these you have:
 
 - **The `ga` CLI** - [daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) (a third party, not Google). Reports and configuration changes from the terminal. Ask Claude to install it, or run `uv tool install google-analytics-cli` and `ga auth login`. Claude previews each change with `--dry-run` and asks before sending it.
-- **Google's Analytics MCP server** - read-only reports, from the separate `mcp-google-analytics` plugin: `/plugin install mcp-google-analytics@wookstar-claude-plugins`. Before 3.0.0 it was bundled here.
+- **Google's Analytics MCP server** - read-only reports. Add it from [Google's guide](https://github.com/googleanalytics/google-analytics-mcp#setup-instructions-), which has a Claude Code section:
+
+  ```bash
+  claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json -e GOOGLE_CLOUD_PROJECT=your-project-id -- pipx run analytics-mcp
+  ```
+
+  Before 3.0.0 this plugin bundled it. It no longer does: Google's own instructions stay current, and a copy here would only lag them.
 
 ## Installation
 

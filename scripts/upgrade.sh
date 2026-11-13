@@ -73,8 +73,6 @@ suggestions() {
     developer) echo "chrome-devtools-mcp@claude-plugins-official playwright@claude-plugins-official context7@claude-plugins-official firecrawl@claude-plugins-official microsoft-docs@claude-plugins-official example-skills@anthropic-agent-skills" ;;
     documents) echo "document-skills@anthropic-agent-skills" ;;
     shopify-developer) echo "shopify-ai-toolkit@claude-plugins-official" ;;
-    google-analytics) echo "mcp-google-analytics@wookstar-claude-plugins" ;;
-    google-tagmanager) echo "mcp-google-tagmanager@wookstar-claude-plugins" ;;
   esac
 }
 
@@ -97,8 +95,6 @@ legacy_var() {
     mikrotik_password) echo MIKROTIK_PASSWORD ;;
     google_oauth_client_id) echo GOOGLE_OAUTH_CLIENT_ID ;;
     google_oauth_client_secret) echo GOOGLE_OAUTH_CLIENT_SECRET ;;
-    google_application_credentials) echo GOOGLE_APPLICATION_CREDENTIALS ;;
-    google_cloud_project) echo GOOGLE_CLOUD_PROJECT ;;
   esac
 }
 
@@ -184,7 +180,7 @@ if [ "$INSTALL" = 1 ]; then
   echo
   echo "== Settings for credential plugins"
   any=0
-  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace mcp-google-analytics; do
+  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace; do
     has_plugin "$name" || continue
     any=1
     id="$name@$MP"
@@ -243,7 +239,7 @@ if [ "$INSTALL" = 1 ]; then
       fi
     fi
   done
-  for name in mcp-alphavantage mcp-google-tagmanager; do
+  for name in mcp-alphavantage; do
     has_plugin "$name" || continue
     any=1
     echo "  $name: now signs in with OAuth - in Claude Code run /mcp and pick its server"
@@ -261,10 +257,10 @@ echo
 echo "== Suggestions for plugins you kept"
 any=0
 added=""
-for name in developer documents shopify-developer google-analytics google-tagmanager; do
+for name in developer documents shopify-developer; do
   has_plugin "$name" || continue
   any=1
-  echo "  $name moved some components to other plugins. Install the ones you use:"
+  echo "  $name moved some components to official plugins. Install the ones you use:"
   for s in $(suggestions "$name"); do
     mkt=${s#*@}
     if ! has_marketplace "$mkt" && [[ " $added " != *" $mkt "* ]]; then
@@ -275,6 +271,14 @@ for name in developer documents shopify-developer google-analytics google-tagman
   done
 done
 [ "$any" = 0 ] && echo "  none"
+
+# From 8.1.0 these two plugins bundle no MCP server; the vendor's own is added by hand.
+if has_plugin google-analytics || has_plugin google-tagmanager; then
+  echo
+  echo "== MCP servers no longer bundled (only if you used them)"
+  has_plugin google-analytics && echo "  Google Analytics: claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json -e GOOGLE_CLOUD_PROJECT=your-project-id -- pipx run analytics-mcp"
+  has_plugin google-tagmanager && echo "  Tag Manager (Stape): claude mcp add --transport http --scope user gtm https://gtm-mcp.stape.io/mcp   # then /mcp to sign in"
+fi
 
 echo
 if [ "$FAILED" = 1 ]; then

@@ -18,10 +18,10 @@ GA4 work goes wrong on vocabulary and on which data source a number came from, n
 
 Use whichever tool the session has. Both take the numeric property ID (`123456789`), not the measurement ID (`G-XXXXXXXXXX`).
 
-- **The `ga` CLI** ([daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli)) - reports, and configuration through the Admin API: custom dimensions, key events, data streams, bulk audits across properties, CI. If the request needs it and `command -v ga` finds nothing, offer to install it from `references/cli.md`. Before any create, update or delete: run it with `--dry-run`, show the user the request and the property it targets, and send it only after they approve.
-- **Google's Analytics MCP server** (tools named `analytics-mcp`, from the optional `mcp-google-analytics` plugin) - read-only: Data API reports, funnel and realtime reports, and account, property, custom-definition and Google Ads link details.
+- **The `ga` CLI** ([daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli)) - reports, and configuration through the Admin API: custom dimensions, key events, data streams, bulk audits across properties, CI. Before any create, update or delete: run it with `--dry-run`, show the user the request and the property it targets, and send it only after they approve.
+- **Google's Analytics MCP server** (added by the user from Google's guide) - read-only: Data API reports, funnel and realtime reports, and account, property, custom-definition and Google Ads link details.
 
-With neither available, configuration changes are made in the GA4 interface; say so and give the steps.
+With neither - no such tools and `command -v ga` finds nothing - read `references/tool-setup.md` and offer the user the choice of the two.
 
 SQL against the export tables belongs to the bigquery skill.
 
@@ -36,6 +36,7 @@ SQL against the export tables belongs to the bigquery skill.
 | `references/data-manager.md` | Data Manager, data import, product links, or the Data Manager API |
 | `references/bigquery.md` | Export options, table names or a column of the export schema |
 | `references/cli.md` | Installing, authenticating or using the `ga` CLI |
+| `references/tool-setup.md` | The task needs live data or a configuration change and the session has neither tool |
 | `references/recent-changes.md` | Every task (step 3) - dated 2025-2026 changes a model's training is likely to miss |
 | `references/vendor-docs.md` | A step-by-step procedure, an event's parameter list or an API reference - the link for each topic |
 | the bigquery skill | Writing or running SQL against `events_*` tables |

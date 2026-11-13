@@ -20,17 +20,17 @@ It needs `claude` and `jq` on your `PATH`, acts on user-scope installs, and prin
 
 ## To 8.1.0 from 8.0.x
 
-8.1.0 moves the two analytics MCP servers out of the skill plugins and into optional plugins of their own. `google-analytics` 3.0.0 and `google-tagmanager` 3.0.0 carry skills only, and work with the `ga` and `gtm` command-line tools.
+8.1.0 takes the MCP servers out of `google-analytics` and `google-tagmanager`. Both 3.0.0 plugins carry skills only. They work with the `ga` and `gtm` command-line tools, or with the vendor's own MCP server if you add it.
 
 | If you | Do this |
 |---|---|
-| Use `google-analytics` or `google-tagmanager` with the CLI, or just for the skills | Update the plugin. Nothing else. The "needs settings" notice from `google-analytics` 2.0.0 is gone. |
-| Used the Analytics MCP server | `claude plugin install mcp-google-analytics@wookstar-claude-plugins`, then `claude plugin configure mcp-google-analytics@wookstar-claude-plugins`. Settings entered for `google-analytics` 2.0.0 do not carry over. |
-| Used the Stape GTM MCP server | `claude plugin install mcp-google-tagmanager@wookstar-claude-plugins`, then run `/mcp`, pick `gtm-mcp-server` and sign in again. |
+| Use either plugin with the CLI, or just for the skills | Update the plugin. Nothing else. The "needs settings" notice from `google-analytics` 2.0.0 is gone. |
+| Used the Analytics MCP server | Add Google's server yourself, following [its guide](https://github.com/googleanalytics/google-analytics-mcp#setup-instructions-): `claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json -e GOOGLE_CLOUD_PROJECT=your-project-id -- pipx run analytics-mcp` |
+| Used the Stape GTM MCP server | Add it yourself, per [Stape's guide](https://stape.io/helpdesk/documentation/how-to-set-up-mcp-server-for-gtm): `claude mcp add --transport http --scope user gtm https://gtm-mcp.stape.io/mcp`, then run `/mcp`, pick `gtm` and sign in again. |
 
-Each skill plugin shows one notice, once, saying its server moved. The upgrade script lists the install commands for the plugins you have.
+Each plugin shows one notice, once, saying its server is gone.
 
-Why: a user who works through the command-line tools should not have a server registered, or be asked for credentials, for a route they do not use.
+Why: both servers are other people's products with their own install instructions. Wrapping them here duplicated those instructions and lagged them, and it registered a server, or asked for credentials, for people who work through the command-line tools.
 
 ## To 8.0.0 from 7.x
 
@@ -40,7 +40,7 @@ Why: a user who works through the command-line tools should not have a server re
 
 | If you have installed | Do this | Why |
 |---|---|---|
-| `google-analytics` | (Superseded by 8.1.0, where the server and its settings move to `mcp-google-analytics`.) `claude plugin configure google-analytics@wookstar-claude-plugins` and enter the credentials file path and Google Cloud project ID. The script fills them from `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_CLOUD_PROJECT` if they are set. | 2.0.0 no longer reads those two shell variables. Until it is configured its MCP server stays off and a startup notice reminds you. The skills work either way. |
+| `google-analytics` | (Superseded by 8.1.0, which removes the bundled server and its settings.) `claude plugin configure google-analytics@wookstar-claude-plugins` and enter the credentials file path and Google Cloud project ID. The script fills them from `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_CLOUD_PROJECT` if they are set. | 2.0.0 no longer reads those two shell variables. Until it is configured its MCP server stays off and a startup notice reminds you. The skills work either way. |
 | `mcp-google-workspace` | Nothing if you use it for Gmail, Drive and Calendar. If you used its Docs, Sheets, Slides, Forms, Tasks, Chat, Contacts or Apps Script tools, add the server yourself with those services: `claude mcp add google-workspace -- uvx workspace-mcp --tools gmail drive calendar docs sheets` (see the plugin README). | 3.0.0 loads 38 tools for three services, where it used to load about 120 for twelve. |
 | `timezone-tools` | `claude plugin uninstall timezone-tools@wookstar-claude-plugins` | Retired: current Claude models convert timezones on their own, daylight saving included. Its final version shows only a notice. Nothing replaces it. |
 | `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` or `mcp-fetch` | Uninstall it, and install the replacement from the [7.0.0 table](#retired-plugins) if you have not already. | These were retired in 7.0.0 and are now deleted from the marketplace. An installed copy shows as "Removed from the marketplace" and its entry is dropped from your settings. |

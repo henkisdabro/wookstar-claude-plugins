@@ -1,6 +1,6 @@
 {
   "name": "google-analytics",
-  "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export. Works with the ga CLI, or with the optional mcp-google-analytics plugin",
+  "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export. Works with the ga CLI or Google's own Analytics MCP server, neither bundled",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
