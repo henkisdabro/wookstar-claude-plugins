@@ -1,276 +1,113 @@
 ---
 name: tampermonkey
 description: "Write and debug Tampermonkey userscripts - scripts that change or automate a website from inside the browser. Use when the user wants a userscript (Tampermonkey, Greasemonkey or Violentmonkey), wants JavaScript or CSS injected into a site they visit, wants page elements hidden or rearranged, wants a form auto-filled or page data scraped, needs to react to URL changes in a single-page app, needs cross-origin requests from a page script, has a userscript that does not run, or is setting one up in TypeScript. Do NOT use for Selenium, Puppeteer or Playwright automation - use a browser-automation tool; for building a browser extension (WebExtensions/Manifest V3) - write it as an extension; or for server-side scripts."
-allowed-tools: Read, Glob, Grep, Write, Edit
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(npm *), Bash(pnpm *), Bash(npx *), Bash(node *)
 ---
 
 # Tampermonkey Userscript Development
 
-Userscripts are browser scripts that modify web pages and automate tasks.
+## Steps
 
-## Quick Start Template
+1. **Read the references the task needs** from the table at the end. Done when every file whose condition matches the task has been read.
+2. **A script that does not run:** in Chrome and Edge, first have the user confirm the "Allow User Scripts" toggle on the extension's details page (Developer Mode on older browsers) - [common-pitfalls.md](references/common-pitfalls.md) Pitfall 15 - then work through [debugging.md](references/debugging.md). Done when the cause is named and the fix is in the script or handed to the user.
+3. **Write the header** from the template below. Done when every GM API the body calls has its `@grant`, every cross-origin host has its `@connect`, and `@match` covers only the target pages.
+4. **Write the body**, checking each limit below against what the user asked for. Done when the script is complete, with no placeholder left for the user to fill beyond the customisation points you name.
+5. **Run the pre-delivery checklist.** Done when every item passes or the failure is stated in the reply.
+6. **Reply** with: what the script does (1-2 sentences); the complete userscript in one code block; installation ("Copy/paste into Tampermonkey dashboard" or "Save as .user.js"); customisation points the user can safely change (selectors, timeouts); each `@grant` used and why; browser support if not universal.
 
-**JavaScript (simple scripts with no GM.* APIs)**
-
-```javascript
-// ==UserScript==
-// @name         My Script Name                    // <- CUSTOMISE: Unique script name
-// @namespace    https://example.com/scripts/      // <- CUSTOMISE: Your unique namespace
-// @version      1.0.0                             // <- INCREMENT on updates
-// @description  Brief description of the script   // <- CUSTOMISE: What it does
-// @author       Your Name                         // <- CUSTOMISE: Your name
-// @match        https://example.com/*             // <- CUSTOMISE: Target URL pattern
-// @grant        none                              // <- ADD permissions as needed
-// @run-at       document-idle                     // <- ADJUST timing if needed
-// ==/UserScript==
-
-(function() {
-    'use strict';
-    // Your code here
-})();
-```
-
-**Modern (async/await - recommended when using GM.* APIs)**
+## Template
 
 ```javascript
 // ==UserScript==
-// @name         My Script Name
-// @namespace    https://example.com/scripts/
-// @version      1.0.0
+// @name         My Script Name                    // unique script name
+// @namespace    https://example.com/scripts/      // your unique namespace
+// @version      1.0.0                             // increment on every update
 // @description  Brief description of the script
 // @author       Your Name
-// @match        https://example.com/*
-// @grant        GM.getValue
+// @match        https://example.com/*             // target URL pattern
+// @grant        GM.getValue                       // one line per GM API used
 // @grant        GM.setValue
-// @run-at       document-idle
+// @run-at       document-idle                     // the default
 // ==/UserScript==
 
 (async () => {
     'use strict';
-    // Async entry point - use await with GM.* APIs
     const setting = await GM.getValue('myKey', 'default');
-    console.log('Script loaded, setting:', setting);
 })();
 ```
 
-**TypeScript:** Add `@types/tampermonkey` for full type safety. See [typescript.md](references/typescript.md).
+A script that uses no GM APIs takes `@grant none` (which disables the sandbox) and a plain `(function() { 'use strict'; ... })();` wrapper.
 
----
+## Grants
 
-## Essential Header Tags
+| The script needs to | Grant |
+|---------------------|-------|
+| Store persistent data | `GM_setValue` + `GM_getValue` |
+| Batch read/write settings (v5.3+) | `GM.getValues` + `GM.setValues` |
+| Make cross-origin requests | `GM_xmlhttpRequest` + `@connect domain` |
+| Add custom CSS | `GM_addStyle` |
+| Access the page's window | `unsafeWindow` |
+| Show notifications | `GM_notification` |
+| Add menu commands | `GM_registerMenuCommand` |
+| Detect URL changes (SPA) | `window.onurlchange` |
+| Mute/unmute tab audio | `GM_audio` |
 
-| Tag | Required | Purpose | Example |
-|-----|----------|---------|---------|
-| `@name` | Yes | Script name (supports i18n with `:locale`) | `@name My Script` |
-| `@namespace` | Recommended | Unique identifier namespace | `@namespace https://yoursite.com/` |
-| `@version` | Yes* | Version for updates (*required for auto-update) | `@version 1.2.3` |
-| `@description` | Recommended | What the script does | `@description Enhances page layout` |
-| `@match` | Yes** | URLs to run on (**or @include) | `@match https://example.com/*` |
-| `@grant` | Situational | API permissions (use `none` for no GM_* APIs) | `@grant GM_setValue` |
-| `@run-at` | Optional | When to inject (default: `document-idle`) | `@run-at document-start` |
-| `@run-in` | Optional | Limit to normal or incognito tabs, or Firefox containers (v5.3+) | `@run-in normal-tabs` |
+## Limits
 
-**For complete header documentation, see:** [header-reference.md](references/header-reference.md)
+A userscript cannot:
 
----
+- read or write local files
+- run before page scripts when in isolated sandbox mode
+- reach into cross-origin iframes
+- carry GM storage across machines - it is local to each browser
+- bypass a very strict CSP
+- run in Chrome or Edge until the user enables "Allow User Scripts" - a script cannot request or bypass this
 
-## URL Matching Quick Reference
+Workarounds for most of these are in [common-pitfalls.md](references/common-pitfalls.md).
 
-```javascript
-// Exact domain                  // @match https://example.com/*
-// All subdomains                // @match https://*.example.com/*
-// HTTP and HTTPS                // @match *://example.com/*
-// Exclude paths (with @match)   // @exclude https://example.com/admin/*
-```
+## Pre-delivery checklist
 
-**For advanced patterns (regex, @include, specific paths), see:** [url-matching.md](references/url-matching.md)
+Critical:
 
----
-
-## @grant Permissions Quick Reference
-
-| You Need To... | Grant This |
-|----------------|------------|
-| Store persistent data | `@grant GM_setValue` + `@grant GM_getValue` |
-| Make cross-origin requests | `@grant GM_xmlhttpRequest` + `@connect domain` |
-| Add custom CSS | `@grant GM_addStyle` |
-| Access page's window | `@grant unsafeWindow` |
-| Show notifications | `@grant GM_notification` |
-| Add menu commands | `@grant GM_registerMenuCommand` |
-| Detect URL changes (SPA) | `@grant window.onurlchange` |
-| Batch read/write settings (v5.3+) | `@grant GM.getValues` + `@grant GM.setValues` |
-| Mute/unmute tab audio | `@grant GM_audio` |
-
-```javascript
-// Disable sandbox (no GM_* except GM_info)
-// @grant none
-
-// Cross-origin requests require @connect
-// @grant GM_xmlhttpRequest
-// @connect api.example.com
-// @connect *.googleapis.com
-```
-
-**For complete permissions guide, see:** [header-reference.md](references/header-reference.md)
-
----
-
-## @run-at Injection Timing
-
-| Value | When Script Runs | Use Case |
-|-------|------------------|----------|
-| `document-start` | Before DOM exists | Block resources, modify globals early |
-| `document-body` | When body exists | Early DOM manipulation |
-| `document-end` | At DOMContentLoaded | Most scripts - DOM ready |
-| `document-idle` | After DOMContentLoaded (default) | Safe default |
-| `context-menu` | On right-click menu | User-triggered actions |
-
----
-
-## Common Patterns
-
-These patterns are used frequently. Brief summaries are below - load [patterns.md](references/patterns.md) for full implementations with code examples.
-
-- **Wait for Element** - Promise-based MutationObserver that resolves when a CSS selector appears in the DOM, with configurable timeout
-- **SPA URL Change Detection** - Detect navigation in single-page apps using `window.onurlchange` grant or History API interception
-- **Cross-Origin Request** - Fetch data from external APIs using `GM_xmlhttpRequest` with `@connect` domain whitelisting. See also [http-requests.md](references/http-requests.md)
-- **Add Custom Styles** - Inject CSS with `GM_addStyle` to restyle pages or hide elements. See also [api-dom-ui.md](references/api-dom-ui.md)
-- **Persistent Settings** - Store user preferences with `GM_setValue`/`GM_getValue` and expose toggle via `GM_registerMenuCommand`. See also [api-storage.md](references/api-storage.md)
-- **DOM Mutation Observation** - Watch for dynamically added content with MutationObserver (debounced variant included)
-- **Element Manipulation** - Inject HTML, remove/hide elements, replace text across the page
-- **Keyboard Shortcuts** - Simple handlers and a shortcut manager with modifier key support
-- **Data Extraction** - Extract table data to arrays/objects, collect and filter page links
-- **Error Handling** - Safe wrapper for try/catch and async retry with exponential backoff
-- **TypeScript Userscripts** - Type-safe scripts with `@types/tampermonkey`. See [typescript.md](references/typescript.md)
-
----
-
-## External Resources
-
-```javascript
-// @require - Load external scripts
-// @require https://code.jquery.com/jquery-3.6.0.min.js#sha256-/xUj+3OJU...
-// @require tampermonkey://vendor/jquery.js         // Built-in library
-
-// @resource - Preload and inject external CSS
-// @resource myCSS https://example.com/style.css    // Then: GM_addStyle(GM_getResourceText('myCSS'))
-// @grant GM_getResourceText
-// @grant GM_addStyle
-```
-
----
-
-## TypeScript Support
-
-Install the type definitions for full IDE autocompletion and type safety:
-
-```bash
-npm install --save-dev @types/tampermonkey
-```
-
-```typescript
-// ==UserScript==
-// @name         My TypeScript Script
-// @match        https://example.com/*
-// @grant        GM.getValue
-// @grant        GM.xmlHttpRequest
-// @connect      api.example.com
-// ==/UserScript==
-
-(async () => {
-    'use strict';
-    const value = await GM.getValue<string>('key', 'default');
-    const info: Tampermonkey.ScriptInfo = GM_info;
-    console.log(info.script.name, value);
-})();
-```
-
-Build with a bundler (esbuild, Vite, webpack) to a single `.user.js` output file. For full project setup including tsconfig and bundler config, see [typescript.md](references/typescript.md).
-
----
-
-## What Tampermonkey Cannot Do
-
-Userscripts have limitations:
-
-- **Access local files** - Cannot read/write files on your computer
-- **Run before page scripts** - In isolated sandbox mode, page scripts run first
-- **Access cross-origin iframes** - Browser security prevents this
-- **Persist across machines** - GM storage is local to each browser
-- **Bypass all CSP** - Some very strict CSP cannot be bypassed
-- **Inject without permission** - in Chrome and Edge the user must enable the "Allow User Scripts" toggle on the extension's details page (or Developer Mode on older browsers) before any script runs; a script cannot request or bypass this. If a script never runs, check this first - see [common-pitfalls.md](references/common-pitfalls.md) Pitfall 15
-
-Most limitations have **workarounds** - see [common-pitfalls.md](references/common-pitfalls.md).
-
----
-
-## When Generating Userscripts
-
-Always include in your response:
-
-1. **Explanation** - What the script does (1-2 sentences)
-2. **Complete userscript** - Full code with all headers in a code block
-3. **Installation** - "Copy/paste into Tampermonkey dashboard" or "Save as .user.js"
-4. **Customisation points** - What the user can safely modify (selectors, timeouts, etc.)
-5. **Permissions used** - Which @grants and why they're needed
-6. **Browser support** - If Chrome-only, Firefox-only, or universal
-
----
-
-## Pre-Delivery Checklist
-
-Before returning a userscript, verify:
-
-### Critical (Must Pass)
-
-- [ ] No hardcoded API keys, tokens, or passwords
-- [ ] @match is specific (not `*://*/*`)
+- [ ] No hardcoded API keys, tokens or passwords
+- [ ] `@match` is specific (not `*://*/*`)
 - [ ] All external URLs use HTTPS
 - [ ] User input sanitised before DOM insertion
+- [ ] No `eval()`, `new Function()` or string-based `setTimeout`/`setInterval`
 
-### Important (Should Pass)
+Important:
 
-- [ ] Wrapped in IIFE with 'use strict'
-- [ ] All @grant statements are necessary
-- [ ] @connect includes all external domains
+- [ ] Wrapped in an IIFE with `'use strict'`
+- [ ] Every `@grant` is necessary
+- [ ] `@connect` includes every external domain
 - [ ] Error handling for async operations
 - [ ] Null checks before DOM manipulation
 
-### Recommended
+Recommended:
 
-- [ ] @version follows semantic versioning (X.Y.Z)
+- [ ] `@version` follows semantic versioning (X.Y.Z)
 - [ ] Works in both Chrome and Firefox
-- [ ] Comments explain non-obvious code
 
-**For complete security checklist, see:** [security-checklist.md](references/security-checklist.md)
+## References
 
----
-
-## Reference Files Guide
-
-Load these on-demand based on user needs:
-
-| File | When to Load |
-|------|--------------|
-| **Core** | |
-| [header-reference.md](references/header-reference.md) | Header syntax - all @tags with examples |
-| [url-matching.md](references/url-matching.md) | @match, @include, @exclude patterns |
-| [patterns.md](references/patterns.md) | Common implementation patterns with code |
-| [sandbox-modes.md](references/sandbox-modes.md) | Security/isolation execution contexts |
-| **API** | |
-| [api-sync.md](references/api-sync.md) | GM_* synchronous function reference (callback-based) |
-| [api-async.md](references/api-async.md) | GM.* promise-based API reference - prefer these for new scripts |
-| [api-storage.md](references/api-storage.md) | GM_setValue, GM_getValue, listeners |
-| [http-requests.md](references/http-requests.md) | GM_xmlhttpRequest cross-origin |
-| [web-requests.md](references/web-requests.md) | GM_webRequest interception (Firefox) |
-| [api-cookies.md](references/api-cookies.md) | GM_cookie manipulation |
-| [api-dom-ui.md](references/api-dom-ui.md) | addElement, addStyle, unsafeWindow |
-| [api-tabs.md](references/api-tabs.md) | getTab, saveTab, openInTab |
-| [api-audio.md](references/api-audio.md) | Mute/unmute tabs |
-| **Quality** | |
-| [common-pitfalls.md](references/common-pitfalls.md) | What breaks scripts and workarounds |
-| [debugging.md](references/debugging.md) | How to debug userscripts |
-| [browser-compatibility.md](references/browser-compatibility.md) | Chrome vs Firefox differences |
-| [security-checklist.md](references/security-checklist.md) | Pre-delivery security validation |
-| [version-numbering.md](references/version-numbering.md) | Version string comparison rules |
-| [typescript.md](references/typescript.md) | TypeScript project setup with @types/tampermonkey, bundler config |
+| Read | When the task involves |
+|------|------------------------|
+| [header-reference.md](references/header-reference.md) | Any tag beyond the template: `@run-at` timing, `@run-in`, `@require`/`@resource` with SRI, `@noframes`, update URLs, i18n names |
+| [url-matching.md](references/url-matching.md) | A `@match` beyond one domain or its subdomains: specific paths, `@include` regex, `@exclude` |
+| [patterns.md](references/patterns.md) | Waiting for an element, SPA navigation, mutation observers, element or form manipulation, keyboard shortcuts, table or link extraction, debouncing, retry with backoff - full implementations |
+| [sandbox-modes.md](references/sandbox-modes.md) | `@sandbox`, page-context access, CSP errors, Firefox `cloneInto`/`exportFunction` |
+| [api-async.md](references/api-async.md) | `GM.*` promise APIs - prefer these for new scripts |
+| [api-sync.md](references/api-sync.md) | `GM_*` callback APIs: notifications, menu commands, clipboard, downloads, resources, `GM_info` |
+| [api-storage.md](references/api-storage.md) | Stored settings, batch values, value-change listeners |
+| [http-requests.md](references/http-requests.md) | Cross-origin requests with `GM_xmlhttpRequest` |
+| [web-requests.md](references/web-requests.md) | Intercepting or blocking requests: `GM_webRequest` (Firefox only), page-level interception elsewhere |
+| [api-cookies.md](references/api-cookies.md) | Reading or changing cookies with `GM_cookie` |
+| [api-dom-ui.md](references/api-dom-ui.md) | `GM_addElement`, `GM_addStyle`, `unsafeWindow`, custom UI, page frameworks |
+| [api-tabs.md](references/api-tabs.md) | Tab-persistent data, opening or closing tabs, cross-tab communication |
+| [api-audio.md](references/api-audio.md) | Muting or unmuting tabs |
+| [common-pitfalls.md](references/common-pitfalls.md) | A script that misbehaves, or a workaround for a limit above |
+| [debugging.md](references/debugging.md) | A script that does not run or throws |
+| [browser-compatibility.md](references/browser-compatibility.md) | Chrome vs Firefox differences, Manifest V3, Safari |
+| [security-checklist.md](references/security-checklist.md) | Scripts handling credentials, cookies or user input, or reviewing someone else's script |
+| [version-numbering.md](references/version-numbering.md) | Version strings beyond X.Y.Z, or auto-update comparison |
+| [typescript.md](references/typescript.md) | TypeScript: `@types/tampermonkey`, tsconfig, bundling to a single `.user.js` |

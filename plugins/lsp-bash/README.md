@@ -39,6 +39,8 @@ winget install koalaman.shellcheck
 /plugin install lsp-bash@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install lsp-bash --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Supported Files
 
 | Extension | Language |

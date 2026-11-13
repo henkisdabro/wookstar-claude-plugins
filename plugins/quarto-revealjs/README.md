@@ -20,6 +20,8 @@ Build HTML slide decks with [Quarto](https://quarto.org)'s [Reveal.js](https://r
 /plugin install quarto-revealjs@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install quarto-revealjs --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Usage
 
 ```text

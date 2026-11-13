@@ -1,30 +1,6 @@
 # Setup and Tools Reference
 
-This reference provides quick setup guidance and tooling recommendations for implementing the Fifteen-Factor App methodology.
-
----
-
-## Git Quick Start
-
-Configure your Git user before starting:
-
-```bash
-git config --global user.name "Your Fullname"
-git config --global user.email "Your Email"
-```
-
-For Windows users, Git Bash is recommended for a better command-line experience.
-
-### Connecting to GitHub Using SSH
-
-Refer to [GitHub SSH documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) to set up SSH for your GitHub account.
-
-### Clone an Application
-
-```bash
-git clone git@github.com:example/fifteen-factor-app.git
-cd fifteen-factor-app
-```
+Starter configuration per stack for implementing the factors. Tool choices for telemetry and security are in [modern-extensions.md](modern-extensions.md) (factors XIV and XV); the log pipeline is in [original-factors.md](original-factors.md) (factor XI).
 
 ---
 
@@ -258,29 +234,11 @@ jobs:
 
 ---
 
-## Observability Stack
+## Observability Configuration
 
-### ELK Stack (Logs)
+Instrument with OpenTelemetry and export over OTLP, so the backend can change without touching application code.
 
-- **Elasticsearch** - Log storage and indexing
-- **Logstash/Fluentd** - Log collection and processing
-- **Kibana** - Visualisation and dashboards
-
-### Prometheus + Grafana (Metrics)
-
-**Prometheus scrape config:**
-
-```yaml
-scrape_configs:
-  - job_name: 'app'
-    static_configs:
-      - targets: ['app:3000']
-    metrics_path: '/metrics'
-```
-
-### Jaeger/Zipkin (Tracing)
-
-**OpenTelemetry setup:**
+**Tracing - OpenTelemetry SDK (Node.js) to an OTLP endpoint:**
 
 ```javascript
 const { NodeSDK } = require('@opentelemetry/sdk-node');
@@ -295,43 +253,21 @@ const sdk = new NodeSDK({
 sdk.start();
 ```
 
----
+Jaeger v2 takes OTLP directly on 4317 (gRPC) and 4318 (HTTP). OpenTelemetry deprecated its Zipkin exporters in December 2025 in favour of Zipkin's own OTLP ingestion ([zipkin-otel](https://github.com/openzipkin-contrib/zipkin-otel)), so a Zipkin backend takes OTLP too.
 
-## Security Tools
+**Metrics - Prometheus scrape config:**
 
-### Secret Management
-
-- **HashiCorp Vault** - Enterprise secret management
-- **AWS Secrets Manager** - AWS-native secrets
-- **1Password CLI** - Developer-friendly option
-- **doppler** - Environment variable sync
-
-### API Security
-
-- **Auth0** - Identity as a Service
-- **Keycloak** - Self-hosted identity provider
-- **OAuth2 Proxy** - Add auth to any service
-
----
-
-## Development Environment
-
-### Recommended VS Code Extensions
-
-```json
-{
-  "recommendations": [
-    "ms-azuretools.vscode-docker",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "redhat.vscode-yaml",
-    "42crunch.vscode-openapi"
-  ]
-}
+```yaml
+scrape_configs:
+  - job_name: 'app'
+    static_configs:
+      - targets: ['app:3000']
+    metrics_path: '/metrics'
 ```
 
-### Environment Variables Template
+---
+
+## Environment Variables Template
 
 Create a `.env.example` file:
 

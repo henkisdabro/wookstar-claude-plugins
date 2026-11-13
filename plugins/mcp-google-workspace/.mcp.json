@@ -3,7 +3,11 @@
     "google-workspace": {
       "command": "uvx",
       "args": [
-        "workspace-mcp"
+        "workspace-mcp@2.4.0",
+        "--tools",
+        "gmail",
+        "drive",
+        "calendar"
       ],
       "env": {
         "GOOGLE_OAUTH_CLIENT_ID": "${user_config.google_oauth_client_id}",

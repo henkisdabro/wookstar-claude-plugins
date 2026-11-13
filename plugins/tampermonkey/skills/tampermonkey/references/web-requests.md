@@ -13,8 +13,8 @@ GM_webRequest allows userscripts to intercept, block, or redirect web requests b
 
 **Important Limitations:**
 - **Experimental API** - may change at any time
-- **Not available in Manifest V3** (Chrome 5.2+, Edge)
-- **Firefox only** for current usage
+- **Not available in the Manifest V3 builds of Tampermonkey 5.2 and later** (Chrome and its derivatives, including Edge) - see <https://www.tampermonkey.net/documentation.php?q=GM_webRequest>
+- **Firefox only** in practice
 - Only handles: `sub_frame`, `script`, `xhr`, `websocket` request types
 
 ---

@@ -52,10 +52,9 @@ Speaker tools, navigation, chalkboard, multiplex, and PDF export.
 | `A` | Pause/resume auto-slide |
 | `Alt + Click` | Zoom element |
 
-### Chalkboard (when enabled)
+Chalkboard keys are listed under [Chalkboard](#chalkboard).
 
-| Key | Action |
-|-----|--------|
+-----|--------|
 | `C` | Toggle notes canvas |
 | `B` | Toggle chalkboard |
 | `Backspace` | Reset all drawings |
@@ -245,7 +244,7 @@ When `id` and `secret` are omitted, Quarto fetches them from the server's `/toke
 
 ### Method 1: Print Mode (Recommended)
 
-1. Press `E` to enter print mode
+1. Open the rendered deck in Chrome and press `E` to enter print view
 2. Press `Ctrl + P` (or `Cmd + P`)
 3. Configure print settings:
    - **Destination:** Save as PDF
@@ -269,29 +268,10 @@ Then use browser print.
 ```yaml
 format:
   revealjs:
-    pdf-max-pages-per-slide: 1      # Max pages per slide
-    pdf-separate-fragments: true    # Each fragment gets own page
-    pdf-page-height-offset: -1      # Height adjustment
-```
-
-### Fragment Handling
-
-By default, each fragment step creates a new PDF page. Disable with:
-
-```yaml
-format:
-  revealjs:
-    pdf-separate-fragments: false
-```
-
-### Notes in PDF
-
-To include speaker notes in PDF, use:
-
-```yaml
-format:
-  revealjs:
-    show-notes: true
+    pdf-separate-fragments: true    # One page per fragment step (default false: all fragments of a slide on one page)
+    pdf-max-pages-per-slide: 1      # Cap on pages a tall slide may spill onto
+    pdf-page-height-offset: -1      # Height adjustment if content spills to a blank page
+    show-notes: separate-page       # Print speaker notes on their own page (true, false or separate-page)
 ```
 
 ---

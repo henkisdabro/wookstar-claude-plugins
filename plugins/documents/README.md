@@ -21,6 +21,8 @@ Fast PDF text extraction, OCR for scans, structured parsing of PDFs and office f
 /plugin install documents@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install documents --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Usage
 
 ```bash

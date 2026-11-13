@@ -84,6 +84,7 @@ In the React Router app template, `authenticate.webhook(request)` does this for 
 
 | Symptom | Cause and fix |
 |---------|---------------|
-| Request handler throws about a missing `storefront` | 2026.4+ requires a `storefront` instance in the load context. See [hydrogen.md](hydrogen.md) |
-| Privacy banner missing, analytics silent | The server is not using Hydrogen's `createRequestHandler` (for example the old `@shopify/remix-oxygen` one), so the Storefront API proxy and consent never load |
-| Customer Account login fails locally | OAuth needs the `*.tryhydrogen.dev` tunnel: `npx shopify hydrogen dev --customer-account-push` |
+| `hydrogen()` Vite plugin throws naming the installed version | A caret range pulled a legacy project up to 2026.10. Pin `~2026.4.0`, or migrate - see [hydrogen.md](hydrogen.md) |
+| Request handler throws about a missing `storefront` (legacy) | 2026.4.x requires a `storefront` instance in the load context. See [hydrogen.md](hydrogen.md) |
+| Privacy banner missing, analytics silent (legacy) | The server is not using Hydrogen's `createRequestHandler` (for example the old `@shopify/remix-oxygen` one), so the Storefront API proxy and consent never load |
+| Customer Account login fails locally | OAuth needs HTTPS. Legacy: the `*.tryhydrogen.dev` tunnel, `npx shopify hydrogen dev --customer-account-push`. 2026.10: the `dev:https` script (`localHttps()`) |

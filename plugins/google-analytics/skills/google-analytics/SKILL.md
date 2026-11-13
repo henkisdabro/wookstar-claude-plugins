@@ -1,116 +1,55 @@
 ---
 name: google-analytics
-description: Google Analytics 4 implementation and analysis reference. Use when querying live GA4 report data, setting up a GA4 property or data stream, installing gtag.js, designing event or ecommerce tracking, registering custom dimensions or audiences, sending server-side events via Measurement Protocol, linking GA4 to BigQuery and understanding the export schema, debugging with DebugView, or configuring Consent Mode and data retention. Do NOT use for general GTM container work such as triggers, variables, custom templates or server-side containers - use google-tagmanager; Google Ads scripting or ad reporting - use google-ads-scripts; writing or running SQL against GA4 export tables - use the bigquery skill; Universal Analytics or non-Google analytics tools.
+description: Google Analytics 4 guardrails - the overloaded vocabulary, the mistakes models typically make and which data source a number comes from. Use when querying live GA4 report data, changing GA4 configuration with the ga CLI, designing events, key events or ecommerce tracking, registering custom dimensions or metrics, explaining why numbers differ between reports, Explorations, the Data API and BigQuery, sending server-side events, working with Data Manager or data import, reading the BigQuery export schema, or configuring Consent Mode. Do NOT use for GTM container work - use google-tagmanager; Google Ads scripting - use google-ads-scripts; SQL against GA4 export tables - use the bigquery skill; Universal Analytics or other analytics tools.
 ---
 
 # Google Analytics 4
 
-GA4 is event-based: every interaction is an event with parameters. Pick the reference from the decision tree below and read it before answering anything beyond the Quick Start.
+GA4 work goes wrong on vocabulary and on which data source a number came from, not on procedure. This skill pins both down and links to Google for everything else.
 
-The bundled `analytics-mcp` server (Google's official GA MCP) is read-only: it runs Data API reports, funnel and realtime reports, and reads account, property, custom-definition and Google Ads link details. Use it to answer questions about live GA4 data; configuration changes are made in the GA4 UI or through the Admin API outside this server.
+## Steps
 
-## Quick Start
+1. **Settle vocabulary.** When the request uses event, conversion, parameter, dimension, user, session, ID, tag, audience, segment or Data Manager, read `references/glossary.md` and map each word to one entry. Done when every overloaded term in the request has one meaning, or you have asked the user which they mean.
+2. **Name the source or route.** For a question about numbers, name the reading surface; for an implementation, name the collection route. Both tables are in `references/data-sources.md`. Done when you can say which surface or route applies and what it cannot do.
+3. **Read the pitfall group for the task** in `references/pitfalls.md`, and scan the dated list in `references/recent-changes.md` for anything the task touches. Done when no line in that group, in that list or in the pitfalls at the end of this file describes what you are about to do.
+4. **Act with the right tool** (below), quoting any limit from `references/limits.md` and any procedure from Google's page in `references/vendor-docs.md`. Done when each number in the answer names its surface and date range, and each configuration change was approved before it was sent.
 
-1. **Create property:** analytics.google.com -> Admin -> Create -> Property
-2. **Create data stream:** Add web stream, note Measurement ID (G-XXXXXXXXXX)
-3. **Install tracking** (choose one):
-   - **GTM (recommended):** Install container, create Google Tag with Measurement ID, trigger on All Pages, publish
-   - **gtag.js direct:**
-     ```html
-     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-     <script>
-       window.dataLayer = window.dataLayer || [];
-       function gtag(){dataLayer.push(arguments);}
-       gtag('js', new Date());
-       gtag('config', 'G-XXXXXXXXXX');
-     </script>
-     ```
-4. **Verify:** Enable GA Debugger extension, check Admin -> DebugView for session_start, page_view
-5. **Send custom events:**
-   ```javascript
-   gtag('event', 'button_click', { button_name: 'Subscribe', button_location: 'header' });
-   ```
+## Live data
 
-## Decision Tree: Which Reference Do I Need?
+The bundled `analytics-mcp` server (Google's official GA MCP) is read-only: it runs Data API reports, funnel and realtime reports, and reads account, property, custom-definition and Google Ads link details. Use it to answer questions about live GA4 data. It takes the numeric property ID (`123456789`), not the measurement ID (`G-XXXXXXXXXX`).
 
-```
-What are you trying to do?
+Configuration changes are made in the GA4 interface or with the `ga` CLI ([daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli)), which covers the Admin API as well as reporting - custom dimensions, key events, data streams, bulk audits across properties, CI. If the request needs it and `command -v ga` finds nothing, offer to install it from `references/cli.md`. Before any create, update or delete: run it with `--dry-run`, show the user the request and the property it targets, and send it only after they approve.
 
-Setting up GA4 for the first time?         -> references/setup.md
-Understanding how events work?              -> references/events-fundamentals.md
-Implementing standard tracking events?      -> references/recommended-events.md
-Creating business-specific custom events?   -> references/custom-events.md
-Making parameters appear in reports?        -> references/custom-dimensions.md
-Implementing User ID / cross-device?        -> references/user-tracking.md
-Building audiences for remarketing?         -> references/audiences.md
-Analysing data in GA4 reports?              -> references/reporting.md
-Linking BigQuery / export schema?           -> references/bigquery.md
-Querying export data with SQL?              -> the bigquery skill
-Installing via gtag.js directly?            -> references/gtag.md
-Setting up GA4 in Google Tag Manager?       -> references/gtm-integration.md
-Sending events from server/backend?         -> references/measurement-protocol.md
-Testing and debugging implementation?       -> references/debugview.md
-Implementing GDPR/Consent Mode?             -> references/privacy.md
-Configuring Admin settings?                 -> references/data-management.md
-```
+SQL against the export tables belongs to the bigquery skill.
 
-## Core Concepts
+## Routes
 
-### Event-Based Model
+| Read | When |
+|------|------|
+| `references/glossary.md` | The request uses an overloaded term (step 1) |
+| `references/data-sources.md` | Two numbers disagree, a number needs a caveat, or you are choosing how to collect or send events |
+| `references/pitfalls.md` | Before designing events, registering definitions, reconciling numbers, sending server-side, setting consent, pointing at an Admin screen or linking BigQuery - read that group |
+| `references/limits.md` | Before quoting any limit or quota |
+| `references/data-manager.md` | Data Manager, data import, product links, or the Data Manager API |
+| `references/bigquery.md` | Export options, table names or a column of the export schema |
+| `references/cli.md` | Installing, authenticating or using the `ga` CLI |
+| `references/recent-changes.md` | Every task (step 3) - dated 2025-2026 changes a model's training is likely to miss |
+| `references/vendor-docs.md` | A step-by-step procedure, an event's parameter list or an API reference - the link for each topic |
+| the bigquery skill | Writing or running SQL against `events_*` tables |
 
-GA4 tracks everything as events in four categories:
+## Pitfalls on every task
 
-| Category | Description | Examples |
-|----------|-------------|----------|
-| Automatic | Fire without configuration | session_start, first_visit |
-| Enhanced Measurement | Toggle on/off in settings | scroll, click, file_download |
-| Recommended | Google-defined with standard parameters | purchase, login, sign_up |
-| Custom | Business-specific tracking | demo_requested, trial_started |
+- "Conversion" in GA4 -> the GA4 object is a **key event**. A conversion is the ads object created from a key event and shared with Google Ads; the two are counted differently by design.
+- Two surfaces disagree -> expected. Reports, Explorations, the Data API and BigQuery differ in freshness, sampling, thresholding, `(other)`, identity and modelling; name the cause from `references/data-sources.md` before calling anything broken.
+- A parameter is "missing" from reports -> it is collected but unregistered. Register a custom dimension or metric with the matching scope; it fills from then on, in 24-48 hours.
+- A `dataLayer.push` is treated as tracking -> it sends nothing until a tag fires on it.
+- Automatic events doubled or missing -> the stream's enhanced measurement and the Google tag's automatic event detection are separate switches, and a manual tag for the same event is a third source.
+- Property ID and measurement ID swapped -> APIs, the MCP server, the CLI and BigQuery take the numeric property ID; tags and the Measurement Protocol take `G-XXXXXXXXXX`.
+- A Measurement Protocol 2xx read as success -> it accepts malformed payloads silently; validate at `/debug/mp/collect`, reuse the browser's `client_id`, and send `session_id`.
+- Sessions counted in BigQuery by `ga_session_id` -> the key is `user_pseudo_id` plus `ga_session_id`; there is no session table.
+- Old Admin paths and attribution models -> "Data Settings" is now "Data collection and modification"; DebugView, Events, Audiences, Custom definitions, Channel groups, Comparisons and Reporting identity are under "Data display"; first click, linear, time decay and position-based attribution were removed in November 2023.
+- Data import or a product link set up without looking -> since November 2026 these live in Data Manager, and the same pipeline active on the ads side as well can log conversions twice.
+- Universal Analytics habits -> there is no Event Category, Action or Label, no Views and no Goals. An interaction is an event name plus parameters.
+- Modelling promised under basic consent mode -> only advanced consent mode sends the cookieless pings that behavioural modelling needs.
 
-### Key Limits
-
-| Limit | Value |
-|-------|-------|
-| Distinct event names | 500 per app stream (no limit for web) |
-| Parameters per event | 25 |
-| Event name length | 40 characters |
-| Parameter name/value length | 40 / 100 characters (page_location 1,000) |
-| Custom dimensions (event/user/item) | 50 / 25 / 10 |
-| Audiences per property | 100 |
-
-### Measurement ID
-
-- Format: `G-XXXXXXXXXX` (G- prefix + 10 alphanumeric characters)
-- Location: Admin -> Data Streams -> Web Stream
-- Used in: gtag.js config, GTM tags, Measurement Protocol
-
-## Common Workflows
-
-### Ecommerce Tracking
-
-1. Review [recommended events](references/recommended-events.md) for the purchase funnel: view_item -> add_to_cart -> begin_checkout -> purchase
-2. Structure items array (required: item_id OR item_name; recommended: price, quantity, item_category)
-3. Test with [DebugView](references/debugview.md), then register custom item parameters as [custom dimensions](references/custom-dimensions.md)
-
-### Cross-Device Tracking
-
-1. Implement [User ID](references/user-tracking.md) and configure Reporting Identity (Admin -> Data Settings)
-2. Set [user properties](references/custom-dimensions.md) and build [cross-device audiences](references/audiences.md)
-
-### GDPR Compliance
-
-1. Set up [Consent Mode](references/privacy.md) with default denied state
-2. Integrate with CMP (OneTrust, Cookiebot, etc.), update consent on user acceptance
-3. Test consent implementation with [DebugView](references/debugview.md)
-
-### Custom Reports
-
-1. Understand available data in [reporting](references/reporting.md)
-2. Register custom parameters as [dimensions](references/custom-dimensions.md), create Explorations
-3. For unsampled data, export to [BigQuery](references/bigquery.md)
-
-## Best Practices
-
-- **Naming:** Use snake_case, be descriptive and action-oriented, keep under 40 characters, avoid generic names
-- **Implementation order:** Enhanced Measurement -> recommended events -> custom events -> custom dimensions
-- **Data quality:** Separate test/production properties, set up internal traffic filters from day one, document all custom events, audit regularly with DebugView, export to BigQuery for backup
+Use placeholder IDs in anything written down: `G-XXXXXXXXXX`, `GT-XXXXXXX`, `GTM-XXXXXXX`, `123456789`.

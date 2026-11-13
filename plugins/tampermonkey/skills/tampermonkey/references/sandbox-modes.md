@@ -310,25 +310,4 @@ const pageData = unsafeWindow.APP_CONFIG;
 
 ### 3. Handle cross-browser differences
 
-```javascript
-// Works in all contexts
-function shareWithPage(name, value) {
-    if (typeof cloneInto !== 'undefined') {
-        // Firefox USERSCRIPT_WORLD
-        unsafeWindow[name] = cloneInto(value, unsafeWindow, {
-            cloneFunctions: true
-        });
-    } else {
-        // Chrome or MAIN_WORLD
-        unsafeWindow[name] = value;
-    }
-}
-```
-
-### 4. Test in multiple browsers
-
-Different browsers may behave differently. Test in:
-- Chrome (Manifest V3 - needs "Allow User Scripts" enabled)
-- Firefox
-- Edge
-- Safari (Tampermonkey for Safari)
+Guard `cloneInto`/`exportFunction` with `typeof` checks as in the complete example above, and test in each target browser - see [browser-compatibility.md](browser-compatibility.md).

@@ -1,11 +1,11 @@
 {
   "name": "mcp-google-workspace",
-  "description": "Google Workspace integration (Gmail, Drive, Calendar)",
+  "description": "Gmail, Drive and Calendar through your own Google OAuth client - 38 tools, several of which act as you (send mail, share files, manage events)",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.0.0",
+  "version": "3.0.0",
   "userConfig": {
     "google_oauth_client_id": {
       "type": "string",

@@ -13,6 +13,8 @@ Two skills that work alone or as a pipeline: find a YouTube video, pull its audi
 /plugin install media-tools@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install media-tools --marketplace henkisdabro/wookstar-claude-plugins`
+
 For converting, trimming or extracting audio, also install the `ffmpeg` plugin from this marketplace - both skills point to its `ffmpeg-cli` skill when a file needs pre-processing.
 
 ## Prerequisites

@@ -24,6 +24,8 @@ yaml-language-server --version
 /plugin install lsp-yaml@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install lsp-yaml --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Supported Files
 
 | Extension | Language |

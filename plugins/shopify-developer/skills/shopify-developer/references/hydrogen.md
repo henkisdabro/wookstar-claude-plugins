@@ -1,48 +1,102 @@
 # Hydrogen
 
-Hydrogen is Shopify's headless storefront framework: React Router 7 in framework mode, the Storefront and Customer Account APIs, and Oxygen hosting. Releases are versioned by Storefront API quarter (`YYYY.M.patch`); check the installed `@shopify/hydrogen` version and the [changelog](https://github.com/Shopify/hydrogen/blob/main/packages/hydrogen/CHANGELOG.md) before changing anything.
+Hydrogen (`@shopify/hydrogen`) is Shopify's headless storefront toolkit. There are two lines under the same package name, and they share almost no API - find out which one the project is on before changing anything:
 
-A framework-agnostic "next Hydrogen" exists as an early developer preview (the `preview` branch of the Shopify/hydrogen repo). It is not production-ready - build on the stable React Router package unless the user explicitly opts into the preview.
+| `@shopify/hydrogen` in `package.json` | Line | Docs |
+|----------------------------------------|------|------|
+| `2026.10.x` or later | Current Hydrogen: a framework-agnostic library you add to your own app (generally available since 14 October 2026) | <https://shopify.dev/docs/storefronts/hydrogen>, API reference <https://shopify.dev/docs/api/hydrogen/2026-10> |
+| `2026.4.x` or earlier | Legacy Hydrogen: a React Router 7 (earlier, Remix) framework with its own CLI and Vite plugin | <https://shopify.dev/docs/storefronts/headless/legacy>, source on the repo's `2026-04` branch |
 
-## Upgrading
+Existing legacy storefronts keep working and Shopify still ships `2026.4.x` patches, so do not migrate unless the user asks. A caret range such as `^2026.4.0` can resolve to `2026.10`, which breaks a legacy project (the `hydrogen()` Vite plugin throws) - pin legacy projects with a tilde range, `~2026.4.0`.
 
-Run `npx shopify hydrogen upgrade` inside the project; it steps through each release and prints the required code changes. Each quarterly release bumps the Storefront and Customer Account API versions, so read that quarter's API changelog too.
+Versions follow the Storefront API quarter (`YYYY.M.patch`). Changelog: <https://github.com/Shopify/hydrogen/blob/main/packages/hydrogen/CHANGELOG.md>.
+
+## Current Hydrogen (2026.10+)
+
+The app owns its server entry, router and build; Hydrogen supplies the commerce pieces. It needs Node.js 22.12+ or 24.
+
+```bash
+npx @shopify/hydrogen@latest setup    # install the package and copy Hydrogen's agent skills; offers the React Router template in an empty directory
+npx @shopify/hydrogen skills sync     # after every Hydrogen upgrade
+npx @shopify/hydrogen skills check    # CI: exits non-zero when the skills are stale
+```
+
+**Hydrogen ships its own agent skills** (`hydrogen-setup`, `hydrogen-storefront-client`, `hydrogen-request-handlers`, `hydrogen-cart-ui`, `hydrogen-customer-account`, `hydrogen-analytics`, `hydrogen-oxygen`, `migrate-to-hydrogen-2026-10` and others), copied into `.claude/skills` and `.agents/skills` and matched to the installed version. Follow those for API detail rather than this file; what follows is orientation only.
+
+- **Entry points:** `@shopify/hydrogen` (framework-independent core: Storefront client, `gql()`, request handlers, caching, `formatMoney()`, analytics, cart/product/collection/search stores), `@shopify/hydrogen/react` and `/vue` (bindings such as `createCartComponents()`, `createProductComponents()`, `ShopifyScripts`, `ShopPayButton`), `@shopify/hydrogen/customer-account`, `@shopify/hydrogen/vite` (`localHttps()`; the `hydrogen()` export remains only to throw), `@shopify/hydrogen/ts-plugin` (flags unknown fields in `gql()` queries).
+- **Frameworks:** React Router (Shopify's starter, deployable to Oxygen from the admin) and Next.js (Vercel Shop) have starters; Nuxt, Astro, SvelteKit and SolidStart have examples only.
+- **Request flow:** a root middleware builds one request context (`createShopifyRequestContext`), creates the client (`createStorefrontClient`), returns the response of `handleShopifyRoutes()` if it gives one (Storefront API proxy, `/api/cart`, checkout and cart permalinks, account login), otherwise calls the router, runs `handleShopifyRedirects()` on a 404, and finishes with `requestContext.applyResponseHeaders()`. Creating a second request context makes `handleShopifyRoutes()` throw; leaving out `applyResponseHeaders()` or `routeTemplates` fails silently.
+- **Queries:** `storefrontClient.graphql()` with queries wrapped in `gql()`; cache with `Cache.long()`, `Cache.short()`, `Cache.none()` or `Cache()`.
+- **Cart and analytics need `ShopifyScripts`** in the root layout (`renderShopifyScriptTags()` outside React and Vue). Cart forms post to `/api/cart` and work before JavaScript loads. Publish analytics events to `window.Shopify.analytics` yourself; add custom destinations with `analytics.addDestination()`.
+- **Hosting:** Oxygen, Node.js, Cloudflare Workers, Deno or Vercel - the core uses only web platform APIs. Deploy to Oxygen with `shopify hydrogen deploy --assets-dir dist/client --worker-dir dist/server`.
+
+### Migrating legacy to 2026.10
+
+Run the `migrate-to-hydrogen-2026-10` skill (installed by `hydrogen skills sync`) alongside the guide at <https://shopify.dev/docs/storefronts/hydrogen/migrate>. `shopify hydrogen upgrade` only moves between legacy versions. Pages and routes stay; the commerce code is replaced:
+
+| Legacy | 2026.10 |
+|--------|---------|
+| `shopify hydrogen dev` / `build`, `hydrogen()` Vite plugin | `vite dev` / `react-router build`; `localHttps()` and `...oxygen()` before `reactRouter()` |
+| `createHydrogenContext()`, `createRequestHandler()`, `hydrogenRoutes()` | Root middleware with `handleShopifyRoutes()` (middleware must be enabled - `future.v8_middleware: true` on React Router 7) |
+| `context.storefront.query()` | `context.get(storefrontClientContext).graphql()` - the context is your own `createContext()`; returns `{data, errors}`, and nothing is cached unless you pass `cache` |
+| `CacheLong()`, `CacheShort()`, `CacheNone()`, `CacheCustom()` | `Cache.long()`, `Cache.short()`, `Cache.none()`, `Cache()` |
+| `context.cart`, `createCartHandler()` | `createCartServerHandlers()` at `/api/cart` |
+| `CartForm`, `useOptimisticCart()` | `useCartForm()` and the cart store |
+| `VariantSelector`, `useOptimisticVariant()` | `useProductForm()` and the product store |
+| `Analytics.Provider`, `useAnalytics()`, `getShopAnalytics()` | `ShopifyScripts` and `window.Shopify.analytics` |
+| `Image`, `MediaFile`, `Money` | Your own `<img>`; `formatMoney()` |
+| `Pagination`, `getPaginationVariables()` | Collection store |
+| `Seo`, `getSeoMeta()`, `getSitemap()`, `getSitemapIndex()` | React Router `meta` export and your own sitemap queries |
+| `ShopPayButton` from `@shopify/hydrogen` | From `@shopify/hydrogen/react` or `/vue` |
+| `Video`, `ExternalVideo`, `ModelViewer`, `RichText`, `Script`, `parseMetafield()`, `parseGid()` | No replacement - your own code |
+
+Migrate features in the guide's order (Markets, then customer accounts, then analytics with consent), delete route files for paths Hydrogen now owns (`/api/cart`, `/checkout`, cart permalinks, `/account/login`) and keep a catch-all route (`$.tsx`), because middleware runs only for matched routes. Customer login needs HTTPS locally (`npm run dev:https`, served at `https://local.tryhydrogen.dev:5173`). The Storefront and Customer Account APIs move to `2026-10` at the same time; in the Customer Account API, `Order.shippingTitle` and `Customer.lastIncompleteCheckout` are removed and `territoryCode` is deprecated for `countryCode`.
+
+Done when `npm run typecheck` and `npm run build` pass and cart, variant selection, customer login and analytics events work in `vite dev`.
+
+## Legacy Hydrogen (2026.4.x and earlier)
+
+Everything below applies only to the legacy line, and the samples follow the `2026-04` branch's `templates/skeleton`. Move between legacy releases with `npx shopify hydrogen upgrade`, which writes the upgrade instructions for the target release to a file under `.hydrogen/`.
 
 ### 2026.4 breaking changes
 
 - **Storefront API proxy is always on.** `proxyStandardRoutes` was removed from `createRequestHandler`, and the handler throws if the load context has no `storefront` instance. Delete the option and make sure the context passed to `getLoadContext` (the skeleton's `createHydrogenRouterContext`) supplies `storefront`.
-- **Backend consent mode is the default.** The Customer Privacy API now uses server-set cookies through the Storefront API proxy instead of the legacy JavaScript `_tracking_consent` cookie. Custom consent banners and any code reading `_tracking_consent` must move to the `customerPrivacy` API.
-- **The proxy is load-bearing for analytics.** From 2026.4.6, consent and analytics require the same-origin proxy that Hydrogen's `createRequestHandler` (from `@shopify/hydrogen` or `@shopify/hydrogen/oxygen`) provides. A `server.ts` still on the deprecated `@shopify/remix-oxygen` handler, or a custom server without the proxy, loses consent: analytics stay off and the privacy banner never shows. `consent.sameDomainForStorefrontApi` is now ignored (treated as `true`).
-- Deprecated no-ops to remove: `Analytics.Provider` `cookieDomain`, and `useShopifyCookies` options `hasUserConsent`, `domain`, `ignoreDeprecatedCookies`. The `_shopify_y` and `_shopify_s` cookies are no longer created.
+- **Backend consent mode is the default.** The Customer Privacy API uses server-set cookies through the Storefront API proxy instead of the JavaScript `_tracking_consent` cookie. Custom consent banners and any code reading `_tracking_consent` must move to the `customerPrivacy` API.
+- **The proxy is load-bearing for analytics.** From 2026.4.6, consent and analytics require the same-origin proxy that Hydrogen's `createRequestHandler` (from `@shopify/hydrogen` or `@shopify/hydrogen/oxygen`) provides. A `server.ts` still on the deprecated `@shopify/remix-oxygen` handler, or a custom server without the proxy, loses consent: analytics stay off and the privacy banner never shows. `consent.sameDomainForStorefrontApi` is ignored (treated as `true`).
+- No-ops to remove (2026.4.6): `Analytics.Provider` `cookieDomain`, and `useShopifyCookies` options `hasUserConsent`, `domain`, `ignoreDeprecatedCookies`. The `_shopify_y` and `_shopify_s` cookies are no longer created.
 - Storefront API: JSON metafield writes are capped at 128 KB from 2026-04; cart mutations return `MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR` when a Cart Transform Function fails.
 
-Source: <https://shopify.dev/changelog/hydrogen-april-2026-release>.
+Source: <https://github.com/Shopify/hydrogen/blob/2026-04/packages/hydrogen/CHANGELOG.md>.
 
-## Getting started
+### Getting started
 
 ```bash
-npm create @shopify/hydrogen@latest   # skeleton template, TypeScript, Vite
-npx shopify hydrogen link             # connect to a store's Hydrogen channel
+npm create @shopify/hydrogen@latest   # legacy skeleton; new projects should use the 2026.10 setup above
+npx shopify hydrogen link             # connect to a store's Hydrogen storefront
+npx shopify hydrogen env pull         # write the storefront's variables to .env
 npx shopify hydrogen dev              # local dev on MiniOxygen
 ```
 
-Project shape (skeleton): `app/root.tsx`, `app/routes/` (flat-file routes such as `products.$handle.tsx`), `app/lib/context.ts` (builds the Hydrogen context: `storefront`, `customerAccount`, `cart`, `session`), `server.ts` (Oxygen worker entry calling `createRequestHandler`), `react-router.config.ts`, `vite.config.ts`.
+Project shape (skeleton): `app/root.tsx`, `app/routes.ts` (`hydrogenRoutes([...(await flatRoutes())])`), `app/routes/` (flat-file routes such as `products.$handle.tsx`), `app/lib/context.ts` (calls `createHydrogenContext()`, which builds `storefront`, `customerAccount`, `cart` and `session`), `server.ts` (Oxygen worker entry calling `createRequestHandler` and `storefrontRedirect`), `react-router.config.ts` (`hydrogenPreset()`), `vite.config.ts`.
 
-### Environment variables
+#### Environment variables
+
+`createHydrogenContext()` reads these from `env`:
 
 ```bash
 # .env
 SESSION_SECRET=your-secret
-PUBLIC_STOREFRONT_API_TOKEN=your-public-token
 PUBLIC_STORE_DOMAIN=your-store.myshopify.com
-
-# Optional: for authenticated Storefront API
+PUBLIC_STOREFRONT_API_TOKEN=your-public-token
 PRIVATE_STOREFRONT_API_TOKEN=your-private-token
+PUBLIC_STOREFRONT_ID=your-storefront-id
+# Customer accounts
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=your-client-id
 ```
 
-## Routing
+### Routing
 
-Hydrogen uses React Router 7 file-based routing:
+Routes are React Router 7 flat-file routes, loaded by `flatRoutes()` from `@react-router/fs-routes`:
 
 | File | URL | Description |
 |------|-----|-------------|
@@ -50,41 +104,43 @@ Hydrogen uses React Router 7 file-based routing:
 | `routes/products.$handle.tsx` | `/products/snowboard` | Product page |
 | `routes/collections.$handle.tsx` | `/collections/winter` | Collection page |
 | `routes/collections._index.tsx` | `/collections` | Collections list |
-| `routes/cart.tsx` | `/cart` | Cart page |
+| `routes/cart.tsx` | `/cart` | Cart page and cart action |
 | `routes/search.tsx` | `/search` | Search results |
 | `routes/pages.$handle.tsx` | `/pages/about` | CMS pages |
 | `routes/account.tsx` | `/account` | Customer account (layout) |
 | `routes/account.orders.$id.tsx` | `/account/orders/123` | Order detail |
+| `routes/$.tsx` | anything else | Catch-all 404 |
 
-## Data Loading
+### Data Loading
 
-### Loader pattern (server-side data fetching)
+Loaders read the Storefront API through `context.storefront`. The skeleton types route arguments with the generated `Route.LoaderArgs` (`import type {Route} from './+types/products.$handle'`); `LoaderFunctionArgs` from `react-router` also works.
 
 ```tsx
-import { useLoaderData, type LoaderFunctionArgs } from 'react-router';
+import { useLoaderData } from 'react-router';
+import { Money } from '@shopify/hydrogen';
+import type { Route } from './+types/products.$handle';
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
   const { storefront } = context;
 
   const { product } = await storefront.query(PRODUCT_QUERY, {
     variables: { handle: params.handle },
   });
 
-  if (!product) {
-    throw new Response('Product not found', { status: 404 });
+  if (!product?.id) {
+    throw new Response(null, { status: 404 });
   }
 
   return { product };
 }
 
-export default function ProductPage() {
+export default function Product() {
   const { product } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <h1>{product.title}</h1>
-      <p>{product.description}</p>
-      <ProductPrice price={product.priceRange.minVariantPrice} />
+      <Money data={product.priceRange.minVariantPrice} />
     </div>
   );
 }
@@ -95,94 +151,32 @@ const PRODUCT_QUERY = `#graphql
       id
       title
       handle
-      description
       priceRange {
         minVariantPrice {
           amount
           currencyCode
         }
       }
-      images(first: 10) {
-        nodes {
-          url
-          altText
-          width
-          height
-        }
-      }
-      variants(first: 100) {
-        nodes {
-          id
-          title
-          availableForSale
-          price {
-            amount
-            currencyCode
-          }
-          selectedOptions {
-            name
-            value
-          }
-        }
-      }
     }
   }
-`;
+` as const;
 ```
 
-### Action pattern (form submissions)
+`storefront.query()` adds the request's `country` and `language` from `i18n` when the query declares those variables. Queries are typed by `npx shopify hydrogen codegen` (the skeleton's `dev` and `build` scripts pass `--codegen`).
+
+#### Cache strategies
+
+Every `storefront.query()` is cached. With no `cache` option the default strategy applies: `public, max-age=1, stale-while-revalidate=86399`.
 
 ```tsx
-import { type ActionFunctionArgs } from 'react-router';
+const { collection } = await storefront.query(COLLECTION_QUERY, {
+  variables: { handle: 'winter' },
+  cache: storefront.CacheLong(),
+});
 
-export async function action({ request, context }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const variantId = formData.get('variantId') as string;
-  const quantity = parseInt(formData.get('quantity') as string) || 1;
-
-  const { cart } = context;
-
-  const result = await cart.addLines([
-    { merchandiseId: variantId, quantity },
-  ]);
-
-  return { cart: result.cart };
-}
-```
-
-## Storefront API Client
-
-Hydrogen provides a typed Storefront API client:
-
-```tsx
-// app/lib/storefront.ts - automatically configured
-
-// Usage in loaders:
-export async function loader({ context }: LoaderFunctionArgs) {
-  const { storefront } = context;
-
-  // Simple query
-  const { products } = await storefront.query(PRODUCTS_QUERY, {
-    variables: { first: 10 },
-  });
-
-  // With cache control
-  const { collection } = await storefront.query(COLLECTION_QUERY, {
-    variables: { handle: 'winter' },
-    cache: storefront.CacheLong(),  // Cache for 1 hour
-  });
-
-  return { products, collection };
-}
-```
-
-### Cache strategies
-
-```tsx
-// Built-in cache strategies
 storefront.CacheNone()     // no-store
-storefront.CacheShort()    // max-age 1s, stale-while-revalidate 9s (the default for queries)
-storefront.CacheLong()     // max-age 1h, stale-while-revalidate 23h
+storefront.CacheShort()    // public, max-age=1, stale-while-revalidate=9
+storefront.CacheLong()     // public, max-age=3600, stale-while-revalidate=82800
 storefront.CacheCustom({
   mode: 'public',
   maxAge: 60,              // seconds
@@ -190,83 +184,80 @@ storefront.CacheCustom({
 })
 ```
 
-## Cart Operations
+The four functions are also exported from `@shopify/hydrogen`. Pass `CacheNone()` on any query that returns customer data, and set a private `Cache-Control` on that route's response. Caching guide: <https://shopify.dev/docs/storefronts/headless/legacy/hydrogen/caching>.
 
-Hydrogen provides a cart API abstraction:
+### Cart Operations
+
+The cart lives on `context.cart`. Forms are rendered with `CartForm`, which posts to the `/cart` route; that route's action decodes the submission with `CartForm.getFormInput()`. Cut down from the skeleton's `app/routes/cart.tsx`:
 
 ```tsx
-// In loaders/actions, use context.cart
-export async function action({ request, context }: ActionFunctionArgs) {
+import { data, type HeadersFunction } from 'react-router';
+import { CartForm, type CartQueryDataReturn } from '@shopify/hydrogen';
+import type { Route } from './+types/cart';
+
+export const headers: HeadersFunction = ({ actionHeaders }) => actionHeaders;
+
+export async function action({ request, context }: Route.ActionArgs) {
   const { cart } = context;
   const formData = await request.formData();
+  const { action, inputs } = CartForm.getFormInput(formData);
 
-  switch (formData.get('action')) {
-    case 'add':
-      return cart.addLines([{
-        merchandiseId: formData.get('variantId') as string,
-        quantity: 1,
-      }]);
+  let result: CartQueryDataReturn;
 
-    case 'update':
-      return cart.updateLines([{
-        id: formData.get('lineId') as string,
-        quantity: parseInt(formData.get('quantity') as string),
-      }]);
-
-    case 'remove':
-      return cart.removeLines([
-        formData.get('lineId') as string,
-      ]);
-
-    case 'updateNote':
-      return cart.updateNote(
-        formData.get('note') as string,
-      );
-
+  switch (action) {
+    case CartForm.ACTIONS.LinesAdd:
+      result = await cart.addLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesUpdate:
+      result = await cart.updateLines(inputs.lines);
+      break;
+    case CartForm.ACTIONS.LinesRemove:
+      result = await cart.removeLines(inputs.lineIds);
+      break;
     default:
-      throw new Error('Unknown cart action');
+      throw new Error(`${action} cart action is not defined`);
   }
+
+  // Persist the cart ID cookie - without this a new cart is lost on the next request
+  const cartId = result?.cart?.id;
+  const headers = cartId ? cart.setCartId(cartId) : new Headers();
+  const { cart: cartResult, errors, warnings } = result;
+
+  return data({ cart: cartResult, errors, warnings }, { headers });
+}
+
+export async function loader({ context }: Route.LoaderArgs) {
+  return await context.cart.get();
 }
 ```
 
-### Cart component
+`context.cart` also has `updateDiscountCodes()`, `addGiftCardCodes()`, `removeGiftCardCodes()`, `updateBuyerIdentity()` and `updateNote()`, each with a matching `CartForm.ACTIONS` entry.
+
+#### Add to cart button
 
 ```tsx
-import { useFetcher } from 'react-router';
-import { CartLineQuantity, CartLinePrice, Money } from '@shopify/hydrogen';
+import { type FetcherWithComponents } from 'react-router';
+import { CartForm, type OptimisticCartLineInput } from '@shopify/hydrogen';
 
-function AddToCartButton({ variantId }: { variantId: string }) {
-  const fetcher = useFetcher();
-  const isAdding = fetcher.state !== 'idle';
-
+function AddToCartButton({ lines }: { lines: Array<OptimisticCartLineInput> }) {
   return (
-    <fetcher.Form method="post" action="/cart">
-      <input type="hidden" name="action" value="add" />
-      <input type="hidden" name="variantId" value={variantId} />
-      <button type="submit" disabled={isAdding}>
-        {isAdding ? 'Adding...' : 'Add to Cart'}
-      </button>
-    </fetcher.Form>
+    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher: FetcherWithComponents<any>) => (
+        <button type="submit" disabled={fetcher.state !== 'idle'}>
+          Add to cart
+        </button>
+      )}
+    </CartForm>
   );
 }
+
+// <AddToCartButton lines={[{ merchandiseId: selectedVariant.id, quantity: 1 }]} />
 ```
 
-## Hydrogen Components
-
-Built-in components for common e-commerce patterns:
+### Hydrogen Components
 
 ```tsx
-import {
-  Image,
-  Money,
-  ShopPayButton,
-  Video,
-  ExternalVideo,
-  ModelViewer,
-  MediaFile,
-  CartLineQuantity,
-  CartLinePrice,
-} from '@shopify/hydrogen';
+import { Image, Money, ShopPayButton } from '@shopify/hydrogen';
 
 // Optimised image with CDN sizing
 <Image
@@ -278,30 +269,34 @@ import {
 // Formatted price
 <Money data={product.priceRange.minVariantPrice} />
 
-// Shop Pay button
+// Shop Pay button - storeDomain is the bare domain, such as your-store.myshopify.com
 <ShopPayButton
   variantIds={[selectedVariant.id]}
-  storeDomain={shop.primaryDomain.url}
+  storeDomain={storeDomain}
 />
 ```
 
-## SEO
+`Video`, `ExternalVideo`, `ModelViewer` and `MediaFile` come from the same package. API reference for the legacy line: <https://shopify.dev/docs/api/hydrogen/2026-04>.
+
+### SEO
 
 ```tsx
-// In root.tsx or individual routes
 import { getSeoMeta } from '@shopify/hydrogen';
+import type { Route } from './+types/products.$handle';
 
-export const meta = ({ data }) => {
+export const meta: Route.MetaFunction = ({ data }) => {
   return getSeoMeta({
-    title: data.product.title,
-    description: data.product.description,
-    url: `https://store.com/products/${data.product.handle}`,
-    image: data.product.images.nodes[0]?.url,
+    title: data?.product.title,
+    description: data?.product.description,
+    url: `https://store.com/products/${data?.product.handle}`,
+    media: data?.product.images.nodes[0]?.url,
   });
 };
 ```
 
-## Deployment
+`getSeoMeta()` takes any number of SEO objects, so a route can merge the root's with its own. The skeleton itself returns plain React Router `meta` descriptors and does not call it.
+
+### Deployment
 
 ```bash
 npx shopify hydrogen deploy      # build and deploy to Oxygen
@@ -310,12 +305,12 @@ npx shopify hydrogen env pull    # sync Oxygen environment variables into .env
 
 Oxygen is the default host. Self-hosting on another worker or Node runtime is possible, but the server must still use Hydrogen's `createRequestHandler` so the Storefront API proxy, consent and analytics keep working (see 2026.4 above).
 
-The skeleton's `vite.config.ts` registers `hydrogen()`, `oxygen()` (from `@shopify/mini-oxygen/vite`) and `reactRouter()` - keep all three when adding plugins such as Tailwind.
+The skeleton's `vite.config.ts` registers `hydrogen()` (from `@shopify/hydrogen/vite`), `oxygen()` (from `@shopify/mini-oxygen/vite`) and `reactRouter()` - keep all three when adding plugins such as Tailwind.
 
-## Practices
+### Practices
 
-1. Pick a cache strategy per query: `CacheLong()` for catalogue data that changes rarely, the default `CacheShort()` otherwise; never cache customer or cart data.
+1. Pick a cache strategy per query: `CacheLong()` for catalogue data that changes rarely, the default otherwise, and `CacheNone()` for anything customer-specific.
 2. For non-critical data, return the un-awaited promise from the loader and render it with `<Suspense>` and `<Await>` - React Router 7 has no `defer()`.
 3. Colocate each GraphQL query with its route and run `npx shopify hydrogen codegen` for typed results.
-4. Use `getSeoMeta` on public routes and Hydrogen's `Image` and `Money` components.
+4. Use Hydrogen's `Image` and `Money` components rather than hand-built markup.
 5. Keep analytics behind `Analytics.Provider` and the Customer Privacy API; do not set tracking cookies yourself.

@@ -474,42 +474,9 @@ Strip whitespace using hyphens:
 {% endif %}
 ```
 
-## Performance Tips
+## Performance
 
-1. **Cache repeated calculations:**
-
-```liquid
-{# ❌ Inefficient: #}
-{% for i in (1..10) %}
-  {{ collection.products.size }}  {# Calculated 10 times #}
-{% endfor %}
-
-{# ✅ Efficient: #}
-{% assign product_count = collection.products.size %}
-{% for i in (1..10) %}
-  {{ product_count }}
-{% endfor %}
-```
-
-2. **Use `limit` and `offset` instead of iterating full arrays:**
-
-```liquid
-{# ❌ Inefficient: #}
-{% for product in collection.products %}
-  {% if forloop.index <= 5 %}
-    {{ product.title }}
-  {% endif %}
-{% endfor %}
-
-{# ✅ Efficient: #}
-{% for product in collection.products limit: 5 %}
-  {{ product.title }}
-{% endfor %}
-```
-
-3. **Prefer `render` over `include`** for better performance and variable scoping
-
-4. **Use `liquid` tag** for cleaner multi-statement blocks
+Loop and render cost (caching repeated lookups, `limit`, nested loops, `render` over `include`): see section 5 of [performance.md](performance.md).
 
 ## Common Gotchas
 
@@ -574,30 +541,6 @@ Wrap parameter name in square brackets:
 - Self-documenting code for team collaboration
 - Theme Check validates parameter usage
 
-## Debugging Tips
+## Debugging
 
-1. **Output variable types:**
-
-```liquid
-{{ product | json }}  {# Output entire object as JSON #}
-{{ product.class }}   {# Output object type #}
-{{ variable.size }}   {# Check array/string length #}
-```
-
-2. **Check for nil/existence:**
-
-```liquid
-{% if product.metafield %}
-  Metafield exists
-{% else %}
-  Metafield is nil
-{% endif %}
-```
-
-3. **Use default filter for safety:**
-
-```liquid
-{{ product.metafield.value | default: "Not set" }}
-```
-
-4. **Enable theme preview console** to see Liquid errors in real-time
+For a blank output, an unknown filter or a variable missing inside a snippet, see [debugging.md](debugging.md).

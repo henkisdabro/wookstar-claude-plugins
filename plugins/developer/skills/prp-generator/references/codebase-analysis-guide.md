@@ -33,11 +33,12 @@ Adaptation: Will need to add Y and Z properties
 
 Look for:
 
-- Directory structure conventions
+- Directory structure and file naming conventions
 - Component organisation patterns
 - State management approach
 - API structure patterns
 - Routing patterns (if applicable)
+- Database access and error handling patterns
 
 **Example findings**:
 
@@ -106,7 +107,7 @@ Review:
 **Example documentation**:
 
 ```
-Build Tool: Vite 5.x
+Build Tool: Vite <major from package.json>
 Path Aliases: '@/' -> 'src/', '@components/' -> 'src/components/'
 TypeScript: Strict mode enabled
 Must use: Import type syntax for type-only imports

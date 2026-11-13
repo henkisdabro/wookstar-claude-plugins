@@ -1,6 +1,6 @@
-# Filler and Hedging Patterns (22-24, 31)
+# Filler and hedging patterns (22-24, 31, 33)
 
-Detailed reference for filler and hedging AI writing patterns. Read the compact summary table in SKILL.md first to identify which patterns apply, then consult this file for rewriting guidance.
+Rewriting guidance for filler and hedging patterns. The index in SKILL.md says which apply.
 
 ---
 
@@ -19,7 +19,7 @@ Detailed reference for filler and hedging AI writing patterns. Read the compact 
 
 ## 23. Excessive Hedging
 
-**Problem:** Over-qualifying statements.
+**Problem:** Over-qualifying statements. Now measurably a GPT-family habit: Graphite (2026) found GPT-6 Astra uses "may" three times as often as GPT-4.1, with "may provide" (36x), "can provide" (23x) and "not necessarily" (18x) far more common than in Claude Opus 5. Hedging peaked with GPT-5.6 and eased slightly with GPT-6. Claude and Gemini lean the other way, towards intensifiers (#38).
 
 **Before:**
 > It could potentially possibly be argued that the policy might have some effect on outcomes.
@@ -59,7 +59,9 @@ Detailed reference for filler and hedging AI writing patterns. Read the compact 
 
 ## 33. Announced Significance and Announced Plain Speech
 
-**Words to watch:** and this matters / and it matters / and that matters, and the reason matters, which matters because, this is the important part, the key point here is, what makes this significant, I'll state this plainly, said plainly, to put it plainly, put plainly, worth saying plainly, stating plainly, worth telling you plainly, worth knowing, worth noting, let me be blunt, to be direct with you
+**Words to watch:** and this matters / and it matters / and that matters, why X matters, matters most, matters more than, the distinction matters, just as important, and the reason matters, which matters because, this is the important part, the key point here is, what makes this significant, I'll state this plainly, said plainly, to put it plainly, put plainly, worth saying plainly, stating plainly, worth telling you plainly, worth knowing, worth noting, let me be blunt, to be direct with you
+
+**Evidence (Graphite, 2026):** across all three current model families. "matters because" runs at 357 times the human rate in GPT-6 Astra and 132 times in Claude Opus 5; Opus 5.5 uses "this matters" at 116 times and "why _ matters" at 92 times; "distinction matters" never appeared in the human corpus at all. Gemini does it with "absolutely essential" and "remarkably". This has become one of the most reliable current tells.
 
 **Problem:** Two halves of one habit. The first announces that a point is significant instead of making the point and letting the reader decide. The second announces plain speech instead of just speaking plainly. Both attach a label to a sentence that should have carried its own weight, and both are load-bearing tells: a human who finds something important tends to lead with it, not to preface it with a claim about its importance.
 

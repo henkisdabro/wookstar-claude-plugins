@@ -1,41 +1,22 @@
 ---
 name: ffmpeg-cli
-description: FFmpeg CLI reference for video and audio processing, format conversion, filtering, and media automation. Use when converting video formats, resizing or cropping video, trimming by time, replacing or extracting audio, mixing audio tracks, overlaying text or images, burning subtitles, creating GIFs, generating thumbnails, building slideshows, changing playback speed, encoding with H264/H265/VP9, setting CRF/bitrate, using GPU acceleration, creating storyboards, or running ffprobe. Covers filter_complex, stream selectors, -map, -c copy, seeking, scale, pad, crop, concat, drawtext, zoompan, xfade. Do NOT use for image-only processing (use ImageMagick), live-streaming server setup (use OBS/nginx-rtmp), or NLE-style timeline editing (use a video editor).
+description: FFmpeg CLI reference for video and audio processing, format conversion, filtering and media automation. Use when converting or remuxing between formats, resizing, cropping or padding video, trimming by time or changing playback speed, replacing, extracting or mixing audio, overlaying text or images or burning subtitles, concatenating clips, creating GIFs, thumbnails, storyboards or slideshows, choosing encoding settings (H264/H265/VP9, CRF, bitrate, GPU acceleration), writing a filter_complex graph, or inspecting a file with ffprobe. Do NOT use for image-only processing (use ImageMagick), live-streaming server setup (use OBS/nginx-rtmp), or NLE-style timeline editing (use a video editor).
 allowed-tools: Bash, Read, Glob, Grep, Write, Edit
 ---
 
 # FFmpeg CLI Reference
 
-## Contents
+Needs `ffmpeg` on PATH (`ffmpeg -version`); install with `brew install ffmpeg`, `sudo apt install ffmpeg` or `scoop install ffmpeg`.
 
-- [Dependencies](#dependencies)
-- [Glossary of flags and filters](#glossary-of-flags-and-filters)
-- [Converting formats](#converting-formats)
-- [Resizing and padding](#resizing-and-padding)
-- [Trim by time](#trim-by-time)
-- [Verification and inspection](#verification-and-inspection)
-- [Reference files](#reference-files)
+The common tasks are inline below. Read the reference file for the task before writing a command it covers:
 
-## Dependencies
-
-Verify ffmpeg is installed:
-
-```sh
-ffmpeg -version
-```
-
-Install if missing:
-
-```sh
-# macOS
-brew install ffmpeg
-
-# Ubuntu/Debian
-sudo apt install ffmpeg
-
-# Windows (scoop)
-scoop install ffmpeg
-```
+| Read | When the task is |
+|---|---|
+| `references/core-concepts.md` | Deciding between `-c copy` and re-encoding, input vs output seeking and reliable trimming, `format=yuv420p`, `-movflags +faststart` |
+| `references/audio-processing.md` | Replacing, extracting or mixing audio, combining MP3 tracks, crossfade, changing audio format, merging and normalising |
+| `references/advanced-editing.md` | Playback speed, FPS change, jump cuts, cropping for social, drawtext overlay, subtitles (burn/embed/extract), combining media (overlay, logo, background, concat intro/main/outro, vstack) |
+| `references/asset-generation.md` | Image to video, slideshow with fade, Ken Burns (zoompan), GIFs, video compilation with fades, thumbnails (single/multiple/scene), image thumbnails, storyboards (scene tile/keyframe/Nth frame) |
+| `references/encoding-and-settings.md` | Choosing or tuning an encoder: optimised daily command, codec flags, H264 (libx264) CRF, H265 (libx265) Apple compatibility, VP9 (libvpx-vp9) constant quality, 1-pass vs 2-pass, GPU encoders (Nvidia, Intel, AMD, Apple) |
 
 ## Glossary of flags and filters
 
@@ -78,6 +59,8 @@ Encode MP4 to AVI (re-encodes):
 ```sh
 ffmpeg -i input.mp4 output.avi
 ```
+
+`ffmpeg -formats` and `ffmpeg -codecs` list what the installed build supports.
 
 ## Resizing and padding
 
@@ -122,48 +105,16 @@ ffmpeg -i input.mp4 -i logo.png \
 ffmpeg -i input.mp4 -ss 00:00:10 -to 00:00:25 output.mp4
 ```
 
-For faster but less accurate trimming, see the **Input/output seeking** section in `references/encoding-and-settings.md`. For the `-c copy` trade-offs when trimming, see `references/core-concepts.md`.
+For faster but less accurate trimming, or trimming with `-c copy`, read `references/core-concepts.md` first.
 
-## Verification and inspection
+## Verify the output
 
-List supported formats:
-
-```sh
-ffmpeg -formats
-```
-
-List supported codecs:
+[ffprobe](https://ffmpeg.org/ffprobe.html) provides structured metadata about media files:
 
 ```sh
-ffmpeg -codecs
+ffprobe -show_streams -i output.mp4
 ```
 
-### ffprobe
+Done when the streams it lists match the codec, resolution and duration the task asked for.
 
-[ffprobe](https://ffmpeg.org/ffprobe.html) provides structured metadata about media files.
-
-Show detailed stream information:
-
-```sh
-ffprobe -show_streams -i input.mp4
-```
-
-Verify moov atom position (faststart):
-
-```sh
-ffprobe -v trace -i input.mp4
-```
-
-Look for `type:'moov'` near the beginning of output to confirm faststart is applied.
-
-## Reference files
-
-Load these on demand with the Read tool when the task requires deeper coverage.
-
-| File | Topics |
-|---|---|
-| `references/core-concepts.md` | `-c copy` (remux vs transcode), input/output seeking, encoding quick ref (H264/H265/VP9 CRF ranges), GPU acceleration overview, `format=yuv420p`, `-movflags +faststart` |
-| `references/audio-processing.md` | Replace audio, extract audio, mix audio, combine MP3 tracks, crossfade, change audio format, merge and normalise |
-| `references/advanced-editing.md` | Playback speed, FPS change, jump cuts, video cropping for social, drawtext overlay, subtitles (burn/embed/extract), combine media (overlay, logo, background, concat intro/main/outro, vstack) |
-| `references/asset-generation.md` | Image to video, slideshow with fade, Ken Burns (zoompan), GIFs, video compilation with fades, thumbnails (single/multiple/scene), image thumbnails, storyboards (scene tile/keyframe/Nth frame) |
-| `references/encoding-and-settings.md` | Optimised daily command, H264 (libx264) deep-dive, H265 (libx265) Apple compat, VP9 (libvpx-vp9) constant quality, 1-pass vs 2-pass, `-c copy` detailed, seeking detailed, GPU detailed (Nvidia/Intel/AMD) |
+To confirm faststart was applied, see the faststart section of `references/core-concepts.md`.

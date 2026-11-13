@@ -5,6 +5,7 @@ import type { ServerWebSocket } from "bun";
 import { build } from "./build";
 import { isAllowedOpenUrl } from "./open-url";
 import { openCommand, wslMountRoot } from "./open-command";
+import { remoteState, remoteNote, isLoopbackHost, isAllowedOrigin } from "./remote";
 import { parseServeArgs, listChannels, USAGE, type ServeArgs } from "./cli-args";
 
 function parseArgs(): ServeArgs {
@@ -106,6 +107,12 @@ async function main(): Promise<void> {
   const sockets = new Set<ServerWebSocket<WsData>>();
   let lastRequest = Date.now();
 
+  // Remote awareness (scripts/remote.ts). Only an explicit remote mode changes
+  // behaviour; a suspected remote session gets a note and nothing else.
+  const remote = remoteState(process.env, { platform: process.platform, isWSL: isWSL(), flag: args.remote });
+  const remoteOn = remote?.mode === "on";
+  let note: string | null = null;
+
   const server = Bun.serve<WsData, Record<string, never>>({
     port: 0,
     hostname: "127.0.0.1",
@@ -113,13 +120,22 @@ async function main(): Promise<void> {
       lastRequest = Date.now();
       const url = new URL(req.url);
 
+      // Loopback only, by name as well as by socket: a page on another host
+      // name that resolves here (DNS rebinding) must not read the draft, and
+      // another site must not drive /open or the reload socket.
+      if (!isLoopbackHost(req.headers.get("host"))) {
+        return new Response("Forbidden", { status: 403 });
+      }
+      const sameSite = isAllowedOrigin(req.headers.get("origin"));
+
       if (url.pathname === "/ws") {
+        if (!sameSite) return new Response("Forbidden", { status: 403 });
         if (srv.upgrade(req, { data: { kind: "reload" } })) return;
         return new Response("WS upgrade failed", { status: 400 });
       }
 
       if (url.pathname === "/check-modified") {
-        return Response.json({ mtime: lastBuildAt / 1000, error: buildError });
+        return Response.json({ mtime: lastBuildAt / 1000, error: buildError, remote: note });
       }
 
       // Open a destination URL via the HOST's default handler (browser, mail
@@ -127,6 +143,10 @@ async function main(): Promise<void> {
       // webview (a terminal browser pane, VS Code/Zed in-app browsers) where
       // window.open lands in that webview instead of the user's real apps.
       if (url.pathname === "/open" && req.method === "POST") {
+        if (!sameSite) return new Response("Forbidden", { status: 403 });
+        // Remote mode: this machine's handlers are not the user's. The page
+        // opens the link itself (see openExternal in templates/shell.html).
+        if (remoteOn) return new Response("Remote mode", { status: 403 });
         const target = url.searchParams.get("url") ?? "";
         if (!isAllowedOpenUrl(target)) {
           return new Response("URL not allowed", { status: 400 });
@@ -141,6 +161,12 @@ async function main(): Promise<void> {
         if (buildError) {
           return new Response(errorPage(buildError), {
             status: 200,
+            headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
+          });
+        }
+        if (remoteOn) {
+          const html = readFileSync(initialOutput, "utf8").replace("<head>", "<head><script>window.__MESSAGE_REMOTE=1</script>");
+          return new Response(html, {
             headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
           });
         }
@@ -164,9 +190,11 @@ async function main(): Promise<void> {
   });
 
   const url = `http://127.0.0.1:${server.port}/`;
-  console.log(url);
+  if (remote) note = remoteNote(remote, server.port as number);
+  // One write, so a reader of this output never sees the URL without its note.
+  console.log(note ? `${url}\n${note}` : url);
 
-  if (!noOpen) openBrowser(url);
+  if (!noOpen && !remoteOn) openBrowser(url);
 
   // Live-reload pipeline. Two triggers feed one debounced, mtime-deduped
   // rebuild:

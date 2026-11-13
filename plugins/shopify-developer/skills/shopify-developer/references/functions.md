@@ -17,11 +17,11 @@ A Function is a WebAssembly module inside an app. Shopify runs it at a fixed poi
 | Order Routing (location rules) | - | Rank locations for fulfilment |
 | Pickup Point / Local Pickup Delivery Option Generators | - | Generate pickup options |
 
-Targets, input fields and output operations differ per API and per version: fetch the API's schema through the Dev MCP or <https://shopify.dev/docs/api/functions> before writing the input query or the output. The older separate Product, Order and Shipping Discount APIs are superseded by the single Discount API - port them when touching them.
+Targets, input fields and output operations differ per API and per version: fetch the API's schema through the Dev MCP or <https://shopify.dev/docs/api/functions> before writing the input query or the output. The separate Product, Order and Shipping Discount APIs are legacy; the single Discount API covers all three - port them when touching them.
 
 ## Limits that shape the code
 
-Fixed: compiled binary 256 kB, linear memory 10,000 kB, stack 512 kB, logs 1 kB. Per run (scaled for carts up to 200 lines): 11 million instructions, 128 kB input, 20 kB output. Check <https://shopify.dev/docs/api/functions> if a limit error appears - Shopify adjusts them.
+Fixed: compiled binary 256 KiB, linear memory 10 MiB, stack 512 kB, logs 1 kB (truncated). Per run, for carts up to 200 lines and scaling proportionally above that: 11 million instructions, 128 kB input, 40 kB output. Check <https://shopify.dev/docs/api/functions> if a limit error appears - Shopify adjusts them.
 
 - **Rust** is Shopify's strong recommendation; JavaScript/TypeScript (compiled with Javy) works but burns instructions fast on large carts.
 - Instruction count scales with cart size - test with a 200-line cart, not a 3-line one.

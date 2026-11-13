@@ -1,9 +1,9 @@
 {
   "name": "timezone-tools",
-  "description": "Timezone conversion and time queries across IANA timezones",
+  "description": "[RETIRED] Current Claude models convert timezones reliably on their own. This final version only shows a notice - uninstall it.",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "1.2.0"
+  "version": "2.0.0"
 }

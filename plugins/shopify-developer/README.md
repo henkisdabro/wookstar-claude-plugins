@@ -8,6 +8,8 @@ Shopify reference for Liquid, Online Store 2.0 themes, theme performance, debugg
 /plugin install shopify-developer@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install shopify-developer --marketplace henkisdabro/wookstar-claude-plugins`
+
 Recommended alongside it, for live schema and validation:
 
 ```bash

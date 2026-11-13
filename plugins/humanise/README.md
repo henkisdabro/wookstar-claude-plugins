@@ -1,8 +1,16 @@
 # Humanise
 
-Remove AI tell-tales from text. Detects and eliminates 34 patterns of AI-generated writing including inflated language, promotional tone, AI vocabulary, vague expressions of connection, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks and leaked chatbot citation artifacts.
+Remove AI tell-tales from text. Detects and eliminates 39 patterns of AI-generated writing including inflated language, promotional tone, AI vocabulary, vague expressions of connection, em dash overuse, filler phrases, sycophantic tone, placeholder text, formulaic structure, thematic breaks and leaked chatbot citation artifacts.
 
-Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cleanup. Last checked against the source: 2026-10-04.
+Based on Wikipedia's "Signs of AI writing" guide maintained by WikiProject AI Cleanup, plus 2025-26 corpus studies of model tells. Last checked against the sources: 2026-11-11.
+
+## Installation
+
+```
+/plugin install humanise@wookstar-claude-plugins
+```
+
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install humanise --marketplace henkisdabro/wookstar-claude-plugins`
 
 ## Skills
 
@@ -17,7 +25,7 @@ Not for grammar-only proofreading, spell checking or translation - ask for those
 The skill:
 
 1. Calibrates on a sample of the author's own writing, when one is available
-2. Scans for all 34 patterns
+2. Scans for all 39 patterns
 3. Reads detailed reference files for found patterns
 4. Rewrites flagged sections (replaces with voice, not just removes)
 5. Audits its own draft for remaining AI tells and for invented facts

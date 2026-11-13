@@ -5,7 +5,7 @@ description: Builds HTML slide decks with Quarto's Reveal.js format - new decks 
 
 # Quarto Reveal.js presentations
 
-Quarto renders a `.qmd` file with `format: revealjs` into a self-contained HTML slide deck. This file covers the everyday workflow and syntax; `references/` carries the full option set.
+Quarto renders a `.qmd` file with `format: revealjs` into an HTML slide deck - `deck.html` plus a `deck_files/` folder, or a single file with `embed-resources: true`. This file covers the everyday workflow and syntax; `references/` carries the full option set.
 
 ## Creating a new deck
 
@@ -57,8 +57,6 @@ Visible slide content here...
 
 Content that appears after a pause
 ```
-
-Press `S` during the presentation to open speaker view.
 
 ### Columns
 
@@ -136,7 +134,7 @@ format:
   ::: {.small-table}
   | Metric | Value |
   |--------|------:|
-  | Revenue | $120,000 |
+  | Revenue | €120,000 |
   | Orders | 1,500 |
   :::
   ```
@@ -166,7 +164,7 @@ format:
   :::
   ::: {.bar-container}
   ::: {.bar-fill .green style="width: 95%"}
-  $120K
+  €120K
   :::
   :::
   :::
@@ -204,7 +202,7 @@ format:
 | `M` | Slide menu |
 | `?` | All shortcuts |
 
-For PDF: open the rendered deck in Chrome, press `E`, then print (Cmd/Ctrl+P) and save as PDF with margins set to none and background graphics on. `references/presenting.md` covers the `?print-pdf` URL route and the `pdf-*` options (fragments per page, pages per slide).
+For PDF: open the rendered deck in Chrome, press `E`, then print (Cmd/Ctrl+P) and save as PDF with layout landscape, margins none and background graphics on. `references/presenting.md` covers the `?print-pdf` URL route and the `pdf-*` options (fragments per page, pages per slide).
 
 ## Reference files
 

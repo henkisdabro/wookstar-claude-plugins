@@ -45,3 +45,6 @@ node_modules/
 # Agent refactor working notes
 .agent-refactor/
 __pycache__/
+
+# Plugin eval run output
+evals/results/

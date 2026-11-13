@@ -14,7 +14,7 @@ npm install --save-dev @types/tampermonkey
 pnpm add -D @types/tampermonkey
 ```
 
-Current version: `@types/tampermonkey@5.0.5` (updated October 2025, maintained on DefinitelyTyped).
+Maintained on DefinitelyTyped; `5.5.0` (August 2026) was the latest when this was checked in November 2026. `npm view @types/tampermonkey version` prints the current one.
 
 ### tsconfig.json
 

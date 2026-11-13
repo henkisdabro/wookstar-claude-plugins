@@ -314,13 +314,13 @@ Separate log generation from log processing.
 ```groovy
 dependencies {
     // SLF4J with Logback (log4j 1.x is end-of-life); pulls in slf4j-api
-    implementation 'ch.qos.logback:logback-classic:1.6.5'
+    implementation 'ch.qos.logback:logback-classic:1.6.6'
 }
 ```
 
 ### Recommended Stack
 
-- **Fluentd** - Collect stream of logs
+- **Fluent Bit, Fluentd or Logstash** - Collect the stream of logs
 - **Elasticsearch** - Storage and indexing
 - **Kibana** - Visualisation and dashboards
 

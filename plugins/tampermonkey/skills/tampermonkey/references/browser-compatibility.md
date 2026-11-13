@@ -49,36 +49,15 @@ Chrome, Edge and other Chromium browsers run the Manifest V3 build of Tampermonk
 
 ### The user must allow userscripts
 
-No script runs until the user enables **Allow User Scripts** on Tampermonkey's extension details page (Chrome 138+), or Developer Mode on `chrome://extensions` / `edge://extensions` where that toggle is absent. Tampermonkey 5.5.1 made this permission mandatory for injection. When a user reports that nothing runs at all, ask about this before debugging the script. See [Tampermonkey FAQ Q209](https://www.tampermonkey.net/faq.php?q=Q209).
+No script runs until the user enables **Allow User Scripts** (Chrome 138+) or Developer Mode. Steps and symptom: [common-pitfalls.md](common-pitfalls.md), Pitfall 15.
 
 ### What Doesn't Work in MV3
 
-1. **`@webRequest` / `GM_webRequest`** - not available in MV3 builds since Tampermonkey 5.2
+1. **`@webRequest` / `GM_webRequest`** - not available in the MV3 builds of Tampermonkey 5.2 and later; page-level alternatives are in [web-requests.md](web-requests.md)
 2. **Some background script patterns** - Persistent background pages removed
 3. **Certain CSP bypass methods** - More restricted
 
 Users who still need an MV2 build are covered by [FAQ Q408](https://www.tampermonkey.net/faq.php?q=Q408); Chrome has been removing the policy that allows it, so do not design scripts around it.
-
-### Workarounds
-
-```javascript
-// Instead of @webRequest, use page-level interception
-// @grant unsafeWindow
-
-// Intercept fetch
-const originalFetch = unsafeWindow.fetch;
-unsafeWindow.fetch = function(...args) {
-    console.log('Intercepted fetch:', args[0]);
-    return originalFetch.apply(this, args);
-};
-
-// Intercept XMLHttpRequest
-const originalOpen = unsafeWindow.XMLHttpRequest.prototype.open;
-unsafeWindow.XMLHttpRequest.prototype.open = function(method, url) {
-    console.log('Intercepted XHR:', method, url);
-    return originalOpen.apply(this, arguments);
-};
-```
 
 ---
 
@@ -86,37 +65,7 @@ unsafeWindow.XMLHttpRequest.prototype.open = function(method, url) {
 
 ### cloneInto and exportFunction
 
-Firefox's USERSCRIPT_WORLD requires special functions to share data with the page.
-
-```javascript
-// Share object with page (Firefox)
-function shareWithPage(name, value) {
-    if (typeof cloneInto !== 'undefined') {
-        // Firefox - must use cloneInto
-        unsafeWindow[name] = cloneInto(value, unsafeWindow, {
-            cloneFunctions: true
-        });
-    } else {
-        // Chrome - direct assignment works
-        unsafeWindow[name] = value;
-    }
-}
-
-// Export function for page to call (Firefox)
-function exportToPage(name, fn) {
-    if (typeof exportFunction !== 'undefined') {
-        // Firefox
-        unsafeWindow[name] = exportFunction(fn, unsafeWindow);
-    } else {
-        // Chrome
-        unsafeWindow[name] = fn;
-    }
-}
-
-// Usage
-shareWithPage('myData', { count: 42, items: ['a', 'b'] });
-exportToPage('myFunction', (arg) => console.log('Called with:', arg));
-```
+Firefox's USERSCRIPT_WORLD (`@sandbox JavaScript`) needs `cloneInto` and `exportFunction` to share objects and functions with the page; Chrome assigns to `unsafeWindow` directly. Usage and a cross-browser example: [sandbox-modes.md](sandbox-modes.md).
 
 ### Firefox Containers
 
@@ -214,17 +163,9 @@ if (document.readyState === 'loading') {
 }
 ```
 
-### Firefox: Strict CSP Sites
+### Strict CSP Sites
 
-Some sites have strict CSP that even Tampermonkey can't bypass.
-
-```javascript
-// If GM_addElement fails, try @require instead
-// @require https://example.com/library.js
-
-// Or inject via unsafeWindow
-unsafeWindow.eval('console.log("injected")');  // Last resort
-```
+See the CSP section of [sandbox-modes.md](sandbox-modes.md).
 
 ### Edge: Extension Sync Issues
 

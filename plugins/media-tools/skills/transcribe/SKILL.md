@@ -1,6 +1,6 @@
 ---
 name: transcribe
-description: Transcribe audio or video files to text locally with Whisper - mlx-whisper on macOS with Apple Silicon, openai-whisper elsewhere. Use when the user wants to transcribe a file, get a transcript of a recording, turn a voice note into text, transcribe a meeting, podcast or interview, produce subtitles (SRT/VTT) from audio, or transcribe audio just downloaded with youtube-search. Do NOT use for finding or downloading YouTube videos - use youtube-search; for converting, trimming or extracting audio - use ffmpeg-cli; for live dictation or real-time speech recognition.
+description: Transcribe audio or video files to text locally with Whisper - mlx-whisper on macOS with Apple Silicon, openai-whisper elsewhere. Use when the user wants a transcript of an audio or video file (a meeting, podcast or interview recording), a voice note turned into text, a recording in a stated language transcribed, subtitles (SRT/VTT) produced from audio, or audio just downloaded with youtube-search transcribed. Do NOT use for finding or downloading YouTube videos - use youtube-search; for converting, trimming or extracting audio - use ffmpeg-cli; for live dictation or real-time speech recognition.
 argument-hint: <audio-file> [language]
 compatibility: macOS with Apple Silicon (openai-whisper fallback on other platforms)
 allowed-tools: Bash, Read, Write
@@ -19,7 +19,7 @@ Local speech-to-text with Whisper. On Apple Silicon, [mlx-whisper](https://pypi.
    ffmpeg -i "input.opus" -c:a aac -b:a 128k "input.m4a"
    ```
 
-3. **Pick the language.** Pass `--language <code>` (`en`, `es`, `fr`, ...) whenever the user states it or the context makes it obvious - auto-detection costs time and can misidentify short clips. Omit the flag only when the language is genuinely unknown.
+3. **Pick the language.** Pass `--language <code>` (`en`, `es`, `fr`, ...) whenever the user states it or the context makes it obvious - auto-detection costs time and can misidentify short clips. Omit the flag only when the language is genuinely unknown. Done when you have a language code or a reason there is none.
 4. **Pick the engine** with `uname -sm`: `Darwin arm64` runs mlx-whisper; anything else runs openai-whisper.
 5. **Run it** (allow up to 600 s; the first run also downloads the model, about 1.5 GB):
 

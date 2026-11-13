@@ -1,6 +1,6 @@
 # Core Concepts
 
-Foundational concepts that apply across all ffmpeg tasks.
+Stream copy, seeking, pixel format and faststart - the decisions that apply to every ffmpeg command.
 
 ## -c copy (stream copy)
 
@@ -12,7 +12,7 @@ Use `-c copy` whenever possible. It re-muxes video and audio without re-encoding
 - `-c:v copy` - copy video only
 - `-c:a copy` - copy audio only (same as `-acodec copy`)
 
-**Remuxing vs transcoding:** Remuxing rewraps streams into a new container without altering them. Transcoding changes compression and quality. MP4 can be remuxed to MKV and MOV because they are all H264 containers.
+**Remuxing vs transcoding:** Remuxing rewraps streams into a new container without altering them. Transcoding changes compression and quality. MP4 can be remuxed to MKV or MOV because all three containers can carry the same codecs (H264 or H265 video, AAC audio). A remux fails only when the target container does not support one of the streams' codecs.
 
 ### When NOT to use -c copy
 
@@ -46,65 +46,24 @@ Decodes but discards input until the timestamp. Frame-accurate but slower becaus
 
 **Use output seeking WITHOUT `-c:v copy`** (re-encode the output) for reliable trimming:
 
-- There is an [open bug](https://trac.ffmpeg.org/ticket/8189) with input seeking + `-c:v copy` ([discussion](https://stackoverflow.com/questions/57450657/ffmpeg-fails-to-trim-beginning-of-clip))
+- Input seeking + `-c:v copy` can fail to trim the start of the clip ([bug report](https://trac.ffmpeg.org/ticket/8189)) ([discussion](https://stackoverflow.com/questions/57450657/ffmpeg-fails-to-trim-beginning-of-clip))
 - Output seeking with `-c:v copy` can produce black frames due to copying frames that depend on a missing keyframe ([explanation](https://trac.ffmpeg.org/wiki/Seeking#codec-copy))
 
 From [ffmpeg docs](https://ffmpeg.org/ffmpeg.html#Main-options):
 
-> When used as an input option, seeks in this input file to position. In most formats it is not possible to seek exactly, so ffmpeg will seek to the closest seek point before position. When transcoding and -accurate_seek is enabled (the default), this extra segment between the seek point and position will be decoded and discarded. When doing stream copy or when -noaccurate_seek is used, it will be preserved.
+> When used as an input option (before -i), seeks in this input file to position. Note that in most formats it is not possible to seek exactly, so ffmpeg will seek to the closest seek point before position. When transcoding and -accurate_seek is enabled (the default), this extra segment between the seek point and position will be decoded and discarded. When doing stream copy or when -noaccurate_seek is used, it will be preserved.
 
 The re-encoded output may have a different bitrate - adjust accordingly.
-
-## Encoding quick reference
-
-### Codec flags
-
-| Flag | Purpose |
-|---|---|
-| `-c:v` | Video encoder |
-| `-c:a` | Audio encoder |
-| `-c:a aac` | AAC audio (default, good practice to specify) |
-| `-c:a libmp3lame` | [MP3 encoding](https://trac.ffmpeg.org/wiki/Encode/MP3) |
-| `-an` | Disable audio output |
-
-### H264 (libx264)
-
-[Reference](https://trac.ffmpeg.org/wiki/Encode/H.264)
-
-Default for MP4 output. Always specify `-c:v libx264` explicitly.
-
-- **CRF scale:** 0-51 (0 = lossless 8-bit, 23 = default, 51 = worst)
-- **Recommended range:** 17-28, consider 17-18 visually lossless
-- CRF +6 = roughly half bitrate; CRF -6 = roughly double bitrate
-- Common high-quality: `-crf 18`, better quality: `-crf 10`
-
-### H265 (libx265)
-
-Similar controls to H264. Use `-vtag hvc1` for Apple device compatibility (iOS AirDrop, etc.):
-
-```sh
-ffmpeg -i input.mp4 -c:v libx265 -vtag hvc1 -c:a copy output.mp4
-```
-
-### VP9 (libvpx-vp9)
-
-[Reference](https://trac.ffmpeg.org/wiki/Encode/VP9)
-
-Open, royalty-free format used by YouTube. Saves 20-50% bitrate vs libx264 at same quality.
-
-- **CRF range:** 0-63 (lower = better, 31 recommended for 1080p)
-- **Constant quality:** must use `-crf` with `-b:v 0`
-- Default audio encoder: libopus
-
-```sh
-ffmpeg -i input.mp4 -c:v libvpx-vp9 -crf 15 -b:v 0 -c:a libopus output.webm
-```
 
 ## format=yuv420p
 
 [Reference](https://trac.ffmpeg.org/wiki/Encode/H.264#Encodingfordumbplayers)
 
 H264 YUV planar colour format for playback compatibility in most players. Use when transforming images to video or when experiencing playback issues.
+
+```sh
+ffmpeg -i input.mp4 -vf format=yuv420p -c:v libx264 output.mp4
+```
 
 > You may need to use `-vf format=yuv420p` (or the alias `-pix_fmt yuv420p`) for your output to work in QuickTime and most other players. These players only support the YUV planar color space with 4:2:0 chroma subsampling for H.264 video.
 
@@ -132,30 +91,6 @@ ffprobe -v trace -i output.mp4
 
 Look for `type:'moov'` near the beginning of output.
 
-## GPU acceleration overview
+## Choosing an encoder
 
-### Nvidia (NVENC)
-
-[Reference](https://trac.ffmpeg.org/wiki/HWAccelIntro#NVENC)
-
-```sh
-# H264 via Nvidia GPU
-ffmpeg -i input.avi -c:v h264_nvenc output.mp4
-
-# H265 via Nvidia GPU
-ffmpeg -i input.avi -c:v hevc_nvenc output.mp4
-```
-
-### Intel Quick Sync Video (QSV)
-
-[Reference](https://trac.ffmpeg.org/wiki/Hardware/QuickSync)
-
-```sh
-ffmpeg -init_hw_device qsv=hw -filter_hw_device hw -i input.avi -c:v h264_qsv output.mp4
-```
-
-### AMD (VAAPI)
-
-[Reference](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
-
-More complex setup and less broadly supported than Nvidia/Intel options.
+Codec flags, CRF values for H264, H265 and VP9, 1-pass vs 2-pass and GPU encoders are in [encoding-and-settings.md](encoding-and-settings.md).

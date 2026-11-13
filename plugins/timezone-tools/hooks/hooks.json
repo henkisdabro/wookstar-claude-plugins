@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"timezone-tools@wookstar-claude-plugins is retired. Current Claude models convert timezones on their own - just ask. Remove it: claude plugin uninstall timezone-tools@wookstar-claude-plugins - details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

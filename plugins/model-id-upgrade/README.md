@@ -8,7 +8,7 @@ When a new Claude model ships, old model IDs linger in skills, agent definitions
 2. Scans read-only for every stale form of a family: dated and dateless API IDs, old-order `claude-3-5-sonnet-*`, `-latest`, dotted versions, OpenRouter `anthropic/...`, Bedrock (`us.anthropic....-v1:0`) and Vertex (`@YYYYMMDD`) forms, and prose such as "Sonnet 4.5".
 3. Splits hits into **TARGET** (skills, agents, configs, code - candidates for editing) and **RECORD** (changelogs, logs, transcripts, backups, caches, vendored code - never rewritten).
 4. Reports per family and per repo, then asks for scope (instructions only, plus runtime code, or report only) and whether to commit.
-5. Edits ID-shaped strings only, re-scans for leftovers, and commits per repo if approved.
+5. Edits ID-shaped strings only, re-scans for leftovers, and commits per repo if approved. For runtime code it flags call sites whose request parameters the new model may reject, since a new ID there is an API migration.
 
 ## Prerequisites
 
@@ -21,6 +21,8 @@ When a new Claude model ships, old model IDs linger in skills, agent definitions
 ```
 /plugin install model-id-upgrade@wookstar-claude-plugins
 ```
+
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install model-id-upgrade --marketplace henkisdabro/wookstar-claude-plugins`
 
 ## Usage
 

@@ -4,13 +4,13 @@
 [![Licence: MIT](https://img.shields.io/github/license/henkisdabro/wookstar-claude-plugins?color=green)](./LICENSE)
 [![Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-d97757)](https://code.claude.com/docs)
 
-A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **32 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
+A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **31 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
 
-> ✨ **New in 7.1.0:** `message` 4.0.0 - ask your agent for an email, a WhatsApp or a post, and the new **Paste Ready** preview formats the draft for 22 destinations (Gmail, Outlook, WhatsApp, Slack, Telegram, Discord, X, LinkedIn and more), with length counters and automatic X threads - see the [CHANGELOG](./CHANGELOG.md).
+> ✨ **New in 8.0.0:** the `google-tagmanager` and `google-analytics` skills are rebuilt as guardrails - a glossary of the terms models blur, the mistakes they typically make, and what changed recently (GTM's optimised container and 2026 install snippet, Data Manager in Analytics) - and both can now drive a command-line tool as well as their MCP server. Every other skill was fact-checked against vendor docs and tightened. See the [CHANGELOG](./CHANGELOG.md).
 >
-> 📦 **In 7.0.0:** `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`, OCR and document parsing in `documents`, and GA4 BigQuery querying in `google-analytics`. Every skill was re-checked against current Claude Code and live vendor docs, and most were rewritten - see the [CHANGELOG](./CHANGELOG.md).
+> ⬆️ **Upgrading from 7.x?** Four things to check: `google-analytics` now asks for its credentials, `mcp-google-workspace` loads Gmail, Drive and Calendar only, `timezone-tools` is retired, and the plugins retired in 7.0.0 are gone. Run [`scripts/upgrade.sh`](./scripts/upgrade.sh) or follow [MIGRATION.md](./MIGRATION.md) - see [Upgrading](#upgrading).
 >
-> ⬆️ **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md). Retired plugins stay listed for one release as `[RETIRED]` entries that only show a notice.
+> 📦 **Earlier:** 7.1.0 brought `message` 4.0.0 with the Paste Ready preview for 22 destinations; 7.0.0 added `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`.
 
 ---
 
@@ -19,12 +19,12 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 | Category | Plugins | What you get |
 |---|---:|---|
 | 🛠️ [Development](#development) | 6 | PRP planning and containerisation, git and GitHub Actions with releases, React/Next.js rules, Shopify themes, browser userscripts, Google Apps Script |
-| 📊 [Analytics](#analytics) | 3 | GTM, GA4, Google Ads automation |
+| 📊 [Analytics](#analytics) | 3 | GTM and GA4 guardrails with MCP servers and CLIs, GA4 BigQuery querying, Google Ads automation |
 | 🤖 [AI](#ai) | 2 | Claude model ID upgrades, Perplexity search MCP server |
 | ⚡ [Productivity](#productivity) | 4 | Rich-text email drafts, Gmail/Drive/Calendar, n8n, Excalidraw |
 | 📝 [Content](#content) | 6 | PDF extraction, OCR and parsing, Typst, Quarto slide decks, FFmpeg, YouTube search and transcription, AI-text humaniser |
 | 💹 [Data](#data) | 3 | Stocks, crypto, FX rates |
-| 🔧 [Utilities](#utilities) | 3 | Timezone tools, MikroTik routers, weather |
+| 🔧 [Utilities](#utilities) | 2 | MikroTik routers, weather |
 | 🩺 [LSP servers](#lsp-servers) | 5 | Real-time diagnostics for Bash, CSS, HTML, JSON, YAML |
 
 > Two install surfaces - `/plugin install …` runs **inside** an active Claude Code session; `claude plugin install …` runs in a **plain terminal**. Both accept the same arguments. See [Installation Methods](#installation-methods) for the full mapping.
@@ -50,8 +50,8 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 ### 📊 Analytics
 
-- **`google-tagmanager`** - GTM containers, tags, triggers, variables, datalayer, debugging, custom templates. Includes GTM API MCP server (Stape.ai, browser auth).
-- **`google-analytics`** - GA4 events, ecommerce, Measurement Protocol, privacy compliance, and cost-controlled querying of the GA4 BigQuery export. Includes Analytics API MCP server (requires service account).
+- **`google-tagmanager`** - Guardrails for GTM work: a glossary of the terms models blur (event, tag, pixel, Google tag, Destination), the three JavaScript environments side by side, the optimised container and 2026 install snippet, and a pitfalls list - with links to Google's docs for the rest. Includes the Stape GTM MCP server (browser sign-in) and optional support for the `gtm` CLI from owntag.
+- **`google-analytics`** - Guardrails for GA4 work: a glossary (event, key event versus conversion, parameter versus dimension, the IDs), why reports, the Data API and BigQuery disagree, Data Manager, one checked limits table and a pitfalls list - plus cost-controlled querying of the GA4 BigQuery export. Includes Google's read-only Analytics MCP server and optional support for the `ga` CLI for configuration changes.
 - **`google-ads-scripts`** - AdsApp campaign automation, bid management, keyword optimisation, reporting.
 
 <a id="ai"></a>
@@ -59,16 +59,16 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 ### 🤖 AI
 
 - **`model-id-upgrade`** - Finds stale Claude model IDs across a repo or machine, separates historical records from live config, and upgrades only the targets after your approval.
-- **`mcp-perplexity`** - Perplexity AI search and information retrieval.
+- **`mcp-perplexity`** - Perplexity AI search and information retrieval, for when you want Perplexity's cited answers rather than the built-in web search.
 
 <a id="productivity"></a>
 
 ### ⚡ Productivity
 
 - **`message`** - Email, WhatsApp, Slack and social-post drafts with **live browser preview** across 22 destinations. Triggered by phrases like "draft an email to…", "write a WhatsApp message…" or "write a tweet…". Bun-powered preview server starts automatically.
-- **`mcp-google-workspace`** - Gmail, Drive, Calendar (OAuth).
-- **`mcp-n8n`** - n8n workflow automation.
-- **`mcp-excalidraw`** - Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, export to excalidraw.com.
+- **`mcp-google-workspace`** - Gmail, Drive and Calendar through your own Google OAuth client; 38 tools, several of which act as you. If you only need read access, Claude's built-in Google connectors are less setup.
+- **`mcp-n8n`** - n8n node and template lookup, workflow validation, and reading and writing workflows on your instance.
+- **`mcp-excalidraw`** - Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, export to excalidraw.com. Third-party hosted server.
 
 <a id="content"></a>
 
@@ -87,14 +87,13 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 - **`mcp-alphavantage`** - Stock market data, company info, financial indicators (OAuth sign-in through `/mcp`).
 - **`mcp-coingecko`** - Cryptocurrency prices and market data (demo API key).
-- **`mcp-currency-conversion`** - Real-time FX exchange rates (no API key).
+- **`mcp-currency-conversion`** - Real-time FX exchange rates (no API key). Community-hosted server, best-effort.
 
 <a id="utilities"></a>
 
 ### 🔧 Utilities
 
-- **`timezone-tools`** - Timezone conversions and time queries across IANA timezones.
-- **`mcp-mikrotik`** - MikroTik router management and network automation.
+- **`mcp-mikrotik`** - MikroTik router management over SSH: about 220 tools, most of which write to the router.
 - **`mcp-open-meteo`** - Weather and climate data (no API key).
 
 <a id="lsp-servers"></a>
@@ -141,6 +140,12 @@ Or from your terminal:
 claude plugin marketplace add henkisdabro/wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later you can skip this step and install in one line:
+
+```
+/plugin install message --marketplace henkisdabro/wookstar-claude-plugins
+```
+
 ### 2. Install the plugins you want
 
 Pick from the [catalogue above](#plugin-catalogue). Pattern is always `<name>@wookstar-claude-plugins`. A few common combinations:
@@ -169,7 +174,44 @@ Most plugins **trigger automatically** when you describe what you want in plain 
 
 The skill loads, generates the draft, and (for `message`) opens a live browser preview. For commands that have explicit slash forms (e.g. `/containerize` from the developer plugin), type the command directly.
 
+A few more things to ask once the matching plugin is installed:
+
+| Plugin | Try |
+|---|---|
+| `documents` | *"This PDF is a scan - make it searchable and pull out the tables."* |
+| `google-analytics` | *"Which landing pages lost the most sessions last month compared with the month before?"* |
+| `google-tagmanager` | *"Audit this container for tags that fire without consent."* |
+| `git-github` | *"Check every action version in my workflows."* then `/release minor` |
+| `media-tools` | *"Find the three most-viewed YouTube videos on sGTM this year and transcribe the first."* |
+| `humanise` | *"Humanise this draft."* |
+| `model-id-upgrade` | *"A new Claude model is out - upgrade the model IDs in this repo."* |
+| `quarto-revealjs` | *"Turn these meeting notes into a slide deck."* |
+
 If a plugin needs an API key or URL, Claude Code asks for it when you enable the plugin - see [Credentials](#credentials).
+
+<a id="prerequisites"></a>
+
+### Prerequisites
+
+Skill-only plugins such as `shopify-developer`, `tampermonkey`, `humanise`, `react-best-practices` and the Google scripting and analytics references need nothing installed. The rest call tools on your machine:
+
+| Plugin | Needs |
+|---|---|
+| `message` | [Bun](https://bun.sh) |
+| `documents` | [uv](https://docs.astral.sh/uv/); OCRmyPDF for `ocr`; LiteParse and AILANG Parse for `document-parse` - see its [README](./plugins/documents/README.md) |
+| `media-tools` | yt-dlp, ffmpeg, and mlx-whisper or openai-whisper |
+| `ffmpeg` | ffmpeg |
+| `typst` | Typst |
+| `quarto-revealjs` | Quarto |
+| `git-github` | uv, and the `gh` CLI for releases |
+| `model-id-upgrade` | uv and ripgrep |
+| `developer` | Docker or Podman for `/containerize` |
+| `google-analytics` | pipx for the bundled MCP server |
+| `mcp-coingecko`, `mcp-n8n`, `mcp-open-meteo`, `mcp-perplexity` | Node.js (`npx`) |
+| `mcp-google-workspace`, `mcp-mikrotik` | uv (`uvx`) |
+| `lsp-*` | the language server binary - see [LSP servers](#lsp-servers) |
+
+The local MCP servers are pinned to a known release, so a new upstream version reaches you only when the plugin is updated.
 
 ---
 
@@ -184,7 +226,7 @@ There are two ways to install and manage plugins. They do the same thing but run
 | Add this marketplace | `/plugin marketplace add henkisdabro/wookstar-claude-plugins` | `claude plugin marketplace add henkisdabro/wookstar-claude-plugins` |
 | Install a plugin | `/plugin install <name>@wookstar-claude-plugins` | `claude plugin install <name>@wookstar-claude-plugins` |
 | Update marketplace | `/plugin marketplace update wookstar-claude-plugins` | `claude plugin marketplace update wookstar-claude-plugins` |
-| Update a plugin | `/plugin update <name>` | `claude plugin update <name>` |
+| Update a plugin | `/plugin`, then **Update now** on the Installed tab | `claude plugin update <name>` |
 | Enable / disable | `/plugin enable <name>` · `/plugin disable <name>` | `claude plugin enable <name>` · `claude plugin disable <name>` |
 | Uninstall | `/plugin uninstall <name>` | `claude plugin uninstall <name>` |
 | List installed | `/plugin list` | `claude plugin list` |
@@ -208,12 +250,11 @@ MCP plugins that need a key or URL declare it as plugin configuration: Claude Co
 | `mcp-n8n` | instance URL and API key |
 | `mcp-mikrotik` | router host, SSH username, password, port |
 | `mcp-google-workspace` | OAuth client ID and secret |
+| `google-analytics` | credentials file and Google Cloud project ID |
 
 `mcp-alphavantage` and `google-tagmanager` (Stape) sign in through OAuth - run `/mcp` and pick the server on first use. `mcp-excalidraw`, `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
 
-Installed one of the plugins above before 7.0.0? Updating does not prompt - run `claude plugin configure <plugin>@wookstar-claude-plugins`, or let the upgrade script fill the values in. A startup notice reminds you until you do.
-
-`google-analytics` is the exception: its server uses Google Application Default Credentials, so export `GOOGLE_APPLICATION_CREDENTIALS` (path to a credentials file) and `GOOGLE_CLOUD_PROJECT`. See its [README](./plugins/google-analytics/README.md).
+Installed one of the plugins above before it took prompted settings (7.0.0, or 2.0.0 for `google-analytics`)? Updating does not prompt - run `claude plugin configure <plugin>@wookstar-claude-plugins`, or let the upgrade script fill the values in. A startup notice reminds you until you do.
 
 ---
 
@@ -235,16 +276,40 @@ It is added automatically the first time you start Claude Code interactively. Pl
 
 ---
 
+<a id="upgrading"></a>
+
 ## ⬆️ Upgrading
 
-### From 6.x to 7.0.0
+Claude Code does not auto-update third-party marketplaces unless you turned that on, and updates carry no release notes. So after a release, either run the upgrade script or do the three steps by hand.
 
-7.0.0 retires `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` and `mcp-fetch`, moves parts of `developer`, `documents` and `shopify-developer` to official plugins, and switches MCP plugins to prompted credentials. Run the upgrade script, or hand [MIGRATION.md](./MIGRATION.md) to Claude:
+**The script** works from any earlier version, previews with `--dry-run`, and is safe to run twice:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash -s -- --dry-run   # preview
-curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade-v7.sh | bash
+curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade.sh | bash -s -- --dry-run   # preview
+curl -fsSL https://raw.githubusercontent.com/henkisdabro/wookstar-claude-plugins/main/scripts/upgrade.sh | bash
 ```
+
+**By hand:**
+
+```bash
+claude plugin marketplace update wookstar-claude-plugins          # 1. refresh the catalogue
+claude plugin update <plugin>@wookstar-claude-plugins             # 2. once per plugin you keep
+claude plugin uninstall <plugin>@wookstar-claude-plugins          # 3. for each retired plugin
+```
+
+Then restart Claude Code. Inside a session, `/plugin` does steps 2 and 3 from its Installed tab.
+
+### What each release asks of you
+
+| Coming from | What needs action | Details |
+|---|---|---|
+| **7.x to 8.0.0** | Configure `google-analytics` (`claude plugin configure google-analytics@wookstar-claude-plugins`). If you used `mcp-google-workspace` for Docs or Sheets, add the server yourself (it now loads Gmail, Drive and Calendar only). Uninstall `timezone-tools`. Uninstall any of `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare`, `mcp-fetch` still installed. | [MIGRATION.md](./MIGRATION.md#to-800-from-7x) |
+| **6.x to 7.0.0** | Replace the retired plugins with their official equivalents. Configure the MCP plugins that moved to prompted credentials. Install official plugins for the parts of `developer`, `documents` and `shopify-developer` that moved. | [MIGRATION.md](./MIGRATION.md#to-700-from-6x) |
+| **5.x to 6.0** | Swap the three umbrella plugins for the single-purpose ones. | Below |
+
+### How plugins are retired
+
+A plugin never disappears without warning. Its final version contains only a startup notice that names the replacement and the uninstall command; a later release deletes it, and Claude Code then marks an installed copy as removed. `timezone-tools` is at the notice stage now.
 
 <details>
 <summary><strong>Upgrading from v5.x</strong> (only relevant if you installed before v6.0)</summary>
@@ -275,12 +340,11 @@ find ~ -path "*/.claude/settings.json" -exec grep -l -E "productivity|marketing|
 |---|---|
 | `productivity@…` | Specific plugins (`google-apps-script`, `tampermonkey`, `message`) |
 | `marketing@…` | `google-tagmanager`, `google-analytics`, `google-ads-scripts` |
-| `utilities@…` | `timezone-tools` |
+| `utilities@…` | nothing - `timezone-tools` is retired, Claude converts timezones on its own |
 
 ### Step 3 - Install replacements
 
 ```
-/plugin install timezone-tools@wookstar-claude-plugins
 /plugin install google-apps-script@wookstar-claude-plugins
 /plugin install tampermonkey@wookstar-claude-plugins
 /plugin install google-tagmanager@wookstar-claude-plugins
@@ -338,7 +402,7 @@ cd wookstar-claude-plugins
 claude plugin validate .
 ```
 
-For contributor guidelines (manifest rules, MCP file references, LSP exception, skill style), see **[AGENTS.md](./AGENTS.md)**.
+For contributor guidelines (manifest rules, where servers are declared, version bumps, skill style), see **[AGENTS.md](./AGENTS.md)**.
 
 ---
 
@@ -346,7 +410,7 @@ For contributor guidelines (manifest rules, MCP file references, LSP exception, 
 
 Per-plugin READMEs:
 
-- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [timezone-tools](./plugins/timezone-tools/README.md) · [git-github](./plugins/git-github/README.md) · [model-id-upgrade](./plugins/model-id-upgrade/README.md) · [typst](./plugins/typst/README.md) · [quarto-revealjs](./plugins/quarto-revealjs/README.md) · [media-tools](./plugins/media-tools/README.md)
+- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [git-github](./plugins/git-github/README.md) · [model-id-upgrade](./plugins/model-id-upgrade/README.md) · [typst](./plugins/typst/README.md) · [quarto-revealjs](./plugins/quarto-revealjs/README.md) · [media-tools](./plugins/media-tools/README.md)
 - **MCP servers** - [mcp-excalidraw](./plugins/mcp-excalidraw/README.md) · [mcp-google-workspace](./plugins/mcp-google-workspace/README.md) · [mcp-mikrotik](./plugins/mcp-mikrotik/README.md) · [mcp-n8n](./plugins/mcp-n8n/README.md) · [mcp-open-meteo](./plugins/mcp-open-meteo/README.md) · [mcp-perplexity](./plugins/mcp-perplexity/README.md) · [mcp-alphavantage](./plugins/mcp-alphavantage/README.md) · [mcp-coingecko](./plugins/mcp-coingecko/README.md) · [mcp-currency-conversion](./plugins/mcp-currency-conversion/README.md)
 - **LSP servers** - [lsp-bash](./plugins/lsp-bash/README.md) · [lsp-css](./plugins/lsp-css/README.md) · [lsp-html](./plugins/lsp-html/README.md) · [lsp-json](./plugins/lsp-json/README.md) · [lsp-yaml](./plugins/lsp-yaml/README.md)
 

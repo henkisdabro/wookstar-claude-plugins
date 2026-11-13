@@ -253,31 +253,7 @@ const observer = new MutationObserver(() => {
 
 ## Pre-Delivery Checklist
 
-Before returning a userscript, verify:
-
-### Critical (Must Pass)
-
-- [ ] No hardcoded API keys, tokens, or passwords
-- [ ] @match is specific (not `*://*/*`)
-- [ ] All external URLs use HTTPS
-- [ ] User input is sanitised before DOM insertion
-- [ ] No eval() or string-based setTimeout/setInterval
-
-### Important (Should Pass)
-
-- [ ] Wrapped in IIFE with 'use strict'
-- [ ] All @grant statements are necessary
-- [ ] @connect includes all external domains
-- [ ] Error handling for async operations
-- [ ] Null checks before DOM manipulation
-
-### Recommended (Nice to Have)
-
-- [ ] @version follows semantic versioning
-- [ ] MutationObservers are cleaned up
-- [ ] Frequent operations are debounced
-- [ ] Comments explain non-obvious code
-- [ ] Works in both Chrome and Firefox
+The checklist to run before returning a script is in SKILL.md ("Pre-delivery checklist"); the sections above explain each item.
 
 ---
 

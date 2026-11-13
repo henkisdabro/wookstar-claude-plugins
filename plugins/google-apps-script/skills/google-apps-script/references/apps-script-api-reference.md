@@ -27,7 +27,7 @@ Built-in services, triggers, authorisation and limits. Every runtime is V8 - Rhi
 
 **Sandboxed JavaScript Runtime:**
 - Server-side execution
-- V8 runtime (modern JavaScript; the only runtime since Rhino's shutdown on 31 January 2026)
+- V8 runtime (modern JavaScript)
 - 6-minute execution timeout per function
 - Automatic service authorization
 

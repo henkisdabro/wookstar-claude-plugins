@@ -44,7 +44,6 @@ Done when the command for step 1 prints help without error.
 ### PDFs and images with lit
 
 ```bash
-uvx --from liteparse lit parse file.pdf --format markdown -o out.md
 uvx --from liteparse lit parse file.pdf --format json --extract-blocks -o out.json   # headings, tables, lists with bounding boxes
 uvx --from liteparse lit parse file.pdf --target-pages "1-5,10" -o out.md
 uvx --from liteparse lit parse scan.pdf --ocr-language eng --dpi 300 -o out.md       # OCR engages on pages with no text

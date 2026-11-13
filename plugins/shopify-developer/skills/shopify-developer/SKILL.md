@@ -5,12 +5,12 @@ description: Shopify theme, Liquid, Hydrogen and app development reference, with
 
 # Shopify Developer
 
-Knowledge for Liquid themes, Hydrogen and Shopify apps. Exact API schemas change every quarter, so this skill carries orientation and gotchas; Shopify's own tooling carries the live schema.
+Exact API schemas change every quarter, so this skill carries orientation and gotchas; Shopify's own tooling carries the live schema.
 
 ## Workflow
 
 1. **Pick the branch** from the table below and read only those reference files. Done when you have read every file the task's branch lists.
-2. **Pin the API version.** Any code that names a version (`api_version` in a TOML file, an endpoint URL, `ApiVersion.*`) takes the latest stable version from <https://shopify.dev/docs/api/usage/versioning>, or the version the project already pins if the task is not an upgrade. Done when every version string you write was read from that page or the project, never from memory.
+2. **Pin the API version.** Any code that names a version (`api_version` in a TOML file, an endpoint URL, `ApiVersion.*`) takes the latest stable version from <https://shopify.dev/docs/api/usage/versioning>, or the version the project already pins if the task is not an upgrade. There is no permanent "current" version: one ships every quarter, and a request for an unsupported version is silently served by the oldest supported one. Done when every version string you write was read from that page or the project.
 3. **Validate against the live schema** when the change touches GraphQL (Admin, Storefront, Customer Account, Function input queries) or Liquid you are unsure of: use the `shopify-ai-toolkit` plugin or `@shopify/dev-mcp` (setup below). If neither is installed, tell the user, give them the install command, and mark the GraphQL as unvalidated. Done when each query or mutation was validated, or flagged as unvalidated in your reply.
 4. **Run the project's own check** - `shopify theme check` for themes, `shopify app build` or the project's typecheck for apps and Hydrogen. Done when it passes or the remaining failures are reported.
 
@@ -41,10 +41,6 @@ claude mcp add --transport stdio shopify-dev-mcp -- npx -y @shopify/dev-mcp@late
 
 Both validate GraphQL against Shopify's schemas and validate Liquid. Check <https://shopify.dev/docs/apps/build/devmcp> if a command fails - the install line is Shopify's to change.
 
-## API versioning rule
-
-Shopify releases an API version every quarter, named `YYYY-01`, `YYYY-04`, `YYYY-07`, `YYYY-10`, each supported for at least 12 months. A request for an unsupported version is served by the oldest supported one, which silently changes behaviour. There is no permanent "current" version to remember: look it up at <https://shopify.dev/docs/api/usage/versioning> each time.
-
 ## Retired platform features
 
 | Gone | Use instead |
@@ -53,15 +49,7 @@ Shopify releases an API version every quarter, named `YYYY-01`, `YYYY-04`, `YYYY
 | `checkout.liquid` | Checkout UI extensions and Functions |
 | REST Admin API for new work | GraphQL Admin API |
 | Polaris React (`@shopify/polaris`, deprecated on npm) | Polaris web components (`<s-page>`, `<s-button>`) |
-| Shopify Remix app template | React Router app template (`@shopify/shopify-app-react-router`) |
+| Shopify Remix app template for new apps | React Router app template (`@shopify/shopify-app-react-router`) |
+| Legacy Hydrogen (2026.4 and earlier) for new storefronts | Hydrogen 2026.10+, a framework-agnostic library ([hydrogen.md](references/hydrogen.md)) |
 | `img_url` filter | `image_url` plus `image_tag` |
 | `{% include %}` | `{% render %}` |
-
-## Liquid at a glance
-
-```liquid
-{{ product.title | escape }}
-{%- if product.available -%}In stock{%- endif -%}
-{% render 'product-card', product: product %}
-{{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
-```

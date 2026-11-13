@@ -1,12 +1,12 @@
-# Communication Patterns (19-21)
+# Communication patterns (19-21, 27-28, 34)
 
-Detailed reference for communication-level AI writing patterns. Read the compact summary table in SKILL.md first to identify which patterns apply, then consult this file for rewriting guidance.
+Rewriting guidance for communication-level patterns. The index in SKILL.md says which apply.
 
 ---
 
 ## 19. Collaborative Communication Artifacts
 
-**Words to watch:** I hope this helps, Of course!, Certainly!, You're absolutely right!, Would you like..., let me know, here is a...
+**Words to watch:** I hope this helps, Of course!, Certainly!, You're absolutely right!, Would you like..., let me know, here is a..., [check/verify/confirm] ... before [publishing/submitting]
 
 **Problem:** Text meant as chatbot correspondence gets pasted as content.
 
@@ -18,9 +18,13 @@ Detailed reference for communication-level AI writing patterns. Read the compact
 
 ---
 
-## 20. Disclaimers: Knowledge Cutoffs, Source Gaps and Recommended Usage
+## 20. Hedging Disclaimers: Source Gaps, Recommended Usage and Corrective Framings
 
-**Words to watch:** Up to my last training update, as of my last knowledge update, While specific details are limited/scarce..., not widely available/documented/disclosed, in the provided/available sources or search results, [claim] should be treated as ... rather than ..., based on available information, likely exists, probably documented
+**Words to watch:** Up to my last training update, as of my last knowledge update, While specific details are limited/scarce..., not widely available/documented/disclosed, in the provided/available sources or search results, [claim] should be treated/presented as ... rather than ..., ... does not by itself establish ..., based on available information, likely exists, probably documented
+
+**Reorganised November 2026:** Wikipedia now dates this family. Didactic disclaimers are 2023-24 (see #31). Source-gap statements are 2024-25. Knowledge-cutoff statements moved to historical indicators, dated 2022-23.
+
+**Mid-2026 onward - "corrective framings":** chatbots now often correct how a source should be read. As of November 2026 Wikipedia ranks these among the most common signs of newly generated text. Graphite's data matches: "does not establish" is 275 times as common in GPT-6 Astra as in Claude Opus 5.5, and an editor reports the phrasing spiked with GPT-5.6 and eased slightly with GPT-6. It is mainly a GPT-family tell. There are three known forms: (a) "should be treated as [speculative or subjective] rather than [definitive]"; (b) a caution that the information does not establish some firm conclusion; (c) "should not be confused with", which is the least reliable of the three. Wikipedia says these were close to unheard-of before about July 2026, so an older text carrying them is far less likely to be AI.
 
 **Removed September 2026:** bare "as of [date]" is no longer a signal. Wikipedia dropped it because it is ordinary dating language that humans and templates produce constantly. Only the self-referential versions - "as of my last knowledge update", "up to my last training update" - point at a model.
 
@@ -102,7 +106,9 @@ This is the fastest-growing section of the Wikipedia source. As of September 202
 
 ## 28. Placeholder Text and Templates
 
-**Words to watch:** [Name], [Your Name], [Company], [Date], 2025-XX-XX, [Insert X here]
+**Words to watch:** [Name], [Your Name], [Company], [Date], 2025-XX-XX, [Insert X here], citations pointing at example.com
+
+**URL placeholders:** generated citations sometimes link to `example.com` or its subpages and then describe them as if they were real sources (Wikipedia, October 2026). Templates and forms use example.com legitimately as a default value, so the tell is a described source behind the placeholder link, not the domain alone.
 
 **Problem:** AI chatbots leave unfilled Mad Libs-style blanks, template markers, or malformed placeholder dates in generated text. These are dead giveaways of unreviewed AI output.
 

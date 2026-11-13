@@ -109,4 +109,4 @@ When designing a new application or evaluating an existing one, use this decisio
 
 - `original-factors.md` - Detailed documentation for factors I-XII
 - `modern-extensions.md` - Detailed documentation for factors XIII-XV
-- `setup-and-tools.md` - Tooling and implementation guidance
+- `setup-and-tools.md` - Starter configuration per stack

@@ -5,7 +5,7 @@
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.0.0",
+  "version": "2.0.1",
   "userConfig": {
     "perplexity_api_key": {
       "type": "string",

@@ -4,6 +4,68 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+This is a major release (8.0.0): it deletes plugins, retires one and changes how `google-analytics` takes credentials.
+
+**Upgrading from 7.x - four things to check:**
+
+1. `google-analytics` 2.0.0 takes its credentials file and Google Cloud project ID from plugin configuration. Run `claude plugin configure google-analytics@wookstar-claude-plugins`; until you do, its MCP server stays off and a startup notice reminds you.
+2. `timezone-tools` is retired. Run `claude plugin uninstall timezone-tools@wookstar-claude-plugins`; nothing replaces it.
+3. `mcp-google-workspace` 3.0.0 loads Gmail, Drive and Calendar only. If you used its Docs, Sheets or other tools, add the server yourself with those services - see its README.
+4. `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` and `mcp-fetch`, retired in 7.0.0, are deleted. Uninstall any still installed.
+
+`scripts/upgrade.sh` does the first two and the last, and updates the plugins you keep; it replaces `scripts/upgrade-v7.sh`, which still works. Step-by-step notes, and what changes without action, are in [MIGRATION.md](./MIGRATION.md#to-800-from-7x).
+
+### Added
+
+- `message` 4.1.0: **remote awareness for the preview.** Local use is unchanged. When the session looks remote (SSH variables, or Linux with no display) the server adds a note with the port-forwarding command and the skill relays it. `MESSAGE_REMOTE=1` or `--remote` turns on remote mode: no browser launch on the remote machine, and Open links open in the browser showing the preview. `MESSAGE_REMOTE=0` silences the note.
+- `google-tagmanager` 2.0.0: covers the **optimised container** launched on 2026-10-12 - Destination tags, Shared settings, External account links, telling legacy from optimised from mixed, a checklist for the migration wizard - and the 2026 head-only install snippet (`references/optimised-container.md`).
+- `google-tagmanager` 2.0.0: the skill can install and drive [owntag/gtm-cli](https://github.com/owntag/gtm-cli) as an alternative to the bundled Stape MCP server, for scripting, CI and service-account access (`references/cli.md`).
+- `google-analytics` 2.0.0: covers **Data Manager** - the Analytics Admin page in open beta since 2026-11-06, and the Data Manager API as a route for sending events (`references/data-manager.md`).
+- `google-analytics` 2.0.0: the skill can install and drive [google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) (`ga`) for GA4 configuration changes, which the bundled read-only MCP server cannot make (`references/cli.md`).
+- A trigger eval per model-invoked skill under each plugin's `evals/` (22 cases), run with `claude plugin eval plugins/<name>`.
+- CI on every pull request: `claude plugin validate`, the personal-info scan and the `message` tests.
+- `scripts/upgrade.sh`: one upgrade script for every earlier version. It uninstalls retired plugins, updates the rest and fills in prompted settings from your old shell variables.
+- README: prerequisites per plugin, example prompts, the one-step `--marketplace` install, and an upgrade section saying what each release asks of you.
+- MIGRATION.md: a section per release, and how retirement works.
+- MCP plugin READMEs say what each server can do, counted from its real tool list, which tools write, and what to try. Every plugin README gives the one-step install line.
+
+### Changed
+
+- `google-analytics` 2.0.0: **breaking** - the Analytics MCP server takes its credentials file and Google Cloud project ID from plugin configuration; `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_CLOUD_PROJECT` are no longer read from the shell. A startup notice reminds you until they are set. The server is pinned to `analytics-mcp` 1.1.0.
+- `google-analytics` 2.0.0: **rebuilt as guardrails, not a tutorial** - 5,800 lines of reference cut to about 700. The fourteen tutorial reference files are gone; in their place are a glossary, a table of where numbers come from and why reports, Explorations, the Data API and BigQuery disagree, the collection routes, one limits table, a pitfalls list grouped by task, what changed in 2025-2026, and links to Google's docs. Corrections along the way: event-name, item and data-stream limits; the renamed Admin sections; the attribution models removed in 2023; what a data deletion request removes; the Measurement Protocol consent payload; the Consent Mode v2 dates.
+- `google-tagmanager` 2.0.0: **rebuilt as guardrails, not a tutorial** - 4,500 lines of reference cut to about 550. The ten tutorial reference files are gone; in their place are a glossary of the overloaded terms, the three JavaScript environments side by side with the regex dialect, a pitfalls list grouped by task, and a table of links to Google's docs. Every statement was checked against Google's documentation; what rests on field observation is marked. Corrections along the way: web-container regex is not documented as RE2, no container-level tag timeout exists, only the Live environment is built in, Shopify's documented route is a custom pixel, and regex is described per environment - JavaScript regex in web-container triggers, RE2 in server templates and in GA4 reports - where the old text called everything RE2. Custom HTML tags and Custom JavaScript variables are stated as ES5 only; templates accept `const`, `let` and arrow functions.
+- `humanise` 4.7.0: 39 patterns (was 34), adding 2025-26 corpus studies of model tells to the Wikipedia source, with new `sources.md` and `voice-and-pulse.md` references. Sources last checked 2026-11-11.
+- `model-id-upgrade` 1.0.1: treats a new ID in runtime code as an API migration - it flags call sites whose request parameters newer models reject and points to the migration guide. Mythos is listed as a family.
+- MCP servers pinned to exact releases, so upstream updates arrive only with a plugin bump: `mcp-coingecko` 2.0.1, `mcp-n8n` 2.0.1, `mcp-open-meteo` 1.0.2, `mcp-perplexity` 2.0.1, `mcp-mikrotik` 2.0.1.
+- `mcp-google-workspace` 3.0.0: **breaking** - loads only the Gmail, Drive and Calendar tools (38) where it used to load every Workspace service (about 120). Docs, Sheets, Slides, Forms, Tasks, Chat, Contacts and Apps Script tools are no longer available through this plugin; its README shows how to add the server yourself with the services you want. Pinned to `workspace-mcp` 2.4.0.
+- Marketplace entries no longer repeat `mcpServers`, `lspServers` or `strict`: each plugin's own `.mcp.json` and `plugin.json` are the single source, which Claude Code loads by default (verified on 2.1.323).
+- Skills tightened - steps first, a completion criterion per step, reference material behind conditional pointers: `message` 4.1.0 (preview internals moved to `references/preview.md`), `tampermonkey` 2.1.1, `documents` 2.0.1, `ffmpeg` 1.0.2, `developer` 4.0.1, `git-github` 1.0.1, `media-tools` 1.0.1, `quarto-revealjs` 1.0.1.
+
+- Facts in every skill checked against vendor documentation and corrected, and duplicated reference material given a single owner:
+  - `shopify-developer` 3.1.0: Hydrogen reference rewritten for the framework-agnostic Hydrogen that went generally available in October 2026, with the earlier API kept under a legacy heading and a migration table; the legacy samples checked against the 2026.4 skeleton and corrected (cart action, SEO `media`, Shop Pay domain, default query caching); Functions limits corrected.
+  - `tampermonkey` 2.1.1: `@types/tampermonkey` 5.5.0, Manifest V3 wording, and about 400 lines of duplicated reference consolidated.
+  - `quarto-revealjs` 1.0.1: PDF export - fragments print on one page by default, speaker notes use `show-notes: separate-page`.
+  - `developer` 4.0.1: Compose `version:` is obsolete and warns; tracing goes over OTLP to Jaeger; pinned library versions updated or generalised; the PRP research reference cut to external research only.
+  - `documents` 2.0.1: Ghostscript is no longer required from OCRmyPDF 17.
+  - `ffmpeg` 1.0.2: container and codec wording, more GPU encoder names, and one owner each for `-c copy`, seeking and codec flags.
+  - `google-ads-scripts` 1.1.1, `google-apps-script` 1.1.1, `typst` 1.0.1: dates and limits confirmed; duplication removed.
+
+### Fixed
+
+- `message`: the preview server answers only requests addressed to a loopback host name, and `/open` and the reload socket refuse another site's `Origin`, so a web page elsewhere can neither read a draft through DNS rebinding nor trigger an Open.
+- README listed `/plugin update <name>`, which is not a session command.
+- `google-analytics` `bigquery` and `quarto-revealjs`: a `$` before a digit in `SKILL.md`, which the skill loader replaced with a positional argument when the skill was invoked with arguments.
+- `message`: the hook matcher no longer names the legacy `MultiEdit` tool, and the documented test command now matches `package.json`.
+- `git-github`: `/release` uses the documented `Bash(git *)` permission form.
+- `tampermonkey`: the skill may run `npm`, `pnpm`, `npx` and `node`, which its TypeScript reference tells it to use.
+
+### Removed
+
+- `scripts/install-claude-plugins.sh`, a personal machine-setup script that read like an official installer. Install plugins with `/plugin install`, and upgrade with `scripts/upgrade.sh`.
+- The tutorial reference files in `google-tagmanager` and `google-analytics`, replaced by the glossary, pitfalls and links to Google's docs described above.
+- `timezone-tools` 2.0.0 is **retired**: current Claude models convert timezones on their own. The final version only shows an uninstall notice.
+- `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare` and `mcp-fetch`, retired in 7.0.0, are deleted and mapped to `null` in the marketplace `renames`.
+
 ## [7.1.0] - 2026-11-13
 
 Upgrading `message` to 4.0.0: its preview is now a destination picker titled Paste Ready, and new drafts go to `drafts/` unless your project's CLAUDE.md or AGENTS.md names a drafts directory. Fragments and every old shortcut keep working.

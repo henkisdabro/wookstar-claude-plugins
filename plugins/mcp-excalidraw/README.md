@@ -8,6 +8,8 @@ Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/re
 /plugin install mcp-excalidraw@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install mcp-excalidraw --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Configuration
 
 This MCP server uses HTTP transport via a remote Vercel endpoint. No API key or environment variables required.

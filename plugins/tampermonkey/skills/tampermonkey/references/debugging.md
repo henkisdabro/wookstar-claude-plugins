@@ -136,20 +136,7 @@ GM_xmlhttpRequest({
 
 ### "Content Security Policy" errors
 
-**Cause:** Site's CSP blocks inline scripts.
-
-```javascript
-// Error - blocked by CSP
-const script = document.createElement('script');
-script.textContent = 'console.log("blocked")';
-document.head.appendChild(script);
-
-// Fix - use GM_addElement
-// @grant GM_addElement
-GM_addElement('script', {
-    textContent: 'console.log("works")'
-});
-```
+**Cause:** the site's CSP blocks inline scripts. Inject with `GM_addElement` instead of `document.createElement` - see the CSP section of [sandbox-modes.md](sandbox-modes.md).
 
 ---
 

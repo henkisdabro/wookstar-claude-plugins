@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@coingecko/coingecko-mcp",
+        "@coingecko/coingecko-mcp@9.0.0",
         "--client=claude-code",
         "--resource=coins,global,search,simple*",
         "--operation=read"

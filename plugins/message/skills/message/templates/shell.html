@@ -345,6 +345,9 @@
   // signed in. The fallback covers the static-file case (no server behind the
   // page) and a server that refuses the URL.
   function openExternal(url, fallback) {
+    // Remote mode (serve.ts): the server is on another machine, so open here,
+    // inside the click, where the browser still allows a new window.
+    if (window.__MESSAGE_REMOTE) { fallback(); return; }
     fetch('/open?url=' + encodeURIComponent(url), { method: 'POST' })
       .then(function (r) { if (!r.ok) fallback(); })
       .catch(function () { fallback(); });

@@ -57,7 +57,7 @@ theme/
         └── register.liquid
 ```
 
-**Horizon theme:** Shopify's newest reference theme (2025) - uses container queries, View Transitions API, and CSS custom properties. Replaces Dawn as the recommended starting point for new themes.
+**Starting a new theme:** `shopify theme init` clones Shopify's Skeleton theme, a minimal starting point. Horizon (2025) is Shopify's current full-featured theme and succeeds Dawn as the one to read for patterns.
 
 ### 2. JSON Templates (Online Store 2.0)
 

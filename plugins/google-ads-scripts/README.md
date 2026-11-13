@@ -14,6 +14,8 @@ A Claude Code skill for writing Google Ads Scripts - the JavaScript that runs in
 /plugin install google-ads-scripts@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install google-ads-scripts --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Coverage
 
 - **Selectors** - campaigns, ad groups, keywords and ads with GAQL field-name conditions

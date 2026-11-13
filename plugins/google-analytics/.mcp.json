@@ -2,10 +2,10 @@
   "mcpServers": {
     "analytics-mcp": {
       "command": "pipx",
-      "args": ["run", "analytics-mcp"],
+      "args": ["run", "analytics-mcp==1.1.0"],
       "env": {
-        "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS:-}",
-        "GOOGLE_CLOUD_PROJECT": "${GOOGLE_CLOUD_PROJECT:-}"
+        "GOOGLE_APPLICATION_CREDENTIALS": "${user_config.google_application_credentials}",
+        "GOOGLE_CLOUD_PROJECT": "${user_config.google_cloud_project}"
       }
     }
   }

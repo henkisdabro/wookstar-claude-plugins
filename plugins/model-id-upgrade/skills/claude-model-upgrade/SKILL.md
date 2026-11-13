@@ -1,12 +1,12 @@
 ---
 name: claude-model-upgrade
-description: Find and upgrade stale Claude model IDs (Fable, Opus, Sonnet, Haiku) across skills, agents, prompts, configs and code after a new Claude release - read-only scan first, approval gate, then edits. Use when a new Claude model is out, the user asks to upgrade or bump model IDs, update sonnet/opus/haiku/fable references, find old or deprecated model names, or migrate Bedrock or Vertex model strings. Do NOT use for choosing which model to use or API pricing questions - use the claude-api skill or the models docs; or for changing Claude Code's own session model - use /model.
+description: Find and upgrade stale Claude model IDs (Fable, Mythos, Opus, Sonnet, Haiku) across skills, agents, prompts, configs and code after a new Claude release - read-only scan first, approval gate, then edits. Use when a new Claude model is out, the user asks to upgrade or bump model IDs, update sonnet/opus/haiku/fable references, find old or deprecated model names, or migrate Bedrock or Vertex model strings. Do NOT use for choosing which model to use or API pricing questions - use the claude-api skill or the models docs; or for changing Claude Code's own session model - use /model.
 argument-hint: "[directory ...]"
 ---
 
 # Claude model upgrade
 
-Repeatable sweep: look up the current models, scan read-only, report, ask, then edit. Nothing changes before the approval gate in step 4.
+Nothing changes before the approval gate in step 4.
 
 Scan roots: `$ARGUMENTS`, or the current repository when empty. Scanning a home directory or several repos is fine when the user names them.
 
@@ -60,6 +60,8 @@ Done when: every family has a TSV and a TARGET count.
 - Constant tables (`SONNET_3_5`, `SONNET_4`) get renamed and the obsolete duplicate removed, not just re-valued.
 - An ID preceded by `-` or `.` (`${VAR:-claude-sonnet-5}`) slips past word-boundary regexes; the leftover re-scan in step 5 catches it.
 
+Done when: every hit is classed RECORD, TARGET or leave-and-list.
+
 ## 4. Report and approval gate
 
 Print, as tables in the reply:
@@ -74,13 +76,15 @@ Ask with `AskUserQuestion`:
 - **Scope**: instructions only / instructions and runtime code / report only
 - **Commits**: leave uncommitted / commit per repo, no push / commit and push
 
+A new ID in runtime code is an API migration, not a rename: recent models reject request shapes older ones accepted (`budget_tokens`, disabled thinking, forced `tool_choice`, `temperature`/`top_p`/`top_k`, assistant prefill) with a 400. When the user picks runtime code, say so, and offer to check each call site against the [migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide) - with the claude-api skill's `migrate` flow where it is installed - before or alongside the ID change.
+
 Wait for both answers. "Report only" ends here. The answer authorises edits in the listed repos and no others.
 
 ## 5. Implement
 
 1. Apply the edits with one Python script over the approved file list, following the edit rules.
 2. Re-run the scanner on the edited roots. Done when only intentional skips remain as TARGET.
-3. Show `git diff` for runtime-code files and say which tests were not run.
+3. Show `git diff` for runtime-code files, list each call site whose request parameters the new model may reject, and say which tests were not run.
 
 ## 6. Commit (when approved)
 
