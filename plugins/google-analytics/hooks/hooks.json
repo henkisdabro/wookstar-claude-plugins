@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-3.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"google-analytics 3.0.0 no longer bundles an MCP server. The skills work with the ga CLI. If you want the Analytics MCP server, add it from Google's own guide - the command is in https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-3.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"google-analytics 3.0.0 no longer bundles an MCP server. The skills work with the ga CLI. If you want the Analytics MCP server, add it by following the official Google guide - the command is in https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
           }
         ]
       }

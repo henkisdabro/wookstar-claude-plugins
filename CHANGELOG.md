@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Fixed
+
+- `google-analytics` 3.0.1: the 3.0.0 startup notice failed with a `SessionStart` hook error instead of showing, because an apostrophe in its text broke the shell quoting.
+
 ## [8.1.0] - 2026-11-13
 
 Upgrading from 8.0.x: nothing to do unless you used the MCP server that came with `google-analytics` or `google-tagmanager` - then add it yourself with one `claude mcp add` command. See [MIGRATION.md](./MIGRATION.md#to-810-from-80x).
