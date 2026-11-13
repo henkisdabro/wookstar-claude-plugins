@@ -2,6 +2,7 @@
 // Adds Outlook-compatible inline styles. Word engine strips <style> blocks.
 
 import { codeNewlinesToBr, stripHorizontalRules } from "./transform-shared";
+import { tableColumnSpecs, applyNumericColumns } from "./numeric-columns";
 
 const FONT = "font-family: Aptos, Calibri, Arial, sans-serif";
 const SIZE = "font-size: 11pt";
@@ -17,6 +18,8 @@ const SPACER = `<p style="${FONT}; ${SIZE}; ${COLOR}; margin: 0;">&nbsp;</p>`;
 
 export function transformOutlook(html: string): string {
   let result = html;
+  // Numeric table columns are detected before the transform drops `align`.
+  const tableSpecs = tableColumnSpecs(html);
 
   result = stripHorizontalRules(result);
 
@@ -129,6 +132,8 @@ export function transformOutlook(html: string): string {
 
   const spacerEsc = SPACER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   result = result.replace(new RegExp(`(${spacerEsc}\\n)+${spacerEsc}`, "g"), SPACER);
+
+  result = applyNumericColumns(result, tableSpecs, "outlook");
 
   return result;
 }

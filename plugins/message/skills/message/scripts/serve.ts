@@ -1,38 +1,19 @@
 #!/usr/bin/env bun
-import { watch, statSync, readFileSync } from "node:fs";
+import { watch, statSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import type { ServerWebSocket } from "bun";
 import { build } from "./build";
 import { isAllowedOpenUrl } from "./open-url";
+import { openCommand, wslMountRoot } from "./open-command";
+import { parseServeArgs, listChannels, USAGE, type ServeArgs } from "./cli-args";
 
-interface Args {
-  fragment: string;
-  buildOnly: boolean;
-  timeout: number;
-  noOpen: boolean;
-}
-
-function parseArgs(): Args {
-  const args = Bun.argv.slice(2);
-  let fragment = "";
-  let buildOnly = false;
-  let timeout = 1800;
-  let noOpen = process.env.MESSAGE_NO_OPEN === "1";
-
-  for (let i = 0; i < args.length; i++) {
-    const a = args[i];
-    if (a === "--build-only") buildOnly = true;
-    else if (a === "--no-open") noOpen = true;
-    else if (a === "--timeout") timeout = Number(args[++i] ?? 1800);
-    else if (!fragment) fragment = a;
+function parseArgs(): ServeArgs {
+  try {
+    return parseServeArgs(Bun.argv.slice(2));
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exit(2);
   }
-
-  if (!fragment) {
-    console.error("Usage: serve.ts <fragment.md> [--build-only] [--timeout SEC] [--no-open]");
-    process.exit(1);
-  }
-
-  return { fragment: resolve(fragment), buildOnly, timeout, noOpen };
 }
 
 function isWSL(): boolean {
@@ -45,23 +26,53 @@ function isWSL(): boolean {
   }
 }
 
-function openBrowser(url: string): void {
-  let cmd: string[];
-  if (process.platform === "darwin") cmd = ["open", url];
-  else if (process.platform === "win32") cmd = ["cmd", "/c", "start", "", url];
-  // WSL2: open via the Windows host - localhost is shared, and xdg-open is
-  // typically absent or headless inside the WSL distro.
-  else if (isWSL()) cmd = ["cmd.exe", "/c", "start", "", url];
-  else cmd = ["xdg-open", url];
+// Mounted Windows drive roots under WSL (/mnt/c, /mnt/d, ...), from the
+// automount root in /etc/wsl.conf rather than a hard-coded drive.
+function wslDrives(): string[] {
+  let conf = "";
+  try { conf = readFileSync("/etc/wsl.conf", "utf8"); } catch { /* no wsl.conf: defaults */ }
+  const root = wslMountRoot(conf);
+  try {
+    return readdirSync(root).filter((d) => /^[a-z]$/i.test(d)).map((d) => root + d);
+  } catch {
+    return [];
+  }
+}
+
+// Hand a URL to the OS default handler. Returns false when nothing could be
+// launched, so /open can answer with an error and the page falls back to
+// window.open instead of the request throwing.
+function openBrowser(url: string): boolean {
+  const wsl = isWSL();
+  const cmd = openCommand(url, {
+    platform: process.platform,
+    isWSL: wsl,
+    which: (name) => Bun.which(name),
+    exists: (p) => existsSync(p),
+    drives: wsl ? wslDrives() : [],
+  });
+  if (!cmd) return false;
   try {
     Bun.spawn(cmd, { stdout: "ignore", stderr: "ignore" });
+    return true;
   } catch {
-    // Non-fatal
+    return false;
   }
 }
 
 async function main(): Promise<void> {
-  const { fragment, buildOnly, timeout, noOpen } = parseArgs();
+  const args = parseArgs();
+  if (args.help) {
+    console.log(USAGE);
+    return;
+  }
+  if (args.listChannels) {
+    console.log(listChannels(args.listChannels));
+    return;
+  }
+  const { buildOnly, timeout, noOpen } = args;
+  const fragment = resolve(args.fragment);
+  const overrides = { channel: args.channel, tier: args.tier };
 
   if (!(await Bun.file(fragment).exists())) {
     console.error(`Error: ${fragment} not found`);
@@ -73,7 +84,7 @@ async function main(): Promise<void> {
 
   async function doBuild(): Promise<string | null> {
     try {
-      const result = await build(fragment);
+      const result = await build(fragment, overrides);
       buildError = null;
       lastBuildAt = Date.now();
       return result.outputPath;
@@ -113,14 +124,16 @@ async function main(): Promise<void> {
 
       // Open a destination URL via the HOST's default handler (browser, mail
       // app, WhatsApp). The preview page may be rendered inside an embedded
-      // webview (cmux browser pane, VS Code/Zed in-app browsers) where
+      // webview (a terminal browser pane, VS Code/Zed in-app browsers) where
       // window.open lands in that webview instead of the user's real apps.
       if (url.pathname === "/open" && req.method === "POST") {
         const target = url.searchParams.get("url") ?? "";
         if (!isAllowedOpenUrl(target)) {
           return new Response("URL not allowed", { status: 400 });
         }
-        openBrowser(target);
+        if (!openBrowser(target)) {
+          return new Response("Could not launch a handler for this URL", { status: 502 });
+        }
         return new Response(null, { status: 204 });
       }
 
@@ -144,6 +157,7 @@ async function main(): Promise<void> {
       },
       close(ws) {
         sockets.delete(ws);
+        lastRequest = Date.now(); // the idle clock restarts when the last tab goes
       },
       message() {},
     },
@@ -214,13 +228,16 @@ async function main(): Promise<void> {
   // Safety-net poll for atomic-rename saves fs.watch drops on macOS.
   const pollTimer = setInterval(checkFragment, 300);
 
-  // Idle shutdown
+  // Idle shutdown. A connected preview tab sends no HTTP requests (only its
+  // WebSocket stays open), so a connected socket counts as activity: the server
+  // stays up while any tab is open and idles out `timeout` after the last closes.
   const idleCheck = setInterval(() => {
+    if (sockets.size > 0) return;
     if (Date.now() - lastRequest > timeout * 1000) {
       console.error(`\nIdle for ${timeout}s - shutting down.`);
       shutdown();
     }
-  }, 10_000);
+  }, Math.min(10_000, Math.max(250, timeout * 500)));
 
   function shutdown(): void {
     clearInterval(idleCheck);

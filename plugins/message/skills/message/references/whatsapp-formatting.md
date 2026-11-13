@@ -1,8 +1,9 @@
 # WhatsApp / Markdown Lane Formatting Reference
 
-How the **Copy Markdown** lane converts the message for WhatsApp. Conversion is
-`htmlToWhatsApp()` in `scripts/client/whatsapp.js`, run client-side at copy time.
-The Gmail and Rich Text lanes are unaffected by anything on this page.
+How the **WhatsApp** destination converts the message. Conversion is
+`renderDialect()` with the `whatsapp` spec of `DIALECTS` in
+`scripts/client/dialects.js`, run client-side at copy time.
+Gmail and Rich Text are unaffected by anything on this page.
 
 ## Inline conversion summary
 
@@ -25,7 +26,8 @@ line on each side, the same separation paragraphs get.
 
 ## Tables: fixed-width code blocks
 
-Tables are emitted as a fenced ``` code block with columns padded to equal
+Tables that fit a phone (see "Tables wider than a phone" below) are emitted as
+a fenced ``` code block with columns padded to equal
 display width - WhatsApp renders fenced blocks in monospace on iOS, Android and
 Web, so the grid aligns. Numeric/currency columns are right-aligned (header
 included, so the label sits flush over the figures) and a dashed divider row is
@@ -49,7 +51,35 @@ inserted under the header.
   from different fallback fonts with slightly different advances, so exact CJK
   alignment is impossible with space padding (roughly 0.7 of a character
   worst-case drift, still about 6x better than plain space padding).
-- **Width budget: ~40 display columns.** A phone-width WhatsApp code block fits
-  roughly 35-42 monospace columns before wrapping, which breaks the grid. Keep
-  WhatsApp-bound tables to 3-4 lean columns; roll minor rows into an "Other"
-  row rather than widening the table.
+- **Width budget: `TABLE_WIDTH_BUDGET` display columns** (`scripts/client/text-common.js`).
+  See below for how it was chosen and what happens past it.
+
+## Tables wider than a phone: stacked rows
+
+A grid only works while every line fits the screen; once a monospace line
+wraps, the grid is gone. `TABLE_WIDTH_BUDGET` is the widest line, in display
+columns (emoji and CJK count two), that a small phone shows unwrapped.
+
+How the figure was chosen (estimated, not measured on a device): an iPhone 13
+mini is 375pt wide. A WhatsApp bubble leaves roughly 300pt of text width after
+the bubble margins and insets, and a monospace glyph at the default text size
+(about 16-17pt) advances about 0.6em, roughly 10pt. That gives about 29
+columns; the budget keeps headroom below that for a larger text-size setting
+and the received-bubble tail. An earlier ~40-column guide wrapped on that phone.
+
+A table whose grid fits the budget is emitted as the aligned code block above,
+unchanged. A wider one is emitted as plain text, one block per row, rows
+separated by a blank line:
+
+```
+*Search*
+Budget: $6,000
+Status: Live
+Notes: Brand and generic
+```
+
+The first cell is the bold title; every other non-empty cell becomes
+`Header: value`. Nothing is truncated: a long value wraps like any other line
+of the message. Empty cells are left out. To keep the grid, write WhatsApp-bound
+tables with 2-3 lean columns; roll minor rows into an "Other" row rather than
+widening the table.

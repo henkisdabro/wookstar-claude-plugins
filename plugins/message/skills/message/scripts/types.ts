@@ -4,6 +4,8 @@ export interface FragmentMeta {
   cc?: string;
   bcc?: string;
   title?: string;
+  channel?: string;
+  tier?: string;
 }
 
 export interface BuildResult {

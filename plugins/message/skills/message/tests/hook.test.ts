@@ -50,7 +50,7 @@ describe("auto-serve-fragment hook", () => {
     "launches a server, writes state, and reuses it on re-fire",
     async () => {
       const projectDir = await mkdtemp(join(tmpdir(), "hook-e2e-"));
-      const draftsDir = join(projectDir, "data", "writing", "email_drafts");
+      const draftsDir = join(projectDir, "drafts");
       await mkdir(draftsDir, { recursive: true });
       const fragment = join(draftsDir, "2026-01-01_test_hook-e2e.fragment.md");
       await Bun.write(fragment, FRAGMENT_CONTENT);

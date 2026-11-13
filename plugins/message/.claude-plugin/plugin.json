@@ -1,9 +1,9 @@
 {
   "name": "message",
-  "description": "Rich text message drafts for Gmail, mail apps, and WhatsApp with live Copy/Open lane preview",
+  "description": "Message drafts for Gmail, mail apps, WhatsApp, Slack, X and 17 more destinations, with a live Copy/Open preview",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "3.0.3"
+  "version": "4.0.0"
 }

@@ -127,7 +127,7 @@ describe("echo detection logic", () => {
 describe("conversation log echo scan", () => {
   test("no recent /message invocation echoes fragment body", async () => {
     const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
-    const DRAFTS_DIR = join(PROJECT_DIR, "data/writing/email_drafts");
+    const DRAFTS_DIR = join(PROJECT_DIR, "drafts");
     if (!existsSync(DRAFTS_DIR)) {
       console.log("No drafts dir in this project - skipping live scan");
       return;

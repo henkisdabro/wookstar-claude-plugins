@@ -1,5 +1,6 @@
 import { marked } from "marked";
 import type { FragmentMeta } from "./types";
+import { DESTINATIONS, EMAIL_CHANNELS, TIER_IDS, resolveChannel, destinationById } from "./client/destinations.js";
 
 // breaks: true - a single newline inside a paragraph is a real line break
 // (<br>), matching how people write emails ("Best,\nAlex" stays two lines).
@@ -51,6 +52,11 @@ function parseMarkdownFragment(content: string): ParsedFragment {
   // do it (verified: `a~~2` stays a literal code span).
   const bodyHtml = marked.parse(body, { async: false }) as string;
 
+  // `channel:` accepts an alias (twitter, plaintext); store the canonical id.
+  // An unknown value is kept as written so validateFragment can name it.
+  if (meta.channel) meta.channel = resolveChannel(meta.channel) ?? meta.channel;
+  if (meta.tier) meta.tier = meta.tier.toLowerCase();
+
   return { meta: meta as FragmentMeta, bodyHtml };
 }
 
@@ -71,8 +77,19 @@ function parseLegacyHtmlFragment(content: string): ParsedFragment {
 
 export function validateFragment(meta: FragmentMeta, body: string): string[] {
   const errors: string[] = [];
-  if (!meta.to) errors.push("Missing required field: to");
-  if (!meta.subject) errors.push("Missing required field: subject");
+  // A fragment without `channel` is an email, exactly as before; a non-email
+  // channel (a post, a chat message) needs no recipient or subject.
+  const channel = meta.channel;
+  if (channel && !destinationById(channel)) {
+    errors.push(`Unknown channel: ${channel} (valid: ${DESTINATIONS.map((d) => d.id).join(", ")})`);
+  }
+  if (meta.tier && !TIER_IDS.includes(meta.tier)) {
+    errors.push(`Unknown tier: ${meta.tier} (valid: ${TIER_IDS.join(", ")})`);
+  }
+  if (!channel || EMAIL_CHANNELS.includes(channel)) {
+    if (!meta.to) errors.push("Missing required field: to");
+    if (!meta.subject) errors.push("Missing required field: subject");
+  }
   if (!body.trim()) errors.push("Empty body content");
   // House style: no em/en dashes in user-facing copy - use " - " instead.
   // Matches the real code points and the Windows-1252 mojibake byte-forms
