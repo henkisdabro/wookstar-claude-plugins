@@ -42,7 +42,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 - **`developer`** - PRP planning (`prp-generator`, `/execute-prp`), `/containerize`, and the Fifteen-Factor App methodology.
 - **`git-github`** - Commits, workflows and a user-triggered `/release`, with a script that resolves the current version of every GitHub Action from the GitHub API.
 - **`react-best-practices`** - Vercel Engineering's 70 React and Next.js performance rules, with local notes for React Compiler and Next.js 16 caching.
-- **`shopify-developer`** - Liquid, theme development (OS 2.0), Hydrogen, Functions and debugging. Live API lookup goes to Shopify's official `shopify-ai-toolkit`.
+- **`shopify-developer`** - Liquid, theme development (OS 2.0), Hydrogen (the 2026.10 framework-agnostic release, with a migration table from the earlier one), Functions and debugging. Live API lookup goes to Shopify's official `shopify-ai-toolkit`.
 - **`tampermonkey`** - Userscript development with 19 reference files - browser automation, page modification, web enhancement.
 - **`google-apps-script`** - Workspace automation: SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers.
 
@@ -74,12 +74,12 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 ### 📝 Content
 
-- **`documents`** - Fast PDF text extraction, OCR for scans (OCRmyPDF), structured parsing of complex PDFs and office files, plus scripts for forms, tables, merging and splitting. For writing Word, Excel and PowerPoint files use Anthropic's `document-skills`.
+- **`documents`** - Fast PDF text extraction, OCR for scans (OCRmyPDF 17, no Ghostscript needed), structured parsing of complex PDFs and office files, plus scripts for forms, tables, merging and splitting. For writing Word, Excel and PowerPoint files use Anthropic's `document-skills`.
 - **`typst`** - Typst language reference: markup, maths, set/show rules, layout, tables, templates and PDF/HTML export.
 - **`quarto-revealjs`** - Quarto reveal.js slide decks with meeting and technical-talk templates, light and dark themes, speaker notes and PDF export.
 - **`ffmpeg`** - Video and audio CLI reference - filters, codecs (H.264/H.265/VP9), GPU acceleration, common workflows.
 - **`media-tools`** - Search YouTube and pull captions or audio with yt-dlp, then transcribe locally with Whisper (mlx-whisper on Apple Silicon).
-- **`humanise`** - Strip 34 AI writing tells from text - inflated language, em-dash overuse, sycophantic tone, formulaic structure, placeholder text, leaked chatbot artifacts. Calibrates on a sample of your own writing, audits its own draft, and never invents a fact to make a vague sentence specific.
+- **`humanise`** - Strip 39 AI writing tells from text - inflated language, em-dash overuse, sycophantic tone, formulaic structure, placeholder text, leaked chatbot artifacts - drawn from Wikipedia's "Signs of AI writing" and 2025-26 corpus studies of model tells. Calibrates on a sample of your own writing, audits its own draft, and never invents a fact to make a vague sentence specific.
 
 <a id="data"></a>
 
@@ -400,7 +400,12 @@ cd wookstar-claude-plugins
 
 # Validate manifest
 claude plugin validate .
+
+# Check a skill still fires on its trigger prompt (makes real model calls)
+claude plugin eval plugins/developer
 ```
+
+Every pull request runs the validator, a personal-info scan and the `message` tests in CI. Each model-invoked skill has a trigger eval under its plugin's `evals/`.
 
 For contributor guidelines (manifest rules, where servers are declared, version bumps, skill style), see **[AGENTS.md](./AGENTS.md)**.
 
@@ -427,4 +432,4 @@ MIT - see [LICENSE](./LICENSE).
 
 ## 🙏 Acknowledgments
 
-Built for the Claude Code community. Thanks to Anthropic for Claude Code and the plugin system, [Simo Ahava](https://www.simoahava.com/) for GTM/GA4 expertise, and the open-source community for the MCP server integrations.
+Built for the Claude Code community. Thanks to Anthropic for Claude Code and the plugin system, [Simo Ahava](https://www.simoahava.com/) for GTM/GA4 expertise, [owntag](https://github.com/owntag/gtm-cli) and [daidalytics](https://github.com/daidalytics/google-analytics-cli) for the GTM and GA4 command-line tools, and the open-source community for the MCP server integrations.
