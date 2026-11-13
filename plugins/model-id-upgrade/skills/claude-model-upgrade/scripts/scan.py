@@ -15,7 +15,11 @@ skipped. Each hit is classed:
           every path regex in the ignore file and --record
   TARGET  everything else: skills, agents, prompts, configs, code, docs
 
-Writes scan-<family>.tsv (file, line, match, group) to --out. Needs ripgrep.
+Also flags made-up or malformed IDs - a date on a dateless (4.6+) model, a
+snapshot date that never shipped, the wrong name order for 3.x versus 4+, a
+dotted API ID, a -v1 suffix on a 4.6+ Bedrock ID - and says why.
+
+Writes scan-<family>.tsv (file, line, match, group, flag) to --out. Needs ripgrep.
 """
 
 import argparse
@@ -38,6 +42,16 @@ RECORD = [
     r"/site-packages/", r"/vendor/", r"/third[_-]party/", r"/\.local/share/", r"/go/pkg/",
 ]
 
+# Real dated snapshots (pre-4.6). Every model from 4.6 on is dateless, so a date on one is made up.
+KNOWN_DATED = {
+    "claude-3-haiku": {"20240307"}, "claude-3-sonnet": {"20240229"}, "claude-3-opus": {"20240229"},
+    "claude-3-5-sonnet": {"20240620", "20241022"}, "claude-3-5-haiku": {"20241022"},
+    "claude-3-7-sonnet": {"20250219"}, "claude-sonnet-4": {"20250514"}, "claude-opus-4": {"20250514"},
+    "claude-opus-4-1": {"20250805"}, "claude-sonnet-4-5": {"20250929"}, "claude-haiku-4-5": {"20251001"},
+    "claude-opus-4-5": {"20251101"},
+}
+PLATFORM_PREFIX = r"^(anthropic[./])?((us|eu|apac|au|jp|global)\.)?(anthropic\.)?"
+
 IGNORE_FILE = Path(os.environ.get("XDG_CONFIG_HOME", "~/.config")).expanduser() / "claude-model-upgrade" / "ignore"
 
 
@@ -50,8 +64,47 @@ def build_pattern(family: str) -> str:
         rf"|claude[-.]?"
         rf"{F}[-.]?[0-9]*([-.][0-9]+)?"
         rf"([-.](latest|thinking|think|[0-9]{{8}}|[0-9]{{4}}))*(@[0-9]{{8}})?(-v[0-9](:[0-9])?)?)"
-        rf"|\b{cap}[- ]?[0-9](\.[0-9])?\b"
+        rf"|\b{cap}[- ]?[0-9](\\?[.-][0-9])?\b"
     )
+
+
+def malformed(match: str, family: str) -> str:
+    """Why an ID-shaped match cannot be a real model ID, or "" when it can."""
+    F = re.escape(family)
+    id_shape = re.compile(
+        rf"claude-(?:(?P<omaj>\d)(?:[-.](?P<omin>\d))?-{F}|{F}-(?P<maj>\d+)(?:(?P<sep>[-.])(?P<min>\d{{1,2}}))?)"
+        r"(?:-(?P<date>\d{8}))?(?:-latest)?"
+    )
+    s = match.lower()
+    gateway = s.startswith("anthropic/")
+    s = re.sub(PLATFORM_PREFIX, "", s)
+    bedrock_v1 = re.search(r"-v\d(:\d)?$", s)
+    s = re.sub(r"-v\d(:\d)?$", "", s).replace("@", "-")
+    mo = id_shape.fullmatch(s)
+    if not mo:
+        return ""
+    old = mo["omaj"] is not None
+    maj, mn = (int(mo["omaj"]), int(mo["omin"] or 0)) if old else (int(mo["maj"]), int(mo["min"] or 0))
+    if old and maj >= 4:
+        return f"old name order on a 4+ model (claude-{family}-{maj}-...)"
+    if not old and maj < 4:
+        was = f"claude-{maj}-{mn}-{family}" if mn else f"claude-{maj}-{family}"
+        return f"new name order on a 3.x model (it was {was})"
+    if "." in s and not gateway:
+        return "dotted version; API IDs use hyphens (dots only after anthropic/ on gateways)"
+    if mo["date"] and (maj, mn) >= (4, 6):
+        return "date on a dateless (4.6+) model"
+    if mo["date"]:
+        base = (f"claude-{maj}" + (f"-{mo['omin']}" if mo["omin"] else "") + f"-{family}") if old else \
+               (f"claude-{family}-{maj}" + (f"-{mo['min']}" if mo["min"] else ""))
+        real = KNOWN_DATED.get(base)
+        if not real:
+            return f"no dated snapshot exists for {base}"
+        if mo["date"] not in real:
+            return f"wrong snapshot date (real: {base}-{'/'.join(sorted(real))})"
+    if bedrock_v1 and (maj, mn) >= (4, 6) and (family, maj, mn) != ("opus", 4, 6):
+        return "-v1 suffix on a 4.6+ Bedrock ID (opus-4-6 was the last)"
+    return ""
 
 
 def main() -> int:
@@ -78,6 +131,7 @@ def main() -> int:
         + re.escape(base) + r"([-@]\d{8})?(-v\d(:\d)?)?$", re.I)
     ver = base.split(family + "-", 1)[-1]  # "5-5"
     prose_ok = {f"{family} {ver.replace('-', '.')}", f"{family}-{ver}", f"{family} {ver}"}
+    gateway_cur = "anthropic/" + re.sub(r"-(\d+)-(\d+)$", r"-\1.\2", base)  # AI Gateway / OpenRouter form
 
     record_rx = list(RECORD) + args.record
     ignore = Path(args.ignore_file).expanduser()
@@ -101,13 +155,15 @@ def main() -> int:
             continue
         f, ln, m = parts
         m = m.strip()
-        if cur.match(m) or m.lower() in prose_ok:
+        mm = m.replace("\\", "")  # regex-escaped prose: Haiku 5\.5
+        # A trailing - or . is a truncated match (an ID built from a template variable).
+        if not mm or cur.match(mm) or mm.lower() in prose_ok or mm.lower() == gateway_cur or mm[-1] in "-.":
             continue
         g = "RECORD" if record.search(f) else "TARGET"
         groups[g] += 1
         if g == "TARGET":
             variants[m] += 1
-        rows.append((f, ln, m, g))
+        rows.append((f, ln, m, g, malformed(mm, family)))
 
     tsv = Path(args.out) / f"scan-{family}.tsv"
     tsv.write_text("".join("\t".join(r) + "\n" for r in rows))
@@ -118,6 +174,11 @@ def main() -> int:
     print("\n| TARGET variant | Hits |\n|---|---|")
     for v, n in variants.most_common(40):
         print(f"| `{v}` | {n} |")
+    bad = collections.Counter((r[2], r[4], r[3]) for r in rows if r[4])
+    if bad:
+        print("\n| Made-up or malformed ID | Why | Group | Hits |\n|---|---|---|---|")
+        for (v, why, g), n in sorted(bad.items(), key=lambda kv: (kv[0][2] != "TARGET", -kv[1])):
+            print(f"| `{v}` | {why} | {g} | {n} |")
     print(f"\nTARGET files: {len({r[0] for r in rows if r[3] == 'TARGET'})}  ->  {tsv}")
     return 0
 

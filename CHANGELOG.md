@@ -4,6 +4,17 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+
+- `model-id-upgrade` 1.1.0:
+  - The scanner flags **made-up or malformed model IDs** and says why - a date on a dateless (4.6+) model, a snapshot date that never shipped, the wrong name order for 3.x versus 4+, a dotted API ID, a `-v1` suffix on a 4.6+ Bedrock ID. The TSV gains a fifth column with the reason.
+  - The skill looks up the deprecations and pricing pages, lists callers of a model near retirement first, and quotes the new model's rates in the report.
+  - For runtime code it reads the new model's migration guide and fixes the call in the same commit.
+
+### Fixed
+
+- `model-id-upgrade`: the scanner no longer reports the current model's gateway form (`anthropic/claude-sonnet-5.5`), regex-escaped prose, or an ID truncated at a template variable.
+
 ## [8.0.0] - 2026-11-13
 
 This is a major release (8.0.0): it deletes plugins, retires one and changes how `google-analytics` takes credentials.

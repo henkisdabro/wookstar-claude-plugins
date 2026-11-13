@@ -6,9 +6,10 @@ When a new Claude model ships, old model IDs linger in skills, agent definitions
 
 1. Reads the current model IDs from the [Claude models overview](https://platform.claude.com/docs/en/about-claude/models/overview) at run time - nothing is hard-coded, so it keeps working after the next release.
 2. Scans read-only for every stale form of a family: dated and dateless API IDs, old-order `claude-3-5-sonnet-*`, `-latest`, dotted versions, OpenRouter `anthropic/...`, Bedrock (`us.anthropic....-v1:0`) and Vertex (`@YYYYMMDD`) forms, and prose such as "Sonnet 4.5".
-3. Splits hits into **TARGET** (skills, agents, configs, code - candidates for editing) and **RECORD** (changelogs, logs, transcripts, backups, caches, vendored code - never rewritten).
-4. Reports per family and per repo, then asks for scope (instructions only, plus runtime code, or report only) and whether to commit.
-5. Edits ID-shaped strings only, re-scans for leftovers, and commits per repo if approved. For runtime code it flags call sites whose request parameters the new model may reject, since a new ID there is an API migration.
+3. Flags **made-up or malformed IDs** and says why: a date on a model that has none, a snapshot date that never shipped, the wrong name order, a dotted API ID, a stray `-v1` Bedrock suffix. These are common in code written by a model from memory.
+4. Splits hits into **TARGET** (skills, agents, configs, code - candidates for editing) and **RECORD** (changelogs, logs, transcripts, backups, caches, vendored code - never rewritten).
+5. Reports per family and per repo, with the new model's rates and any retirement date for the model it replaces, then asks for scope (instructions only, plus runtime code, or report only) and whether to commit.
+6. Edits ID-shaped strings only, re-scans for leftovers, and commits per repo if approved. For runtime code it reads the new model's migration guide first and fixes the call in the same commit, since a new ID there is an API migration.
 
 ## Prerequisites
 
