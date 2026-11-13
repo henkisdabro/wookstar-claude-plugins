@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-3.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"google-tagmanager 3.0.0 no longer bundles the Stape MCP server. The skill works with the gtm CLI. If you want the MCP server, add it yourself - the command is in https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
+          }
+        ]
+      }
+    ]
+  }
+}

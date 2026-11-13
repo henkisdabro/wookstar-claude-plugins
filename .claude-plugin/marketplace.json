@@ -143,8 +143,8 @@
     {
       "name": "google-tagmanager",
       "source": "./plugins/google-tagmanager",
-      "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Bundles the Stape GTM MCP server and supports the owntag gtm CLI",
-      "version": "2.0.0",
+      "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Works with the owntag gtm CLI or Stape's GTM MCP server, neither bundled",
+      "version": "3.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -164,8 +164,8 @@
     {
       "name": "google-analytics",
       "source": "./plugins/google-analytics",
-      "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export, bundles Google's read-only Analytics MCP server and supports the ga CLI for configuration changes",
-      "version": "2.0.0",
+      "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export. Works with the ga CLI or Google's own Analytics MCP server, neither bundled",
+      "version": "3.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"

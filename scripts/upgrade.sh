@@ -95,8 +95,6 @@ legacy_var() {
     mikrotik_password) echo MIKROTIK_PASSWORD ;;
     google_oauth_client_id) echo GOOGLE_OAUTH_CLIENT_ID ;;
     google_oauth_client_secret) echo GOOGLE_OAUTH_CLIENT_SECRET ;;
-    google_application_credentials) echo GOOGLE_APPLICATION_CREDENTIALS ;;
-    google_cloud_project) echo GOOGLE_CLOUD_PROJECT ;;
   esac
 }
 
@@ -182,7 +180,7 @@ if [ "$INSTALL" = 1 ]; then
   echo
   echo "== Settings for credential plugins"
   any=0
-  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace google-analytics; do
+  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace; do
     has_plugin "$name" || continue
     any=1
     id="$name@$MP"
@@ -241,7 +239,7 @@ if [ "$INSTALL" = 1 ]; then
       fi
     fi
   done
-  for name in mcp-alphavantage google-tagmanager; do
+  for name in mcp-alphavantage; do
     has_plugin "$name" || continue
     any=1
     echo "  $name: now signs in with OAuth - in Claude Code run /mcp and pick its server"
@@ -273,6 +271,14 @@ for name in developer documents shopify-developer; do
   done
 done
 [ "$any" = 0 ] && echo "  none"
+
+# From 8.1.0 these two plugins bundle no MCP server; the vendor's own is added by hand.
+if has_plugin google-analytics || has_plugin google-tagmanager; then
+  echo
+  echo "== MCP servers no longer bundled (only if you used them)"
+  has_plugin google-analytics && echo "  Google Analytics: claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json -e GOOGLE_CLOUD_PROJECT=your-project-id -- pipx run analytics-mcp"
+  has_plugin google-tagmanager && echo "  Tag Manager (Stape): claude mcp add --transport http --scope user gtm https://gtm-mcp.stape.io/mcp   # then /mcp to sign in"
+fi
 
 echo
 if [ "$FAILED" = 1 ]; then

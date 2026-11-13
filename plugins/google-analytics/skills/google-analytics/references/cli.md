@@ -1,6 +1,6 @@
 # GA CLI (google-analytics-cli)
 
-[daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) is an open-source command-line client for the GA4 Admin and Data APIs - a third party, not Google. Unlike the bundled read-only MCP server it can also **change** configuration: properties, data streams, custom dimensions and metrics, key events, audiences and more. The command is `ga`.
+[daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) is an open-source command-line client for the GA4 Admin and Data APIs - a third party, not Google. Unlike Google's read-only Analytics MCP server it can also **change** configuration: properties, data streams, custom dimensions and metrics, key events, audiences and more. The command is `ga`.
 
 **Last Updated**: 2026-11-13
 

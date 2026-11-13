@@ -1,23 +1,9 @@
 {
   "name": "google-analytics",
-  "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export, bundles Google's read-only Analytics MCP server and supports the ga CLI for configuration changes",
+  "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export. Works with the ga CLI or Google's own Analytics MCP server, neither bundled",
   "author": {
     "name": "henkisdabro",
     "email": "whom-wealthy.2z@icloud.com"
   },
-  "version": "2.0.0",
-  "userConfig": {
-    "google_application_credentials": {
-      "type": "file",
-      "title": "Google credentials file",
-      "description": "Path to an Application Default Credentials or service account JSON file with the analytics.readonly scope",
-      "required": true
-    },
-    "google_cloud_project": {
-      "type": "string",
-      "title": "Google Cloud project ID",
-      "description": "Project used for API quota and billing; the Analytics Data and Admin APIs must be enabled in it",
-      "required": true
-    }
-  }
+  "version": "3.0.0"
 }

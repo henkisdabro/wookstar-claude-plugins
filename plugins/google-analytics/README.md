@@ -9,13 +9,18 @@ Guardrails for working on Google Analytics 4 with Claude Code, plus a skill for 
 - **google-analytics** - GA4 guardrails: glossary, data sources, pitfalls, limits, Data Manager and the BigQuery export schema
 - **bigquery** - Queries the GA4 BigQuery export (`events_*` tables) through a BigQuery MCP server: event_params extraction, sessionisation, landing pages, session source/medium, funnels, and cost control with dry runs and shard filters. Invoke directly with `/google-analytics:bigquery <question>`
 
-### MCP Servers (1)
+### Tools it works with
 
-- **analytics-mcp** - Google's official [Google Analytics MCP server](https://github.com/googleanalytics/google-analytics-mcp), run with `pipx run` and pinned to a known release. It is **read-only**: Data API reports (standard, funnel, conversions, realtime) plus Admin API reads of account summaries, property details, custom dimensions/metrics, property annotations and Google Ads links. It cannot create, change or delete anything in GA4.
+The skills carry no server of their own. For live data and configuration they use whichever of these you have:
 
-### Optional: the ga CLI
+- **The `ga` CLI** - [daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) (a third party, not Google). Reports and configuration changes from the terminal. Ask Claude to install it, or run `uv tool install google-analytics-cli` and `ga auth login`. Claude previews each change with `--dry-run` and asks before sending it.
+- **Google's Analytics MCP server** - read-only reports. Add it from [Google's guide](https://github.com/googleanalytics/google-analytics-mcp#setup-instructions-), which has a Claude Code section:
 
-The bundled MCP server is read-only. To change GA4 configuration from the terminal, or to script audits across properties, the skill can also drive [daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli) (a third party, not Google). It is not bundled - ask Claude to install it, or run `uv tool install google-analytics-cli` and `ga auth login`. Claude previews each change with `--dry-run` and asks before sending it.
+  ```bash
+  claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json -e GOOGLE_CLOUD_PROJECT=your-project-id -- pipx run analytics-mcp
+  ```
+
+  Before 3.0.0 this plugin bundled it. It no longer does: Google's own instructions stay current, and a copy here would only lag them.
 
 ## Installation
 
@@ -24,17 +29,6 @@ The bundled MCP server is read-only. To change GA4 configuration from the termin
 ```
 
 On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install google-analytics --marketplace henkisdabro/wookstar-claude-plugins`
-
-## Configuration
-
-Claude Code asks for two values when you enable the plugin (later: `/plugin configure google-analytics@wookstar-claude-plugins`):
-
-- **Google credentials file** - path to a credentials JSON file
-- **Google Cloud project ID** - the project used for API quota and billing
-
-The credentials need the `https://www.googleapis.com/auth/analytics.readonly` scope, and the Google Analytics Data API and Admin API must be enabled in the project. Either use Application Default Credentials (`gcloud auth application-default login --scopes https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform`, adding `--client-id-file` for your own OAuth client or `--impersonate-service-account` for a service account) and give the path of the resulting file, or use a service account key and add the service account as a Viewer on the GA4 property. `pipx` must be on your PATH.
-
-Since 2.0.0 the `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_CLOUD_PROJECT` shell variables are no longer read - enter the values at the prompt instead.
 
 ## BigQuery querying
 

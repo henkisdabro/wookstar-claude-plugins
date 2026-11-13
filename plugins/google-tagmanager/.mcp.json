@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "gtm-mcp-server": {
-      "type": "http",
-      "url": "https://gtm-mcp.stape.ai/mcp"
-    }
-  }
-}

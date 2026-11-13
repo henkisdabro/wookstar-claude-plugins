@@ -8,6 +8,8 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 > ✨ **New in 8.0.0:** the `google-tagmanager` and `google-analytics` skills are rebuilt as guardrails - a glossary of the terms models blur, the mistakes they typically make, and what changed recently (GTM's optimised container and 2026 install snippet, Data Manager in Analytics) - and both can now drive a command-line tool as well as their MCP server. Every other skill was fact-checked against vendor docs and tightened. See the [CHANGELOG](./CHANGELOG.md).
 >
+> 🔌 **8.1.0:** `google-analytics` and `google-tagmanager` no longer bundle an MCP server. They work with the `ga` and `gtm` command-line tools, or with Google's and Stape's own MCP servers, which you add from the vendor's guide. If you used the bundled servers, see [Upgrading](#upgrading).
+>
 > 🔎 **8.0.1:** `model-id-upgrade` now flags made-up or malformed Claude model IDs and says why, and checks retirement dates and pricing.
 >
 > ⬆️ **Upgrading from 7.x?** Four things to check: `google-analytics` now asks for its credentials, `mcp-google-workspace` loads Gmail, Drive and Calendar only, `timezone-tools` is retired, and the plugins retired in 7.0.0 are gone. Run [`scripts/upgrade.sh`](./scripts/upgrade.sh) or follow [MIGRATION.md](./MIGRATION.md) - see [Upgrading](#upgrading).
@@ -21,7 +23,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 | Category | Plugins | What you get |
 |---|---:|---|
 | 🛠️ [Development](#development) | 6 | PRP planning and containerisation, git and GitHub Actions with releases, React/Next.js rules, Shopify themes, browser userscripts, Google Apps Script |
-| 📊 [Analytics](#analytics) | 3 | GTM and GA4 guardrails with MCP servers and CLIs, GA4 BigQuery querying, Google Ads automation |
+| 📊 [Analytics](#analytics) | 3 | GTM and GA4 guardrails that work with a CLI or the vendor's MCP server, GA4 BigQuery querying, Google Ads automation |
 | 🤖 [AI](#ai) | 2 | Claude model ID upgrades, Perplexity search MCP server |
 | ⚡ [Productivity](#productivity) | 4 | Rich-text email drafts, Gmail/Drive/Calendar, n8n, Excalidraw |
 | 📝 [Content](#content) | 6 | PDF extraction, OCR and parsing, Typst, Quarto slide decks, FFmpeg, YouTube search and transcription, AI-text humaniser |
@@ -52,8 +54,8 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 ### 📊 Analytics
 
-- **`google-tagmanager`** - Guardrails for GTM work: a glossary of the terms models blur (event, tag, pixel, Google tag, Destination), the three JavaScript environments side by side, the optimised container and 2026 install snippet, and a pitfalls list - with links to Google's docs for the rest. Includes the Stape GTM MCP server (browser sign-in) and optional support for the `gtm` CLI from owntag.
-- **`google-analytics`** - Guardrails for GA4 work: a glossary (event, key event versus conversion, parameter versus dimension, the IDs), why reports, the Data API and BigQuery disagree, Data Manager, one checked limits table and a pitfalls list - plus cost-controlled querying of the GA4 BigQuery export. Includes Google's read-only Analytics MCP server and optional support for the `ga` CLI for configuration changes.
+- **`google-tagmanager`** - Guardrails for GTM work: a glossary of the terms models blur (event, tag, pixel, Google tag, Destination), the three JavaScript environments side by side, the optimised container and 2026 install snippet, and a pitfalls list - with links to Google's docs for the rest. Works with the `gtm` CLI from owntag or Stape's GTM MCP server; neither is bundled, and the skill helps you set up whichever you choose.
+- **`google-analytics`** - Guardrails for GA4 work: a glossary (event, key event versus conversion, parameter versus dimension, the IDs), why reports, the Data API and BigQuery disagree, Data Manager, one checked limits table and a pitfalls list - plus cost-controlled querying of the GA4 BigQuery export. Works with the `ga` CLI or Google's own Analytics MCP server; neither is bundled, and the skill helps you set up whichever you choose.
 - **`google-ads-scripts`** - AdsApp campaign automation, bid management, keyword optimisation, reporting.
 
 <a id="ai"></a>
@@ -208,7 +210,6 @@ Skill-only plugins such as `shopify-developer`, `tampermonkey`, `humanise`, `rea
 | `git-github` | uv, and the `gh` CLI for releases |
 | `model-id-upgrade` | uv and ripgrep |
 | `developer` | Docker or Podman for `/containerize` |
-| `google-analytics` | pipx for the bundled MCP server |
 | `mcp-coingecko`, `mcp-n8n`, `mcp-open-meteo`, `mcp-perplexity` | Node.js (`npx`) |
 | `mcp-google-workspace`, `mcp-mikrotik` | uv (`uvx`) |
 | `lsp-*` | the language server binary - see [LSP servers](#lsp-servers) |
@@ -252,11 +253,10 @@ MCP plugins that need a key or URL declare it as plugin configuration: Claude Co
 | `mcp-n8n` | instance URL and API key |
 | `mcp-mikrotik` | router host, SSH username, password, port |
 | `mcp-google-workspace` | OAuth client ID and secret |
-| `google-analytics` | credentials file and Google Cloud project ID |
 
-`mcp-alphavantage` and `google-tagmanager` (Stape) sign in through OAuth - run `/mcp` and pick the server on first use. `mcp-excalidraw`, `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
+`mcp-alphavantage` signs in through OAuth - run `/mcp` and pick the server on first use. `mcp-excalidraw`, `mcp-open-meteo` and `mcp-currency-conversion` need nothing.
 
-Installed one of the plugins above before it took prompted settings (7.0.0, or 2.0.0 for `google-analytics`)? Updating does not prompt - run `claude plugin configure <plugin>@wookstar-claude-plugins`, or let the upgrade script fill the values in. A startup notice reminds you until you do.
+Installed one of the plugins above before it took prompted settings (7.0.0)? Updating does not prompt - run `claude plugin configure <plugin>@wookstar-claude-plugins`, or let the upgrade script fill the values in. A startup notice reminds you until you do.
 
 ---
 
@@ -305,7 +305,8 @@ Then restart Claude Code. Inside a session, `/plugin` does steps 2 and 3 from it
 
 | Coming from | What needs action | Details |
 |---|---|---|
-| **7.x to 8.0.0** | Configure `google-analytics` (`claude plugin configure google-analytics@wookstar-claude-plugins`). If you used `mcp-google-workspace` for Docs or Sheets, add the server yourself (it now loads Gmail, Drive and Calendar only). Uninstall `timezone-tools`. Uninstall any of `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare`, `mcp-fetch` still installed. | [MIGRATION.md](./MIGRATION.md#to-800-from-7x) |
+| **8.0.x to 8.1.0** | Only if you used the MCP server that came with `google-analytics` or `google-tagmanager`: add it yourself with one `claude mcp add` command. Otherwise nothing. | [MIGRATION.md](./MIGRATION.md#to-810-from-80x) |
+| **7.x to 8.0.0** | `google-analytics` credentials moved to plugin configuration (and in 8.1.0 to `mcp-google-analytics`). If you used `mcp-google-workspace` for Docs or Sheets, add the server yourself (it now loads Gmail, Drive and Calendar only). Uninstall `timezone-tools`. Uninstall any of `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare`, `mcp-fetch` still installed. | [MIGRATION.md](./MIGRATION.md#to-800-from-7x) |
 | **6.x to 7.0.0** | Replace the retired plugins with their official equivalents. Configure the MCP plugins that moved to prompted credentials. Install official plugins for the parts of `developer`, `documents` and `shopify-developer` that moved. | [MIGRATION.md](./MIGRATION.md#to-700-from-6x) |
 | **5.x to 6.0** | Swap the three umbrella plugins for the single-purpose ones. | Below |
 

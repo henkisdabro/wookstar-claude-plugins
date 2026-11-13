@@ -4,6 +4,14 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+Upgrading from 8.0.x: nothing to do unless you used the MCP server that came with `google-analytics` or `google-tagmanager` - then add it yourself with one `claude mcp add` command. See [MIGRATION.md](./MIGRATION.md#to-810-from-80x).
+
+### Changed
+
+- `google-analytics` 3.0.0 and `google-tagmanager` 3.0.0: **breaking** - they no longer bundle an MCP server. The skills use the `ga` and `gtm` command-line tools, or Google's and Stape's own MCP servers when the user has added them. Both servers are other people's products with their own install guides; the plugins now point to those guides and give the one command for Claude Code. `google-analytics` no longer asks for credentials or shows a "needs settings" notice.
+- When a task needs a real container or live data and the session has neither tool, the skill lays out the two options and their trade-offs, installs the one the user picks, and says which steps are the user's (`references/tool-setup.md` in each skill).
+- `scripts/upgrade.sh` no longer configures `google-analytics`, and prints the command for adding each server by hand.
+
 ## [8.0.1] - 2026-11-13
 
 No action needed. Update `model-id-upgrade` to pick up the changes.

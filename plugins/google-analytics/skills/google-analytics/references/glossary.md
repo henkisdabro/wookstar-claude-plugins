@@ -93,7 +93,7 @@ The unit that holds data, settings, reports and product links. Identified by the
 One source of events into a property: a website, an iOS app or an Android app.
 
 **Property ID**:
-The numeric ID of a property (`123456789`). The Admin API, the Data API, the bundled MCP server, the `ga` CLI and the BigQuery dataset name (`analytics_123456789`) use it.
+The numeric ID of a property (`123456789`). The Admin API, the Data API, the Analytics MCP server, the `ga` CLI and the BigQuery dataset name (`analytics_123456789`) use it.
 _Not the same as_: measurement ID
 
 **Measurement ID**:
@@ -158,7 +158,7 @@ The Reports section of the GA4 interface, served from pre-aggregated tables.
 The Explore section: ad-hoc analysis over event-level data, limited by the property's data retention setting.
 
 **Data API**:
-The programmatic route to report data. The bundled MCP server and the `ga` CLI's report commands are clients of it.
+The programmatic route to report data. The Analytics MCP server and the `ga` CLI's report commands are clients of it.
 
 **BigQuery export**:
 A copy of the raw events GA4 received, written to BigQuery tables you own.
