@@ -20,6 +20,8 @@ The skill directory is typically `~/.claude/plugins/message/skills/message/`.
 /plugin install message@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install message --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Usage
 
 Ask Claude to draft a message:
@@ -96,6 +98,16 @@ bun run <skill-dir>/scripts/serve.ts --list-channels   # --json for JSON
 ```
 
 Aliases: `email` (gmail); `outlook`, `mail-app`, `rich` (mail); `wa` (whatsapp); `tg` (telegram); `sms` (imessage); `twitter`, `tweet` (x); `bsky` (bluesky); `yt` (youtube); `plaintext`, `text`, `txt` (plain); `md` (markdown). An unknown channel or tier is a build error that lists the valid values.
+
+## Remote sessions
+
+The preview server binds `127.0.0.1` on the machine Claude Code runs on. Used locally, nothing changes. Over SSH, in a container or on another box, your own browser needs the port forwarded:
+
+```bash
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:PORT:127.0.0.1:PORT <ssh-host>
+```
+
+When the session looks remote (SSH variables, or Linux with no display) the server prints that command with its port and Claude passes it on; VS Code, Cursor and similar remote editors forward the port themselves. Set `MESSAGE_REMOTE=1` on a machine you only ever reach remotely: the server then skips the browser launch there, and Open links open in the browser showing the preview. `MESSAGE_REMOTE=0` silences the note.
 
 ## Preview UI
 

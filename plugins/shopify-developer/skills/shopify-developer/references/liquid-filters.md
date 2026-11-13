@@ -844,33 +844,6 @@ Filters execute left-to-right and can be chained:
 {# Strip HTML → truncate → escape for safety #}
 ```
 
-## Performance Tips
+## Performance
 
-1. **Cache filtered results** if used multiple times:
-
-```liquid
-{# ❌ Inefficient: #}
-{% for i in (1..10) %}
-  {{ collection.products | where: "available" | size }}
-{% endfor %}
-
-{# ✅ Efficient: #}
-{% assign available_products = collection.products | where: "available" %}
-{% for i in (1..10) %}
-  {{ available_products.size }}
-{% endfor %}
-```
-
-2. **Use `limit` and `offset` filters** instead of manual iteration control
-
-3. **Combine filters intelligently** to reduce operations:
-
-```liquid
-{# ❌ Less efficient: #}
-{% assign titles = collection.products | map: "title" %}
-{% assign sorted = titles | sort %}
-{% assign limited = sorted | limit: 5 %}
-
-{# ✅ More efficient: #}
-{% assign limited_titles = collection.products | map: "title" | sort | limit: 5 %}
-```
+Assign a filtered result once (`{% assign available = collection.products | where: "available" %}`) rather than re-filtering inside a loop. More in section 5 of [performance.md](performance.md).

@@ -112,52 +112,14 @@ Script icon at 64x64 pixels. Used at various places in the options page.
 
 ## URL Matching
 
-### @match
+### @match and @include
 
-Specify pages where the script runs. Uses match patterns.
-
-**Pattern format:** `<scheme>://<host><path>`
+`@match` takes a match pattern (`<scheme>://<host><path>`, one tag per pattern); `@include` is the legacy form that also accepts globs and `/regex/`. Pattern rules, examples and common mistakes: [url-matching.md](url-matching.md).
 
 ```javascript
-// Match all pages on example.com
 // @match        https://example.com/*
-
-// Match any subdomain
 // @match        https://*.example.com/*
-
-// Match all HTTPS sites
-// @match        https://*/*
-
-// Match HTTP and HTTPS
-// @match        *://example.com/*
-
-// Match specific paths
-// @match        https://example.com/page/*/details
-
-// Multiple matches (use multiple tags)
-// @match        https://example.com/*
-// @match        https://other.com/*
 ```
-
-**Special patterns:**
-- `*` in scheme matches http or https
-- `*` in host matches any subdomain
-- `*` in path matches any characters
-
-### @include
-
-Legacy matching with glob patterns and regex support.
-
-```javascript
-// Glob patterns
-// @include      https://example.com/*
-// @include      *://*.example.com/*
-
-// Regular expression (wrapped in //)
-// @include      /^https:\/\/www\.example\.com\/page\/\d+$/
-```
-
-**Note:** @include with `://` is interpreted like @match. Use @match for new scripts.
 
 ### @exclude
 
@@ -353,7 +315,7 @@ URL to download updates from. Use `none` to disable.
 
 ### @webRequest
 
-Define request interception rules (experimental, MV2 only).
+Define request interception rules (experimental; not available in the Manifest V3 builds of Tampermonkey 5.2+, so Firefox only in practice). Rule format and alternatives: [web-requests.md](web-requests.md).
 
 ```javascript
 // @webRequest   {"selector": "*://ads.example.com/*", "action": "cancel"}

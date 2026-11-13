@@ -3,12 +3,12 @@ name: release
 description: Cut a release - bump the version in every version file, move the CHANGELOG, commit, tag, push and create the GitHub release, confirming before anything leaves the machine.
 argument-hint: "[patch|minor|major|X.Y.Z]"
 disable-model-invocation: true
-allowed-tools: Read, Edit, Glob, Grep, Bash(git:*), Bash(gh:*), AskUserQuestion
+allowed-tools: Read, Edit, Glob, Grep, Bash(git *), Bash(gh *), AskUserQuestion
 ---
 
 # Release
 
-Version bump, release commit, annotated tag, push, GitHub release - in that order. Steps 1-4 are local and reversible; steps 5-6 publish and each needs the user's explicit yes.
+Steps 1-4 are local and reversible; steps 5-6 publish and each needs the user's explicit yes.
 
 Requested bump: `$ARGUMENTS` (ask for patch, minor, major or an explicit version when empty).
 
@@ -74,6 +74,8 @@ git push origin vX.Y.Z
 ```
 
 Push the commit before the tag so the tag points at a commit the remote already has.
+
+Done when: both pushes succeeded, or the user said no and nothing was pushed - in which case stop here.
 
 ## 6. Confirm, then create the GitHub release
 

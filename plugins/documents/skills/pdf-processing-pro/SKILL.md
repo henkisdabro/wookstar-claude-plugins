@@ -5,7 +5,7 @@ description: PDF toolkit of uv-runnable scripts for forms, tables, merging, spli
 
 # PDF Processing Pro
 
-Every script carries PEP 723 inline metadata, so `uv run "${CLAUDE_SKILL_DIR}/scripts/<name>.py"` installs its dependencies on first run. All scripts take `--help` and share exit codes: 0 success, 1 file not found, 2 invalid input, 3 processing error, 4 validation failed or nothing found.
+Every script carries PEP 723 inline metadata, so `uv run "${CLAUDE_SKILL_DIR}/scripts/<name>.py"` installs its dependencies on first run. All scripts take `--help` and exit 0 on success; the non-zero codes they share are listed in [references/workflows.md](references/workflows.md).
 
 ## Scripts
 

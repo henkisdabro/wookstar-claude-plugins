@@ -25,7 +25,7 @@ Capture each of these, with `path:line` references:
 | Test patterns | Framework, file naming, mock strategy, coverage expectations |
 | Configuration | Dependencies and their installed versions, build setup, path aliases |
 
-Sub-steps and documentation templates: [references/codebase-analysis-guide.md](references/codebase-analysis-guide.md).
+When a row is hard to fill, [references/codebase-analysis-guide.md](references/codebase-analysis-guide.md) has the search sub-steps and note templates for it.
 
 Done when every row has at least one concrete reference, or a note that the codebase has nothing relevant.
 
@@ -38,7 +38,7 @@ Done when every row has at least one concrete reference, or a note that the code
 | Best practices | Current guidance for the stack; OWASP for anything security-touching |
 | Performance and security | Bundle size, runtime cost, known vulnerabilities, accessibility |
 
-Search strategies and how to judge sources: [references/research_methodology.md](references/research_methodology.md).
+When a search comes back thin or sources disagree, the External Research Process section of [references/research_methodology.md](references/research_methodology.md) has search strategies and how to judge sources.
 
 Done when each library the feature touches has a documentation URL and version recorded.
 
@@ -56,6 +56,16 @@ Fill [assets/prp_template.md](assets/prp_template.md). Every section is populate
 - **Implementation Blueprint** - ordered steps with pseudocode, files to create or modify, error handling, edge cases.
 - **Validation Gates** - commands that run as written, using the project's real scripts (e.g. `pnpm test && pnpm build`).
 - **Success Criteria** - measurable checklist items.
+
+Hold every line to the Strong column:
+
+| Pitfall | Weak | Strong |
+|---------|-----|------|
+| Vague references | "There's a similar component somewhere" | "See UserProfile at src/components/UserProfile.tsx:45-67" |
+| Missing versions | "Use React Query" | "Use @tanstack/react-query at the version in package.json (v5)" |
+| Non-executable gates | "Run tests and make sure they pass" | `pnpm test && pnpm build` |
+| Generic advice | "Follow React best practices" | "Use named exports (see src/components/Button.tsx:1)" |
+| Missing gotchas | Assuming a smooth implementation | Known issues and edge cases listed per step |
 
 Done when no `[placeholder]` text remains in the file.
 
@@ -75,12 +85,4 @@ Done when the score is 7 or higher - below that, return to the weakest step and 
 
 Save to `PRPs/<feature-name>.md` (kebab-case; create the directory if needed). Tell the user the path, the confidence score with its rationale, and that `/execute-prp PRPs/<feature-name>.md` implements it.
 
-## Common pitfalls
-
-| Pitfall | Weak | Strong |
-|---------|-----|------|
-| Vague references | "There's a similar component somewhere" | "See UserProfile at src/components/UserProfile.tsx:45-67" |
-| Missing versions | "Use React Query" | "Use @tanstack/react-query at the version in package.json (v5)" |
-| Non-executable gates | "Run tests and make sure they pass" | `pnpm test && pnpm build` |
-| Generic advice | "Follow React best practices" | "Use named exports (see src/components/Button.tsx:1)" |
-| Missing gotchas | Assuming a smooth implementation | Known issues and edge cases listed per step |
+Done when the file exists at that path and every item of the Quality Checklist in [references/quality-assessment.md](references/quality-assessment.md) is ticked.

@@ -4,6 +4,14 @@ Vercel Engineering's React and Next.js performance rules, ranked by impact from 
 bundle size down to JavaScript micro-optimisations, plus local overrides for React Compiler and
 Next.js 16 caching.
 
+## Installation
+
+```
+/plugin install react-best-practices@wookstar-claude-plugins
+```
+
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install react-best-practices --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Skills
 
 - **react-best-practices** - one rule per file in `rules/`, indexed in `SKILL.md` by category and

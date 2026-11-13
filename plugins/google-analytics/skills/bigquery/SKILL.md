@@ -8,7 +8,7 @@ argument-hint: "[question about GA4 export data]"
 
 The request: **$ARGUMENTS** - treat it as the query brief. With no arguments, ask what the user wants to know and over which dates.
 
-The export's setup, table naming and full schema live in the google-analytics skill: read `${CLAUDE_SKILL_DIR}/../google-analytics/references/bigquery.md` whenever you need a column, record or event_params key you have not already confirmed. Ready-made SQL (sessions, landing pages, channels, ecommerce, funnels) is in `${CLAUDE_SKILL_DIR}/references/query-patterns.md` - start from it rather than writing from scratch.
+The export's options, table naming and schema live in the google-analytics skill: read `${CLAUDE_SKILL_DIR}/../google-analytics/references/bigquery.md` whenever you need a column, record or event_params key you have not already confirmed. Ready-made SQL (sessions, landing pages, channels, ecommerce, funnels) is in `${CLAUDE_SKILL_DIR}/references/query-patterns.md` - start from it rather than writing from scratch.
 
 ## Step 1 - Confirm a BigQuery MCP server
 
@@ -41,7 +41,7 @@ Done when the SQL meets all five rules.
 
 ## Step 4 - Dry run, then run
 
-Dry-run first: `execute_sql` with `dry_run: true` (Toolbox), or `bq query --use_legacy_sql=false --dry_run '<sql>'` when only the remote server is available. Report bytes processed and the approximate on-demand cost (bytes / 2^40 x US$6.25 - confirm current pricing if the user is cost-sensitive).
+Dry-run first: `execute_sql` with `dry_run: true` (Toolbox), or `bq query --use_legacy_sql=false --dry_run '<sql>'` when only the remote server is available. Report bytes processed and the approximate on-demand cost (bytes / 2^40 x USD 6.25 - confirm current pricing if the user is cost-sensitive).
 
 - Under ~10 GB: run it.
 - Over ~10 GB, or above any limit the user set: show the estimate and ask before running, offering a narrower date range or fewer columns.

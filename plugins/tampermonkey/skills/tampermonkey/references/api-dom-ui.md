@@ -213,20 +213,7 @@ GM_addElement('img', {
 
 ### Bypassing CSP
 
-```javascript
-// Sites with strict CSP block inline scripts
-// GM_addElement can bypass this
-
-// Instead of (may be blocked by CSP):
-const script = document.createElement('script');
-script.textContent = 'console.log("blocked")';
-document.head.appendChild(script);
-
-// Use (bypasses CSP):
-GM_addElement('script', {
-    textContent: 'console.log("works!")'
-});
-```
+`GM_addElement('script', {...})` gets past a CSP that blocks a script built with `document.createElement`. Which sandbox bypasses what: [sandbox-modes.md](sandbox-modes.md).
 
 ---
 

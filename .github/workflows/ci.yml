@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate marketplace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+      - run: npm install --global @anthropic-ai/claude-code
+      - run: claude plugin validate .
+
+  personal-info:
+    name: Personal-info scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Expect zero hits
+        run: |
+          hits=$(git ls-files -z | xargs -0 grep -EIin \
+            'henrik ?so[ei]derlund|[a-z0-9._%+-]+@(henriksoderlund|gmail|icloud|outlook)\.[a-z]{2,}' \
+            | grep -v 'whom-wealthy.2z@icloud.com' || true)
+          if [ -n "$hits" ]; then echo "$hits"; exit 1; fi
+
+  message-tests:
+    name: message tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/message/skills/message/scripts
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run test

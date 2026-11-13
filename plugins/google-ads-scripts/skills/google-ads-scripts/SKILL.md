@@ -47,7 +47,7 @@ function main() {
 
 ## Gotchas
 
-- **Removed since 14 July 2025:** `AdsApp.AdCustomizerSource`, `newAdCustomizerSourceBuilder()` and `withOnlyLegacy()` on extension selectors throw sunset errors. Use asset-based customizers (`{CUSTOMIZER.name:default}`) in Responsive Search Ads, set up in the Google Ads UI or API.
+- **Removed since 14 July 2025:** `AdsApp.AdCustomizerSource`, `newAdCustomizerSourceBuilder()` and `withOnlyLegacy()` on extension selectors throw sunset errors - replacements are under "Removed features" in [references/ads-api-reference.md](references/ads-api-reference.md).
 - **No campaign creation** from scripts - use Bulk Uploads or the Google Ads API. Expanded Text Ads cannot be created; build Responsive Search Ads.
 - **No `getMaxCpc` / `setMaxCpc` / `getReturnOnAdSpend`.** Bids go through `entity.bidding().getCpc()` / `setCpc()`, and ROAS is `metrics.conversions_value / (metrics.cost_micros / 1e6)` from GAQL. Keyword CPC bids only bite under manual CPC.
 - **`AdsApp.search` rows are lowerCamelCase** (`row.metrics.costMicros`) even though the query is snake_case; int64 values may be strings, so wrap in `Number()`.

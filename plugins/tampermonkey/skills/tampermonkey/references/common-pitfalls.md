@@ -138,23 +138,7 @@ console.log(response.responseText);  // Works
 
 ## Pitfall 5: CSP Blocking Script Injection
 
-Content Security Policy blocks dynamically created scripts.
-
-**Wrong:**
-```javascript
-const script = document.createElement('script');
-script.textContent = 'console.log("blocked by CSP")';
-document.head.appendChild(script);  // Blocked!
-```
-
-**Right:**
-```javascript
-// @grant GM_addElement
-
-GM_addElement('script', {
-    textContent: 'console.log("bypasses CSP")'
-});
-```
+A `<script>` built with `document.createElement` is blocked on pages with a Content Security Policy. Inject it with `GM_addElement('script', {...})` (`@grant GM_addElement`) instead - details in the CSP section of [sandbox-modes.md](sandbox-modes.md).
 
 ---
 
@@ -341,23 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ## Pitfall 12: Cross-Browser Differences
 
-Firefox and Chrome behave differently.
-
-**Firefox-only features:**
-```javascript
-// cloneInto and exportFunction only exist in Firefox
-if (typeof cloneInto !== 'undefined') {
-    unsafeWindow.myData = cloneInto(data, unsafeWindow);
-} else {
-    unsafeWindow.myData = data;  // Chrome
-}
-```
-
-**Manifest V3 limitations (Chrome):**
-```javascript
-// @webRequest doesn't work in Chrome MV3
-// Use alternative approaches or inform user
-```
+Firefox and Chrome differ: `cloneInto`/`exportFunction` exist only in Firefox, and `GM_webRequest` is missing from Chrome and Edge. Use feature detection, not user-agent checks - see [browser-compatibility.md](browser-compatibility.md).
 
 ---
 
@@ -413,15 +381,4 @@ Source: [Tampermonkey FAQ Q209](https://www.tampermonkey.net/faq.php?q=Q209). Fi
 
 ## Quick Diagnostic Checklist
 
-When a script doesn't work:
-
-```
-[ ] Console shows errors? (F12 → Console)
-[ ] Script is enabled in Tampermonkey dashboard?
-[ ] @match pattern matches current URL?
-[ ] Required @grant statements present?
-[ ] @connect includes target domains?
-[ ] Element exists when script runs?
-[ ] Using async correctly (callbacks/await)?
-[ ] Browser-specific features used correctly?
-```
+When a script does not work at all, start with the checklist at the top of [debugging.md](debugging.md).

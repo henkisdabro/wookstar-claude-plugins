@@ -14,6 +14,8 @@ A Claude Code skill for writing Google Apps Script that automates Google Workspa
 /plugin install google-apps-script@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install google-apps-script --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Coverage
 
 - **Built-in services** - SpreadsheetApp, DocumentApp, GmailApp, MailApp, DriveApp, CalendarApp, FormApp

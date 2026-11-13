@@ -48,64 +48,9 @@ GM_log('User ID: ' + userId);
 
 ---
 
-## GM_addStyle(css)
+## GM_addStyle, GM_addElement and unsafeWindow
 
-Add CSS styles to the document. Returns the injected style element.
-
-```javascript
-// @grant GM_addStyle
-
-// Add styles
-const styleElement = GM_addStyle(`
-    .my-class {
-        background: #f0f0f0;
-        padding: 10px;
-    }
-
-    #hide-element {
-        display: none !important;
-    }
-
-    body {
-        font-family: 'Arial', sans-serif !important;
-    }
-`);
-```
-
----
-
-## GM_addElement(tag_name, attributes)
-## GM_addElement(parent_node, tag_name, attributes)
-
-Create and inject HTML elements, bypassing CSP restrictions.
-
-```javascript
-// @grant GM_addElement
-
-// Add script to page
-GM_addElement('script', {
-    textContent: 'window.myVar = "injected";'
-});
-
-// Add external script
-GM_addElement('script', {
-    src: 'https://example.com/script.js',
-    type: 'text/javascript'
-});
-
-// Add image to specific parent
-GM_addElement(document.body, 'img', {
-    src: 'https://example.com/image.png',
-    alt: 'My Image'
-});
-
-// Add style to shadow DOM
-GM_addElement(shadowRoot, 'style', {
-    textContent: 'div { color: blue; }'
-});
-```
-
-**Returns:** The injected HTML element.
+Documented in [api-dom-ui.md](api-dom-ui.md).
 
 ---
 
@@ -163,34 +108,9 @@ GM_notification('Message', 'Title', 'https://example.com/icon.png', () => {
 
 ---
 
-## GM_openInTab(url, options)
-## GM_openInTab(url, loadInBackground)
+## GM_openInTab
 
-Open a new browser tab.
-
-```javascript
-// @grant GM_openInTab
-
-// Simple usage
-GM_openInTab('https://example.com/');
-
-// With options
-const tab = GM_openInTab('https://example.com/', {
-    active: true,        // Focus the new tab
-    insert: true,        // Insert next to current tab
-    setParent: true,     // Set current tab as parent
-    incognito: false,    // Open in incognito
-    loadInBackground: false  // Legacy: opposite of active
-});
-
-// Close the tab later
-tab.close();
-
-// Listen for tab close
-tab.onclose = () => console.log('Tab closed');
-```
-
-**Returns:** Object with `close()` function, `onclose` listener, and `closed` flag.
+Documented with the other tab APIs in [api-tabs.md](api-tabs.md).
 
 ---
 
@@ -333,24 +253,3 @@ const img = document.createElement('img');
 img.src = iconUrl;
 document.body.appendChild(img);
 ```
-
----
-
-## unsafeWindow
-
-Access the page's actual window object (not the sandbox).
-
-```javascript
-// @grant unsafeWindow
-
-// Access page variables
-console.log(unsafeWindow.pageConfig);
-
-// Call page functions
-unsafeWindow.showModal('Hello from userscript!');
-
-// Modify page globals
-unsafeWindow.DEBUG_MODE = true;
-```
-
-**Warning:** Use carefully - can break if page structure changes.

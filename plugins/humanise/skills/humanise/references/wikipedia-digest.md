@@ -1,12 +1,12 @@
 # Wikipedia Source Digest
 
-Last fetched: 2026-10-04
-Last checked: 2026-10-04 (four changes applied - see below)
-Previously fetched: 2026-09-09, 2026-08-21, 2026-08-02
+Last fetched: 2026-11-11 (article revision 1384930421, 2026-11-10T21:39Z)
+Last checked: 2026-11-11 (see below; other sources in sources.md)
+Previously fetched: 2026-11-06, 2026-10-04, 2026-09-09, 2026-08-21, 2026-08-02
 Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 Maintained by: WikiProject AI Cleanup
 
-This file is a structured digest of the Wikipedia article used to build this skill. When updating the skill, fetch the latest Wikipedia article and compare against this digest to identify changes.
+This file is a structured digest of the Wikipedia article used to build this skill. When updating the skill, fetch the latest Wikipedia article and compare against this digest to identify changes. It is maintainer material: the commands below need a shell, and nothing in the skill's runtime depends on them. The non-Wikipedia evidence lives in [sources.md](sources.md); recheck those sources (Graphite publishes updates per model release) in the same pass.
 
 ## How to Update
 
@@ -25,13 +25,14 @@ This file is a structured digest of the Wikipedia article used to build this ski
    The API needs a User-Agent header or it returns 403. Never strip `<ref>` tags with a
    non-greedy regex before reading a section: `<ref name="x"/>` opens a match that runs to
    the next `</ref>`, silently eating the bullets in between and inventing a mangled list.
+   Style patterns moved to a subpage on 2026-10-31 and markup to WP:AIMARKUP, so fetch `Wikipedia:Signs_of_AI_writing/Style` as well. The `?action=raw` form above needs a User-Agent; `index.php?title=...&action=raw` works.
 2. Compare the fetched content against this digest below
 3. Look for: new patterns, removed patterns, renamed patterns, updated keywords, new examples, new model-era information
 4. Update the relevant reference files and this digest
 
 ---
 
-## Pattern Digest (as of 2026-10-04)
+## Pattern Digest (as of 2026-10-04; see the 2026-11-06 changes for later moves)
 
 ### Content Patterns
 
@@ -103,13 +104,13 @@ Note: Wiki section 9 ("Vague See Also sections") appears to have been removed fr
 
 ### Signs of Human Writing (Wiki section "Signs of human writing")
 
-Captured in SKILL.md under "Signs of human writing (put these back)". Empirically more common in human text than AI text: simple is/has phrases; plain verbs over stiff synonyms (wrote/authored, moved/relocated, used/utilized, tried/attempted, died/passed away); superlative or definitive statements (one of the best, is the only, was the first); hedging qualifiers and intensifiers (very, perhaps, tends to); isolated wordy constructions (as a result of, in order to, all of the, a part of, the fact that).
+Captured in voice-and-pulse.md under "Signs of human writing (put these back)". Empirically more common in human text than AI text: simple is/has phrases; plain verbs over stiff synonyms (wrote/authored, moved/relocated, used/utilized, tried/attempted, died/passed away); superlative or definitive statements (one of the best, is the only, was the first); hedging qualifiers and intensifiers (very, perhaps, tends to); isolated wordy constructions (as a result of, in order to, all of the, a part of, the fact that).
 
-Note the deliberate tension with skill #22 - Wikipedia lists wordy constructions as a human tell while #22 trims them. SKILL.md carries the reconciliation.
+Note the deliberate tension with skill #22 - Wikipedia lists wordy constructions as a human tell while #22 trims them. voice-and-pulse.md carries the reconciliation.
 
 ### Ineffective Indicators (Wiki section "Ineffective indicators")
 
-Captured in SKILL.md under "Weak signals - never rewrite on these alone": perfect grammar; mixed casual/formal register; "bland" or "robotic" prose; "fancy"/academic/formal prose; transition words in isolation; unsourced content; bizarre wikitext; correct wikitext.
+Captured in SKILL.md under "Clusters, not single hits": perfect grammar; mixed casual/formal register; "bland" or "robotic" prose; "fancy"/academic/formal prose; transition words in isolation; unsourced content; bizarre wikitext; correct wikitext.
 
 ### Skill-Only Patterns (not from Wikipedia)
 
@@ -154,6 +155,34 @@ Additionally (especially sentence-initial), align with, boasts (meaning "has"), 
 - **Em dash suppression**: OpenAI GPT-5.1 (Nov 2025) actively suppresses em dashes, so their absence proves nothing
 
 ---
+
+## Changes from 2026-11-06 to 2026-11-11
+
+Diffed revision 1383697236 (current at the last check) against 1384930421, and read the Markup subpage history and the talk page. Style subpage unchanged.
+
+1. **"Outdated examples" banners** (2026-11-10, talk section "Outdated examples") on: significance/legacy (#1), notability/attribution (#2), online presence, vague attributions (#5), AI vocabulary (#7, plus "no examples given for 2026 AI vocabulary"), copula avoidance (#8), leads treating titles as proper nouns, utm_source (#30), unused named references. Noted in content-patterns.md, language-patterns.md and sources.md as weaker evidence; no pattern removed.
+2. **Canned emphasis renamed "Undue emphasis on notability, attribution, and media coverage"**; online presence split into its own subsection and flagged for a move to historical; AIIDENTIFY made a subsection of it. Skill #2 gained the sub-pattern note, #35 the talk page's "emphasis on attribution" test and a news-source example.
+3. **Pro-authoritarian bias removed** (2026-11-10, per talk) and replaced by a general "Biases" note. Dropped from SKILL.md.
+4. **Most common signs as of October 2026** now ends with "undue emphasis on identification by primary sources" (#35).
+5. **Markup subpage (2026-10-29):** Gemini `<mark>` highlight wrapping. Added to #30. Missed at the 2026-11-06 check because the Markup subpage was not diffed - diff all three pages each time.
+6. **Example.com URL placeholders** (talk 2026-10-30, now in WP:AIPLACEHOLDER). Added to #28 with the template false-positive caveat.
+
+Considered and not adopted: "Draft X" link failures and other wikitext-only markup (Wikipedia-only); teaser framing ("here's the crazy part") and abstract-noun evasion from the talk page (anecdotal; listed under Watching in sources.md); Pangram see-also (detector, not a pattern).
+
+The same pass added patterns #36-39 and 2026 evidence from outside Wikipedia; see sources.md.
+
+## Changes from 2026-10-04 to 2026-11-06
+
+Base revision 1378298730. Page shrank from 221 KB to 180 KB, mostly from splitting Style into a subpage and markup into WP:AIMARKUP.
+
+1. **New section "Undue emphasis on identification by primary or tertiary sources"** (WP:AIIDENTIFY, 2026-11-03), split from canned notability; common from 2026. Added as skill pattern **#35**; *was identified by* moved from #2. Count goes 34 to 35.
+2. **Promotional language moved to historical** (2023-2025, 2026-11-03). Skill **#4** marked by era.
+3. **Em dashes moved to historical** (2022-September 2026). July 2026 study: of contemporary models only Claude exceeds professional writers. Latest models reported hard-coded against them, with reduced punctuation variety as a possible new sign (tagged citation needed). Skill **#13** updated; the successor sign is noted as weak.
+4. **Disclaimers section restructured by era** as "Hedging disclaimers about source availability and recommended usage": 2023-24 didactic, 2024-25 source gaps, mid-2026 onward corrective framings. New words: *does not by itself establish*, *should be presented as*, *should not be confused* (less reliable). Near-absent before about July 2026. Skill **#20** updated.
+5. **Knowledge-cutoff statements moved to historical** (2022-2023). Noted in #20 and SKILL.md.
+6. **Collaborative communication gained** *a Wikipedia-style article* and *[check/verify/confirm] ... before [publishing/submitting]*. The second added to skill **#19**.
+
+Considered and not adopted: *a Wikipedia-style article* (Wikipedia-only); new URL placeholder and date placeholder examples (no change to #28); reference-placeholder and citation sections moved (Wikipedia's filing, no renumbering here); negative parallelism headings only gained `<var>` markup.
 
 ## Changes from 2026-09-09 to 2026-10-04
 

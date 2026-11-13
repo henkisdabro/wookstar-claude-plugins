@@ -1,52 +1,21 @@
 # GA4 BigQuery Export
 
-Source of truth for the export itself: why to use it, how to link it, export options, table naming and the schema. Writing and running SQL against the export - parameter extraction, sessionisation, cost control and query patterns - lives in the plugin's `bigquery` skill (`skills/bigquery/SKILL.md` and its `references/query-patterns.md`).
+Source of truth for the export itself: its options, table naming and schema. Writing and running SQL against it - parameter extraction, sessionisation, cost control and query patterns - is the plugin's `bigquery` skill. How export numbers relate to reports is in [data-sources.md](data-sources.md); linking mistakes are in the "BigQuery link" group of [pitfalls.md](pitfalls.md).
 
-## Why Use BigQuery
+## Export options
 
-| Benefit | Description |
-|---------|-------------|
-| Unsampled data | No sampling or thresholding |
-| Raw event data | Access every parameter |
-| SQL analysis | Complex queries and joins |
-| Data integration | Combine with other sources |
-| Long-term storage | Beyond GA4 retention |
-| Custom attribution | Build custom models |
-| Machine learning | Train on GA4 data |
+Linked at Admin -> Product links -> BigQuery links (Editor on the property, Owner on the Cloud project). The dataset is `analytics_<property_id>`; first data arrives within about 24 hours.
 
-## BigQuery Export Setup
+| Option | What it writes | Availability |
+|--------|----------------|--------------|
+| Daily | The previous day, once a day, typically early to mid afternoon in the property time zone. 1 million events a day on standard, 20 billion on 360 | Standard and 360 |
+| Fresh Daily | Typically by 5 am, then batched updates about hourly | 360 only |
+| Streaming | `events_intraday_` within minutes; best effort, no completeness guarantee, no volume limit, USD 0.05 per GB. Omits new-user and new-session traffic source data | Standard and 360 |
+| User data | Daily `pseudonymous_users_` and `users_` tables | Standard and 360 |
 
-### Prerequisites
-
-- GA4 property (standard or 360)
-- Google Cloud project with the BigQuery API enabled and billing (or the BigQuery sandbox)
-- Editor permissions on the GA4 property, Owner on the Cloud project
-
-### Setup Steps
-
-1. console.cloud.google.com - create or select a project, enable the BigQuery API
-2. GA4 Admin -> Product Links -> BigQuery Links -> Link
-3. Choose the Cloud project and a dataset location (US, EU, a region) - it cannot be changed later
-4. Choose export frequency (see below) and the data streams/events to include
-5. Optionally include advertising IDs, then submit
-
-The dataset is created as `analytics_<property_id>`. First data arrives within about 24 hours.
-
-### Export Options
-
-| Option | Description | Availability |
-|--------|-------------|--------------|
-| Daily Export | Once per day, previous day's complete data (standard: 1 million events/day limit) | Standard and 360 |
-| Fresh Daily | Delivered by ~5am, updated through the day | 360 only |
-| Streaming Export | Near real-time, best-effort, $0.05/GB | Standard and 360 |
-| User data export | Daily `pseudonymous_users_` and `users_` tables | Standard and 360 |
-| Include Advertising IDs | For Ads integration | Optional |
-
-### Data Availability
-
-- Daily tables: once per day, after the day ends (time varies). GA4 can rewrite a daily table for up to 72 hours to add late-arriving events.
-- Intraday tables (`events_intraday_`): filled by streaming export within minutes, replaced when the daily table lands
-- Streaming omits new-user and new-session traffic source data - use the daily table for acquisition analysis
+- A daily table can be rewritten for up to 72 hours as late events arrive.
+- The intraday table is replaced when the daily table lands.
+- The export holds raw events keyed by device ID. It has no Google signals data, no modelled data, no `wbraid` / `gbraid`, and nothing from linked products.
 
 ## Table Structure
 
@@ -108,45 +77,6 @@ Full field list: [GA4 BigQuery Export schema](https://support.google.com/analyti
 | `entrances` | `int_value` | `1` on the landing-page `page_view` |
 | `source`, `medium`, `campaign` | `string_value` | Event-level UTMs, mostly on the first event of a session |
 
-## BigQuery Pricing
+## Pricing
 
-| Type | Cost |
-|------|------|
-| Storage | ~$0.02/GB/month |
-| Queries (on-demand) | ~$6.25/TiB scanned |
-| GA4 streaming export | $0.05/GB |
-
-Free tier: 10 GiB storage and 1 TiB of query scanning per month. Prices change - confirm on [BigQuery pricing](https://cloud.google.com/bigquery/pricing).
-
-## Data Retention
-
-| Platform | Retention |
-|----------|-----------|
-| GA4 Standard | 2 or 14 months |
-| BigQuery | Unlimited (until deleted, or until the dataset's default table expiration) |
-
-A BigQuery sandbox project sets a 60-day table expiration - upgrade to billing to keep history.
-
-```sql
-ALTER TABLE `project.dataset.events_20250101`
-SET OPTIONS (
-  expiration_timestamp=TIMESTAMP "2026-01-01 00:00:00 UTC"
-)
-```
-
-## Common Use Cases
-
-- **Unsampled reporting** - complete data where GA4 UI samples or thresholds
-- **Custom attribution** - full user journeys, custom credit models
-- **Data integration** - join GA4 with CRM, product catalogue, ad spend
-- **Machine learning** - churn, LTV, conversion propensity
-- **Long-term analysis** - history beyond GA4 retention, year-over-year
-
-## Export Troubleshooting
-
-| Symptom | Causes | Fix |
-|---------|--------|-----|
-| No tables in the dataset | Link just created, export paused, wrong project, billing disabled | Wait 24 hours, check Admin -> BigQuery Links status, confirm the project and billing |
-| Daily export stopped | Standard property over 1 million events/day | Exclude events or streams from export, or move to streaming |
-| Events missing | Events not firing, consent denied, data filter applied | Verify in DebugView, check Consent Mode, review data filters |
-| Numbers differ from GA4 UI | Expected - see the `bigquery` skill's "UI vs BigQuery" section | |
+On-demand queries cost USD 6.25 per TiB scanned, with the first 1 TiB each month free; streaming export costs USD 0.05 per GB. Prices change - confirm on [BigQuery pricing](https://cloud.google.com/bigquery/pricing).

@@ -25,10 +25,10 @@ Best,
 Test
 `;
 
-async function runHook(projectDir: string, fragmentPath: string): Promise<number> {
+async function runHook(projectDir: string, fragmentPath: string, remote = "0"): Promise<number> {
   const input = JSON.stringify({ tool_input: { file_path: fragmentPath } });
   const proc = Bun.spawn(["bun", "run", HOOK], {
-    env: { ...process.env, CLAUDE_PROJECT_DIR: projectDir, MESSAGE_NO_OPEN: "1" },
+    env: { ...process.env, CLAUDE_PROJECT_DIR: projectDir, MESSAGE_NO_OPEN: "1", MESSAGE_REMOTE: remote },
     stdin: Buffer.from(input),
     stdout: "ignore",
     stderr: "ignore",
@@ -75,11 +75,41 @@ describe("auto-serve-fragment hook", () => {
         expect(await runHook(projectDir, fragment)).toBe(0);
         expect(readFileSync(latestFile, "utf8").trim()).toBe(url);
 
+        // A local session leaves no remote note behind.
+        expect(existsSync(join(projectDir, ".claude", ".message-preview-note"))).toBe(false);
+
         // Previews map keys by absolute fragment path.
         const previews = JSON.parse(
           readFileSync(join(projectDir, ".claude", ".message-previews.json"), "utf8"),
         );
         expect(previews[fragment]).toBe(url);
+      } finally {
+        if (url) killServerOnPort(url);
+        await rm(projectDir, { recursive: true, force: true });
+      }
+    },
+    60_000,
+  );
+
+  test.skipIf(!existsSync(HOOK) || process.platform === "win32")(
+    "records the server's remote note beside the URL, and keeps it on re-fire",
+    async () => {
+      const projectDir = await mkdtemp(join(tmpdir(), "hook-e2e-remote-"));
+      const fragment = join(projectDir, "2026-01-01_test_remote.fragment.md");
+      await Bun.write(fragment, FRAGMENT_CONTENT);
+      const noteFile = join(projectDir, ".claude", ".message-preview-note");
+      let url = "";
+      try {
+        expect(await runHook(projectDir, fragment, "1")).toBe(0);
+        url = readFileSync(join(projectDir, ".claude", ".message-preview-url"), "utf8").trim();
+        // The URL file stays a bare URL; the note is its own file.
+        expect(url).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/$/);
+        const note = readFileSync(noteFile, "utf8");
+        expect(note).toStartWith("remote-preview: on");
+        expect(note).toContain(`:127.0.0.1:${new URL(url).port} <ssh-host>`);
+
+        expect(await runHook(projectDir, fragment, "1")).toBe(0);
+        expect(readFileSync(noteFile, "utf8")).toBe(note);
       } finally {
         if (url) killServerOnPort(url);
         await rm(projectDir, { recursive: true, force: true });

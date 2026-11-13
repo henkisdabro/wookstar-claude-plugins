@@ -222,6 +222,34 @@ where the vagueness is the correct term of art.
 
 ---
 
+### C6: 2026 model tells (#9 D, #33, #36-39)
+
+**Input:**
+
+> The new scheduler is less like a tool and more like a partner. It is arguably the single most
+> meaningful change to the platform, and it cuts setup time without sacrificing flexibility. This
+> matters because onboarding is where the real heavy lifting happens: the implementation of
+> automated slot allocation provides a reduction in coordination overhead for every single team.
+
+**Patterns flagged:**
+
+- #9 subtype D: "less like a tool and more like a partner"
+- #38 Superlative framing: "arguably the single most", "every single"
+- #7 2026 evaluative adjective: "meaningful"
+- #37 Trade-off denial: "without sacrificing flexibility"
+- #33 Announced significance: "This matters because"
+- #36 Mannered prose: "where the real heavy lifting happens"
+- #39 Nominalisations: "the implementation of automated slot allocation provides a reduction in"
+
+**Good output characteristics:**
+
+- Says what the scheduler does: it allocates slots automatically and cuts setup time
+- No ranking claim beyond what the source supports, no "partner" metaphor
+- Keeps the flexibility claim only as a plain statement, without the "without sacrificing" frame
+- Adds no numbers for setup time or overhead (the source gives none)
+
+---
+
 ## Section D: Quality Scoring Rubric
 
 Use this rubric to evaluate humaniser output quality. All five criteria must pass for a correct

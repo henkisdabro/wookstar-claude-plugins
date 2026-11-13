@@ -1,6 +1,6 @@
 ---
 name: youtube-search
-description: Search YouTube with yt-dlp and return structured results (title, channel, views, duration, date, URL), then fetch captions or download audio for a chosen video. Use when the user asks to "search youtube", "find youtube videos about", "what's on youtube about", wants recent or most-viewed videos on a topic, wants videos from a specific channel, needs metadata for a YouTube URL, wants a YouTube video's captions or subtitles, or wants a video's audio downloaded to transcribe. Do NOT use for transcribing a local audio file - use transcribe; for converting or editing media files - use ffmpeg-cli; for playing videos or for non-YouTube platforms.
+description: Search YouTube with yt-dlp and return structured results (title, channel, views, duration, date, URL), then fetch captions or download audio for a chosen video. Use when the user asks to "search youtube" or what is on YouTube about a topic, wants recent or most-viewed videos on a topic, wants videos from a specific channel, needs metadata for a YouTube URL, wants a YouTube video's captions or subtitles, or wants a video's audio downloaded to transcribe. Do NOT use for transcribing a local audio file - use transcribe; for converting or editing media files - use ffmpeg-cli; for playing videos or for non-YouTube platforms.
 argument-hint: <topic> [max_results]
 allowed-tools: Bash, Read
 ---
@@ -23,8 +23,8 @@ Search YouTube through [yt-dlp](https://github.com/yt-dlp/yt-dlp) and present st
    ```
 
    Done when the script prints results, or prints "No results" and you have retried once with looser filters.
-3. **Present the Markdown output as-is.** If the user wants more on one video, run `yt-dlp "<url>" --dump-json --no-download --no-warnings` and pick the fields they asked about.
-4. **Hand off** if the user wants the content of a video, not just the link - see [Getting the words out of a video](#getting-the-words-out-of-a-video).
+3. **Present the Markdown output as-is.** If the user wants more on one video, run `yt-dlp "<url>" --dump-json --no-download --no-warnings` and pick the fields they asked about. Done when the user has the results table and every field they asked for.
+4. **Hand off** if the user wants the content of a video, not just the link - follow [Getting the words out of a video](#getting-the-words-out-of-a-video). Done when the captions file or the audio path is in hand.
 
 ## Options
 

@@ -1,8 +1,10 @@
 # wookstar-claude-plugins
 
 A Claude Code plugin marketplace. No build step: every plugin is a directory under `plugins/`, and
-it does not exist until it also has an entry in `.claude-plugin/marketplace.json`. The only tests
-are the message plugin's - `bun run test` in `plugins/message/skills/message/scripts/`.
+it does not exist until it also has an entry in `.claude-plugin/marketplace.json`. The only unit
+tests are the message plugin's - `bun run test` in `plugins/message/skills/message/scripts/`. CI
+(`.github/workflows/ci.yml`) runs those, the validator and the personal-info scan below on every
+pull request.
 
 Verify a change with `claude plugin validate .` (no errors or warnings at HEAD), then exercise
 it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugins`, and
@@ -52,24 +54,42 @@ Credentials come from `userConfig` in the plugin's `plugin.json`, referenced in 
 keeps secrets in the keychain. Pass keys through `env` or `headers` - an `args` entry shows in `ps`
 and a URL query string lands in proxy logs - and use a remote server's own OAuth where it offers one.
 
-## Three things that are declared in two places
+## One place for servers, two for versions
 
-**MCP servers** belong in the plugin's own `.mcp.json`, referenced from its marketplace entry as
-`"mcpServers": "./.mcp.json"`. Never repeat them in `plugin.json` - one source of truth, and the
-marketplace decides what loads.
+**MCP servers** live in the plugin's own `.mcp.json` and **LSP servers** in the `lspServers` block of
+its `.claude-plugin/plugin.json`. Claude Code loads both from there by default, so the marketplace
+entry carries neither `mcpServers`, `lspServers` nor `strict`. Tested on Claude Code 2.1.323 with a
+scratch marketplace: a plugin with only `.mcp.json`, and one with `lspServers` only in plugin.json,
+each loaded its server; the copies this repo used to keep in the entries changed nothing.
 
-**LSP servers** are the opposite and do need duplicating: each `plugins/lsp-*/` has its `lspServers`
-block in both `.claude-plugin/plugin.json` and its marketplace entry. Change one and you must change
-the other.
-
-**Plugin versions** live in both files too, and here the duplication is not symmetrical: plugin.json
-is authoritative at install time and the marketplace entry is cosmetic. Bump both, lead with
-plugin.json, and let the validator confirm they match. See the note above on why bumping the entry
-alone is a no-op.
+**Plugin versions** are the one thing in both files, and the duplication is not symmetrical:
+plugin.json is authoritative at install time and the marketplace entry is cosmetic. Bump both, lead
+with plugin.json, and let the validator confirm they match. See the note above on why bumping the
+entry alone is a no-op.
 
 ## Skill descriptions are the only trigger surface
 
-Nothing validates them and a bad one fails silently, so keep every new `SKILL.md` to the house
+The validator does not check them and a bad one fails silently, so keep every new `SKILL.md` to the house
 formula: a declarative one-line summary, then `Use when` with 5-10 explicit trigger phrases, then
 `Do NOT use for` with the scenarios that should route elsewhere. Both halves matter - the negative
 signals are what stop a skill firing on unrelated requests.
+
+Each model-invoked skill has a trigger case under its plugin's `evals/trigger-<skill>/`: a prompt
+that should fire the skill and a grader that checks it did. Add one with every new skill, and run
+`claude plugin eval plugins/<name>` after changing a description. A run makes real model calls, so
+it is not in CI.
+
+## Skills are guardrails, not tutorials
+
+A skill earns its context by changing what a current model does. `google-tagmanager` and
+`google-analytics` are the pattern: a glossary of the terms models blur, pitfalls as one line each
+(wrong move, then right one), what changed recently enough that training is likely wrong, and links
+to the vendor's docs for everything else. Each meaning has one home - the pitfalls that apply to
+every task sit in `SKILL.md`, the rest in a reference group read only for that task. Check a fact
+against the vendor's own page before writing it, and mark what rests on observation.
+
+## MCP servers are pinned
+
+Every `npx`, `uvx` and `pipx` server in a `.mcp.json` names an exact version, so a new upstream release
+reaches users only through a plugin bump. When raising a pin, pick a release at least three days
+old and bump the plugin.

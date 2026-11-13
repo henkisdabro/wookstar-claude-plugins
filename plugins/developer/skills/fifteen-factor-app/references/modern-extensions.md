@@ -35,8 +35,8 @@ This reference contains detailed documentation for the three additional factors 
 
 ```groovy
 dependencies {
-    // springdoc-openapi (Springfox is unmaintained); 3.x targets Spring Boot 4, 2.8.x Spring Boot 3
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
+    // springdoc-openapi (Springfox is unmaintained); 3.x targets Spring Boot 4, 2.x Spring Boot 3
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
 }
 ```
 
@@ -129,8 +129,8 @@ paths:
 
 | Category | Tools |
 |----------|-------|
-| Health & System Logs | Cloud Provider Tools, ELK Stack |
-| Distributed Tracing | Jaeger, Zipkin, OpenTelemetry |
+| Health & System Logs | Cloud Provider Tools, Elastic Stack (ELK) |
+| Distributed Tracing | OpenTelemetry for instrumentation, exporting OTLP to Jaeger or Zipkin |
 | Metrics & Dashboards | Grafana, Prometheus |
 | APM | AppDynamics, New Relic, Datadog |
 | Container Orchestration | Kubernetes metrics, Istio |
@@ -141,11 +141,11 @@ paths:
 
 ```groovy
 dependencies {
-    // Distributed tracing - OpenTelemetry (OpenTracing is archived); export OTLP to Jaeger or Zipkin
-    implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.32.0'
+    // Distributed tracing - OpenTelemetry (OpenTracing is archived); export OTLP to the tracing backend
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter:2.33.1'
 
     // Logging - SLF4J with Logback (log4j 1.x is end-of-life); pulls in slf4j-api
-    implementation 'ch.qos.logback:logback-classic:1.6.5'
+    implementation 'ch.qos.logback:logback-classic:1.6.6'
 
     // Health probe - Spring Boot Actuator
     implementation "org.springframework.boot:spring-boot-starter-actuator:${spring_boot_version}"
@@ -211,10 +211,10 @@ app.get('/metrics', async (req, res) => {
 | Category | Solutions |
 |----------|-----------|
 | Authentication | OAuth2, OpenID Connect, SAML |
-| Single Sign-On | Okta, Auth0, Keycloak |
+| Single Sign-On | Okta, Auth0, Keycloak; OAuth2 Proxy to put auth in front of a service |
 | Authorisation | RBAC, ABAC, Policy engines (OPA) |
 | API Security | JWT tokens, API keys, mTLS |
-| Secret Management | HashiCorp Vault, AWS Secrets Manager |
+| Secret Management | HashiCorp Vault, AWS Secrets Manager, 1Password CLI, Doppler |
 
 ### Implementation Patterns
 

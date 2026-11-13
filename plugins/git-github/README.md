@@ -28,6 +28,8 @@ uv run scripts/check_actions_versions.py --validate .github/workflows/ci.yml
 /plugin install git-github@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install git-github --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Project overrides
 
 The defaults defer to your repo's `AGENTS.md` or `CLAUDE.md`. Put team rules there - commit trailers, committing straight to main, pnpm or uv in workflows, a custom release process - and both skills follow them.

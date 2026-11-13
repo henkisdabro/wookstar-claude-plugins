@@ -1,6 +1,6 @@
 ---
 name: ocr
-description: Adds a searchable text layer to scanned or image-only PDFs with OCRmyPDF (Tesseract) - local, free, deterministic, no AI tokens. Use when a PDF has no text layer, when the user says "OCR this", "make this searchable", "extract text from a scan" or "digitise this book", when pdf-extract returned blank output, for large scanned books or batches of scans, or when OCR must stay offline and cost-free. Do NOT use for PDFs that already have a text layer - use pdf-extract; for tables, headings or structured output from complex layouts, handwriting or charts - use document-parse; for forms, merging or splitting - use pdf-processing-pro.
+description: Adds a searchable text layer to scanned or image-only PDFs with OCRmyPDF (Tesseract) - local, free, deterministic, no AI tokens. Use when the user says "OCR this" or "make this searchable", when a PDF has no text layer or pdf-extract returned blank output, when text is wanted out of a scan, for digitising a large scanned book or a batch of scans, or when OCR must stay offline and cost-free. Do NOT use for PDFs that already have a text layer - use pdf-extract; for tables, headings or structured output from complex layouts, handwriting or charts - use document-parse; for forms, merging or splitting - use pdf-processing-pro.
 allowed-tools: Bash, Read, Write
 ---
 
@@ -10,20 +10,20 @@ allowed-tools: Bash, Read, Write
 
 ## 1. Check prerequisites
 
-OCRmyPDF needs two system programs that `uvx` cannot install: **Tesseract** and **Ghostscript**. `--clean` also needs **unpaper**.
+OCRmyPDF needs one system program that `uvx` cannot install: **Tesseract**. **Ghostscript** has been optional since OCRmyPDF 17 (the bundled pypdfium2 rasterises pages) but is still needed for some PDF/A conversions, and `--clean` needs **unpaper**.
 
 ```bash
-tesseract --version && gs --version && uvx ocrmypdf --version
+tesseract --version && uvx ocrmypdf --version
 ```
 
-Done when all three print a version. If one is missing, install it for the OS:
+Done when both print a version. If Tesseract is missing, install it for the OS:
 
 | OS | Command |
 |----|---------|
 | macOS (Homebrew) | `brew install ocrmypdf` (brings Tesseract, Ghostscript, unpaper); extra languages: `brew install tesseract-lang` |
 | Debian / Ubuntu / WSL | `sudo apt install ocrmypdf unpaper`; extra languages: `tesseract-ocr-<lang>` e.g. `tesseract-ocr-deu` |
 | Fedora | `sudo dnf install ocrmypdf tesseract-osd`; languages: `tesseract-langpack-<lang>` |
-| Windows (native) | `winget install -e --id tesseract-ocr.tesseract`, plus Ghostscript 64-bit from ghostscript.com |
+| Windows (native) | `winget install -e --id tesseract-ocr.tesseract`; Ghostscript 64-bit from ghostscript.com is recommended |
 
 The distro package can lag behind PyPI; `uvx ocrmypdf` always runs the current release against the system Tesseract. Full matrix: <https://ocrmypdf.readthedocs.io/en/latest/installation.html>.
 
@@ -42,6 +42,8 @@ The distro package can lag behind PyPI; `uvx ocrmypdf` always runs the current r
 | Some pages already have text | `--skip-text` |
 | Existing OCR layer is poor | `--redo-ocr` |
 | Not English | `-l deu`, or `-l eng+deu` for mixed (language pack must be installed) |
+
+Done when every row that describes the scan has its flags in the command.
 
 ## 3. Trial run, then full run
 
@@ -67,4 +69,4 @@ The sidecar holds the plain text. For per-page text from the OCR'd PDF, run the 
 
 ## 5. Escalate the pages Tesseract cannot read
 
-Handwriting, unusual fonts, dense tables, equations and charts come out poorly. Spot-check the sidecar, note the bad page numbers, and send only those pages to the document-parse skill (its AI path). OCR the bulk here and pay for AI on the few pages that need it.
+Handwriting, unusual fonts, dense tables, equations and charts come out poorly. Spot-check the sidecar, note the bad page numbers, and send only those pages to the document-parse skill (its AI path). Done when every bad page you noted has been re-read there or reported to the user.

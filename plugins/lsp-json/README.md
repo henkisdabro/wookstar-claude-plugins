@@ -24,6 +24,8 @@ vscode-json-language-server --version
 /plugin install lsp-json@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install lsp-json --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Supported Files
 
 | Extension | Language |

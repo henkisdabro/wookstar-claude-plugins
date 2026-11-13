@@ -8,6 +8,8 @@ Comprehensive FFmpeg CLI reference for video and audio processing, format conver
 /plugin install ffmpeg@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install ffmpeg --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Coverage
 
 ### SKILL.md (loaded on trigger)
@@ -22,11 +24,11 @@ Comprehensive FFmpeg CLI reference for video and audio processing, format conver
 
 | File | Topics |
 |---|---|
-| `core-concepts.md` | `-c copy`, input/output seeking, encoding quick ref, GPU overview, yuv420p, faststart |
+| `core-concepts.md` | `-c copy`, input/output seeking, yuv420p, faststart |
 | `audio-processing.md` | Replace/extract/mix audio, combine tracks, crossfade, format conversion, normalisation |
 | `advanced-editing.md` | Speed, FPS, jump cuts, social media cropping, drawtext, subtitles, media combining |
 | `asset-generation.md` | Image to video, slideshows, Ken Burns, GIFs, compilations, thumbnails, storyboards |
-| `encoding-and-settings.md` | H264/H265/VP9 deep-dive, CRF/bitrate, 1-pass vs 2-pass, GPU acceleration detail |
+| `encoding-and-settings.md` | H264/H265/VP9 codec flags, CRF/bitrate, 1-pass vs 2-pass, GPU encoders |
 
 ## Structure
 

@@ -1,6 +1,8 @@
-# Content Patterns (1-6)
+# Content patterns (1-6, 35)
 
-Detailed reference for content-level AI writing patterns. Read the compact summary table in SKILL.md first to identify which patterns apply, then consult this file for rewriting guidance.
+Rewriting guidance for content-level patterns. The index in SKILL.md says which apply.
+
+**Evidence note (Wikipedia, 10 November 2026):** #1, #2 and #5 now carry "outdated examples" banners on Wikipedia - none of their examples is from 2026, and editors are asking for current ones before deciding whether to move them to historical. Treat them as weaker evidence than the 2026 patterns. #2 and #35 are also strongest in encyclopedic and biographical writing: Graphite's 2026 web-article corpus found no skew at all for the notability phrasing, so outside bios and profiles expect to see them rarely.
 
 ---
 
@@ -20,13 +22,15 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 ## 2. Undue Emphasis on Notability and Media Coverage
 
-**Words to watch:** independent coverage, local/regional/national media outlets, trade publications, cited/featured/profiled in, was identified by, written by a leading expert, active social media presence
+**Words to watch:** independent coverage, local/regional/national media outlets, trade publications, cited/featured/profiled in, has also been mentioned in, documented in, written by a leading expert
 
 **Problem:** LLMs hit readers over the head with claims of notability, often listing sources without context.
 
 **What separates this from an ordinary press release** (Wikipedia sharpened this in August 2026, because the pattern was being over-applied): humans have cited news clippings for promotional purposes forever. The tell is that the attention lands on **characteristics of the sources themselves** - what they contain, whether they are easy or hard to find, and how they classify against the wider media landscape - rather than on what the sources actually said. A model asked to write for a publication often echoes that publication's own editorial criteria back at the reader, as though the justification for including the text had been pasted into the text.
 
 **Structural sign:** a section headed "Awards and recognition" (or just "Recognition"). People write legacy and impact sections too, but that exact heading is close to ubiquitous in AI-drafted biographies and company profiles - Wikipedia's datasets show it far more common than in human writing, even against articles already tagged as promotional. A heading is not enough on its own; pair it with the source-characteristic tell above.
+
+**Sub-pattern - online presence (fading):** "maintains an active social media presence", "a strong digital presence". Wikipedia split this into its own subsection in November 2026, and an editor noted they had not seen it in a while; it is flagged for a move to historical. Cut it where you find it, but expect it in 2024-25 text rather than fresh output.
 
 **Before:**
 > Her views have been cited in The New York Times, BBC, Financial Times, and The Hindu. She maintains an active social media presence with over 500,000 followers.
@@ -42,6 +46,8 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 **Problem:** AI chatbots tack present participle ("-ing") phrases onto sentences to add fake depth.
 
+**Evidence:** Reinhart et al. (PNAS, 2025) measured instruction-tuned models using present participial clauses at two to five times the human rate, across genres. It is one of the most robust grammatical tells, and it survives vocabulary changes between model versions.
+
 **Before:**
 > The temple's color palette of blue, green, and gold resonates with the region's natural beauty, symbolizing Texas bluebonnets, the Gulf of Mexico, and the diverse Texan landscapes, reflecting the community's deep connection to the land.
 
@@ -54,7 +60,9 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 **Words to watch:** boasts a, vibrant, rich (figurative), profound, enhancing its, showcasing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, breathtaking, must-visit, stunning
 
-**Problem:** LLMs have serious problems keeping a neutral tone, especially for "cultural heritage" topics.
+**Era (Wikipedia, November 2026):** moved to historical indicators, dated 2023-2025. The blatant press-release tone became less common from around 2024 and is no longer common in newer LLM output unless the user asks for it. Newer text can still be promotional in what it includes, such as a focus on awards, without the prose reading that way.
+
+**Problem:** Older LLMs had serious problems keeping a neutral tone, especially for "cultural heritage" topics.
 
 **Before:**
 > Nestled within the breathtaking region of Gonder in Ethiopia, Alamata Raya Kobo stands as a vibrant town with a rich cultural heritage and stunning natural beauty.
@@ -89,3 +97,20 @@ Detailed reference for content-level AI writing patterns. Read the compact summa
 
 **After:**
 > Traffic congestion increased after 2015 when three new IT parks opened. The municipal corporation began a stormwater drainage project in 2022 to address recurring floods.
+
+---
+
+## 35. Undue Emphasis on Identification by Primary or Tertiary Sources
+
+**Words to watch:** [databases/records/listings/filings/materials] identify/list/describe [subject] as, was identified by [source] as [fact], is listed in, his/her professional profile lists
+
+**Problem:** Where a subject appears in a primary or tertiary source (an official website, a database, a historical record), AI text over-stresses that the source exists and what it says, usually in a stilted, formulaic way. The attention lands on how the source *identifies* the subject when the fact could simply be stated. Wikipedia split this from #2 in November 2026, says it became common from 2026, and as of 10 November lists it among the most common signs of newly generated text.
+
+**It also hits news sources.** The Wikipedia talk page (November 2026) separates this "emphasis on attribution" from #2's "emphasis on notability": the sentence attributes a mundane fact the writer could just state, whatever the source's prestige - "Reuters reported on Farah's work in 2021, describing him as a Somali-Dutch film producer". The test: delete the attribution and see whether a normal sentence remains ("Farah is a Somali-Dutch film producer"). If it does, the attribution was the tell. Editors there judge this the stronger signal of the two.
+
+**Before:**
+> Her personal website identifies her as a retired civil servant.
+
+**After:**
+> She is a retired civil servant, according to her website.
+

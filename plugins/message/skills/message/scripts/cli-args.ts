@@ -9,16 +9,17 @@ export interface ServeArgs {
   buildOnly: boolean;
   timeout: number;
   noOpen: boolean;
+  remote: boolean;
   channel: string | null;
   tier: string | null;
   listChannels: "text" | "json" | null;
   help: boolean;
 }
 
-export const USAGE = "Usage: serve.ts <fragment.md> [--build-only] [--timeout SEC] [--no-open] [--channel ID | --<id>] [--tier ID]\n       serve.ts --list-channels [--json]   (ids, labels, groups, aliases)";
+export const USAGE = "Usage: serve.ts <fragment.md> [--build-only] [--timeout SEC] [--no-open] [--remote] [--channel ID | --<id>] [--tier ID]\n       serve.ts --list-channels [--json]   (ids, labels, groups, aliases)";
 
 // Flags with their own meaning; no destination id or alias may take one.
-export const RESERVED_FLAGS = ["build-only", "no-open", "timeout", "channel", "tier", "list-channels", "json", "help"];
+export const RESERVED_FLAGS = ["build-only", "no-open", "remote", "timeout", "channel", "tier", "list-channels", "json", "help"];
 
 
 function validFlags(): string {
@@ -31,7 +32,7 @@ function validFlags(): string {
 export function parseServeArgs(argv: string[]): ServeArgs {
   const out: ServeArgs = {
     fragment: "", buildOnly: false, timeout: 1800,
-    noOpen: process.env.MESSAGE_NO_OPEN === "1", channel: null, tier: null, listChannels: null, help: false,
+    noOpen: process.env.MESSAGE_NO_OPEN === "1", remote: false, channel: null, tier: null, listChannels: null, help: false,
   };
   let json = false;
   const setChannel = (name: string) => {
@@ -50,6 +51,7 @@ export function parseServeArgs(argv: string[]): ServeArgs {
     const flag = a.slice(2);
     if (flag === "build-only") out.buildOnly = true;
     else if (flag === "no-open") out.noOpen = true;
+    else if (flag === "remote") out.remote = true;
     else if (flag === "timeout") out.timeout = Number(argv[++i] ?? 1800);
     else if (flag === "channel") setChannel(argv[++i] ?? "");
     else if (flag === "tier") {

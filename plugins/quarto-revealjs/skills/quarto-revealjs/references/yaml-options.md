@@ -243,8 +243,9 @@ format:
   revealjs:
     # PDF settings
     pdf-max-pages-per-slide: 1  # Max pages per slide
-    pdf-separate-fragments: true # Each fragment on own page
+    pdf-separate-fragments: true # One page per fragment (default: false)
     pdf-page-height-offset: -1  # Height adjustment
+    # Print steps: see presenting.md
 
     # Self-contained output
     embed-resources: false      # Embed all assets in HTML

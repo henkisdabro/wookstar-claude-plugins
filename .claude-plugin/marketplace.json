@@ -13,7 +13,7 @@
       "name": "developer",
       "source": "./plugins/developer",
       "description": "Development workflow skills: write and execute Product Requirement Plans (PRPs), containerise projects with current Docker practice, and review architecture against the Fifteen-Factor App methodology",
-      "version": "4.0.0",
+      "version": "4.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -34,7 +34,7 @@
       "name": "documents",
       "source": "./plugins/documents",
       "description": "Document toolkit: fast PDF text extraction, OCR for scanned PDFs, structured parsing of PDFs and office files, plus uv-runnable scripts for forms, tables, merging, splitting and validation",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -55,8 +55,8 @@
     {
       "name": "timezone-tools",
       "source": "./plugins/timezone-tools",
-      "description": "Timezone conversion and time queries across IANA timezones",
-      "version": "1.2.0",
+      "description": "[RETIRED] Current Claude models convert timezones reliably on their own. This final version only shows a notice - uninstall it.",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -75,7 +75,7 @@
       "name": "shopify-developer",
       "source": "./plugins/shopify-developer",
       "description": "Shopify development reference for Liquid, Online Store 2.0 themes, theme performance, debugging, Hydrogen, apps and Functions. Defers live GraphQL schema lookup and validation to Shopify's official shopify-ai-toolkit plugin and Dev MCP server.",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -104,7 +104,7 @@
       "name": "google-apps-script",
       "source": "./plugins/google-apps-script",
       "description": "Comprehensive Google Apps Script development guide covering SpreadsheetApp, DocumentApp, GmailApp, DriveApp, CalendarApp, FormApp, SlidesApp, triggers, and Workspace automation",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -125,7 +125,7 @@
       "name": "tampermonkey",
       "source": "./plugins/tampermonkey",
       "description": "Write Tampermonkey userscripts for browser automation, page modification, and web enhancement with comprehensive API reference",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -143,8 +143,8 @@
     {
       "name": "google-tagmanager",
       "source": "./plugins/google-tagmanager",
-      "description": "Comprehensive Google Tag Manager guide covering container setup, tags, triggers, variables, data layer, debugging, custom templates, and GTM API",
-      "version": "1.1.0",
+      "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Bundles the Stape GTM MCP server and supports the owntag gtm CLI",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -159,14 +159,13 @@
         "datalayer",
         "tracking"
       ],
-      "category": "analytics",
-      "mcpServers": "./.mcp.json"
+      "category": "analytics"
     },
     {
       "name": "google-analytics",
       "source": "./plugins/google-analytics",
-      "description": "Google Analytics 4 guide covering property setup, events, ecommerce, Measurement Protocol and privacy compliance, plus a skill for querying the GA4 BigQuery export with cost-controlled SQL",
-      "version": "1.1.0",
+      "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export, bundles Google's read-only Analytics MCP server and supports the ga CLI for configuration changes",
+      "version": "2.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -181,14 +180,13 @@
         "ecommerce",
         "analytics-export"
       ],
-      "category": "analytics",
-      "mcpServers": "./.mcp.json"
+      "category": "analytics"
     },
     {
       "name": "google-ads-scripts",
       "source": "./plugins/google-ads-scripts",
       "description": "Expert guidance for Google Ads Script development including AdsApp API, campaign management, ad groups, keywords, reporting, and automation",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -207,7 +205,7 @@
       "name": "mcp-perplexity",
       "source": "./plugins/mcp-perplexity",
       "description": "Perplexity AI-powered search and information retrieval",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -219,8 +217,7 @@
         "search",
         "ai"
       ],
-      "category": "ai",
-      "mcpServers": "./.mcp.json"
+      "category": "ai"
     },
     {
       "name": "mcp-excalidraw",
@@ -239,8 +236,7 @@
         "drawing",
         "visualisation"
       ],
-      "category": "productivity",
-      "mcpServers": "./.mcp.json"
+      "category": "productivity"
     },
     {
       "name": "mcp-alphavantage",
@@ -259,14 +255,13 @@
         "alphavantage",
         "market-data"
       ],
-      "category": "data",
-      "mcpServers": "./.mcp.json"
+      "category": "data"
     },
     {
       "name": "mcp-coingecko",
       "source": "./plugins/mcp-coingecko",
       "description": "Cryptocurrency prices, market data, and historical trends via CoinGecko",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -279,8 +274,7 @@
         "coingecko",
         "market-data"
       ],
-      "category": "data",
-      "mcpServers": "./.mcp.json"
+      "category": "data"
     },
     {
       "name": "mcp-currency-conversion",
@@ -299,14 +293,13 @@
         "exchange",
         "conversion"
       ],
-      "category": "data",
-      "mcpServers": "./.mcp.json"
+      "category": "data"
     },
     {
       "name": "mcp-google-workspace",
       "source": "./plugins/mcp-google-workspace",
-      "description": "Google Workspace integration (Gmail, Drive, Calendar)",
-      "version": "2.0.0",
+      "description": "Gmail, Drive and Calendar through your own Google OAuth client - 38 tools, several of which act as you (send mail, share files, manage events)",
+      "version": "3.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -320,14 +313,13 @@
         "drive",
         "calendar"
       ],
-      "category": "productivity",
-      "mcpServers": "./.mcp.json"
+      "category": "productivity"
     },
     {
       "name": "mcp-mikrotik",
       "source": "./plugins/mcp-mikrotik",
       "description": "MikroTik router management and network automation",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -340,14 +332,13 @@
         "network",
         "automation"
       ],
-      "category": "utilities",
-      "mcpServers": "./.mcp.json"
+      "category": "utilities"
     },
     {
       "name": "mcp-n8n",
       "source": "./plugins/mcp-n8n",
       "description": "n8n workflow automation integration",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -359,14 +350,13 @@
         "automation",
         "workflows"
       ],
-      "category": "productivity",
-      "mcpServers": "./.mcp.json"
+      "category": "productivity"
     },
     {
       "name": "mcp-open-meteo",
       "source": "./plugins/mcp-open-meteo",
       "description": "Weather and climate data (no API key required)",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -378,14 +368,13 @@
         "climate",
         "forecast"
       ],
-      "category": "utilities",
-      "mcpServers": "./.mcp.json"
+      "category": "utilities"
     },
     {
       "name": "ffmpeg",
       "source": "./plugins/ffmpeg",
       "description": "FFmpeg CLI reference for video and audio processing, format conversion, encoding, filtering, and media automation",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -409,7 +398,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Message drafts for Gmail, mail apps, WhatsApp, Slack, X and 17 more destinations, with a live Copy/Open preview",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -424,15 +413,19 @@
         "html",
         "drafts",
         "formatting",
-        "preview"
+        "preview",
+        "slack",
+        "x",
+        "linkedin",
+        "social"
       ],
       "category": "productivity"
     },
     {
       "name": "humanise",
       "source": "./plugins/humanise",
-      "description": "Humanise text and remove AI writing patterns. Detects and fixes 34 AI tell-tales including inflated language, promotional tone, AI vocabulary, vague expressions of connection, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks.",
-      "version": "4.6.0",
+      "description": "Humanise text and remove AI writing patterns. Detects and fixes 39 AI tell-tales, from Wikipedia's Signs of AI writing and 2025-26 corpus studies of model tells, including inflated language, promotional tone, AI vocabulary, vague expressions of connection, filler phrases, sycophantic tone, placeholder text, formulaic structure, and thematic breaks.",
+      "version": "4.7.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -489,22 +482,7 @@
         "stylesheets",
         "language-server"
       ],
-      "category": "lsp",
-      "lspServers": {
-        "css": {
-          "command": "vscode-css-language-server",
-          "args": [
-            "--stdio"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".css": "css",
-            ".scss": "scss",
-            ".less": "less"
-          }
-        }
-      },
-      "strict": false
+      "category": "lsp"
     },
     {
       "name": "lsp-html",
@@ -521,21 +499,7 @@
         "html",
         "language-server"
       ],
-      "category": "lsp",
-      "lspServers": {
-        "html": {
-          "command": "vscode-html-language-server",
-          "args": [
-            "--stdio"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".html": "html",
-            ".htm": "html"
-          }
-        }
-      },
-      "strict": false
+      "category": "lsp"
     },
     {
       "name": "lsp-json",
@@ -554,46 +518,7 @@
         "schema",
         "language-server"
       ],
-      "category": "lsp",
-      "lspServers": {
-        "json": {
-          "command": "vscode-json-language-server",
-          "args": [
-            "--stdio"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".json": "json",
-            ".jsonc": "jsonc"
-          },
-          "initializationOptions": {
-            "provideFormatter": true,
-            "schemas": [
-              {
-                "fileMatch": [
-                  "wrangler.jsonc",
-                  "wrangler.json"
-                ],
-                "url": "https://www.unpkg.com/wrangler/config-schema.json"
-              },
-              {
-                "fileMatch": [
-                  "tsconfig.json",
-                  "tsconfig.*.json"
-                ],
-                "url": "https://www.schemastore.org/tsconfig.json"
-              },
-              {
-                "fileMatch": [
-                  "package.json"
-                ],
-                "url": "https://www.schemastore.org/package.json"
-              }
-            ]
-          }
-        }
-      },
-      "strict": false
+      "category": "lsp"
     },
     {
       "name": "lsp-yaml",
@@ -614,35 +539,7 @@
         "docker",
         "language-server"
       ],
-      "category": "lsp",
-      "lspServers": {
-        "yaml": {
-          "command": "yaml-language-server",
-          "args": [
-            "--stdio"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".yaml": "yaml",
-            ".yml": "yaml"
-          },
-          "initializationOptions": {
-            "yaml": {
-              "schemas": {
-                "https://www.schemastore.org/dependabot-2.0.json": ".github/dependabot.yml",
-                "https://www.schemastore.org/pnpm-workspace.json": "pnpm-workspace.yaml"
-              },
-              "schemaStore": {
-                "enable": true
-              },
-              "completion": true,
-              "hover": true,
-              "validate": true
-            }
-          }
-        }
-      },
-      "strict": false
+      "category": "lsp"
     },
     {
       "name": "lsp-bash",
@@ -662,99 +559,13 @@
         "scripting",
         "language-server"
       ],
-      "category": "lsp",
-      "lspServers": {
-        "bash": {
-          "command": "bash-language-server",
-          "args": [
-            "start"
-          ],
-          "transport": "stdio",
-          "extensionToLanguage": {
-            ".sh": "shellscript",
-            ".bash": "shellscript"
-          }
-        }
-      },
-      "strict": false
-    },
-    {
-      "name": "codex",
-      "source": "./plugins/codex",
-      "description": "[RETIRED] OpenAI now publishes an official Codex plugin. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "ai"
-    },
-    {
-      "name": "gemini",
-      "source": "./plugins/gemini",
-      "description": "[RETIRED] Gemini CLI stopped serving individual accounts on 2026-06-18 and there is no official Gemini plugin for Claude Code. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "ai"
-    },
-    {
-      "name": "mcp-gemini-bridge",
-      "source": "./plugins/mcp-gemini-bridge",
-      "description": "[RETIRED] It wraps Gemini CLI, which stopped serving individual accounts on 2026-06-18. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "ai"
-    },
-    {
-      "name": "mcp-notion",
-      "source": "./plugins/mcp-notion",
-      "description": "[RETIRED] Notion publishes an official plugin for the same server. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "productivity"
-    },
-    {
-      "name": "mcp-cloudflare",
-      "source": "./plugins/mcp-cloudflare",
-      "description": "[RETIRED] Cloudflare publishes an official plugin for the same server, plus Workers and Wrangler skills. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "development"
-    },
-    {
-      "name": "mcp-fetch",
-      "source": "./plugins/mcp-fetch",
-      "description": "[RETIRED] The built-in WebFetch tool in Claude Code does the same job. This final version only shows a notice - uninstall it.",
-      "version": "2.0.0",
-      "author": {
-        "name": "henkisdabro",
-        "email": "whom-wealthy.2z@icloud.com"
-      },
-      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
-      "category": "utilities"
+      "category": "lsp"
     },
     {
       "name": "git-github",
       "source": "./plugins/git-github",
       "description": "Git and GitHub conventions with a live GitHub Actions version check that resolves every uses: line from GitHub, plus a user-triggered /release workflow that bumps every version file, moves the changelog, tags and publishes a GitHub release after confirmation.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -775,7 +586,7 @@
       "name": "model-id-upgrade",
       "source": "./plugins/model-id-upgrade",
       "description": "Find and upgrade stale Claude model IDs across skills, agents, configs and code after a new Claude release. Read-only ripgrep scan that separates records (logs, changelogs, transcripts) from targets, an approval gate, then ID-only edits.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -796,7 +607,7 @@
       "name": "media-tools",
       "source": "./plugins/media-tools",
       "description": "Search YouTube and download captions or audio with yt-dlp, then transcribe audio locally with Whisper (mlx-whisper on Apple Silicon, openai-whisper elsewhere)",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -818,7 +629,7 @@
       "name": "typst",
       "source": "./plugins/typst",
       "description": "Typst language reference: markup, maths, set/show rules, layout, tables, templates and PDF/HTML/PNG/SVG export, current to Typst 0.15",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -839,7 +650,7 @@
       "name": "quarto-revealjs",
       "source": "./plugins/quarto-revealjs",
       "description": "Quarto Reveal.js slide decks: meeting and technical-talk templates, clean light and dark SCSS themes, speaker notes, code highlighting, Mermaid and PDF export",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -856,5 +667,13 @@
       ],
       "category": "documents"
     }
-  ]
+  ],
+  "renames": {
+    "codex": null,
+    "gemini": null,
+    "mcp-gemini-bridge": null,
+    "mcp-notion": null,
+    "mcp-cloudflare": null,
+    "mcp-fetch": null
+  }
 }

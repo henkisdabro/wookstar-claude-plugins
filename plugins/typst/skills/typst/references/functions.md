@@ -387,19 +387,7 @@ Free-form paths (replaces the `path` element, removed in 0.15 - `path("...")` is
 )[$E = m c^2$]
 ```
 
-### Common Math Functions
-
-```typst
-$frac(a, b)$                  // Fraction
-$sqrt(x)$, $root(n, x)$       // Roots
-$vec(a, b)$                   // Vector
-$mat(a, b; c, d)$             // Matrix
-$cases(x &= 1, y &= 2)$       // Cases
-$abs(x)$, $norm(x)$           // Delimiters
-$floor(x)$, $ceil(x)$         // Rounding
-$binom(n, k)$                 // Binomial
-$cancel(x)$                   // Cancel
-```
+Math-mode functions (`frac`, `sqrt`, `vec`, `mat`, `cases`, delimiters): see [math.md](math.md).
 
 ## Introspection
 

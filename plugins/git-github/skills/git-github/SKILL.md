@@ -7,7 +7,7 @@ description: Git commits, GitHub Actions workflows, release tags and changelogs,
 
 Conventional Commits, Semantic Versioning and Keep a Changelog apply as published. This skill adds the committing discipline, the release conventions, and the live action-version check.
 
-When the repo's `AGENTS.md` or `CLAUDE.md` sets its own rules for commits, branches, trailers or workflows, those rules win over every default below.
+The repo's `AGENTS.md` or `CLAUDE.md` wins over every default below. Typical overrides: commit trailers (add or omit `Co-Authored-By` lines), branching (commit straight to the default branch instead of pull requests, or squash-merge only) and workflow toolchain (for example pnpm for Node - with `pnpm/action-setup` reading `packageManager` from `package.json`, so `with: version` stays off - or uv for Python).
 
 ## Committing
 
@@ -38,14 +38,6 @@ uv run "${CLAUDE_SKILL_DIR}/scripts/check_actions_versions.py" --validate .githu
 
 The script queries GitHub directly, so it covers first-party and third-party actions alike. It prints the ref to use: the moving major tag (`v7`) when the latest release's major has one, otherwise the full release tag to pin (`v10.2.0`). `--validate` exits non-zero and lists outdated refs, tags that do not exist, and SHA pins to confirm by hand. It authenticates through `GITHUB_TOKEN`, `GH_TOKEN` or `gh auth token`; anonymous calls cap at 60 an hour.
 
-Done when every `uses:` line in the workflow matches a ref the script printed this session, and `--validate` on the file exits 0 (SHA pins excepted once confirmed).
-
 Every workflow declares a `permissions:` block scoped to what its jobs need.
 
-## Project overrides
-
-House rules vary by team; take them from the repo's `AGENTS.md` or `CLAUDE.md` and apply them over the defaults above. Typical ones:
-
-- Commit trailers - whether to add or omit `Co-Authored-By` lines.
-- Branching - commit straight to the default branch instead of pull requests, or squash-merge only.
-- Toolchain in workflows - for example pnpm for Node (with `pnpm/action-setup` reading `packageManager` from `package.json`, so `with: version` stays off) or uv for Python.
+Done when every `uses:` line in the workflow matches a ref the script printed this session, `--validate` on the file exits 0 (SHA pins excepted once confirmed), and the `permissions:` block is present.

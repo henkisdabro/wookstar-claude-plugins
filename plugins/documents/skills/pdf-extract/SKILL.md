@@ -1,19 +1,14 @@
 ---
 name: pdf-extract
-description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc). Uses pymupdf - instant and deterministic. Use when you need to quickly pull raw text from a known text-layer PDF, e.g. "extract text from this PDF", "read this PDF", "get the content of", "what does this PDF say", "quickly read this PDF". Do NOT use for scanned or image-only PDFs, or when this returns blank text - use ocr; for headings, tables, layout blocks or AI analysis of complex layouts - use document-parse; for forms, merging, splitting or table export to CSV/Excel - use pdf-processing-pro.
+description: Fast, zero-AI text extraction from PDFs that have a text layer (digitally created PDFs from Word, Typst, WeasyPrint, wkhtmltopdf, LaTeX, etc) with pymupdf - instant and deterministic. Use when the user wants to read a PDF or asks what it says, extract its text to a file, read specific pages, batch-extract a folder of PDFs, or get PDF metadata (title, author, page count). Do NOT use for scanned or image-only PDFs, or when this returns blank text - use ocr; for headings, tables, layout blocks or AI analysis of complex layouts - use document-parse; for forms, merging, splitting or table export to CSV/Excel - use pdf-processing-pro.
 allowed-tools: Bash, Read, Write
 ---
 
-# PDF Text Extraction
+# PDF text extraction
 
-Extract text from PDF files using pymupdf via `uv run --with pymupdf`.
+pymupdf through `uv run --with pymupdf` - it needs only [uv](https://docs.astral.sh/uv/getting-started/installation/), and the package is cached after the first run.
 
-## Prerequisites
-
-- `uv` installed - see <https://docs.astral.sh/uv/getting-started/installation/>
-- No venv or pre-installation needed - `uv run --with` handles caching automatically
-
-## Extract text from a single PDF
+## 1. Extract
 
 ```bash
 uv run --with pymupdf python3 -c "
@@ -27,85 +22,16 @@ for page in doc:
 "
 ```
 
-## Extract and save to file
+Adapt that loop to the request:
 
-```bash
-uv run --with pymupdf python3 -c "
-import pymupdf
+- **Save to file** - collect the page texts and write them joined with `'\n\n'`.
+- **Specific pages** - index the document; pages are 0-indexed, so `doc[2]` to `doc[4]` are pages 3-5.
+- **A folder** - loop over `glob.glob('/path/to/folder/*.pdf')` in one `uv run` and write a `.txt` beside each PDF.
+- **Metadata** - `doc.metadata` holds `title`, `author` and `creator`; `len(doc)` is the page count.
+- **Positioned or formatted text** - `get_text("blocks")` returns positioned blocks, `get_text("html")` returns HTML with formatting preserved.
 
-doc = pymupdf.open('/path/to/file.pdf')
-pages = []
-for page in doc:
-    text = page.get_text().strip()
-    if text:
-        pages.append(text)
+Import the module as `pymupdf`. The old `fitz` alias still works but is deprecated and will be removed.
 
-with open('/path/to/output.txt', 'w') as f:
-    f.write('\n\n'.join(pages))
+## 2. Check the output
 
-print(f'Extracted {len(pages)} pages')
-"
-```
-
-## Extract specific pages
-
-```bash
-uv run --with pymupdf python3 -c "
-import pymupdf
-
-doc = pymupdf.open('/path/to/file.pdf')
-# Pages are 0-indexed
-for i in range(2, 5):  # Pages 3-5
-    text = doc[i].get_text().strip()
-    if text:
-        print(text)
-"
-```
-
-## Batch extract from multiple PDFs
-
-```bash
-uv run --with pymupdf python3 -c "
-import pymupdf
-import glob
-import os
-
-for pdf_path in glob.glob('/path/to/folder/*.pdf'):
-    doc = pymupdf.open(pdf_path)
-    text = '\n\n'.join(p.get_text().strip() for p in doc if p.get_text().strip())
-    out_path = pdf_path.rsplit('.', 1)[0] + '.txt'
-    with open(out_path, 'w') as f:
-        f.write(text)
-    print(f'{os.path.basename(pdf_path)}: {len(doc)} pages extracted')
-"
-```
-
-## Get PDF metadata
-
-```bash
-uv run --with pymupdf python3 -c "
-import pymupdf
-doc = pymupdf.open('/path/to/file.pdf')
-meta = doc.metadata
-print(f'Title: {meta.get(\"title\", \"N/A\")}')
-print(f'Author: {meta.get(\"author\", \"N/A\")}')
-print(f'Pages: {len(doc)}')
-print(f'Creator: {meta.get(\"creator\", \"N/A\")}')
-"
-```
-
-## Key notes
-
-- Import it as `pymupdf`. The old `fitz` alias still works but is deprecated and will be removed.
-- Pages are 0-indexed: `doc[0]` is the first page
-- `get_text()` returns plain text; use `get_text("blocks")` for positioned blocks
-- `get_text("html")` returns HTML with formatting preserved
-- The package caches after the first `uv run --with pymupdf` invocation - subsequent runs are instant
-
-## When another skill fits better
-
-| Situation | Skill |
-|---|---|
-| Output is blank or near-empty - the PDF is a scan | ocr |
-| Need headings, tables, reading order or AI reading of charts | document-parse |
-| Filling forms, merging, splitting, tables to CSV/Excel | pdf-processing-pro |
+Done when every requested page returned text. Blank or near-empty output means the PDF is a scan - hand it to the ocr skill.

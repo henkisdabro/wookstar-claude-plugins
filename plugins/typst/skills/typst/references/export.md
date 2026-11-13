@@ -48,17 +48,7 @@ The 'a' suffix requires tagged/accessible PDFs. The 'b' suffix is visual-only. T
 
 #### PDF/UA (Accessibility)
 
-PDF/UA-1 (`--pdf-standard ua-1`) ensures accessibility compliance:
-- Requires tagged PDF structure
-- All content must be accessible or marked as artifact
-- Document title required
-- Language must be specified
-
-```typst
-// In-document prerequisites for a UA-1 export
-#set document(title: [Accessible Document])
-#set text(lang: "en")
-```
+`--pdf-standard ua-1` fails the export unless the document sets a title and a language and every image, figure and equation has `alt:` text. In-document requirements and the checklist: [accessibility.md](accessibility.md).
 
 ### Font Embedding
 
@@ -274,26 +264,7 @@ typst eval "range(1, 5, inclusive: true)"
 
 ### HTML Accessibility
 
-```typst
-// Always set language
-#set text(lang: "en")
-
-// Use semantic elements
-= Heading          // Not #text(size: 16pt)[Heading]
-
-// Provide alt text for images
-#figure(
-  image("photo.jpg"),
-  caption: [Photo description],
-  alt: "Detailed description for screen readers",
-)
-
-// Alt text for equations
-#math.equation(
-  alt: "E equals m c squared",
-  $ E = m c^2 $,
-)
-```
+The same rules as tagged PDF apply - language, semantic elements, `alt:` on images and equations. See [accessibility.md](accessibility.md).
 
 ## Troubleshooting
 

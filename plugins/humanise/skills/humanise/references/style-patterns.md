@@ -1,6 +1,6 @@
-# Style Patterns (13-18, 25-26, 29-30)
+# Style patterns (13-18, 25-26, 29-30)
 
-Detailed reference for style-level AI writing patterns. Read the compact summary table in SKILL.md first to identify which patterns apply, then consult this file for rewriting guidance.
+Rewriting guidance for style-level patterns. The index in SKILL.md says which apply.
 
 ---
 
@@ -10,7 +10,11 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 
 **Caveat (2026):** vendors have started suppressing them, notably OpenAI in GPT-5.1. Absence of em dashes is no longer evidence of human authorship - check the other patterns.
 
-**Weakening as a tell (September 2026):** Wikipedia has tagged its own em dash section for possible demotion to historical indicators, on the grounds that recent examples are getting hard to find in current model output. Treat a cluster of em dashes as era-dating evidence - it points at 2023-2025 text or an older document - rather than as proof that something was generated this week. It remains binding wherever an author's own style rules ban em dashes, which is a separate question from detection.
+**Historical (November 2026):** Wikipedia now files em dashes under historical indicators, dated 2022 to September 2026. Graphite's corpus measurements (September-October 2026) bear this out, relative to pre-ChatGPT human writers: GPT-6 Astra uses em dashes 88% less often, Claude Opus 5.5 over 99% less (Opus 5 had been at about the human rate), and Gemini 4 Argon 38% less. The Economist's July 2026 finding that only Claude still out-dashed human writers predates Opus 5.5. Treat a cluster as era-dating evidence pointing at older text or an older model. It remains binding wherever an author's own rules ban them.
+
+**Why it happened, and why it lingers:** Freeburg (arXiv, March 2026) argues the em dash is Markdown leaking into prose. Told to avoid Markdown, twelve models dropped headers and bullets but kept em dashes (except Llama, which used none), and even explicit bans failed to remove them in some models. So the rate is a fingerprint of a vendor's fine-tuning, not a style choice the model makes.
+
+**Successor tell: thin punctuation.** With em dashes suppressed, punctuation variety has dropped. Wikipedia still tags this "citation needed", but Graphite's data supports one part of it: human writers use exclamation marks over a hundred times as often as current models and break into parenthetical asides far more. Do not flag it alone, but do let a rewrite use a colon, brackets or a dash where a person would.
 
 **Before:**
 > The term is primarily promoted by Dutch institutions--not by the people themselves. You don't say "Netherlands, Europe" as an address--yet this mislabeling continues--even in official documents.
@@ -153,7 +157,7 @@ Detailed reference for style-level AI writing patterns. Read the compact summary
 | Tool | Artifacts |
 |------|-----------|
 | ChatGPT | `:contentReference[oaicite:0]{index=0}`, `oai_citation`, `turn0search0` / `turn0image0` / `turn0news0` / `turn0file0` (often wrapped in invisible private-use Unicode), trailing `Example+1` or `Wikipedia+1` source stubs, JSON tails like `({"attribution":{"attributableIndex":"1009-1"}})`, and `?utm_source=chatgpt.com` on every link |
-| Gemini | `[cite: 1]`, `[cite: 3, 12, 13]`, `[span_1](start_span)` |
+| Gemini | `[cite: 1]`, `[cite: 3, 12, 13]`, `[span_1](start_span)`, text wrapped in `<mark>...</mark>` (shows as highlighting; a leftover of the "Double-check response" feature, added to Wikipedia October 2026) |
 | Grok | `grok_card`, `grok_render_citation_card_json` |
 | DeepSeek | lenticular brackets around citation numbers, dagger symbols |
 | Perplexity | `attached_file`, `ppl-ai-file-upload` |

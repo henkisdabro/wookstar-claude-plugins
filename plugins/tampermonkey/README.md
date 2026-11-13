@@ -14,6 +14,8 @@ Write Tampermonkey userscripts for browser automation, page modification, and we
 /plugin install tampermonkey@wookstar-claude-plugins
 ```
 
+On Claude Code 2.1.275 or later, in one step without adding the marketplace first: `/plugin install tampermonkey --marketplace henkisdabro/wookstar-claude-plugins`
+
 ## Coverage
 
 - **Userscript headers** - @match, @grant, @require, @resource

@@ -11,8 +11,10 @@
 // State files written into ${CLAUDE_PROJECT_DIR}/.claude/:
 //   .message-preview-url    - URL of the most recently served fragment
 //   .message-previews.json  - map of {absoluteFragmentPath: url} for all live servers
+//   .message-preview-note   - the latest server's remote note (scripts/remote.ts);
+//                             absent when the session is local
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -24,6 +26,7 @@ const SCRIPTS_DIR = join(PLUGIN_ROOT, "skills", "message", "scripts");
 const SERVE_TS = join(SCRIPTS_DIR, "serve.ts");
 const PREVIEWS_FILE = join(PROJECT_DIR, ".claude", ".message-previews.json");
 const LATEST_FILE = join(PROJECT_DIR, ".claude", ".message-preview-url");
+const NOTE_FILE = join(PROJECT_DIR, ".claude", ".message-preview-note");
 
 async function readStdin(): Promise<string> {
   const chunks: Uint8Array[] = [];
@@ -47,7 +50,8 @@ function writeState(absPath: string, url: string): void {
   mkdirSync(dirname(PREVIEWS_FILE), { recursive: true });
   data[absPath] = url;
   writeFileSync(PREVIEWS_FILE, JSON.stringify(data, null, 2));
-  writeFileSync(LATEST_FILE, url);
+  // Newline-terminated so `cat url note` (SKILL.md, step 3) keeps them apart.
+  writeFileSync(LATEST_FILE, url + "\n");
 }
 
 function pruneState(absPath: string): void {
@@ -69,17 +73,29 @@ function readLatest(): string {
   }
 }
 
+// The server's remote note, for the agent to relay (SKILL.md, step 3).
+function writeNote(note: string | null): void {
+  try {
+    if (note) writeFileSync(NOTE_FILE, note);
+    else rmSync(NOTE_FILE, { force: true });
+  } catch {
+    // Non-fatal - the note is advice, the URL file is the contract
+  }
+}
+
 // Probe the /check-modified JSON endpoint (not just the root) and require the
 // expected shape, so a different app that happens to be on a reused port can't
-// be mistaken for our server.
-async function isOurServer(url: string): Promise<boolean> {
+// be mistaken for our server. Resolves to the server's remote note (null when
+// local), or false when the URL is not our server.
+async function probeServer(url: string): Promise<string | null | false> {
   try {
     const res = await fetch(new URL("check-modified", url), {
       signal: AbortSignal.timeout(1000),
     });
     if (!res.ok) return false;
-    const data = (await res.json()) as { mtime?: unknown };
-    return typeof data?.mtime === "number";
+    const data = (await res.json()) as { mtime?: unknown; remote?: unknown };
+    if (typeof data?.mtime !== "number") return false;
+    return typeof data.remote === "string" ? data.remote : null;
   } catch {
     return false;
   }
@@ -153,11 +169,13 @@ async function main(): Promise<void> {
 
   const existing = readPreviews()[absPath];
   if (existing) {
-    if (await isOurServer(existing)) {
+    const note = await probeServer(existing);
+    if (note !== false) {
       // A server is already live for this fragment, so a browser tab was
       // opened for it on the first serve (by serve.ts). That tab reloads
       // itself in place - do NOT relaunch or re-open anything.
       writeState(absPath, existing);
+      writeNote(note);
       return;
     }
     pruneState(absPath);
@@ -170,6 +188,8 @@ async function main(): Promise<void> {
   if (!url) return;
 
   writeState(absPath, url);
+  const note = await probeServer(url);
+  writeNote(note === false ? null : note);
 }
 
 main().catch((err) => {

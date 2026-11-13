@@ -25,6 +25,6 @@ A comprehensive walkthrough showing multiple AI patterns detected and fixed in a
 
 ## Source
 
-This skill is based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), maintained by WikiProject AI Cleanup. The patterns documented there come from observations of thousands of instances of AI-generated text on Wikipedia.
+This skill is based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), maintained by WikiProject AI Cleanup, from observations of thousands of instances of AI-generated text on Wikipedia. Patterns #36-39 and the 2026 model data come from corpus studies listed in [sources.md](sources.md).
 
 Key insight from Wikipedia: "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
