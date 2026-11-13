@@ -63,7 +63,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 ### ⚡ Productivity
 
-- **`message`** - Rich-text email/WhatsApp drafts with **live browser preview**. Triggered by phrases like "draft an email to…" or "write a WhatsApp message…". Bun-powered preview server starts automatically.
+- **`message`** - Email, WhatsApp, Slack and social-post drafts with **live browser preview** across 22 destinations. Triggered by phrases like "draft an email to…", "write a WhatsApp message…" or "write a tweet…". Bun-powered preview server starts automatically.
 - **`mcp-google-workspace`** - Gmail, Drive, Calendar (OAuth).
 - **`mcp-n8n`** - n8n workflow automation.
 - **`mcp-excalidraw`** - Hand-drawn diagrams with streaming animations, fullscreen editing, checkpoint/restore, export to excalidraw.com.

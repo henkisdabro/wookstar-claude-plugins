@@ -68,6 +68,30 @@ These values are extracted directly from Gmail's compose window and ensure the e
   monospace `<div>` - a literal `\n` would render as a space and flatten the
   block onto one line.
 
+## Tables: numeric columns
+
+Columns whose body cells are all numbers are handled automatically by
+`applyNumericColumns()` in `scripts/numeric-columns.ts`, shared with the other
+email payload. Body cells are right-aligned in a monospaced font with tabular
+figures; the header cell is right-aligned but keeps the normal font.
+
+- **What counts as numeric:**
+  - plain numbers, decimals and thousands separators: `1,200.50`
+  - currency symbols or codes: `$6,000`, `A$90`, `AUD 1,200`, `1,200 AUD`
+  - negatives: `-12`, `-$1,200`, `(1,200)`
+  - percentages: `+4.5%`
+  - unit suffixes: `45k`, `$1.2m`, `3.4bn`
+- **How the column is judged:** only the body cells decide, not the header. Empty cells
+  and a lone `-` are skipped. One text cell in the column keeps it a text column.
+- **Alignment marks win:** an explicit Markdown alignment (`:--`, `:-:`, `--:`) on a
+  numeric column is used instead of right alignment, and the mono font still applies.
+- **Left alone:** text columns and tables you styled by hand are not touched.
+
+Each Gmail body cell gets
+`font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
+font-size: 12px; font-variant-numeric: tabular-nums;` (`GMAIL_MONO`). 12px mono matches
+Gmail's 13px Arial body optically.
+
 ## Structure Rules
 
 ### Avoid Auto-Generated Appearance
@@ -270,7 +294,7 @@ YYYY-MM-DD_recipient_subject.html            (output - build script writes)
 ### Save Location
 
 ```
-data/writing/email_drafts/
+drafts/
 ```
 
 This is the default; a project overrides it by naming its own drafts directory in CLAUDE.md or AGENTS.md.

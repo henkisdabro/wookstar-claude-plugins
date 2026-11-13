@@ -12,7 +12,14 @@ const SHELL_PATH = join(SCRIPT_DIR, "..", "templates", "shell.html");
 // source of truth: the browser runs the exact code the tests exercise.
 const CLIENT_JS_FILES = [
   join(SCRIPT_DIR, "client", "mailto.js"),
+  join(SCRIPT_DIR, "client", "text-common.js"),
+  join(SCRIPT_DIR, "client", "dialects.js"),
   join(SCRIPT_DIR, "client", "whatsapp.js"),
+  join(SCRIPT_DIR, "client", "plaintext.js"),
+  join(SCRIPT_DIR, "client", "counter.js"),
+  join(SCRIPT_DIR, "client", "thread.js"),
+  join(SCRIPT_DIR, "client", "selection.js"),
+  join(SCRIPT_DIR, "client", "destinations.js"),
 ];
 
 let shellCache: string | null = null;
@@ -27,9 +34,10 @@ async function loadShell(): Promise<string> {
 async function loadClientJs(): Promise<string> {
   if (clientJsCache !== null) return clientJsCache;
   const parts = await Promise.all(CLIENT_JS_FILES.map((f) => Bun.file(f).text()));
-  // Strip ESM `export ` so the declarations become plain globals the inline
-  // preview script can call; the modules import cleanly in the test runner.
-  const js = parts.join("\n\n").replace(/^\s*export\s+/gm, "");
+  // Strip ESM `export ` and the sibling `import` lines so the declarations
+  // become plain globals of one inline script (files are inlined in order, so
+  // an imported name is already declared); the modules import cleanly in tests.
+  const js = parts.join("\n\n").replace(/^\s*import\s[^\n]*\n/gm, "").replace(/^\s*export\s+/gm, "");
   clientJsCache = js;
   return js;
 }
@@ -41,6 +49,7 @@ function assemble(
   outlookBody: string,
   rawBody: string,
   clientJs: string,
+  overrides: BuildOverrides,
 ): string {
   // Function replacements, not string replacements: a plain replacement string
   // makes replaceAll interpret `$'`, `` $` ``, `$&`, `$1` as substitution
@@ -49,11 +58,17 @@ function assemble(
   const inject = (s: string, marker: string, value: string): string =>
     s.replaceAll(marker, () => value);
   let out = shell;
-  out = inject(out, "<!-- INJECT:PAGE_TITLE -->", escapeHtml(meta.title || "Message Preview"));
+  // The page-shell markers go in before any fragment text, so text that merely
+  // looks like a marker inside the body can never be replaced.
+  out = inject(out, "<!-- INJECT:CLI_CHANNEL -->", escapeHtml(overrides.channel || ""));
+  out = inject(out, "<!-- INJECT:CLI_TIER -->", escapeHtml(overrides.tier || ""));
+  out = inject(out, "<!-- INJECT:PAGE_TITLE -->", escapeHtml(meta.title || "Paste Ready"));
   out = inject(out, "<!-- INJECT:TO -->", escapeHtml(meta.to || ""));
   out = inject(out, "<!-- INJECT:CC -->", escapeHtml(meta.cc || ""));
   out = inject(out, "<!-- INJECT:BCC -->", escapeHtml(meta.bcc || ""));
   out = inject(out, "<!-- INJECT:SUBJECT -->", escapeHtml(meta.subject || ""));
+  out = inject(out, "<!-- INJECT:CHANNEL -->", escapeHtml(meta.channel || ""));
+  out = inject(out, "<!-- INJECT:TIER -->", escapeHtml(meta.tier || ""));
   out = inject(out, "<!-- INJECT:GMAIL_BODY -->", gmailBody);
   out = inject(out, "<!-- INJECT:OUTLOOK_BODY -->", outlookBody);
   out = inject(out, "<!-- INJECT:RAW_BODY -->", rawBody);
@@ -69,7 +84,15 @@ async function atomicWrite(outputPath: string, content: string): Promise<void> {
   await rename(tmp, outputPath);
 }
 
-export async function build(fragmentPath: string): Promise<BuildResult> {
+// Destination chosen on the command line (serve.ts --channel/--x, --tier).
+// It is injected beside the fragment's own `channel:`; the page applies the
+// precedence (scripts/client/selection.js).
+export interface BuildOverrides {
+  channel?: string | null;
+  tier?: string | null;
+}
+
+export async function build(fragmentPath: string, overrides: BuildOverrides = {}): Promise<BuildResult> {
   const isMarkdown = fragmentPath.endsWith(".fragment.md");
   const isHtml = fragmentPath.endsWith(".fragment.html");
   if (!isMarkdown && !isHtml) {
@@ -92,7 +115,7 @@ export async function build(fragmentPath: string): Promise<BuildResult> {
 
   const shell = await loadShell();
   const clientJs = await loadClientJs();
-  const html = assemble(shell, meta, gmailBody, outlookBody, rawBody, clientJs);
+  const html = assemble(shell, meta, gmailBody, outlookBody, rawBody, clientJs, overrides);
   await atomicWrite(outputPath, html);
 
   return { outputPath, meta, gmailBody, outlookBody, rawBody, html };

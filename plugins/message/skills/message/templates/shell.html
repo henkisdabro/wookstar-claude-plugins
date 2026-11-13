@@ -6,218 +6,186 @@
   <title><!-- INJECT:PAGE_TITLE --></title>
   <style>
     :root {
-      --bg: #e9ecef;
-      --bg-grad-1: #dfe4ea;
-      --bg-grad-2: #cfd4db;
-      --text: #1a1a1a;
-      --text-muted: #666;
-      --chrome: #ffffff;
-      --chrome-border: #e6e6e6;
-      --chrome-shadow: 0 12px 40px rgba(0,0,0,0.12);
-      --step-bg: #f2f2f2;
-      --meta-label: #888;
-      --meta-value: #222;
-      --divider: #eee;
-      --gmail: #EA4335;
-      --outlook: #0078d4;
-      --whatsapp: #25D366;
-      --ok: #188038;
-      --fail: #c0392b;
-      --hint-bg: rgba(0,0,0,0.05);
+      --bg: #f4f4f1;
+      --surface: #ffffff;
+      --surface-2: #f8f8f6;
+      --line: #e3e3de;
+      --line-strong: #cfcfc8;
+      --text: #1c1c1a;
+      --muted: #6b6b66;
+      --accent: #2f6f5e;
+      --accent-ink: #ffffff;
+      --accent-soft: #e4efeb;
+      --ok: #1f7a46;
+      --warn: #a15c00;
+      --fail: #b3261e;
+      --focus: #2f6f5e;
+      --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0e0e10;
-        --bg-grad-1: #14141a;
-        --bg-grad-2: #1e1e24;
-        --text: #f2f2f5;
-        --text-muted: #a0a0a8;
-        --chrome: #1b1b20;
-        --chrome-border: #2a2a32;
-        --chrome-shadow: 0 12px 40px rgba(0,0,0,0.5);
-        --step-bg: #26262c;
-        --meta-label: #888;
-        --meta-value: #e8e8ec;
-        --divider: #2a2a32;
-        --hint-bg: rgba(255,255,255,0.08);
+        --bg: #141413;
+        --surface: #1d1d1b;
+        --surface-2: #232321;
+        --line: #31312e;
+        --line-strong: #44443f;
+        --text: #ecece8;
+        --muted: #a0a09a;
+        --accent: #7cc3ab;
+        --accent-ink: #10201b;
+        --accent-soft: #233530;
+        --ok: #6fcf97;
+        --warn: #f2b45c;
+        --fail: #ff8a80;
+        --focus: #7cc3ab;
+        --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
       }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { overflow-y: scroll; }
     body {
-      background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
-      min-height: 100vh;
+      background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      padding: 24px 16px 56px;
+      font: 14px/1.45 var(--sans);
+      padding: 20px 16px 48px;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    /* Three channel lanes, each a card: header (brand accent) + two equal-weight
-       neutral buttons stacked as step 1 Copy, step 2 Open. Colour identifies the
-       lane (accent bar + numbered badges); it never fills a button, so Copy and
-       Open read as equal weight. */
-    /* Never wrap: the three lanes stay side by side on one line at any width. */
-    .lanes {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
       gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: nowrap;
     }
-    .lane {
-      flex: 1 1 0;
-      min-width: 0;
-      background: var(--chrome);
-      border: 1px solid var(--chrome-border);
-      border-top: 3px solid var(--accent);
+    /* Just wide enough for the widest chip row (Social) on one line: measured
+       minimum 1044px with macOS system fonts, plus 16px slack for wider UI
+       fonts on other systems. */
+    .wrap { width: 100%; max-width: 1060px; display: flex; flex-direction: column; gap: 12px; }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    button { font: inherit; color: inherit; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 10px 12px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      box-shadow: var(--shadow);
     }
-    .lane-gmail { --accent: var(--gmail); }
-    .lane-mail { --accent: var(--outlook); }
-    .lane-whatsapp { --accent: var(--whatsapp); }
-    .lane-head {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--accent);
-    }
-    /* Buttons stacked full width: step 1 above step 2, and each button's width
-       is fixed by the lane (not its label), so the "Copied" flash cannot resize
-       it or shift the button below. */
-    .lane-actions { display: flex; flex-direction: column; gap: 8px; }
+    .card.message { overflow: hidden; }
 
+    /* Top bar: title + live status. */
+    .topbar { display: flex; align-items: center; gap: 12px; padding: 2px 4px; }
+    /* Title: the platform's own UI sans (SF Pro on Apple, Segoe UI Variable on
+       Windows 11, Segoe UI on 10, Roboto/Cantarell/Ubuntu on Linux), so it
+       needs no download and works offline. */
+    .topbar h1 {
+      font: 700 26px/1.15 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI",
+        Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      letter-spacing: -0.02em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .status { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+    .status-dot.offline { background: var(--fail); }
+    .status-dot.reconnecting { background: var(--warn); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.35; } }
+
+    /* Destination picker: grouped chips. */
+    .picker { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+    .row { display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; }
+    .row .divider { align-self: stretch; width: 1px; background: var(--line); margin: 2px 0; }
+    .group { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .row:not(:first-child) .group { flex: 1; }
+    .group-label {
+      width: 74px; flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px 5px 8px; border-radius: 999px;
+      background: var(--surface-2); border: 1px solid var(--line);
+      font-size: 13px; cursor: pointer; white-space: nowrap;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .chip:hover { border-color: var(--line-strong); }
+    .chip svg { width: 15px; height: 15px; flex: none; opacity: 0.75; }
+    .chip[aria-pressed="true"] {
+      background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    }
+    .chip[aria-pressed="true"] svg { opacity: 1; }
+
+    /* Action bar: Copy + Open for the selected destination, and the counter. */
+    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px; border-top: 1px solid var(--line); }
     .btn {
-      border: none;
-      color: #fff;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.08s, filter 0.15s, background 0.15s;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer;
+      border: 1px solid var(--line-strong); background: var(--surface);
+      font-size: 13px; font-weight: 600; white-space: nowrap;
+      transition: background 0.12s, border-color 0.12s, transform 0.06s;
     }
+    .btn:hover { background: var(--surface-2); }
     .btn:active { transform: translateY(1px); }
-    .btn.copied { background: var(--ok) !important; color: #fff !important; border-color: var(--ok) !important; }
-    .btn.failed { background: var(--fail) !important; color: #fff !important; border-color: var(--fail) !important; }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .btn.primary:hover { filter: brightness(1.06); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn kbd, .hints kbd {
+      font: 600 10px var(--mono); padding: 1px 5px; border-radius: 4px;
+      border: 1px solid currentColor; opacity: 0.6;
+    }
+    .btn.copied { background: var(--ok) !important; border-color: var(--ok) !important; color: #fff !important; }
+    .btn.failed { background: var(--fail) !important; border-color: var(--fail) !important; color: #fff !important; }
+    .btn .ext { opacity: 0.6; }
+    .spacer { flex: 1; }
+    /* No layout shift when the destination changes: Copy and Open have fixed
+       widths sized for the longest label, the tier toggle's slot is always
+       reserved (only hidden), and the counter never wraps. */
+    #copy-btn { width: 200px; justify-content: center; }
+    #open-btn { width: 190px; justify-content: center; }
+    #tier-toggle.unused { visibility: hidden; }
 
-    /* Neutral, equal-weight lane buttons. */
-    .btn.step {
-      width: 100%;
-      background: var(--step-bg);
-      color: var(--text);
-      border: 1px solid var(--chrome-border);
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    .btn.step:hover { background: var(--chrome-border); }
-    .step-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      flex: none;
-    }
-    .btn.step .ext { opacity: 0.55; font-weight: 700; }
+    .counter { display: inline-flex; align-items: center; gap: 8px; height: 37px; white-space: nowrap; font-size: 12px; color: var(--muted); }
+    .counter .num { font: 600 13px var(--mono); color: var(--text); }
+    .counter .bar { width: 84px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+    .counter .fill { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.15s; }
+    .counter.over .num { color: var(--fail); }
+    .counter.over .fill { background: var(--fail); }
+    .counter .over-label { display: none; color: var(--fail); font-weight: 600; }
+    .counter.over .over-label { display: inline; }
+    .counter[hidden] { display: none; }
+    .counter.plain .bar, .counter.thread .bar { display: none; }
 
-    .paste-note {
-      width: 100%;
-      max-width: 960px;
-      margin: -2px 0 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-    .paste-note b { color: var(--meta-value); font-weight: 600; }
-    .paste-note .n {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 15px; height: 15px; border-radius: 50%;
-      background: var(--text-muted); color: var(--chrome);
-      font-size: 9px; font-weight: 700; vertical-align: middle;
-    }
+    /* Account-tier toggle (X Free / Premium). */
+    .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+    .seg button { border: 0; background: var(--surface); padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); }
+    .seg button + button { border-left: 1px solid var(--line-strong); }
+    .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--text); }
 
-    /* Off-screen but still rendered, so innerText and selection stay valid for
-       the copy path (display:none would break both). */
-    .offscreen { position: absolute; left: -99999px; top: 0; width: 1px; height: 1px; overflow: hidden; }
+    /* Thread view: one card per post, each with its own counter and Copy. */
+    .thread { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--surface-2); border-radius: 0 0 12px 12px; }
+    .post { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+    .post.next { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .post.done { opacity: 0.6; }
+    .post-head { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+    .post-head b { color: var(--text); }
+    .post-head .num { font: 600 12px var(--mono); margin-left: auto; }
+    .post-head .num.over { color: var(--fail); }
+    .post-head .btn { padding: 4px 10px; font-size: 12px; }
+    .post pre { margin: 0; padding: 12px; font: 13px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
 
-    .preview-shell {
-      width: 100%;
-      max-width: 960px;
-      background: var(--chrome);
-      border: 1px solid var(--chrome-border);
-      border-radius: 14px;
-      box-shadow: var(--chrome-shadow);
-      overflow: hidden;
-    }
-
-    .meta-row {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--divider);
-      font-size: 14px;
-    }
-    .meta-row:last-of-type { border-bottom: 2px solid var(--divider); }
-    .meta-row .label {
-      width: 60px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--meta-label);
-      flex-shrink: 0;
-    }
-    .meta-row .value { flex: 1; color: var(--meta-value); }
+    /* Message card: header fields + the preview of what will be pasted. */
+    .meta-row { display: flex; align-items: baseline; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--line); }
+    .meta-row .label { width: 56px; flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .meta-row .value { flex: 1; min-width: 0; overflow-wrap: anywhere; }
     .meta-row.hidden { display: none; }
-    .meta-row .copyfield {
-      background: none;
-      border: 1px solid var(--chrome-border);
-      color: var(--text-muted);
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      cursor: pointer;
+    .copyfield {
+      background: none; border: 1px solid var(--line); border-radius: 6px;
+      color: var(--muted); font-size: 11px; padding: 2px 8px; cursor: pointer;
     }
-    .meta-row .copyfield:hover { color: var(--text); }
+    .copyfield:hover { color: var(--text); border-color: var(--line-strong); }
 
-    .counts {
-      padding: 8px 20px;
-      border-bottom: 1px solid var(--divider);
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-    .counts b { color: var(--text); font-weight: 600; }
-
-    .body-frame {
-      padding: 20px;
-      background: #fff;
-      color: #222;
-    }
+    /* Rich preview stays white in both themes: it shows how the email will
+       look once pasted, and mail clients render on white. */
+    .body-frame { padding: 20px; background: #fff; color: #222; border-radius: 0 0 12px 12px; }
     .body-frame.outlook-frame { font-family: Aptos, Calibri, Arial, sans-serif; }
     .body-frame.gmail-frame { font-family: Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19.5px; color: rgb(34, 34, 34); }
-
     .body-frame p { margin: 0 0 12px 0; }
     .body-frame ul, .body-frame ol { margin: 8px 0; padding-left: 28px; }
     .body-frame li { margin-bottom: 4px; }
@@ -226,162 +194,144 @@
     .body-frame a { color: rgb(17, 85, 204); }
     .body-frame table { margin: 12px 0; }
 
+    .text-view {
+      margin: 0; padding: 18px 20px; min-height: 120px;
+      font: 13px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere;
+      background: var(--surface-2); border-radius: 0 0 12px 12px;
+    }
+    [hidden] { display: none !important; }
+
+    /* Off-screen but still rendered, so innerText and selection stay valid for
+       the copy path (display:none would break both). */
+    .offscreen { position: absolute; left: -99999px; top: 0; width: 1px; height: 1px; overflow: hidden; }
     .hidden-platform { display: none; }
 
-    .hints {
-      width: 100%;
-      max-width: 960px;
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: var(--hint-bg);
-      border-radius: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .hints kbd {
-      background: var(--chrome);
-      border: 1px solid var(--chrome-border);
-      border-radius: 3px;
-      padding: 1px 5px;
-      font-size: 10px;
-      font-family: ui-monospace, monospace;
-    }
+    /* One line only: short labels, no wrapping. Hidden on narrow screens,
+       which are touch devices without a keyboard. */
+    .hints { display: flex; flex-wrap: nowrap; gap: 14px; padding: 0 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+    .hints span { display: inline-flex; align-items: center; gap: 6px; }
 
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: var(--chrome);
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      pointer-events: none;
-      z-index: 1000;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(16px);
+      background: var(--text); color: var(--surface);
+      padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.18s, transform 0.18s; pointer-events: none; z-index: 10;
+      max-width: calc(100% - 32px); text-align: center;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .status-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--ok);
-      margin-right: 6px;
-      vertical-align: middle;
-      box-shadow: 0 0 6px var(--ok);
-    }
-    .status-dot.offline { background: var(--fail); box-shadow: 0 0 6px var(--fail); }
-    .status-dot.reconnecting { background: #f39c12; box-shadow: 0 0 6px #f39c12; animation: pulse 1s infinite; }
-    @keyframes pulse { 50% { opacity: 0.4; } }
-
     @media (max-width: 640px) {
-      body { padding: 12px 8px 40px; }
-      .lane { padding: 8px 8px 10px; }
-      .btn.step { padding: 8px 10px; font-size: 12px; }
-      .meta-row .label { width: 44px; font-size: 10px; }
+      body { padding: 12px 12px 40px; }
+      .group { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .row .divider { display: none; }
+      .group-label { width: auto; }
+      .meta-row .label { width: 60px; }
+      /* Phone width: a fixed two-row grid, so the bar never re-wraps. */
+      .actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+      .actions .spacer { display: none; }
+      #copy-btn, #open-btn { width: auto; min-width: 0; overflow: hidden; }
+      #copy-btn kbd, #open-btn kbd { display: none; }
+      #tier-toggle { justify-self: start; }
+      .counter { justify-self: end; }
     }
-
+    @media (max-width: 860px) { .hints { display: none; } }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
     @media print {
       body { background: #fff; padding: 0; }
-      .lanes, .paste-note, .hints, .counts, .toast, .status-dot { display: none !important; }
-      .preview-shell { box-shadow: none; border: none; }
+      .topbar, .picker-card, .hints, .toast { display: none !important; }
+      .card { box-shadow: none; border: none; }
     }
   </style>
 </head>
-<body>
+<body data-channel="<!-- INJECT:CHANNEL -->" data-tier="<!-- INJECT:TIER -->" data-cli-channel="<!-- INJECT:CLI_CHANNEL -->" data-cli-tier="<!-- INJECT:CLI_TIER -->">
+<div class="wrap">
 
-<div class="lanes">
-  <div class="lane lane-gmail">
-    <div class="lane-head">Gmail</div>
-    <div class="lane-actions">
-      <button class="btn step" id="copy-gmail" onclick="copyGmail(this)" title="Copy the Gmail-formatted message to your clipboard (G)"><span class="step-num">1</span> Copy for Gmail</button>
-      <button class="btn step" onclick="composeInGmail()" title="Opens the Gmail web compose window in a new tab - then paste (Cmd+V) the copied message into the body"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
-    </div>
-  </div>
-  <div class="lane lane-mail">
-    <div class="lane-head">Mail app</div>
-    <div class="lane-actions">
-      <button class="btn step" id="copy-rich" onclick="copyRichText(this)" title="Copy the rich-text message for desktop mail clients: Thunderbird, Apple Mail, Outlook (T)"><span class="step-num">1</span> Copy Rich Text</button>
-      <button class="btn step" onclick="openInMailApp()" title="Opens your default desktop mail app (Thunderbird, Apple Mail, Outlook) - then paste (Cmd+V) the copied message into the body (E)"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
-    </div>
-  </div>
-  <div class="lane lane-whatsapp">
-    <div class="lane-head">WhatsApp</div>
-    <div class="lane-actions">
-      <button class="btn step" id="copy-md" onclick="copyMarkdown(this)" title="Copy the light-markup Markdown / plain-text message to your clipboard (M)"><span class="step-num">1</span> Copy Markdown</button>
-      <button class="btn step" onclick="sendViaWhatsApp()" title="Opens WhatsApp - then paste (Cmd+V) the copied message (W)"><span class="step-num">2</span> Open <span class="ext">&#8599;</span></button>
-    </div>
-  </div>
-</div>
+<header class="topbar">
+  <h1 id="page-title"><!-- INJECT:PAGE_TITLE --></h1>
+  <span class="status" title="Live preview: edits to the fragment reload this page"><span class="status-dot" id="status-dot"></span><span id="status-text">Live</span></span>
+</header>
 
-<div class="paste-note"><span class="n">1</span> <b>Copy</b> puts the message on your clipboard, then <span class="n">2</span> <b>Open &#8599;</b> launches the app - paste it (Cmd+V) into it.</div>
+<section class="card picker-card" aria-label="Destination">
+  <div class="picker" id="picker" role="radiogroup" aria-label="Where this message goes"></div>
+  <div class="actions">
+    <button class="btn primary" id="copy-btn" type="button" onclick="copySelected(this)"></button>
+    <button class="btn" id="open-btn" type="button" onclick="openSelected()"></button>
+    <span class="seg unused" id="tier-toggle" role="group" aria-label="Account tier" aria-hidden="true"></span>
+    <span class="spacer"></span>
+    <span class="counter" id="counter" hidden>
+      <span class="num" id="counter-num"></span>
+      <span class="bar" aria-hidden="true"><span class="fill" id="counter-fill"></span></span>
+      <span class="over-label">over the limit</span>
+    </span>
+  </div>
+</section>
 
-<div class="preview-shell">
+<nav class="hints" aria-label="Keyboard shortcuts">
+  <span><kbd>C</kbd> Copy</span>
+  <span><kbd>O</kbd> Open</span>
+  <span><kbd>[</kbd><kbd>]</kbd> Switch</span>
+  <span><kbd>G</kbd> Gmail</span>
+  <span><kbd>T</kbd> Rich</span>
+  <span><kbd>E</kbd> Mail</span>
+  <span><kbd>M</kbd> WhatsApp</span>
+  <span><kbd>W</kbd> Open WA</span>
+  <span><kbd>P</kbd> Plain</span>
+  <span><kbd>R</kbd> Reload</span>
+</nav>
+
+<section class="card message" aria-label="Message">
+  <div id="meta-fields">
   <div class="meta-row" id="to-row">
     <div class="label">To</div>
     <div class="value" id="to"><!-- INJECT:TO --></div>
-    <button class="copyfield" onclick="copyFieldText('to', this)">Copy</button>
+    <button class="copyfield" type="button" title="Copy the recipient" onclick="copyFieldText('to', this)">Copy</button>
   </div>
   <div class="meta-row hidden" id="cc-row">
     <div class="label">CC</div>
     <div class="value" id="cc"><!-- INJECT:CC --></div>
-    <button class="copyfield" onclick="copyFieldText('cc', this)">Copy</button>
+    <button class="copyfield" type="button" title="Copy the CC list" onclick="copyFieldText('cc', this)">Copy</button>
   </div>
   <div class="meta-row hidden" id="bcc-row">
     <div class="label">BCC</div>
     <div class="value" id="bcc"><!-- INJECT:BCC --></div>
-    <button class="copyfield" onclick="copyFieldText('bcc', this)">Copy</button>
+    <button class="copyfield" type="button" title="Copy the BCC list" onclick="copyFieldText('bcc', this)">Copy</button>
   </div>
   <div class="meta-row" id="subject-row">
     <div class="label">Subject</div>
     <div class="value" id="subject"><!-- INJECT:SUBJECT --></div>
-    <button class="copyfield" onclick="copyFieldText('subject', this)">Copy</button>
+    <button class="copyfield" type="button" title="Copy the subject" onclick="copyFieldText('subject', this)">Copy</button>
   </div>
 
-  <div class="counts"><span><b id="word-count">0</b> words</span><span><b id="char-count">0</b> characters</span><span><b id="read-time">0</b> min read</span><span><span class="status-dot" id="status-dot"></span><span id="status-text">Live</span></span></div>
+  </div>
 
-  <!-- Rich Text is the single visible preview. gmail-body stays in the DOM but
-       off-screen (NOT display:none) so its innerText/selection still yield a
-       faithful clipboard payload for "Copy for Gmail". whatsapp-raw is only ever
-       read via innerHTML (layout-independent), so display:none is safe there. -->
+  <!-- The Rich Text body is the visible preview for email-like destinations.
+       gmail-body stays in the DOM but off-screen (NOT display:none) so its
+       innerText/selection still yield a faithful clipboard payload for Gmail.
+       whatsapp-raw is marked's HTML, read via innerHTML by every text dialect. -->
   <div id="outlook-body" class="body-frame outlook-frame"><!-- INJECT:OUTLOOK_BODY --></div>
+  <pre id="text-view" class="text-view" hidden></pre>
+  <div id="thread-view" class="thread" hidden></div>
   <div id="gmail-body" class="body-frame gmail-frame offscreen"><!-- INJECT:GMAIL_BODY --></div>
   <div id="whatsapp-raw" class="hidden-platform"><!-- INJECT:RAW_BODY --></div>
+</section>
+
 </div>
 
-<div class="hints">
-  <span><kbd>G</kbd> Copy for Gmail</span>
-  <span><kbd>T</kbd> Copy Rich Text</span>
-  <span><kbd>M</kbd> Copy Markdown</span>
-  <span><kbd>E</kbd> Open in Mail app</span>
-  <span><kbd>W</kbd> Open in WhatsApp</span>
-  <span><kbd>R</kbd> Force reload</span>
-</div>
-
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* Shared client helpers (scripts/client/*.js), inlined at build time so the
-   page stays self-contained. Exposes globals: mailtoAddrs, buildMailto,
-   htmlToWhatsApp. */
+   page stays self-contained. Exposes globals including buildMailto,
+   renderDialect, DIALECTS, htmlToWhatsApp, htmlToPlainText, countFor and
+   DESTINATIONS. */
 /* INJECT:CLIENT_JS */
 </script>
 
 <script>
 (function () {
-  // Internal ids stay gmail/outlook/whatsapp (wired to build.ts + element ids).
-  // A one-shot reminder shown when the user tabs back to this page after an
-  // "open" action, so the "paste it, it's on your clipboard" message survives
-  // the mail/WhatsApp app stealing focus.
   var pasteReminder = null;
+  var STORE_KEY = 'message-preview:destination';
+  var PICK_KEY = 'message-preview:destination-pick';
 
   function $(id) { return document.getElementById(id); }
   function toast(msg, ms) {
@@ -395,7 +345,7 @@
 
   // Route "Open" actions through the preview server (POST /open), which hands
   // the URL to the OS default handler. Opening from page JS (window.open /
-  // location.href) launches inside whatever renders this page - a cmux browser
+  // location.href) launches inside whatever renders this page - a terminal browser
   // pane or a VS Code/Zed in-app browser - where the user is usually not
   // signed in. The fallback covers the static-file case (no server behind the
   // page) and a server that refuses the URL.
@@ -411,17 +361,7 @@
     else $(rowId).classList.remove('hidden');
   }
 
-  // The single visible preview is the Rich Text (outlook) rendering.
-  function updateCounts() {
-    var text = $('outlook-body').innerText || '';
-    var chars = text.length;
-    var words = (text.match(/\S+/g) || []).length;
-    var read = Math.max(1, Math.round(words / 200));
-    $('char-count').textContent = chars;
-    $('word-count').textContent = words;
-    $('read-time').textContent = read;
-  }
-
+  // -- clipboard (payloads unchanged from the three-lane UI) -----------------
   function copyRichHtml(bodyId) {
     var body = $(bodyId);
     var html = body.innerHTML;
@@ -443,43 +383,342 @@
     sel.removeAllRanges();
     return ok;
   }
-
-  // htmlToWhatsApp(rawHtml) is injected from scripts/client/whatsapp.js above.
-  function whatsappText() { return htmlToWhatsApp($('whatsapp-raw').innerHTML); }
+  // text/plain only. Falls back to a hidden textarea + execCommand where the
+  // async Clipboard API is refused (embedded webviews, file:// pages).
+  function copyText(text) {
+    function viaTextarea() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.left = '-99999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }).catch(viaTextarea);
+    }
+    return Promise.resolve(viaTextarea());
+  }
 
   function markCopyState(btn, ok, label) {
+    if (!btn) return;
     btn.classList.remove('copied', 'failed');
     btn.classList.add(ok ? 'copied' : 'failed');
-    var original = btn.innerHTML;
+    var original = btn.dataset.label || btn.innerHTML;
+    btn.dataset.label = original;
     btn.innerHTML = (ok ? '✓ ' : '✗ ') + label;
     setTimeout(function () {
       btn.classList.remove('copied', 'failed');
-      btn.innerHTML = original;
-    }, 1800);
+      btn.innerHTML = btn.dataset.label;
+      delete btn.dataset.label;
+    }, 1600);
   }
 
-  // Three format-specific copy buttons (clipboard only). Gmail/Rich Text copy
-  // the rendered HTML of their respective (possibly off-screen) body; Markdown
-  // copies the light-markup transform of the raw source.
-  function richCopyHandler(bodyId, successMsg) {
-    return function (btn) {
-      copyRichHtml(bodyId).then(function (ok) {
-        markCopyState(btn, ok, 'Copied');
-        toast(ok ? successMsg : 'Copy failed');
-      });
-    };
+  // -- destinations ---------------------------------------------------------
+  var ICONS = {
+    mail: '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="m3.5 6 8.5 7 8.5-7"/>',
+    inbox: '<path d="M3 13h5l1.5 2.5h5L16 13h5"/><path d="M5 5h14l2 8v4.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5V13z"/>',
+    chat: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z"/>',
+    post: '<path d="M4 10v4h3l7 4V6L7 10z"/><path d="M17 9.5a3.5 3.5 0 0 1 0 5"/>',
+    text: '<path d="M5 6h14M5 10h14M5 14h10M5 18h7"/>',
+    markdown: '<rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M6.5 15V9l2.5 3 2.5-3v6M16 9v6m-2-2 2 2 2-2"/>'
+  };
+  function icon(key) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[key] || ICONS.text) + '</svg>';
   }
-  window.copyGmail = richCopyHandler('gmail-body', 'Copied Gmail formatting. Paste into Gmail.');
-  window.copyRichText = richCopyHandler('outlook-body', 'Copied rich text. Paste into your mail client.');
-  window.copyMarkdown = function (btn) {
-    navigator.clipboard.writeText(whatsappText())
-      .then(function () { markCopyState(btn, true, 'Copied'); toast('Copied Markdown. Paste anywhere.'); })
-      .catch(function () { markCopyState(btn, false, 'Copy failed'); });
+
+  // Rows of the picker, top to bottom; groups sharing a row are split by a
+  // divider. Email and Generic share the first row to save vertical space.
+  var ROWS = [['Email', 'Generic'], ['Messaging'], ['Social']];
+  var ORDER = [];
+  var current = null;
+
+  function load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function save(key, v) { try { localStorage.setItem(key, v); } catch (e) { /* storage blocked */ } }
+
+  function textFor(d) { return renderDialect($('whatsapp-raw').innerHTML, DIALECTS[d.dialect]); }
+  function whatsappText() { return htmlToWhatsApp($('whatsapp-raw').innerHTML); }
+  function richBodyId(d) { return d.payload === 'gmail' ? 'gmail-body' : 'outlook-body'; }
+
+  function describe(d) {
+    if (d.payload === 'gmail') return 'Gmail formatting';
+    if (d.payload === 'rich') return 'rich text';
+    return { plain: 'plain text', markdown: 'Markdown', reddit: 'Reddit Markdown' }[d.dialect] || d.label + ' formatting';
+  }
+
+  function chip(d) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.id = 'chip-' + d.id;
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-checked', 'false');
+    b.title = d.label + ': paste as ' + describe(d) + (d.key ? ' (' + d.key.toUpperCase() + ' copies)' : '');
+    b.innerHTML = icon(d.icon) + '<span>' + d.label + '</span>';
+    b.addEventListener('click', function () { select(d.id, true); });
+    return b;
+  }
+
+  function buildPicker() {
+    var picker = $('picker');
+    ROWS.forEach(function (groups) {
+      var row = document.createElement('div');
+      row.className = 'row';
+      groups.forEach(function (g, i) {
+        var rows = DESTINATIONS.filter(function (d) { return d.group === g; });
+        if (!rows.length) return;
+        if (i > 0) {
+          var div = document.createElement('span');
+          div.className = 'divider';
+          div.setAttribute('aria-hidden', 'true');
+          row.appendChild(div);
+        }
+        var group = document.createElement('div');
+        group.className = 'group';
+        group.innerHTML = '<span class="group-label">' + g + '</span><div class="chips"></div>';
+        var chips = group.querySelector('.chips');
+        rows.forEach(function (d) { chips.appendChild(chip(d)); ORDER.push(d); });
+        row.appendChild(group);
+      });
+      picker.appendChild(row);
+    });
+  }
+
+  // -- tiers and threads -------------------------------------------------------
+  // A destination with tiers (X Free / Premium) keeps its choice per browser;
+  // the fragment's `tier:` wins. The tier sets the limit and whether an
+  // over-limit post becomes a thread.
+  var tierStore = function (d) { return 'message-preview:tier:' + d.id; };
+  // Explicit sources, read once: URL ?channel=/?tier=, the serve.ts flag, the
+  // fragment. resolveSelection() (scripts/client/selection.js) applies the order.
+  var QUERY = new URLSearchParams(location.search);
+  var SOURCES = {
+    channel: { query: resolveChannel(QUERY.get('channel')), cli: document.body.dataset.cliChannel, fragment: document.body.dataset.channel },
+    tier: { query: (QUERY.get('tier') || '').toLowerCase(), cli: document.body.dataset.cliTier, fragment: document.body.dataset.tier }
+  };
+  // A click in this tab is kept (per tab) with the explicit source it beat, so
+  // it survives hot reloads until that source changes.
+  function loadPick(key) { try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (e) { return null; } }
+  function savePick(key, source, id) { try { sessionStorage.setItem(key, JSON.stringify({ source: source, id: id })); } catch (e) { /* storage blocked */ } }
+  function sourceOf(src, valid) { return [src.query, src.cli, src.fragment].find(function (v) { return v && valid(v); }) || ''; }
+
+  function tierOf(d) {
+    if (!d.tiers) return null;
+    var valid = function (t) { return !!d.tiers[t]; };
+    var pick = resolveSelection(Object.assign({}, SOURCES.tier, {
+      pick: loadPick('message-preview:tier-pick:' + d.id), stored: load(tierStore(d)),
+      fallback: Object.keys(d.tiers)[0], valid: valid
+    }));
+    return { id: pick, spec: d.tiers[pick] };
+  }
+  function ruleOf(d) {
+    var t = tierOf(d);
+    return t ? Object.assign({}, d.counter, { max: t.spec.max }) : d.counter;
+  }
+  function threads(d) { var t = tierOf(d); return t ? !!t.spec.thread : !!d.thread; }
+
+  var parts = [];      // the current thread, when the post is split
+  var cursor = 0;      // the part C copies next
+
+  function renderTierToggle(d) {
+    var box = $('tier-toggle');
+    box.classList.toggle('unused', !d.tiers);
+    box.setAttribute('aria-hidden', d.tiers ? 'false' : 'true');
+    if (!d.tiers) {
+      // Keep the slot (same size, invisible) so nothing moves when X is picked.
+      box.innerHTML = '<button type="button" tabindex="-1">Free</button><button type="button" tabindex="-1">Premium</button>';
+      return;
+    }
+    box.innerHTML = '';
+    var active = tierOf(d).id;
+    Object.keys(d.tiers).forEach(function (id) {
+      var t = d.tiers[id];
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t.label;
+      b.setAttribute('aria-pressed', id === active ? 'true' : 'false');
+      b.title = d.label + ' ' + t.label + ': ' + t.max.toLocaleString() + ' characters per post' +
+        (t.thread ? ', longer posts split into a numbered thread' : '');
+      b.addEventListener('click', function () {
+        save(tierStore(d), id);
+        savePick('message-preview:tier-pick:' + d.id, sourceOf(SOURCES.tier, function (t) { return !!d.tiers[t]; }), id);
+        renderTierToggle(d);
+        render();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function select(id, remember) {
+    var d = destinationById(id);
+    if (!d) return;
+    current = d;
+    if (remember) {
+      save(STORE_KEY, id);
+      savePick(PICK_KEY, sourceOf(SOURCES.channel, function (x) { return !!destinationById(x); }), id);
+    }
+    DESTINATIONS.forEach(function (x) {
+      var c = $('chip-' + x.id);
+      var on = x.id === id;
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      c.setAttribute('aria-checked', on ? 'true' : 'false');
+      c.tabIndex = on ? 0 : -1;
+    });
+    // Recipient and subject belong to email only; chat and posts have neither.
+    $('meta-fields').hidden = d.group !== 'Email';
+    var openBtn = $('open-btn');
+    var canOpen = !!d.openUrl;
+    openBtn.disabled = !canOpen;
+    openBtn.innerHTML = 'Open ' + d.label + ' <span class="ext">&#8599;</span> <kbd>O</kbd>';
+    openBtn.title = canOpen
+      ? 'Copy, then open ' + d.label + ' - paste (Cmd+V) if the text is not already there (O)'
+      : d.label + ' has no compose link - copy, then paste it into the app';
+    renderTierToggle(d);
+    render();
+  }
+
+  function render() {
+    var d = current;
+    var rich = d.payload !== 'text';
+    var text = rich ? ($('outlook-body').innerText || '') : textFor(d);
+    var rule = ruleOf(d);
+    parts = [];
+    cursor = 0;
+    if (!rich && rule && threads(d) && countFor(rule, text).over) {
+      parts = splitThread(text, { max: rule.max, weigh: function (t) { return countFor(rule, t).count; } });
+    }
+    $('outlook-body').hidden = !rich;
+    $('text-view').hidden = rich || parts.length > 1;
+    $('thread-view').hidden = parts.length <= 1;
+    if (!rich) $('text-view').textContent = text;
+    if (parts.length > 1) renderThread(d, rule); else $('thread-view').innerHTML = '';
+    renderCopyLabel(d);
+    renderCounter(d, rule, text);
+  }
+
+  function renderThread(d, rule) {
+    var box = $('thread-view');
+    box.innerHTML = '';
+    parts.forEach(function (p, i) {
+      var r = countFor(rule, p);
+      var card = document.createElement('article');
+      card.className = 'post';
+      card.id = 'post-' + i;
+      card.innerHTML = '<div class="post-head"><b>Post ' + (i + 1) + ' of ' + parts.length + '</b>' +
+        '<span class="num' + (r.over ? ' over' : '') + '">' + r.count + ' / ' + r.max + '</span></div><pre></pre>';
+      card.querySelector('pre').textContent = p;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn';
+      btn.textContent = 'Copy';
+      btn.title = 'Copy post ' + (i + 1) + ' of ' + parts.length;
+      btn.addEventListener('click', function () { copyPart(i, btn); });
+      card.querySelector('.post-head').appendChild(btn);
+      box.appendChild(card);
+    });
+    markCursor();
+  }
+
+  function markCursor() {
+    parts.forEach(function (_p, i) {
+      var c = $('post-' + i);
+      c.classList.toggle('next', i === cursor);
+      c.classList.toggle('done', i < cursor);
+    });
+  }
+
+  function renderCopyLabel(d) {
+    var b = $('copy-btn');
+    if (parts.length > 1) {
+      b.innerHTML = 'Copy post ' + (cursor + 1) + ' of ' + parts.length + ' <kbd>C</kbd>';
+      b.title = 'Copy the next post of the thread, then move on to the one after (C)';
+    } else {
+      b.innerHTML = 'Copy for ' + d.label + ' <kbd>C</kbd>';
+      b.title = 'Copy the message as ' + describe(d) + ' for ' + d.label + ' (C)';
+    }
+  }
+
+  function renderCounter(d, rule, text) {
+    var el = $('counter');
+    el.hidden = false;
+    el.classList.remove('over', 'plain', 'thread');
+    if (parts.length > 1) {
+      el.classList.add('thread');
+      $('counter-num').textContent = 'Thread of ' + parts.length + ' posts';
+      el.title = 'Over the ' + rule.max.toLocaleString() + ' limit, so split into ' + parts.length +
+        ' posts, each numbered "i/' + parts.length + '" and within the limit';
+      return;
+    }
+    if (!rule) {
+      el.classList.add('plain');
+      var n = [...text].length;
+      $('counter-num').textContent = n.toLocaleString() + ' characters';
+      el.title = 'No length limit known for ' + d.label;
+      return;
+    }
+    var r = countFor(rule, text);
+    el.classList.toggle('over', r.over);
+    $('counter-num').textContent = r.count.toLocaleString() + ' / ' + (r.about ? 'about ' : '') + r.max.toLocaleString();
+    $('counter-fill').style.width = Math.min(100, (r.count / r.max) * 100) + '%';
+    el.title = d.label + ' limit: ' + (r.about ? 'about ' : '') + r.max.toLocaleString() +
+      (rule.kind === 'x' ? ' weighted characters (links 23, CJK and emoji 2)' : ' characters') +
+      (rule.note ? ' - ' + rule.note : '');
+  }
+
+  // -- actions --------------------------------------------------------------
+  function copyPart(i, btn) {
+    return copyText(parts[i]).then(function (ok) {
+      markCopyState(btn, ok, ok ? 'Copied' : 'Copy failed');
+      if (!ok) { toast('Copy failed'); return; }
+      cursor = i + 1 < parts.length ? i + 1 : 0;
+      toast('Copied post ' + (i + 1) + ' of ' + parts.length + (i + 1 < parts.length ? '. C copies the next.' : '. Thread done.'));
+      markCursor();
+      renderCopyLabel(current);
+    });
+  }
+
+  function copyFor(d, btn) {
+    if (parts.length > 1) return copyPart(cursor, btn);
+    if (d.payload !== 'text') {
+      return copyRichHtml(richBodyId(d)).then(function (ok) {
+        markCopyState(btn, ok, 'Copied');
+        toast(ok ? 'Copied ' + describe(d) + '. Paste into ' + d.label + '.' : 'Copy failed');
+        return ok;
+      });
+    }
+    return copyText(textFor(d)).then(function (ok) {
+      markCopyState(btn, ok, ok ? 'Copied' : 'Copy failed');
+      toast(ok ? 'Copied ' + describe(d) + '. Paste into ' + d.label + '.' : 'Copy failed');
+      return ok;
+    });
+  }
+
+  window.copySelected = function (btn) { copyFor(current, btn || $('copy-btn')); };
+
+  window.openSelected = function () {
+    var d = current;
+    if (d.id === 'gmail') return composeInGmail();
+    if (d.id === 'mail') return openInMailApp();
+    if (d.id === 'whatsapp') return sendViaWhatsApp();
+    if (!d.openUrl) { toast(d.label + ' has no compose link - copy, then paste it into the app.', 3000); return; }
+    // A thread opens the composer with the post C would copy next.
+    var text = parts.length > 1 ? parts[cursor] : textFor(d);
+    copyText(text).then(function () {
+      var url = d.openUrl(text, fields());
+      openExternal(url, function () { window.open(url, '_blank'); });
+      armPasteReminder('Message is on your clipboard - paste it (Cmd+V) into ' + d.label + ' if needed.');
+      toast('Opening ' + d.label + '...', 4000);
+    });
   };
 
   window.copyFieldText = function (id, btn) {
     var text = $(id).innerText.trim();
-    navigator.clipboard.writeText(text).then(function () {
+    copyText(text).then(function () {
       btn.textContent = 'Copied';
       setTimeout(function () { btn.textContent = 'Copy'; }, 1200);
     });
@@ -538,7 +777,7 @@
   window.sendViaWhatsApp = function () {
     var text = whatsappText();
     // Always put the full message on the clipboard - it is the reliable path.
-    if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+    copyText(text);
     // whatsapp:// text prefill is truncated/mangled for long or multi-paragraph
     // messages, so only prefill for short ones; otherwise open the app and let
     // the user paste the copied text.
@@ -574,13 +813,13 @@
         var d = JSON.parse(e.data);
         if (d.type === 'reload') location.reload();
         if (d.type === 'error') setStatus('offline', 'Build error');
-      } catch {}
+      } catch (err) {}
     };
     ws.onclose = function () {
       setStatus('reconnecting', 'Reconnecting...');
       setTimeout(connect, 1000);
     };
-    ws.onerror = function () { try { ws.close(); } catch {} };
+    ws.onerror = function () { try { ws.close(); } catch (err) {} };
   }
   function pollFallback() {
     var last = null;
@@ -592,22 +831,41 @@
     }, 1000);
   }
 
+  // Shortcuts: C/O act on the selection, [ ] move it. G/T/M/P select their
+  // destination and copy (the old lane keys); E/W open the mail app/WhatsApp.
+  function move(step) {
+    var i = ORDER.indexOf(current);
+    var next = ORDER[(i + step + ORDER.length) % ORDER.length];
+    select(next.id, true);
+    $('chip-' + next.id).focus();
+  }
   document.addEventListener('keydown', function (e) {
     if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key.toLowerCase();
-    if (k === 'g') copyGmail($('copy-gmail'));
-    else if (k === 't') copyRichText($('copy-rich'));
-    else if (k === 'm') copyMarkdown($('copy-md'));
-    else if (k === 'e') openInMailApp();
-    else if (k === 'w') sendViaWhatsApp();
+    var byKey = DESTINATIONS.find(function (d) { return d.key === k; });
+    if (byKey) { select(byKey.id, true); copySelected(); }
+    else if (k === 'c') copySelected();
+    else if (k === 'o') openSelected();
+    else if (k === '[' || (k === 'arrowleft' && e.target.classList.contains('chip'))) move(-1);
+    else if (k === ']' || (k === 'arrowright' && e.target.classList.contains('chip'))) move(1);
+    else if (k === 'e') { select('mail', true); openInMailApp(); }
+    else if (k === 'w') { select('whatsapp', true); sendViaWhatsApp(); }
     else if (k === 'r') location.reload();
+    else return;
+    e.preventDefault();
   });
 
   document.addEventListener('DOMContentLoaded', function () {
+    hideIfEmpty('to', 'to-row');
+    hideIfEmpty('subject', 'subject-row');
     hideIfEmpty('cc', 'cc-row');
     hideIfEmpty('bcc', 'bcc-row');
-    updateCounts();
+    buildPicker();
+    var valid = function (id) { return !!destinationById(id); };
+    select(resolveSelection(Object.assign({}, SOURCES.channel, {
+      pick: loadPick(PICK_KEY), stored: load(STORE_KEY), fallback: 'gmail', valid: valid
+    })), false);
     if (typeof WebSocket !== 'undefined') connect(); else pollFallback();
   });
 })();

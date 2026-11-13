@@ -2,6 +2,7 @@
 // Semantics must stay identical - these transforms are the truth of the skill.
 
 import { codeNewlinesToBr, stripHorizontalRules } from "./transform-shared";
+import { tableColumnSpecs, applyNumericColumns } from "./numeric-columns";
 
 function hasUserStyle(tag: string): boolean {
   return tag.includes('style="') || tag.includes("style='");
@@ -11,6 +12,8 @@ const BR = "<div><br></div>";
 
 export function transformGmail(html: string): string {
   let result = html;
+  // Numeric table columns are detected before the transform drops `align`.
+  const tableSpecs = tableColumnSpecs(html);
 
   result = stripHorizontalRules(result);
 
@@ -86,6 +89,8 @@ export function transformGmail(html: string): string {
   );
 
   result = result.replace(/<p([^>]*)>/g, "<div$1>").replace(/<\/p>/g, "</div>");
+
+  result = applyNumericColumns(result, tableSpecs, "gmail");
 
   return result;
 }

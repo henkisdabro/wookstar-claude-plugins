@@ -4,6 +4,35 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+
+- `message` 4.0.0:
+  - **22 destinations** in one picker - Email (Gmail, Mail app), Generic (Plain text, Markdown), Messaging (WhatsApp, Slack, Telegram, Discord, Teams, Signal, iMessage, Messenger) and Social (X, LinkedIn, Facebook, Instagram, Threads, Bluesky, Mastodon, Reddit, TikTok, YouTube) - driving one Copy and one Open button. The preview shows exactly what will be pasted, converted to each app's own markup by one dialect-driven converter. Research, limits and sources in `references/destinations.md`.
+  - A length counter per destination (X uses its weighted count), red past the limit.
+  - X Free / Premium toggle. On Free, a post over 280 becomes a numbered thread (` 1/3` ...) with one card per post; `C` copies the next post. Bluesky, Threads and Mastodon thread the same way.
+  - Choose the destination with `channel:` / `tier:` frontmatter, `serve.ts --channel <id>`, a shorthand `--<id or alias>` flag, `--tier`, or a `?channel=` / `&tier=` query on the preview URL; `--list-channels` prints them all. Fragments without `channel` open on Gmail as before.
+  - **Copy Plain Text** (shortcut `P`) copies the message as `text/plain` with all Markdown syntax stripped. Rules in `references/plaintext-formatting.md`.
+  - Shortcuts `C` / `O` (copy / open the selected destination) and `[` / `]` (previous / next destination); `G`, `T`, `M`, `P`, `E`, `W` and `R` keep working.
+  - In the Gmail and Rich Text payloads, a table column whose body cells are all numbers (amounts, currency, percentages, `k`/`m` suffixes) is right-aligned in a monospaced font with tabular figures, so figures line up. An explicit Markdown alignment wins. Rules in `references/formatting-rules.md`.
+
+### Changed
+
+- `message` 4.0.0:
+  - To, CC, BCC and Subject are required and shown for email destinations only.
+  - The preview page is redesigned around the destination picker, in light and dark, and is titled **Paste Ready** (was Message Preview).
+  - A WhatsApp table wider than 24 display columns is stacked as one block per row, the first cell as a bold title and each other cell as `Header: value`, instead of wrapping on a small phone.
+  - The default drafts directory is now `drafts/` (was `data/writing/email_drafts/`). A project that names its own drafts directory in CLAUDE.md or AGENTS.md is unaffected, and the hook previews a fragment wherever it lives.
+  - Browser opening no longer goes through `cmd`: `rundll32` on Windows, and on WSL2 `wslview` or `rundll32.exe` found on PATH or the mounted Windows drive, so a URL's `&` is never cut.
+
+### Fixed
+
+- `message`:
+  - `bun run test` ran from `scripts/` and found no test files; it now runs `../tests`.
+  - An open preview tab now keeps its server alive; the 30-minute idle clock starts when the last tab closes.
+  - Text copies fall back to a hidden textarea when the Clipboard API is refused.
+  - `/open` answers 502 when no handler could be launched, so the page falls back to `window.open`.
+  - WhatsApp text keeps nested-list bullets and indents, one `> ` per quoted line, line breaks inside list items, and an ordered list's start number.
+
 ## [7.0.0] - 2026-10-04
 
 Upgrading from 6.x: run `scripts/upgrade-v7.sh` or follow [MIGRATION.md](./MIGRATION.md).
