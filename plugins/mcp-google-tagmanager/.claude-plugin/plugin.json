@@ -1,9 +1,0 @@
-{
-  "name": "mcp-google-tagmanager",
-  "description": "Stape's hosted Google Tag Manager MCP server: read and change containers, tags, triggers and variables, and create and publish versions (browser sign-in)",
-  "author": {
-    "name": "henkisdabro",
-    "email": "whom-wealthy.2z@icloud.com"
-  },
-  "version": "1.0.0"
-}
