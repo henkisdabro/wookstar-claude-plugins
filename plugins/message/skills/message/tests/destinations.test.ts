@@ -60,6 +60,21 @@ describe("destination registry", () => {
     for (const id of ["bluesky", "threads", "mastodon"]) expect(destinationById(id)!.thread).toBe(true);
   });
 
+  test("open shortcuts come from the registry and do not clash with copy keys", () => {
+    const open = DESTINATIONS.flatMap((d) => (d.openKey ? [d.openKey] : []));
+    expect(new Set(open).size).toBe(open.length);
+    const copy = DESTINATIONS.flatMap((d) => (d.key ? [d.key] : []));
+    for (const k of open) expect(copy).not.toContain(k);
+    expect(destinationById("mail")!.openKey).toBe("e");
+    expect(destinationById("whatsapp")!.openKey).toBe("w");
+  });
+
+  test("WhatsApp prefills only messages up to 700 characters", () => {
+    const wa = destinationById("whatsapp")!;
+    expect(wa.openUrl("a".repeat(700))).toBe("whatsapp://send?text=" + "a".repeat(700));
+    expect(wa.openUrl("a".repeat(701))).toBe("whatsapp://send");
+  });
+
   test("legacy shortcuts stay mapped", () => {
     expect(destinationById("whatsapp")!.key).toBe("m");
     expect(destinationById("plain")!.key).toBe("p");

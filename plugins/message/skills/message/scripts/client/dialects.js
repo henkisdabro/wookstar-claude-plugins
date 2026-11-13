@@ -8,6 +8,7 @@
 import { decodeEntities, formatTableRows, stackTableRows, lineWidth, TABLE_WIDTH_BUDGET } from "./text-common.js";
 
 // Spec fields:
+//   name      - how the preview describes the paste ("plain text", "Markdown")
 //   bold/italic/strike/code/underline - [open, close] markers, or null for plain
 //   heading   - "bold" (a bold line), "hash" (# marks, up to maxHeading), "plain"
 //   link      - "paren" for "text (url)", "markdown" for [text](url)
@@ -23,36 +24,43 @@ import { decodeEntities, formatTableRows, stackTableRows, lineWidth, TABLE_WIDTH
 const B2 = ["**", "**"];
 export const DIALECTS = {
   plain: {
+    name: "plain text",
     bold: null, italic: null, strike: null, code: null, underline: null,
     heading: "plain", link: "paren", nest: 2, quote: false, codeBlock: "plain",
     codeFlush: false, table: "dash", hardBreak: "\n", hr: "",
   },
   whatsapp: {
+    name: "WhatsApp formatting",
     bold: ["*", "*"], italic: ["_", "_"], strike: ["~", "~"], code: ["`", "`"], underline: null,
     heading: "bold", link: "paren", nest: 2, quote: true, codeBlock: "fence",
     codeFlush: true, table: TABLE_WIDTH_BUDGET, hardBreak: "\n", hr: "---",
   },
   slack: {
+    name: "Slack formatting",
     bold: ["*", "*"], italic: ["_", "_"], strike: ["~", "~"], code: ["`", "`"], underline: null,
     heading: "bold", link: "paren", nest: 2, quote: true, codeBlock: "fence",
     codeFlush: false, table: 60, hardBreak: "\n", hr: "",
   },
   telegram: {
+    name: "Telegram formatting",
     bold: B2, italic: ["__", "__"], strike: ["~~", "~~"], code: ["`", "`"], underline: null,
     heading: "bold", link: "markdown", nest: 2, quote: false, codeBlock: "fence",
     codeFlush: false, table: TABLE_WIDTH_BUDGET, hardBreak: "\n", hr: "",
   },
   discord: {
+    name: "Discord formatting",
     bold: B2, italic: ["*", "*"], strike: ["~~", "~~"], code: ["`", "`"], underline: ["__", "__"],
     heading: "hash", maxHeading: 3, link: "markdown", nest: 2, quote: true, codeBlock: "fence-lang",
     codeFlush: false, table: TABLE_WIDTH_BUDGET, hardBreak: "\n", hr: "",
   },
   reddit: {
+    name: "Reddit Markdown",
     bold: B2, italic: ["*", "*"], strike: ["~~", "~~"], code: ["`", "`"], underline: null,
     heading: "hash", maxHeading: 6, link: "markdown", nest: 4, quote: true, codeBlock: "indent",
     codeFlush: false, table: "gfm", hardBreak: "  \n", hr: "---",
   },
   markdown: {
+    name: "Markdown",
     bold: B2, italic: ["*", "*"], strike: ["~~", "~~"], code: ["`", "`"], underline: null,
     heading: "hash", maxHeading: 6, link: "markdown", nest: "marker", quote: true, codeBlock: "fence-lang",
     codeFlush: false, table: "gfm", hardBreak: "  \n", hr: "---",
@@ -212,8 +220,4 @@ function makeRenderer(spec) {
   return (html) => renderBlocks(parseTree(html || "").children).replace(/\s+$/, "");
 }
 
-const renderers = new Map();
-export function renderDialect(html, spec) {
-  if (!renderers.has(spec)) renderers.set(spec, makeRenderer(spec));
-  return renderers.get(spec)(html);
-}
+export const renderDialect = (html, spec) => makeRenderer(spec)(html);

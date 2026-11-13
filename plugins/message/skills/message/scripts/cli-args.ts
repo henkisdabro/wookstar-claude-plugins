@@ -2,7 +2,7 @@
 // fragment path and the server options it takes the destination to open on:
 // --channel <id|alias>, --tier <id>, or a shorthand flag generated from the
 // registry - one per id and alias (--x, --linkedin, --plain, --plaintext ...).
-import { DESTINATIONS, resolveChannel, TIER_IDS } from "./client/destinations.js";
+import { DESTINATIONS, resolveChannel, TIER_IDS, channelNames } from "./client/destinations.js";
 
 export interface ServeArgs {
   fragment: string;
@@ -20,12 +20,11 @@ export const USAGE = "Usage: serve.ts <fragment.md> [--build-only] [--timeout SE
 // Flags with their own meaning; no destination id or alias may take one.
 export const RESERVED_FLAGS = ["build-only", "no-open", "timeout", "channel", "tier", "list-channels", "json", "help"];
 
-const shorthand = () => DESTINATIONS.flatMap((d: { id: string; aliases?: string[] }) => [d.id, ...(d.aliases || [])]);
 
 function validFlags(): string {
   return [
     ...RESERVED_FLAGS.map((f) => "--" + f),
-    ...shorthand().map((n: string) => "--" + n),
+    ...channelNames().map((n: string) => "--" + n),
   ].join(", ");
 }
 
@@ -37,7 +36,7 @@ export function parseServeArgs(argv: string[]): ServeArgs {
   let json = false;
   const setChannel = (name: string) => {
     const id = resolveChannel(name);
-    if (!id) throw new Error(`Unknown channel: ${name}. Valid: ${shorthand().join(", ")}`);
+    if (!id) throw new Error(`Unknown channel: ${name}. Valid: ${channelNames().join(", ")}`);
     if (out.channel && out.channel !== id) throw new Error(`More than one channel given: ${out.channel} and ${id}`);
     out.channel = id;
   };

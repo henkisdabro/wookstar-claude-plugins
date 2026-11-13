@@ -2,8 +2,8 @@
 
 How the **Plain text** destination (shortcut `P`, and every destination whose composer takes no markup) converts the message for X and other
 social posts, where any markup shows up as literal characters. Conversion is
-`htmlToPlainText()` in `scripts/client/plaintext.js`, which renders the `plain`
-spec of `DIALECTS` in `scripts/client/dialects.js`, run client-side at copy time
+`renderDialect()` with the `plain` spec of `DIALECTS` in
+`scripts/client/dialects.js`, run client-side at copy time
 on the same marked output every text destination reads. It copies `text/plain`
 only, never `text/html`, so a paste carries no formatting. Other destinations are
 unaffected by anything on this page.

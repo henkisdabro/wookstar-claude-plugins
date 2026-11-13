@@ -14,8 +14,6 @@ const CLIENT_JS_FILES = [
   join(SCRIPT_DIR, "client", "mailto.js"),
   join(SCRIPT_DIR, "client", "text-common.js"),
   join(SCRIPT_DIR, "client", "dialects.js"),
-  join(SCRIPT_DIR, "client", "whatsapp.js"),
-  join(SCRIPT_DIR, "client", "plaintext.js"),
   join(SCRIPT_DIR, "client", "counter.js"),
   join(SCRIPT_DIR, "client", "thread.js"),
   join(SCRIPT_DIR, "client", "selection.js"),

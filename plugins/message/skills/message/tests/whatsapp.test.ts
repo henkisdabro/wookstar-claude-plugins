@@ -1,5 +1,28 @@
 import { test, expect, describe } from "bun:test";
-import { htmlToWhatsApp } from "../scripts/client/whatsapp.js";
+import { renderDialect, DIALECTS } from "../scripts/client/dialects.js";
+
+const htmlToWhatsApp = (html: string) => renderDialect(html, DIALECTS.whatsapp);
+
+// Independent width model for verification - deliberately NOT the
+// implementation's own counter, so the tests cannot mark their own homework.
+const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+function measure(line: string) {
+  let wide = 0, narrow = 0;
+  for (const { segment } of seg.segment(line)) {
+    const cp = segment.codePointAt(0)!;
+    if (cp === 0xfe0f || cp === 0x200d || cp === 0x200b || (cp >= 0x0300 && cp <= 0x036f)) continue;
+    const isWide = (cp >= 0x1100 && cp <= 0x115f) || (cp >= 0x2e80 && cp <= 0xa4cf) ||
+      (cp >= 0xac00 && cp <= 0xd7a3) || (cp >= 0xf900 && cp <= 0xfaff) ||
+      (cp >= 0xfe30 && cp <= 0xfe4f) || (cp >= 0xff00 && cp <= 0xff60) ||
+      (cp >= 0xffe0 && cp <= 0xffe6) || (cp >= 0x20000 && cp <= 0x3fffd) || cp === 0x3000;
+    if (/\p{Extended_Pictographic}/u.test(segment)) narrow += 2;
+    else if (isWide) wide++;
+    else narrow++;
+  }
+  return { wide, narrow };
+}
+// Display columns of a line: wide glyphs count two.
+const width = (line: string) => { const m = measure(line); return 2 * m.wide + m.narrow; };
 import { TABLE_WIDTH_BUDGET } from "../scripts/client/text-common.js";
 
 describe("htmlToWhatsApp", () => {
@@ -74,24 +97,6 @@ describe("htmlToWhatsApp fixed-width tables", () => {
   const tableHtml = (rows: string[][]) =>
     "<table>" + rows.map((r) => "<tr>" + r.map((c) => "<td>" + c + "</td>").join("") + "</tr>").join("") + "</table>";
 
-  // Independent width model for verification - deliberately NOT the
-  // implementation's own counter, so the tests cannot mark their own homework.
-  const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-  function measure(line: string) {
-    let wide = 0, narrow = 0;
-    for (const { segment } of seg.segment(line)) {
-      const cp = segment.codePointAt(0)!;
-      if (cp === 0xfe0f || cp === 0x200d || cp === 0x200b || (cp >= 0x0300 && cp <= 0x036f)) continue;
-      const isWide = (cp >= 0x1100 && cp <= 0x115f) || (cp >= 0x2e80 && cp <= 0xa4cf) ||
-        (cp >= 0xac00 && cp <= 0xd7a3) || (cp >= 0xf900 && cp <= 0xfaff) ||
-        (cp >= 0xfe30 && cp <= 0xfe4f) || (cp >= 0xff00 && cp <= 0xff60) ||
-        (cp >= 0xffe0 && cp <= 0xffe6) || (cp >= 0x20000 && cp <= 0x3fffd) || cp === 0x3000;
-      if (/\p{Extended_Pictographic}/u.test(segment)) narrow += 2;
-      else if (isWide) wide++;
-      else narrow++;
-    }
-    return { wide, narrow };
-  }
   const fenceLines = (out: string) => {
     const m = out.match(/```\n([\s\S]*?)\n```/);
     expect(m).not.toBeNull();
@@ -167,21 +172,6 @@ describe("htmlToWhatsApp tables on narrow phones", () => {
     rows.slice(1).map((r) => "<tr>" + r.map((c) => "<td>" + c + "</td>").join("") + "</tr>").join("") +
     "</tbody></table>";
 
-  // Independent display-width count: wide (CJK/fullwidth) and emoji graphemes
-  // take two columns, zero-width marks none.
-  const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-  function width(line: string) {
-    let w = 0;
-    for (const { segment } of seg.segment(line)) {
-      const cp = segment.codePointAt(0)!;
-      if (cp === 0xfe0f || cp === 0x200d || cp === 0x200b || (cp >= 0x0300 && cp <= 0x036f)) continue;
-      const wide = (cp >= 0x1100 && cp <= 0x115f) || (cp >= 0x2e80 && cp <= 0xa4cf) ||
-        (cp >= 0xac00 && cp <= 0xd7a3) || (cp >= 0xf900 && cp <= 0xfaff) ||
-        (cp >= 0xff00 && cp <= 0xff60) || (cp >= 0x20000 && cp <= 0x3fffd) || cp === 0x3000;
-      w += wide || /\p{Extended_Pictographic}/u.test(segment) ? 2 : 1;
-    }
-    return w;
-  }
   const fenced = (out: string) => (out.match(/```\n([\s\S]*?)\n```/)?.[1] ?? "").split("\n").filter(Boolean);
 
   test("budget is a conservative phone-width figure", () => {

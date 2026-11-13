@@ -8,10 +8,15 @@
 // hot reload only while that source is unchanged - so editing `channel:` in
 // the fragment always switches the open tab.
 //
+// The explicit source: the first valid of URL query, CLI flag, fragment.
+export function selectionSource({ query, cli, fragment, valid }) {
+  return [query, cli, fragment].find((v) => v && valid(v)) || "";
+}
+
 // args: { query, cli, fragment, pick: { source, id } | null, stored, fallback, valid(id) }
 export function resolveSelection({ query, cli, fragment, pick, stored, fallback, valid }) {
   const ok = (v) => (v && valid(v) ? v : null);
-  const source = ok(query) || ok(cli) || ok(fragment) || "";
+  const source = selectionSource({ query, cli, fragment, valid });
   if (pick && pick.source === source && ok(pick.id)) return pick.id;
   return source || ok(stored) || fallback;
 }

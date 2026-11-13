@@ -1,18 +1,10 @@
 import { test, expect, describe } from "bun:test";
-import { writeFile, mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { parseFragment } from "../scripts/parse";
+import { fragmentHtml } from "./helpers";
 import { transformGmail } from "../scripts/transform-gmail";
 import { transformOutlook } from "../scripts/transform-outlook";
-import { isNumericCell, tableColumnSpecs, GMAIL_MONO, OUTLOOK_MONO } from "../scripts/numeric-columns";
+import { isNumericCell, tableColumnSpecs, toLeadingMinus, GMAIL_MONO, OUTLOOK_MONO } from "../scripts/numeric-columns";
 
-async function html(md: string): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "msg-num-"));
-  const p = join(dir, "n.fragment.md");
-  await writeFile(p, `---\nto: a@example.com\nsubject: t\n---\n\n${md}\n`, "utf-8");
-  try { return (await parseFragment(p)).bodyHtml; } finally { await rm(dir, { recursive: true, force: true }); }
-}
+const html = (md: string) => fragmentHtml(md);
 // The opening tags of every cell, row by row.
 const cells = (out: string) => [...out.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].map((r) => [...r[1].matchAll(/<(?:td|th)\b[^>]*>/g)].map((m) => m[0]));
 
@@ -121,5 +113,63 @@ describe("nothing else changes", () => {
     expect(g(input)).toBe(transformGmail(input));
     expect(transformGmail(input)).not.toContain("tabular-nums");
     expect(transformOutlook(input)).not.toContain("tabular-nums");
+  });
+});
+
+describe("negatives use a leading minus, never accounting parentheses", () => {
+  test("toLeadingMinus: the minus leads the whole value, before any symbol or code", () => {
+    const cases: [string, string][] = [
+      ["(1,200)", "-1,200"],
+      ["($1,200)", "-$1,200"],
+      ["($1,200.00)", "-$1,200.00"],
+      ["(12%)", "-12%"],
+      ["(A$90)", "-A$90"],
+      ["(AUD 1,200)", "-AUD 1,200"],
+      ["AUD (1,200)", "-AUD 1,200"],
+      ["(1,200) AUD", "-1,200 AUD"],
+      ["(4.5k)", "-4.5k"],
+    ];
+    for (const [input, out] of cases) expect([input, toLeadingMinus(input)]).toEqual([input, out]);
+  });
+
+  test("toLeadingMinus leaves everything else alone", () => {
+    for (const v of ["1,200", "-1,200", "-$1,200", "+4.5%", "(-5)", "(note)", "(Q1)", "Live", "", "-"]) {
+      expect([v, toLeadingMinus(v)]).toEqual([v, v]);
+    }
+  });
+
+  test("a code before a bracketed amount still counts as numeric", () => {
+    expect(isNumericCell("AUD (1,200)")).toBe(true);
+    expect(isNumericCell("(1,200) AUD")).toBe(true);
+  });
+
+  const TABLE = [
+    "| Line | Amount | Change | Note |",
+    "|---|---|---|---|",
+    "| Media | $12,400 | 4.5% | (estimate) |",
+    "| Fees | ($1,200) | (12%) | (paid) |",
+    "| Credit | AUD (300) | -0.3% | (n/a) |",
+  ].join("\n");
+
+  for (const [name, transform] of [["Gmail", transformGmail], ["Rich Text", transformOutlook]] as const) {
+    test(`${name}: bracketed negatives in numeric columns become leading-minus values`, async () => {
+      const out = transform(await html(TABLE));
+      expect(out).toContain(">-$1,200</td>");
+      expect(out).toContain(">-12%</td>");
+      expect(out).toContain(">-AUD 300</td>");
+      expect(out).not.toMatch(/>\(\$?1,200\)</);
+      expect(out).not.toContain(">(12%)<");
+    });
+
+    test(`${name}: text columns keep their brackets`, async () => {
+      const out = transform(await html(TABLE));
+      expect(out).toContain(">(estimate)</td>");
+      expect(out).toContain(">(paid)</td>");
+    });
+  }
+
+  test("the text payloads are not affected", async () => {
+    const { renderDialect, DIALECTS } = await import("../scripts/client/dialects.js");
+    expect(renderDialect(await html(TABLE), DIALECTS.plain)).toContain("($1,200)");
   });
 });

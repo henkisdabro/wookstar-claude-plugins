@@ -101,7 +101,11 @@ figures; the header cell is right-aligned but keeps the normal font.
 - **What counts as numeric:**
   - plain numbers, decimals and thousands separators: `1,200.50`
   - currency symbols or codes: `$6,000`, `A$90`, `AUD 1,200`, `1,200 AUD`
-  - negatives: `-12`, `-$1,200`, `(1,200)`
+  - negatives: `-12`, `-$1,200`. Accounting brackets count as negatives and are
+    rewritten with a leading minus that goes before any symbol or code:
+    `(1,200)` becomes `-1,200`, `($1,200)` becomes `-$1,200`, `(12%)` becomes `-12%`,
+    `(AUD 1,200)` and `AUD (1,200)` become `-AUD 1,200`, and `(1,200) AUD` becomes
+    `-1,200 AUD`. A cell holding markup, and every text column, is left as written.
   - percentages: `+4.5%`
   - unit suffixes: `45k`, `$1.2m`, `3.4bn`
 - **How the column is judged:** only the body cells decide, not the header. Empty cells

@@ -1,6 +1,6 @@
 import { marked } from "marked";
 import type { FragmentMeta } from "./types";
-import { DESTINATIONS, EMAIL_CHANNELS, TIER_IDS, resolveChannel } from "./client/destinations.js";
+import { DESTINATIONS, EMAIL_CHANNELS, TIER_IDS, resolveChannel, destinationById } from "./client/destinations.js";
 
 // breaks: true - a single newline inside a paragraph is a real line break
 // (<br>), matching how people write emails ("Best,\nAlex" stays two lines).
@@ -80,7 +80,7 @@ export function validateFragment(meta: FragmentMeta, body: string): string[] {
   // A fragment without `channel` is an email, exactly as before; a non-email
   // channel (a post, a chat message) needs no recipient or subject.
   const channel = meta.channel;
-  if (channel && !DESTINATIONS.some((d) => d.id === channel)) {
+  if (channel && !destinationById(channel)) {
     errors.push(`Unknown channel: ${channel} (valid: ${DESTINATIONS.map((d) => d.id).join(", ")})`);
   }
   if (meta.tier && !TIER_IDS.includes(meta.tier)) {

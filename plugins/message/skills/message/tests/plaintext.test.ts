@@ -2,23 +2,13 @@ import { test, expect, describe } from "bun:test";
 import { writeFile, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { parseFragment } from "../scripts/parse";
 import { build } from "../scripts/build";
-import { htmlToPlainText } from "../scripts/client/plaintext.js";
+import { renderDialect, DIALECTS } from "../scripts/client/dialects.js";
+import { fragmentHtml } from "./helpers";
 
-// Drive every case through the real fragment parser, so the tests exercise the
-// exact HTML the preview's Copy Plain Text button receives.
-async function plain(body: string, frontmatter = "to: a@example.com\nsubject: Test"): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "msg-plain-"));
-  const path = join(dir, "draft.fragment.md");
-  await writeFile(path, `---\n${frontmatter}\n---\n\n${body}\n`, "utf-8");
-  try {
-    const { bodyHtml } = await parseFragment(path);
-    return htmlToPlainText(bodyHtml);
-  } finally {
-    await rm(dir, { recursive: true, force: true });
-  }
-}
+// Every case runs through the real fragment parser, so the tests exercise the
+// exact HTML the preview's plain-text destinations receive.
+const plain = async (body: string, frontmatter?: string) => renderDialect(await fragmentHtml(body, frontmatter), DIALECTS.plain);
 
 // Formatting characters that must never survive into plain text.
 function expectNoMarkup(out: string) {
@@ -198,13 +188,13 @@ describe("htmlToPlainText realistic social post", () => {
 });
 
 describe("Copy Plain Text in the built preview", () => {
-  test("the preview inlines htmlToPlainText and wires the P shortcut", async () => {
+  test("the preview inlines the dialect renderer and wires the P shortcut", async () => {
     const dir = await mkdtemp(join(tmpdir(), "msg-plain-"));
     const path = join(dir, "draft.fragment.md");
     await writeFile(path, "---\nto: a@example.com\nsubject: Hi\n---\n\nBody\n", "utf-8");
     try {
       const { html } = await build(path);
-      expect(html).toContain("function htmlToPlainText(");
+      expect(html).toContain("const renderDialect");
       expect(html).not.toMatch(/^\s*import\s/m);
       // P is the plain-text row's key in the destination registry; the shell
       // maps registry keys to select-and-copy.

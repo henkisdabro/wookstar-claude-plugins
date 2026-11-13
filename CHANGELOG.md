@@ -13,7 +13,7 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
   - Choose the destination with `channel:` / `tier:` frontmatter, `serve.ts --channel <id>`, a shorthand `--<id or alias>` flag, `--tier`, or a `?channel=` / `&tier=` query on the preview URL; `--list-channels` prints them all. Fragments without `channel` open on Gmail as before.
   - **Copy Plain Text** (shortcut `P`) copies the message as `text/plain` with all Markdown syntax stripped. Rules in `references/plaintext-formatting.md`.
   - Shortcuts `C` / `O` (copy / open the selected destination) and `[` / `]` (previous / next destination); `G`, `T`, `M`, `P`, `E`, `W` and `R` keep working.
-  - In the Gmail and Rich Text payloads, a table column whose body cells are all numbers (amounts, currency, percentages, `k`/`m` suffixes) is right-aligned in a monospaced font with tabular figures, so figures line up. An explicit Markdown alignment wins. Rules in `references/formatting-rules.md`.
+  - In the Gmail and Rich Text payloads, a table column whose body cells are all numbers (amounts, currency, percentages, `k`/`m` suffixes) is right-aligned in a monospaced font with tabular figures, so figures line up. An explicit Markdown alignment wins, and a bracketed negative in such a column is written with a leading minus (`(1,200)` becomes `-1,200`, `AUD (1,200)` becomes `-AUD 1,200`); text columns keep their brackets. Rules in `references/formatting-rules.md`.
 
 ### Changed
 
@@ -29,6 +29,7 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 - `message`:
   - `bun run test` ran from `scripts/` and found no test files; it now runs `../tests`.
+  - The table examples in SKILL.md no longer contain a `$` before a digit, which the skill loader replaced with a positional argument when the skill was invoked with arguments. A test now guards it.
   - An open preview tab now keeps its server alive; the 30-minute idle clock starts when the last tab closes.
   - Text copies fall back to a hidden textarea when the Clipboard API is refused.
   - `/open` answers 502 when no handler could be launched, so the page falls back to `window.open`.

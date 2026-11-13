@@ -19,7 +19,9 @@ test("an open tab keeps the server alive; closing it lets it idle out", async ()
     const url = out.match(/http:\/\/\S+/)![0];
     const ws = new WebSocket(url.replace("http", "ws") + "ws");
     await new Promise((r) => (ws.onopen = r));
-    await Bun.sleep(3000);
+    // With --timeout 1 the idle check runs every 500 ms, so without the open
+    // tab the server would have exited by about 1.5 s.
+    await Bun.sleep(2000);
     expect(proc.exitCode).toBeNull();
     expect(ws.readyState).toBe(WebSocket.OPEN);
     ws.close();

@@ -1,8 +1,5 @@
 import { test, expect, describe } from "bun:test";
-import { writeFile, mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { parseFragment } from "../scripts/parse";
+import { fragmentHtml } from "./helpers";
 import { renderDialect, DIALECTS } from "../scripts/client/dialects.js";
 
 // One rich fixture through the real parser, asserted against every dialect.
@@ -31,16 +28,7 @@ const FIXTURE = [
   "| Apples | 3 |",
 ].join("\n");
 
-async function html(body: string): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "msg-dialect-"));
-  const path = join(dir, "d.fragment.md");
-  await writeFile(path, `---\nchannel: markdown\n---\n\n${body}\n`, "utf-8");
-  try {
-    return (await parseFragment(path)).bodyHtml;
-  } finally {
-    await rm(dir, { recursive: true, force: true });
-  }
-}
+const html = (body: string) => fragmentHtml(body, "channel: markdown");
 const render = async (id: string, body = FIXTURE) => renderDialect(await html(body), DIALECTS[id]);
 
 const EXPECTED: Record<string, string> = {

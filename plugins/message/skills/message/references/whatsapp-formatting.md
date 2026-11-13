@@ -1,8 +1,8 @@
 # WhatsApp / Markdown Lane Formatting Reference
 
 How the **WhatsApp** destination converts the message. Conversion is
-`htmlToWhatsApp()` in `scripts/client/whatsapp.js`, which renders the `whatsapp`
-spec of `DIALECTS` in `scripts/client/dialects.js`, run client-side at copy time.
+`renderDialect()` with the `whatsapp` spec of `DIALECTS` in
+`scripts/client/dialects.js`, run client-side at copy time.
 Gmail and Rich Text are unaffected by anything on this page.
 
 ## Inline conversion summary

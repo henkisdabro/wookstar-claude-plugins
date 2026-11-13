@@ -71,7 +71,7 @@ describe("build injection", () => {
     await withFragment("inj.fragment.md", frag, async (p) => {
       const { html } = await build(p);
       expect(html).toContain("function buildMailto");
-      expect(html).toContain("function htmlToWhatsApp");
+      expect(html).toContain("const renderDialect");
       expect(html).not.toContain("INJECT:CLIENT_JS");
       expect(html).not.toContain("export function");
     });

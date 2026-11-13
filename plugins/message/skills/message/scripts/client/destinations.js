@@ -16,11 +16,13 @@
 //                        Premium: { id: { label, max, thread } }; the first is the default
 //   openUrl(text, f)   - the compose URL, or absent when none exists
 //   key                - the copy shortcut, where one is kept from the old lanes
+//   openKey            - the open shortcut (select the destination, then Open)
 //   aliases            - other names for the destination: each is also a serve.ts
 //                        flag (--plaintext) and a valid `channel:` value
 import { buildMailto } from "./mailto.js";
 
 const enc = encodeURIComponent;
+const WHATSAPP_PREFILL_MAX = 700;
 
 export const DESTINATIONS = [
   { id: "gmail", aliases: ["email"], label: "Gmail", group: "Email", icon: "mail", payload: "gmail", key: "g",
@@ -33,10 +35,12 @@ export const DESTINATIONS = [
       return u.toString();
     } },
   { id: "mail", aliases: ["outlook", "mail-app", "rich"], label: "Mail app", group: "Email", icon: "inbox", payload: "rich", key: "t",
-    openUrl: (_t, f) => buildMailto({ to: f.to, subject: f.subject, cc: f.cc, bcc: f.bcc, body: "" }).href },
+    openKey: "e", openUrl: (_t, f) => buildMailto({ to: f.to, subject: f.subject, cc: f.cc, bcc: f.bcc, body: "" }).href },
 
   { id: "whatsapp", aliases: ["wa"], label: "WhatsApp", group: "Messaging", icon: "chat", payload: "text", dialect: "whatsapp", key: "m",
-    openUrl: (t) => "whatsapp://send?text=" + enc(t) },
+    // whatsapp:// prefill truncates or mangles long, multi-paragraph text, so
+    // only short messages are prefilled; longer ones open the app to paste into.
+    openKey: "w", openUrl: (t) => (t.length <= WHATSAPP_PREFILL_MAX ? "whatsapp://send?text=" + enc(t) : "whatsapp://send") },
   { id: "slack", label: "Slack", group: "Messaging", icon: "chat", payload: "text", dialect: "slack",
     counter: { kind: "graphemes", max: 40000, about: true } },
   { id: "telegram", aliases: ["tg"], label: "Telegram", group: "Messaging", icon: "chat", payload: "text", dialect: "telegram",
@@ -50,7 +54,7 @@ export const DESTINATIONS = [
     counter: { kind: "graphemes", max: 2000, about: true } },
 
   { id: "x", aliases: ["twitter", "tweet"], label: "X", group: "Social", icon: "post", payload: "text", dialect: "plain",
-    counter: { kind: "x", max: 280 },
+    counter: { kind: "x" },   // max comes from the active tier
     tiers: { free: { label: "Free", max: 280, thread: true }, premium: { label: "Premium", max: 25000, thread: false } },
     openUrl: (t) => "https://x.com/intent/tweet?text=" + enc(t) },
   { id: "linkedin", label: "LinkedIn", group: "Social", icon: "post", payload: "text", dialect: "plain",
@@ -76,6 +80,9 @@ export const DESTINATIONS = [
 ];
 
 export const destinationById = (id) => DESTINATIONS.find((d) => d.id === id);
+
+// Every name a destination answers to: its id and its aliases.
+export const channelNames = () => DESTINATIONS.flatMap((d) => [d.id, ...(d.aliases || [])]);
 
 // An id or alias (any case) -> the destination id, or null.
 export function resolveChannel(name) {

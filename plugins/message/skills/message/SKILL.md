@@ -119,7 +119,7 @@ GOOD:
 ```markdown
 | Item | Amount |
 |---|--:|
-| Salary | $1,000.00 |
+| Salary | €1,000.00 |
 ```
 
 BAD - blank header row:
@@ -127,7 +127,7 @@ BAD - blank header row:
 ```markdown
 | | |
 |---|--:|
-| Salary | $1,000.00 |
+| Salary | €1,000.00 |
 ```
 
 If a table truly has no natural header, use descriptive labels like `Item` / `Amount`, `Field` / `Value`, `Category` / `Notes`. Header cells render with a light grey background (`#f5f5f5`) by default in both email lanes to differentiate them from data rows.
@@ -177,7 +177,7 @@ The registry is `DESTINATIONS` in `scripts/client/destinations.js` (one row each
 
 ### Email tables
 
-In the Gmail and Rich Text payloads (and so Teams), a column whose body cells are all numbers is right-aligned and set in a monospaced font with tabular figures, so amounts line up. That covers currency (`$6,000`, `AUD 1,200`), negatives (`-12`, `(1,200)`), percentages and `k`/`m` suffixes, and the header is right-aligned but keeps its font. Detection uses the body cells only; empty cells and `-` are skipped, and one text cell keeps the column as text. An explicit `:--` / `:-:` / `--:` alignment on that column wins. Everything else in the table is untouched. Rules: `scripts/numeric-columns.ts`, `references/formatting-rules.md` ("Tables: numeric columns").
+In the Gmail and Rich Text payloads (and so Teams), a column whose body cells are all numbers is right-aligned and set in a monospaced font with tabular figures, so amounts line up. That covers currency symbols and codes (`$`, `€`, `£`, `AUD`: `€6,000`, `AUD 1,200`), negatives, percentages and `k`/`m` suffixes, and the header is right-aligned but keeps its font. Detection uses the body cells only; empty cells and `-` are skipped, and one text cell keeps the column as text. An explicit `:--` / `:-:` / `--:` alignment on that column wins. Everything else in the table is untouched. **Write negative amounts with a leading minus** (`-1,200`, `-12%`, and the minus before any symbol or code, as in `-AUD 1,200`), never accounting brackets. A bracketed negative in a numeric column is rewritten with a minus anyway (`(1,200)` becomes `-1,200`, `AUD (1,200)` becomes `-AUD 1,200`), while text columns keep their brackets. Rules: `scripts/numeric-columns.ts`, `references/formatting-rules.md` ("Tables: numeric columns").
 
 ### WhatsApp tables
 
