@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -n \"${CLAUDE_PLUGIN_OPTION_GOOGLE_APPLICATION_CREDENTIALS:-}\" ] && [ -n \"${CLAUDE_PLUGIN_OPTION_GOOGLE_CLOUD_PROJECT:-}\" ] || echo '{\"systemMessage\": \"google-analytics has no settings yet, so its MCP server cannot start. Since 2.0.0 it no longer reads GOOGLE_APPLICATION_CREDENTIALS or GOOGLE_CLOUD_PROJECT from your shell. Run /plugin configure google-analytics@wookstar-claude-plugins (or claude plugin configure google-analytics@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+            "command": "f=\"${CLAUDE_PLUGIN_DATA}/notice-3.0.0\"; [ -e \"$f\" ] || { mkdir -p \"${CLAUDE_PLUGIN_DATA}\" 2>/dev/null && { : > \"$f\"; } 2>/dev/null && echo '{\"systemMessage\": \"google-analytics 3.0.0 no longer bundles an MCP server. The skills work with the ga CLI. If you want the Analytics MCP server, install it separately: claude plugin install mcp-google-analytics@wookstar-claude-plugins, then configure it. Details: https://github.com/henkisdabro/wookstar-claude-plugins/blob/main/MIGRATION.md\"}'; }; true"
           }
         ]
       }

@@ -1,6 +1,6 @@
 ---
 name: google-analytics
-description: Google Analytics 4 guardrails - the overloaded vocabulary, the mistakes models typically make and which data source a number comes from. Use when querying live GA4 report data, changing GA4 configuration with the ga CLI, designing events, key events or ecommerce tracking, registering custom dimensions or metrics, explaining why numbers differ between reports, Explorations, the Data API and BigQuery, sending server-side events, working with Data Manager or data import, reading the BigQuery export schema, or configuring Consent Mode. Do NOT use for GTM container work - use google-tagmanager; Google Ads scripting - use google-ads-scripts; SQL against GA4 export tables - use the bigquery skill; Universal Analytics or other analytics tools.
+description: Google Analytics 4 guardrails - the overloaded vocabulary, the mistakes models typically make and which data source a number comes from. Use when querying live GA4 report data, reading or changing GA4 through the ga CLI or the Analytics MCP server, designing events, key events or ecommerce tracking, registering custom dimensions or metrics, explaining why numbers differ between reports, Explorations, the Data API and BigQuery, sending server-side events, working with Data Manager or data import, reading the BigQuery export schema, or configuring Consent Mode. Do NOT use for GTM container work - use google-tagmanager; Google Ads scripting - use google-ads-scripts; SQL against GA4 export tables - use the bigquery skill; Universal Analytics or other analytics tools.
 ---
 
 # Google Analytics 4
@@ -14,11 +14,14 @@ GA4 work goes wrong on vocabulary and on which data source a number came from, n
 3. **Read the pitfall group for the task** in `references/pitfalls.md`, and scan the dated list in `references/recent-changes.md` for anything the task touches. Done when no line in that group, in that list or in the pitfalls at the end of this file describes what you are about to do.
 4. **Act with the right tool** (below), quoting any limit from `references/limits.md` and any procedure from Google's page in `references/vendor-docs.md`. Done when each number in the answer names its surface and date range, and each configuration change was approved before it was sent.
 
-## Live data
+## Live data and configuration
 
-The bundled `analytics-mcp` server (Google's official GA MCP) is read-only: it runs Data API reports, funnel and realtime reports, and reads account, property, custom-definition and Google Ads link details. Use it to answer questions about live GA4 data. It takes the numeric property ID (`123456789`), not the measurement ID (`G-XXXXXXXXXX`).
+Use whichever tool the session has. Both take the numeric property ID (`123456789`), not the measurement ID (`G-XXXXXXXXXX`).
 
-Configuration changes are made in the GA4 interface or with the `ga` CLI ([daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli)), which covers the Admin API as well as reporting - custom dimensions, key events, data streams, bulk audits across properties, CI. If the request needs it and `command -v ga` finds nothing, offer to install it from `references/cli.md`. Before any create, update or delete: run it with `--dry-run`, show the user the request and the property it targets, and send it only after they approve.
+- **The `ga` CLI** ([daidalytics/google-analytics-cli](https://github.com/daidalytics/google-analytics-cli)) - reports, and configuration through the Admin API: custom dimensions, key events, data streams, bulk audits across properties, CI. If the request needs it and `command -v ga` finds nothing, offer to install it from `references/cli.md`. Before any create, update or delete: run it with `--dry-run`, show the user the request and the property it targets, and send it only after they approve.
+- **Google's Analytics MCP server** (tools named `analytics-mcp`, from the optional `mcp-google-analytics` plugin) - read-only: Data API reports, funnel and realtime reports, and account, property, custom-definition and Google Ads link details.
+
+With neither available, configuration changes are made in the GA4 interface; say so and give the steps.
 
 SQL against the export tables belongs to the bigquery skill.
 

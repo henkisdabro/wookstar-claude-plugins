@@ -1,0 +1,23 @@
+{
+  "name": "mcp-google-analytics",
+  "description": "Google's official read-only Analytics MCP server: Data API reports, funnel and realtime reports, and account and property details",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "userConfig": {
+    "google_application_credentials": {
+      "type": "file",
+      "title": "Google credentials file",
+      "description": "Path to an Application Default Credentials or service account JSON file with the analytics.readonly scope",
+      "required": true
+    },
+    "google_cloud_project": {
+      "type": "string",
+      "title": "Google Cloud project ID",
+      "description": "Project used for API quota and billing; the Analytics Data and Admin APIs must be enabled in it",
+      "required": true
+    }
+  }
+}

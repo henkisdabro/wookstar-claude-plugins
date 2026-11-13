@@ -143,8 +143,8 @@
     {
       "name": "google-tagmanager",
       "source": "./plugins/google-tagmanager",
-      "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Bundles the Stape GTM MCP server and supports the owntag gtm CLI",
-      "version": "2.0.0",
+      "description": "Google Tag Manager guardrails: the overloaded vocabulary, the mistakes models typically make, the three JavaScript environments and the 2026 optimised container model, with links to Google's docs for the rest. Works with the owntag gtm CLI, or with the optional mcp-google-tagmanager plugin",
+      "version": "3.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -164,8 +164,8 @@
     {
       "name": "google-analytics",
       "source": "./plugins/google-analytics",
-      "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export, bundles Google's read-only Analytics MCP server and supports the ga CLI for configuration changes",
-      "version": "2.0.0",
+      "description": "Google Analytics 4 guardrails: the overloaded vocabulary, the mistakes models typically make, why numbers differ between reports, the Data API and BigQuery, and Data Manager - with links to Google's docs for the rest. Adds cost-controlled querying of the GA4 BigQuery export. Works with the ga CLI, or with the optional mcp-google-analytics plugin",
+      "version": "3.0.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
@@ -179,6 +179,42 @@
         "measurement-protocol",
         "ecommerce",
         "analytics-export"
+      ],
+      "category": "analytics"
+    },
+    {
+      "name": "mcp-google-tagmanager",
+      "source": "./plugins/mcp-google-tagmanager",
+      "description": "Stape's hosted Google Tag Manager MCP server: read and change containers, tags, triggers and variables, and create and publish versions (browser sign-in)",
+      "version": "1.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "mcp",
+        "gtm",
+        "google-tag-manager",
+        "stape"
+      ],
+      "category": "analytics"
+    },
+    {
+      "name": "mcp-google-analytics",
+      "source": "./plugins/mcp-google-analytics",
+      "description": "Google's official read-only Analytics MCP server: Data API reports, funnel and realtime reports, and account and property details",
+      "version": "1.0.0",
+      "author": {
+        "name": "henkisdabro",
+        "email": "whom-wealthy.2z@icloud.com"
+      },
+      "homepage": "https://github.com/henkisdabro/wookstar-claude-plugins",
+      "keywords": [
+        "mcp",
+        "ga4",
+        "google-analytics",
+        "reports"
       ],
       "category": "analytics"
     },

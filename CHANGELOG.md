@@ -4,6 +4,18 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+Upgrading from 8.0.x: nothing to do unless you used the MCP server that came with `google-analytics` or `google-tagmanager` - then install `mcp-google-analytics` or `mcp-google-tagmanager`. See [MIGRATION.md](./MIGRATION.md#to-810-from-80x).
+
+### Added
+
+- `mcp-google-analytics` 1.0.0: Google's official read-only Analytics MCP server as its own plugin, with prompted credentials.
+- `mcp-google-tagmanager` 1.0.0: Stape's hosted GTM MCP server as its own plugin.
+
+### Changed
+
+- `google-analytics` 3.0.0 and `google-tagmanager` 3.0.0: **breaking** - they no longer bundle an MCP server. The skills use the `ga` and `gtm` command-line tools, or the MCP server when its optional plugin is installed. `google-analytics` no longer asks for credentials or shows a "needs settings" notice. Each plugin shows one notice, once, saying where its server went.
+- `scripts/upgrade.sh` configures `mcp-google-analytics` in place of `google-analytics`, and lists the new plugins for anyone who has the skill plugins.
+
 ## [8.0.1] - 2026-11-13
 
 No action needed. Update `model-id-upgrade` to pick up the changes.

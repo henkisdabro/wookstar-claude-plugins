@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"${CLAUDE_PLUGIN_OPTION_GOOGLE_APPLICATION_CREDENTIALS:-}\" ] && [ -n \"${CLAUDE_PLUGIN_OPTION_GOOGLE_CLOUD_PROJECT:-}\" ] || echo '{\"systemMessage\": \"mcp-google-analytics has no settings yet, so its MCP server cannot start. Run /plugin configure mcp-google-analytics@wookstar-claude-plugins (or claude plugin configure mcp-google-analytics@wookstar-claude-plugins in a terminal), then restart Claude Code.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}

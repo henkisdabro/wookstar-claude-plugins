@@ -73,6 +73,8 @@ suggestions() {
     developer) echo "chrome-devtools-mcp@claude-plugins-official playwright@claude-plugins-official context7@claude-plugins-official firecrawl@claude-plugins-official microsoft-docs@claude-plugins-official example-skills@anthropic-agent-skills" ;;
     documents) echo "document-skills@anthropic-agent-skills" ;;
     shopify-developer) echo "shopify-ai-toolkit@claude-plugins-official" ;;
+    google-analytics) echo "mcp-google-analytics@wookstar-claude-plugins" ;;
+    google-tagmanager) echo "mcp-google-tagmanager@wookstar-claude-plugins" ;;
   esac
 }
 
@@ -182,7 +184,7 @@ if [ "$INSTALL" = 1 ]; then
   echo
   echo "== Settings for credential plugins"
   any=0
-  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace google-analytics; do
+  for name in mcp-n8n mcp-coingecko mcp-perplexity mcp-mikrotik mcp-google-workspace mcp-google-analytics; do
     has_plugin "$name" || continue
     any=1
     id="$name@$MP"
@@ -241,7 +243,7 @@ if [ "$INSTALL" = 1 ]; then
       fi
     fi
   done
-  for name in mcp-alphavantage google-tagmanager; do
+  for name in mcp-alphavantage mcp-google-tagmanager; do
     has_plugin "$name" || continue
     any=1
     echo "  $name: now signs in with OAuth - in Claude Code run /mcp and pick its server"
@@ -259,10 +261,10 @@ echo
 echo "== Suggestions for plugins you kept"
 any=0
 added=""
-for name in developer documents shopify-developer; do
+for name in developer documents shopify-developer google-analytics google-tagmanager; do
   has_plugin "$name" || continue
   any=1
-  echo "  $name moved some components to official plugins. Install the ones you use:"
+  echo "  $name moved some components to other plugins. Install the ones you use:"
   for s in $(suggestions "$name"); do
     mkt=${s#*@}
     if ! has_marketplace "$mkt" && [[ " $added " != *" $mkt "* ]]; then

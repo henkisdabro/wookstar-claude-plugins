@@ -1,6 +1,6 @@
 ---
 name: google-tagmanager
-description: Google Tag Manager guardrails - the overloaded vocabulary, the mistakes models typically make and the optimised container model. Use when installing a GTM container snippet, configuring tags, triggers or variables, designing dataLayer pushes, writing Custom HTML, Custom JavaScript variable or custom template code, setting up Consent Mode in GTM, debugging with Preview mode, migrating a container to Destination tags, setting up a server-side (sGTM) container, auditing a container, or changing containers through the gtm CLI or the bundled Stape MCP server. Do NOT use for gtag.js installs that bypass GTM, GA4 reporting or BigQuery export - use google-analytics; Adobe Launch, Tealium or other tag managers.
+description: Google Tag Manager guardrails - the overloaded vocabulary, the mistakes models typically make and the optimised container model. Use when installing a GTM container snippet, configuring tags, triggers or variables, designing dataLayer pushes, writing Custom HTML, Custom JavaScript variable or custom template code, setting up Consent Mode in GTM, debugging with Preview mode, migrating a container to Destination tags, setting up a server-side (sGTM) container, auditing a container, or changing containers through the gtm CLI or the Stape MCP server. Do NOT use for gtag.js installs that bypass GTM, GA4 reporting or BigQuery export - use google-analytics; Adobe Launch, Tealium or other tag managers.
 ---
 
 # Google Tag Manager
@@ -30,10 +30,10 @@ Two ways to read and change a container without the GTM UI. Both are third-party
 
 | Tool | Reach for it when |
 |---|---|
-| Bundled `gtm-mcp-server` - Stape's hosted MCP server, OAuth through `/mcp` | Working conversationally in this session, with nothing to install |
-| `gtm` CLI - [owntag/gtm-cli](https://github.com/owntag/gtm-cli), local binary | Scripting, CI, bulk audits and exports, service-account auth, or when the user would rather not route container access through a hosted server |
+| `gtm` CLI - [owntag/gtm-cli](https://github.com/owntag/gtm-cli), local binary | The default: scripting, CI, bulk audits and exports, service-account auth, and container access that stays on the user's machine |
+| `gtm-mcp-server` - Stape's hosted MCP server, from the optional `mcp-google-tagmanager` plugin, OAuth through `/mcp` | Its tools are present in the session |
 
-If the request needs the CLI and `command -v gtm` finds nothing, offer to install it from [cli.md](references/cli.md).
+Use whichever the session has. With neither - no `gtm-mcp-server` tools and `command -v gtm` finds nothing - offer to install the CLI from [cli.md](references/cli.md).
 
 **Guardrail for both:** before a delete or a publish, state what will change and in which account, container and workspace, and wait for the user's approval.
 
