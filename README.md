@@ -6,7 +6,9 @@
 
 A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **32 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
 
-> ✨ **New in 7.0.0:** `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`, OCR and document parsing in `documents`, and GA4 BigQuery querying in `google-analytics`. Every skill was re-checked against current Claude Code and live vendor docs, and most were rewritten - see the [CHANGELOG](./CHANGELOG.md).
+> ✨ **New in 7.1.0:** `message` 4.0.0 - ask your agent for an email, a WhatsApp or a post, and the new **Paste Ready** preview formats the draft for 22 destinations (Gmail, Outlook, WhatsApp, Slack, Telegram, Discord, X, LinkedIn and more), with length counters and automatic X threads - see the [CHANGELOG](./CHANGELOG.md).
+>
+> 📦 **In 7.0.0:** `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`, OCR and document parsing in `documents`, and GA4 BigQuery querying in `google-analytics`. Every skill was re-checked against current Claude Code and live vendor docs, and most were rewritten - see the [CHANGELOG](./CHANGELOG.md).
 >
 > ⬆️ **Upgrading from 6.x?** 7.0.0 retires plugins that now have official equivalents and changes how MCP plugins take credentials. Run [`scripts/upgrade-v7.sh`](./scripts/upgrade-v7.sh) or follow [MIGRATION.md](./MIGRATION.md). Retired plugins stay listed for one release as `[RETIRED]` entries that only show a notice.
 
