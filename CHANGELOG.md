@@ -4,6 +4,8 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+## [8.0.0] - 2026-11-13
+
 This is a major release (8.0.0): it deletes plugins, retires one and changes how `google-analytics` takes credentials.
 
 **Upgrading from 7.x - four things to check:**
