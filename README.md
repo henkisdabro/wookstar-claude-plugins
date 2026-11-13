@@ -8,6 +8,8 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 > ✨ **New in 8.0.0:** the `google-tagmanager` and `google-analytics` skills are rebuilt as guardrails - a glossary of the terms models blur, the mistakes they typically make, and what changed recently (GTM's optimised container and 2026 install snippet, Data Manager in Analytics) - and both can now drive a command-line tool as well as their MCP server. Every other skill was fact-checked against vendor docs and tightened. See the [CHANGELOG](./CHANGELOG.md).
 >
+> 🔎 **8.0.1:** `model-id-upgrade` now flags made-up or malformed Claude model IDs and says why, and checks retirement dates and pricing.
+>
 > ⬆️ **Upgrading from 7.x?** Four things to check: `google-analytics` now asks for its credentials, `mcp-google-workspace` loads Gmail, Drive and Calendar only, `timezone-tools` is retired, and the plugins retired in 7.0.0 are gone. Run [`scripts/upgrade.sh`](./scripts/upgrade.sh) or follow [MIGRATION.md](./MIGRATION.md) - see [Upgrading](#upgrading).
 >
 > 📦 **Earlier:** 7.1.0 brought `message` 4.0.0 with the Paste Ready preview for 22 destinations; 7.0.0 added `git-github`, `model-id-upgrade`, `typst`, `quarto-revealjs` and `media-tools`.
@@ -58,7 +60,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 ### 🤖 AI
 
-- **`model-id-upgrade`** - Finds stale Claude model IDs across a repo or machine, separates historical records from live config, and upgrades only the targets after your approval.
+- **`model-id-upgrade`** - Finds stale and made-up Claude model IDs across a repo or machine, separates historical records from live config, and upgrades only the targets after your approval - reading the migration guide first where runtime code is involved.
 - **`mcp-perplexity`** - Perplexity AI search and information retrieval, for when you want Perplexity's cited answers rather than the built-in web search.
 
 <a id="productivity"></a>

@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+## [8.0.1] - 2026-11-13
+
+No action needed. Update `model-id-upgrade` to pick up the changes.
+
 ### Added
 
 - `model-id-upgrade` 1.1.0:
