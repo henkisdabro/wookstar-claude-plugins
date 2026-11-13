@@ -18,6 +18,7 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 ### Changed
 
 - `message` 4.0.0:
+  - `marked` 18.0.3 → 18.1.3, parser bug fixes including two catastrophic-backtracking fixes. Rendered output for the skill's formatting rules is unchanged.
   - To, CC, BCC and Subject are required and shown for email destinations only.
   - The preview page is redesigned around the destination picker, in light and dark, and is titled **Paste Ready** (was Message Preview).
   - A WhatsApp table wider than 24 display columns is stacked as one block per row, the first cell as a bold title and each other cell as `Header: value`, instead of wrapping on a small phone.
