@@ -12,6 +12,11 @@ it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugi
 the retired plugins (see below) as lacking an install line; that is expected, since their READMEs
 carry only the uninstall line, and it does not change the verdict.
 
+An audit that loops over the plugins prints frontmatter or descriptions only and caps the output,
+rather than catting whole `SKILL.md`, `.mcp.json` or README files - thirty-odd plugins of full
+files floods the context:
+`awk '/^description:/{print FILENAME": "$0}' plugins/*/skills/*/SKILL.md | head -c 4000`.
+
 Bump the plugin's `version` whenever its content changes - that is what busts the install cache for
 people who already have it. Bump it in **`plugins/<name>/.claude-plugin/plugin.json`**, which is the
 field that decides the installed version, and update the marketplace entry to match. Bumping only
