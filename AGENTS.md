@@ -6,16 +6,14 @@ tests are the message plugin's - `bun run test` in `plugins/message/skills/messa
 (`.github/workflows/ci.yml`) runs those, the validator and the personal-info scan below on every
 pull request.
 
+Skim audits across plugins: print frontmatter only and cap the output, e.g.
+`awk '/^description:/{print FILENAME": "$0}' plugins/*/skills/*/SKILL.md | head -c 4000`.
+
 Verify a change with `claude plugin validate .` (no errors or warnings at HEAD), then exercise
 it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugins`, and
 `/plugin marketplace update wookstar-claude-plugins` to pick up later edits. Its Advice block lists
 the retired plugins (see below) as lacking an install line; that is expected, since their READMEs
 carry only the uninstall line, and it does not change the verdict.
-
-An audit that loops over the plugins prints frontmatter or descriptions only and caps the output,
-rather than catting whole `SKILL.md`, `.mcp.json` or README files - thirty-odd plugins of full
-files floods the context:
-`awk '/^description:/{print FILENAME": "$0}' plugins/*/skills/*/SKILL.md | head -c 4000`.
 
 Bump the plugin's `version` whenever its content changes - that is what busts the install cache for
 people who already have it. Bump it in **`plugins/<name>/.claude-plugin/plugin.json`**, which is the
