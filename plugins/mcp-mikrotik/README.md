@@ -4,11 +4,33 @@ MikroTik router management and network automation over SSH via [mcp-server-mikro
 
 ## What it can do
 
-About 220 tools covering most of RouterOS over SSH: backups and exports, bridges and VLANs, DHCP, DNS, firewall filter and NAT rules, address lists, routes, interfaces, wireless, users, logs and more. Most of them **write to the router** - a wrong firewall or bridge change can lock you out.
+The server (0.27.0.0) has 218 tools covering most of RouterOS over SSH: backups and exports, bridges and VLANs, DHCP, DNS, firewall filter and NAT rules, address lists, routes, interfaces, wireless, users, logs and more. 120 of them **write to the router**, and a wrong firewall or bridge change can lock you out.
 
-Review every create, update, remove and restore call before approving it, take a backup first (the server has a tool for it), and prefer a read-only RouterOS group for the account when you only want to inspect.
+Since 3.0.0 the plugin starts the server with `MIKROTIK_READ_ONLY=true`, so only its 98 read-only tools load. Every session with the plugin enabled carries their names, so disable it when you are not working on the router.
 
-Try: *"Show the DHCP leases and flag any device I have not named."* or *"Back up the router, then list firewall filter rules that never match."*
+Try: *"Show the DHCP leases and flag any device I have not named."* or *"List the firewall filter rules that never match."*
+
+## Quick checks over SSH
+
+For a one-off look at the router, plain SSH costs nothing in context and needs no plugin. RouterOS runs a command passed on the SSH line and exits:
+
+```bash
+ssh admin@router '/ip/firewall/filter/print'
+ssh admin@router '/ip/dhcp-server/lease/print'
+ssh admin@router '/log/print where topics~"error"'
+```
+
+Make this the default for checks, with a key-based login for a RouterOS user in the `read` group. Reach for the plugin when a task needs many lookups in a row.
+
+## Making changes
+
+The plugin cannot change the router. When you do want Claude to write, add the server yourself without the read-only flag, take a backup first, and review every create, update, remove and restore call before approving it:
+
+```bash
+claude mcp add mikrotik-rw -e MIKROTIK_HOST=router -e MIKROTIK_USERNAME=admin -e MIKROTIK_PASSWORD=... -- uvx mcp-server-mikrotik@0.27.0.0
+```
+
+That stores the password in your Claude Code config in plain text, so remove the server (`claude mcp remove mikrotik-rw`) when you are done.
 
 ## Installation
 
