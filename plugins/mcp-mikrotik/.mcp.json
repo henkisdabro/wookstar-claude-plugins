@@ -9,7 +9,8 @@
         "MIKROTIK_HOST": "${user_config.mikrotik_host}",
         "MIKROTIK_USERNAME": "${user_config.mikrotik_username}",
         "MIKROTIK_PASSWORD": "${user_config.mikrotik_password}",
-        "MIKROTIK_PORT": "${user_config.mikrotik_port}"
+        "MIKROTIK_PORT": "${user_config.mikrotik_port}",
+        "MIKROTIK_READ_ONLY": "true"
       }
     }
   }

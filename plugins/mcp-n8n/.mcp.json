@@ -10,6 +10,7 @@
         "MCP_MODE": "stdio",
         "LOG_LEVEL": "error",
         "DISABLE_CONSOLE_OUTPUT": "true",
+        "DISABLED_TOOLS": "n8n_explore_node_resources,n8n_manage_agents,n8n_evaluations,n8n_manage_folders,n8n_manage_datatable,n8n_manage_credentials,n8n_audit_instance,n8n_list_catalog",
         "N8N_API_URL": "${user_config.n8n_api_url}",
         "N8N_API_KEY": "${user_config.n8n_api_key}"
       }

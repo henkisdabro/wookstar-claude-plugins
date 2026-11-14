@@ -6,6 +6,8 @@ Stock market data, company information and financial indicators via Alpha Vantag
 
 Alpha Vantage's hosted server: stock, ETF, FX and crypto time series, company fundamentals, earnings, news sentiment, economic indicators and technical indicators. It is read-only, and requests count against your Alpha Vantage plan's rate limit.
 
+The server lists about 120 tools - one per Alpha Vantage API function, over 50 of them technical indicators - plus three legacy discovery tools. It offers no way to load fewer: its `?categories=` filter was removed in 0.3.0. Every session with the plugin enabled carries all those names, so disable it when you are not doing market research.
+
 Try: *"Compare the last five years of revenue and free cash flow for two companies, from their filings data."*
 
 ## Installation

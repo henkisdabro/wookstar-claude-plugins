@@ -4,6 +4,12 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Changed
+
+- `mcp-mikrotik` 3.0.0: **breaking** - the server starts read-only (`MIKROTIK_READ_ONLY=true`), so 98 of its 218 tools load and none can change the router. The README makes plain SSH (`ssh admin@router '/ip/firewall/filter/print'`) the default for quick checks and gives the `claude mcp add` command for a write-enabled server when you need one.
+- `mcp-n8n` 3.0.0: **breaking** - 20 of the server's 28 tools load. `DISABLED_TOOLS` turns off credential, data table, folder, evaluation, audit and catalogue management, and two tools that need an access token the plugin never sets. The README lists them and how to get them back.
+- `mcp-alphavantage` 2.0.1: the README states the hosted server's tool count (about 120) and that it cannot be narrowed.
+
 ### Fixed
 
 - `google-analytics` 3.0.1: the 3.0.0 startup notice failed with a `SessionStart` hook error instead of showing, because an apostrophe in its text broke the shell quoting.

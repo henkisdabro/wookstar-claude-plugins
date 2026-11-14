@@ -6,6 +6,9 @@ tests are the message plugin's - `bun run test` in `plugins/message/skills/messa
 (`.github/workflows/ci.yml`) runs those, the validator and the personal-info scan below on every
 pull request.
 
+Skim audits across plugins: print frontmatter only and cap the output, e.g.
+`awk '/^description:/{print FILENAME": "$0}' plugins/*/skills/*/SKILL.md | head -c 4000`.
+
 Verify a change with `claude plugin validate .` (no errors or warnings at HEAD), then exercise
 it: `/plugin marketplace add .`, `/plugin install <plugin>@wookstar-claude-plugins`, and
 `/plugin marketplace update wookstar-claude-plugins` to pick up later edits. Its Advice block lists
