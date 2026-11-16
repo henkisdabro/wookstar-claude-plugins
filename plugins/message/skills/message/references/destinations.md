@@ -280,6 +280,10 @@ takes the safe choice: plain text, and an "about" label on the counter.
 - **Old Reddit** needs two trailing spaces for a hard line break.
 - **Mobile:** the legacy Markdown editor is being retired there.
   [Formatting Guide](https://support.reddithelp.com/hc/en-us/articles/360043033952-Formatting-Guide)
+- **Paste into the Markdown editor** (tested 2026-11-16): every format, link, heading, list,
+  quote, code block and table converts. The Rich Text editor, given a rich paste, drops
+  strikethrough along with the spaces around it ("onestruckword"), flattens headings and quotes,
+  and adds blank lines, so switch the composer to Markdown before pasting.
 - **Registry:** Reddit Markdown, with single newlines written as two trailing spaces.
 - **Limit:** unknown (no primary source reachable; reddit.com refuses automated fetches).
 - **Compose URL:** none without a subreddit.
