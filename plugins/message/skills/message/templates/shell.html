@@ -224,8 +224,8 @@
       /* Phone width: a fixed two-row grid, so the bar never re-wraps. */
       .actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
       .actions .spacer { display: none; }
-      #copy-btn, #open-btn { width: auto; min-width: 0; overflow: hidden; }
-      #copy-btn kbd, #open-btn kbd { display: none; }
+      #copy-btn, #open-btn, #web-btn { width: auto; min-width: 0; overflow: hidden; }
+      #copy-btn kbd, #open-btn kbd, #web-btn kbd { display: none; }
       #tier-toggle { justify-self: start; }
       .counter { justify-self: end; }
     }
@@ -251,6 +251,7 @@
   <div class="actions">
     <button class="btn primary" id="copy-btn" type="button" onclick="copySelected(this)"></button>
     <button class="btn" id="open-btn" type="button" onclick="openSelected()"></button>
+    <button class="btn" id="web-btn" type="button" onclick="openSelected(true)" hidden></button>
     <span class="seg unused" id="tier-toggle" role="group" aria-label="Account tier" aria-hidden="true"></span>
     <span class="spacer"></span>
     <span class="counter" id="counter" hidden>
@@ -264,6 +265,7 @@
 <nav class="hints" aria-label="Keyboard shortcuts">
   <span><kbd>C</kbd> Copy</span>
   <span><kbd>O</kbd> Open</span>
+  <span><kbd>B</kbd> Browser</span>
   <span><kbd>[</kbd><kbd>]</kbd> Switch</span>
   <span><kbd>G</kbd> Gmail</span>
   <span><kbd>T</kbd> Rich</span>
@@ -304,6 +306,7 @@
        innerText/selection still yield a faithful clipboard payload for Gmail.
        whatsapp-raw is marked's HTML, read via innerHTML by every text dialect. -->
   <div id="outlook-body" class="body-frame outlook-frame"><!-- INJECT:OUTLOOK_BODY --></div>
+  <div id="flat-body" class="body-frame outlook-frame" hidden></div>
   <pre id="text-view" class="text-view" hidden></pre>
   <div id="thread-view" class="thread" hidden></div>
   <div id="gmail-body" class="body-frame gmail-frame offscreen"><!-- INJECT:GMAIL_BODY --></div>
@@ -329,6 +332,7 @@
   var PICK_KEY = 'message-preview:destination-pick';
 
   function $(id) { return document.getElementById(id); }
+  var PASTE = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? 'Cmd+V' : 'Ctrl+V';
   function toast(msg, ms) {
     var t = $('toast');
     t.textContent = msg;
@@ -336,7 +340,9 @@
     clearTimeout(t._timer);
     t._timer = setTimeout(function () { t.classList.remove('show'); }, ms || 1800);
   }
-  function armPasteReminder(msg) { pasteReminder = msg; }
+  function armPasteReminder(where) {
+    pasteReminder = 'Message is on your clipboard - paste it (' + PASTE + ') into ' + where + ' if needed.';
+  }
 
   // Route "Open" actions through the preview server (POST /open), which hands
   // the URL to the OS default handler. Opening from page JS (window.open /
@@ -344,13 +350,28 @@
   // pane or a VS Code/Zed in-app browser - where the user is usually not
   // signed in. The fallback covers the static-file case (no server behind the
   // page) and a server that refuses the URL.
-  function openExternal(url, fallback) {
+  //
+  // opts.web is the destination's web version: the server opens it instead of
+  // an app link when the OS reports no app for it. opts.done(how) hears what was
+  // attempted - 'app', 'web', or 'none' (no app and no web version). With no
+  // server to ask (remote mode, a static file) the page cannot tell which apps
+  // are installed, so it opens the web version where there is one.
+  function openExternal(url, opts) {
+    opts = opts || {};
+    var done = opts.done || function () {};
+    function local() {
+      var target = opts.web || url;
+      if (opts.sameTab) window.location.href = target; else window.open(target, '_blank');
+      done(opts.web ? 'web' : 'app');
+    }
     // Remote mode (serve.ts): the server is on another machine, so open here,
     // inside the click, where the browser still allows a new window.
-    if (window.__MESSAGE_REMOTE) { fallback(); return; }
-    fetch('/open?url=' + encodeURIComponent(url), { method: 'POST' })
-      .then(function (r) { if (!r.ok) fallback(); })
-      .catch(function () { fallback(); });
+    if (window.__MESSAGE_REMOTE) { local(); return; }
+    var q = '/open?url=' + encodeURIComponent(url) + (opts.web ? '&web=' + encodeURIComponent(opts.web) : '');
+    fetch(q, { method: 'POST' })
+      .then(function (r) { if (!r.ok) throw new Error('open refused'); return r.json(); })
+      .then(function (j) { done(j.attempted); })
+      .catch(local);
   }
 
   function hideIfEmpty(id, rowId) {
@@ -438,7 +459,40 @@
   function save(key, v) { try { localStorage.setItem(key, v); } catch (e) { /* storage blocked */ } }
 
   function textFor(d) { return renderDialect($('whatsapp-raw').innerHTML, DIALECTS[d.dialect]); }
-  function richBodyId(d) { return d.payload === 'gmail' ? 'gmail-body' : 'outlook-body'; }
+  function richBodyId(d) { return d.flatRich ? 'flat-body' : d.payload === 'gmail' ? 'gmail-body' : 'outlook-body'; }
+
+  // Rich text for a destination that flattens what it is pasted (iMessage).
+  // Messages rewrites every link as "text (url)", so a bare URL showed twice,
+  // and breaks a table into one cell per line. Links become their text, plus
+  // the address once where it differs; tables become the stacked
+  // "Header: value" rows the WhatsApp dialect uses (stackTableRows).
+  function flatten(html) {
+    var c = document.createElement('div');
+    c.innerHTML = html;
+    c.querySelectorAll('a[href]').forEach(function (a) {
+      a.replaceWith(document.createTextNode(linkText(a.textContent, a.getAttribute('href'))));
+    });
+    c.querySelectorAll('table').forEach(function (tb) {
+      var rows = Array.from(tb.rows).map(function (r) {
+        return Array.from(r.cells).map(function (x) { return x.textContent.trim(); });
+      });
+      // One paragraph with a blank line between rows: Messages drops the
+      // spacing between paragraphs, which ran the rows together.
+      var out = document.createElement('p');
+      function add(node) { if (out.firstChild) out.appendChild(document.createElement('br')); out.appendChild(node); }
+      stackedBlocks(rows).forEach(function (block, n) {
+        if (n) out.appendChild(document.createElement('br'));
+        if (block.title) {
+          var b = document.createElement('strong');
+          b.textContent = block.title;
+          add(b);
+        }
+        block.lines.forEach(function (line) { add(document.createTextNode(line)); });
+      });
+      tb.replaceWith(out);
+    });
+    return c.innerHTML;
+  }
 
   function describe(d) {
     if (d.payload === 'gmail') return 'Gmail formatting';
@@ -573,8 +627,12 @@
     openBtn.disabled = !canOpen;
     openBtn.innerHTML = 'Open ' + d.label + ' <span class="ext">&#8599;</span> <kbd>O</kbd>';
     openBtn.title = canOpen
-      ? 'Copy, then open ' + d.label + ' - paste (Cmd+V) if the text is not already there (O)'
+      ? 'Copy, then open ' + d.label + ' - paste (' + PASTE + ') if the text is not already there (O)'
       : d.label + ' has no compose link - copy, then paste it into the app';
+    var webBtn = $('web-btn');
+    webBtn.hidden = !d.webUrl;
+    webBtn.innerHTML = 'Open in browser <span class="ext">&#8599;</span> <kbd>B</kbd>';
+    webBtn.title = 'Copy, then open ' + d.label + ' on the web instead of the desktop app (B)';
     renderTierToggle(d);
     render();
   }
@@ -589,7 +647,10 @@
     if (!rich && rule && threads(d) && countFor(rule, text).over) {
       parts = splitThread(text, { max: rule.max, weigh: function (t) { return countFor(rule, t).count; } });
     }
-    $('outlook-body').hidden = !rich;
+    var shown = d.flatRich ? 'flat-body' : 'outlook-body';
+    if (d.flatRich) $('flat-body').innerHTML = flatten($('outlook-body').innerHTML);
+    $('flat-body').hidden = !rich || shown !== 'flat-body';
+    $('outlook-body').hidden = !rich || shown !== 'outlook-body';
     $('text-view').hidden = rich || parts.length > 1;
     $('thread-view').hidden = parts.length <= 1;
     if (!rich) $('text-view').textContent = text;
@@ -671,11 +732,12 @@
   function copyPart(i, btn) {
     return copyText(parts[i]).then(function (ok) {
       markCopyState(btn, ok, ok ? 'Copied' : 'Copy failed');
-      if (!ok) { toast('Copy failed'); return; }
+      if (!ok) { toast('Copy failed'); return false; }
       cursor = i + 1 < parts.length ? i + 1 : 0;
       toast('Copied post ' + (i + 1) + ' of ' + parts.length + (i + 1 < parts.length ? '. C copies the next.' : '. Thread done.'));
       markCursor();
       renderCopyLabel(current);
+      return true;
     });
   }
 
@@ -691,19 +753,27 @@
 
   window.copySelected = function (btn) { copyFor(current, btn || $('copy-btn')); };
 
-  window.openSelected = function () {
+  // Open (O) and Open in browser (B) copy exactly what Copy would - in a thread,
+  // the next post, moving the cursor on - then open the destination. Open tries
+  // the app link with the web version as its fallback; Open in browser goes
+  // straight to the web version.
+  window.openSelected = function (inBrowser) {
     var d = current;
-    if (d.id === 'gmail') return composeInGmail();
     if (d.id === 'mail') return openInMailApp();
-    if (d.id === 'whatsapp') return sendViaWhatsApp();
-    if (!d.openUrl) { toast(d.label + ' has no compose link - copy, then paste it into the app.', 3000); return; }
-    // A thread opens the composer with the post C would copy next.
-    var text = parts.length > 1 ? parts[cursor] : textFor(d);
-    copyText(text).then(function () {
-      var url = d.openUrl(text, fields());
-      openExternal(url, function () { window.open(url, '_blank'); });
-      armPasteReminder('Message is on your clipboard - paste it (Cmd+V) into ' + d.label + ' if needed.');
-      toast('Opening ' + d.label + '...', 4000);
+    var link = inBrowser ? d.webUrl : d.openUrl;
+    if (!link) { toast(d.label + ' has no compose link - copy, then paste it into the app.', 3000); return; }
+    var text = parts.length > 1 ? parts[cursor] : d.payload === 'text' ? textFor(d) : '';
+    copyFor(d, $('copy-btn')).then(function (ok) {
+      // Rich text has no other way in, so a failed copy opens nothing.
+      if (!ok && d.payload !== 'text') { toast('Copy failed - ' + d.label + ' not opened'); return; }
+      var f = fields();
+      var web = !inBrowser && d.webUrl ? d.webUrl(text, f) : null;
+      openExternal(link(text, f), { web: web, done: function (how) {
+        toast(how === 'none' ? 'No app for ' + d.label + ' on this computer - the message is copied, paste it where you send it.'
+          : how === 'web' && !inBrowser ? 'No ' + d.label + ' desktop app found - opened it in your browser. Paste with ' + PASTE + ' if needed.'
+          : 'Opening ' + d.label + ' - paste with ' + PASTE + ' if needed.', 5000);
+      } });
+      armPasteReminder(d.label);
     });
   };
 
@@ -734,42 +804,18 @@
     copyRichHtml('outlook-body').then(function (ok) {
       if (ok) {
         var href = destinationById('mail').openUrl('', f);
-        openExternal(href, function () { window.location.href = href; });
-        armPasteReminder('Rich text is on your clipboard - paste it (Cmd+V) into the email body.');
-        toast('Opening your mail app - paste the body (Cmd+V).', 5000);
+        openExternal(href, { sameTab: true });
+        armPasteReminder('the email body');
+        toast('Opening your mail app - paste the body (' + PASTE + ').', 5000);
       } else {
         var body = ($('outlook-body').innerText || '').trim();
         var result = buildMailto({ to: f.to, subject: f.subject, cc: f.cc, bcc: f.bcc, body: body });
         if (result.overflow) copyText(body);
-        openExternal(result.href, function () { window.location.href = result.href; });
+        openExternal(result.href, { sameTab: true });
         toast(result.overflow ? 'Draft too long for the link - body copied, paste it in.' : 'Opening your mail app...');
       }
     });
   };
-
-  window.composeInGmail = function () {
-    copyRichHtml('gmail-body').then(function (ok) {
-      if (!ok) { toast('Copy failed - Gmail not opened'); return; }
-      var gurl = destinationById('gmail').openUrl('', fields());
-      openExternal(gurl, function () { window.open(gurl, '_blank'); });
-      armPasteReminder('Formatted message is on your clipboard - paste it (Cmd+V) into Gmail.');
-      toast('Opening Gmail - paste (Cmd+V) to add the formatted message.', 5000);
-    });
-  };
-
-  window.sendViaWhatsApp = function () {
-    var d = destinationById('whatsapp');
-    var text = textFor(d);
-    // Always put the full message on the clipboard - it is the reliable path.
-    copyText(text);
-    // The row's openUrl prefills only short messages (long ones are truncated
-    // or mangled); otherwise it opens the app for the user to paste into.
-    var wurl = d.openUrl(text);
-    openExternal(wurl, function () { window.open(wurl); });
-    toast(wurl === 'whatsapp://send' ? 'Message copied - paste it into WhatsApp (Cmd+V).' : 'Opening WhatsApp...', 5000);
-    armPasteReminder('Message is on your clipboard - paste it (Cmd+V) into WhatsApp.');
-  };
-
 
   // When the user tabs back to this page after an open action, remind them once.
   window.addEventListener('focus', function () {
@@ -828,6 +874,7 @@
     else if (byOpenKey) { select(byOpenKey.id, true); openSelected(); }
     else if (k === 'c') copySelected();
     else if (k === 'o') openSelected();
+    else if (k === 'b') openSelected(true);
     else if (k === '[' || (k === 'arrowleft' && e.target.classList.contains('chip'))) move(-1);
     else if (k === ']' || (k === 'arrowright' && e.target.classList.contains('chip'))) move(1);
     else if (k === 'r') location.reload();

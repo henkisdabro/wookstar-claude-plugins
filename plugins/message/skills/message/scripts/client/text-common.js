@@ -88,14 +88,30 @@ export const lineWidth = (line) => { const { wide, narrow } = cellStats(line); r
 // every other non-empty cell as "Header: value". Plain wrapping text, so a long
 // value wraps like any message line instead of breaking a grid; nothing is cut.
 export function stackTableRows(rows, bold = "*") {
-  const [head, ...body] = rows;
-  if (!body.length) return head.filter(Boolean).join("\n");
-  return body.map((r) => {
-    const lines = [];
-    if (r[0]) lines.push(r[0].startsWith(bold) && r[0].endsWith(bold) && r[0].length > 2 * bold.length ? r[0] : bold + r[0] + bold);
-    for (let i = 1; i < r.length; i++) {
-      if (r[i]) lines.push(head[i] ? `${head[i]}: ${r[i]}` : r[i]);
-    }
-    return lines.join("\n");
+  return stackedBlocks(rows).map(({ title, lines }) => {
+    const t = !title ? [] : [title.startsWith(bold) && title.endsWith(bold) && title.length > 2 * bold.length ? title : bold + title + bold];
+    return [...t, ...lines].join("\n");
   }).join("\n\n");
+}
+
+// The stacked rows as blocks: { title: the first cell, lines: "Header: value" }.
+// A table with only a header row is one untitled block of its headers.
+export function stackedBlocks(rows) {
+  const [head, ...body] = rows;
+  if (!body.length) return [{ title: "", lines: head.filter(Boolean) }];
+  return body.map((r) => ({
+    title: r[0],
+    lines: r.slice(1).flatMap((v, i) => (v ? [head[i + 1] ? `${head[i + 1]}: ${v}` : v] : [])),
+  }));
+}
+
+// A link as text. A label that is just the address (scheme, mailto: or a
+// trailing slash aside) would print it twice, so it collapses: to the web
+// address, which apps turn into a link, or to the label of a mail link.
+const bareAddress = (u) => u.replace(/^(https?:\/\/|mailto:)/i, "").replace(/\/$/, "");
+export function linkText(label, href, markdown = false) {
+  if (!href || label === href) return label;
+  if (!label) return href;
+  if (bareAddress(label) === bareAddress(href)) return /^mailto:/i.test(href) ? label : href;
+  return markdown ? `[${label}](${href})` : `${label} (${href})`;
 }

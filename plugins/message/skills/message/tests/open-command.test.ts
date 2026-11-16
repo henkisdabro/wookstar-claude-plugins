@@ -1,5 +1,5 @@
 import { test, expect, describe } from "bun:test";
-import { openCommand, wslMountRoot } from "../scripts/open-command";
+import { openCommand, handlerProbe, appScheme, wslMountRoot } from "../scripts/open-command";
 
 const GMAIL = "https://mail.google.com/mail/?view=cm&tf=1&to=a%40example.com&su=Hi%20there";
 const none = { which: () => null, exists: () => false, drives: [] as string[] };
@@ -61,5 +61,54 @@ describe("wslMountRoot", () => {
 
   test("ignores a root key outside [automount]", () => {
     expect(wslMountRoot("[other]\nroot = /nope\n")).toBe("/mnt/");
+  });
+});
+
+describe("handlerProbe", () => {
+  const env = { ...none, platform: "darwin", isWSL: false, hasDisplay: false };
+
+  test("web and mail links need no probe", () => {
+    expect(appScheme("https://app.slack.com/client")).toBeNull();
+    expect(appScheme("mailto:a@b.com")).toBeNull();
+    expect(handlerProbe("https://web.telegram.org/", env)).toBeNull();
+    expect(appScheme("msteams:")).toBe("msteams");
+  });
+
+  test("macOS asks NSWorkspace, with the URL as an argument, never in the script", () => {
+    const p = handlerProbe("slack://open", env)!;
+    expect(p.argv.slice(0, 4)).toEqual(["osascript", "-l", "JavaScript", "-e"]);
+    expect(p.argv[4]).not.toContain("slack");
+    expect(p.argv[5]).toBe("slack://open");
+    expect(p.read(0, "present\n")).toBe("present");
+    expect(p.read(0, "absent\n")).toBe("absent");
+    expect(p.read(1, "")).toBe("unknown");
+  });
+
+  test("Windows asks AssocQueryString through PowerShell, and reads its three answers", () => {
+    const p = handlerProbe("msteams:", { ...env, platform: "win32" })!;
+    expect(p.argv.slice(0, 4)).toEqual(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command"]);
+    expect(p.argv[4]).toContain("AssocQueryString(0x1000,4,'msteams'");
+    expect(p.read(0, "present\r\n")).toBe("present");
+    expect(p.read(0, "absent\r\n")).toBe("absent");
+    expect(p.read(0, "unknown\r\n")).toBe("unknown");
+  });
+
+  test("WSL finds powershell.exe on PATH or on a mounted drive, else no probe", () => {
+    const wsl = { ...env, platform: "linux", isWSL: true };
+    expect(handlerProbe("tg://", { ...wsl, which: (n: string) => (n === "powershell.exe" ? "/c/ps.exe" : null) })!.argv[0]).toBe("/c/ps.exe");
+    const ps = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe";
+    expect(handlerProbe("tg://", { ...wsl, drives: ["/mnt/c"], exists: (p: string) => p === ps })!.argv[0]).toBe(ps);
+    expect(handlerProbe("tg://", { ...wsl, drives: ["/mnt/c"] })).toBeNull();
+  });
+
+  test("Linux trusts empty xdg-mime output only inside a desktop session", () => {
+    const linux = { ...env, platform: "linux", which: (n: string) => (n === "xdg-mime" ? "/usr/bin/xdg-mime" : null) };
+    const p = handlerProbe("discord://", { ...linux, hasDisplay: true })!;
+    expect(p.argv).toEqual(["xdg-mime", "query", "default", "x-scheme-handler/discord"]);
+    expect(p.read(0, "discord.desktop\n")).toBe("present");
+    expect(p.read(0, "\n")).toBe("absent");
+    expect(p.read(1, "")).toBe("unknown");
+    expect(handlerProbe("discord://", { ...linux, hasDisplay: false })!.read(0, "")).toBe("unknown");
+    expect(handlerProbe("discord://", { ...env, platform: "linux" })).toBeNull();
   });
 });

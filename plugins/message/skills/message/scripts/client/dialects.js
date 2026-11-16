@@ -5,11 +5,16 @@
 // platform really converts is recorded in references/destinations.md - an
 // element a platform cannot type falls back to plain text, never to Unicode
 // look-alikes.
-import { decodeEntities, formatTableRows, stackTableRows, lineWidth, TABLE_WIDTH_BUDGET } from "./text-common.js";
+import { decodeEntities, formatTableRows, stackTableRows, linkText, lineWidth, TABLE_WIDTH_BUDGET } from "./text-common.js";
 
 // Spec fields:
 //   name      - how the preview describes the paste ("plain text", "Markdown")
 //   bold/italic/strike/code/underline - [open, close] markers, or null for plain
+//   wordBound - markers only format at a word boundary (WhatsApp, Telegram), so a
+//               span inside a word (un**bold**ed) is written plain, never as
+//               literal asterisks
+//   flatNest  - nested markers do not combine (Telegram): only the outermost
+//               format is written, and the inner ones as plain text
 //   heading   - "bold" (a bold line), "hash" (# marks, up to maxHeading), "plain"
 //   link      - "paren" for "text (url)", "markdown" for [text](url)
 //   nest      - nested list indent: a number of spaces per level, or "marker"
@@ -32,19 +37,25 @@ export const DIALECTS = {
   whatsapp: {
     name: "WhatsApp formatting",
     bold: ["*", "*"], italic: ["_", "_"], strike: ["~", "~"], code: ["`", "`"], underline: null,
+    wordBound: true,
     heading: "bold", link: "paren", nest: 2, quote: true, codeBlock: "fence",
     codeFlush: true, table: TABLE_WIDTH_BUDGET, hardBreak: "\n", hr: "---",
   },
+  // Pasted text is read as Markdown (**bold**, *italic*, ~~strike~~, also inside
+  // a word), not the *bold* mrkdwn Slack converts as you type (tested 2026-11-16).
   slack: {
     name: "Slack formatting",
-    bold: ["*", "*"], italic: ["_", "_"], strike: ["~", "~"], code: ["`", "`"], underline: null,
+    bold: B2, italic: ["*", "*"], strike: ["~~", "~~"], code: ["`", "`"], underline: null,
     heading: "bold", link: "paren", nest: 2, quote: true, codeBlock: "fence",
     codeFlush: false, table: 60, hardBreak: "\n", hr: "",
   },
+  // Pasted Markdown formats single spans only at a word edge, never nested,
+  // and [text](url) stays literal (tested 2026-11-16).
   telegram: {
     name: "Telegram formatting",
     bold: B2, italic: ["__", "__"], strike: ["~~", "~~"], code: ["`", "`"], underline: null,
-    heading: "bold", link: "markdown", nest: 2, quote: false, codeBlock: "fence",
+    wordBound: true, flatNest: true,
+    heading: "bold", link: "paren", nest: 2, quote: false, codeBlock: "fence",
     codeFlush: false, table: TABLE_WIDTH_BUDGET, hardBreak: "\n", hr: "",
   },
   discord: {
@@ -103,6 +114,7 @@ function parseTree(html) {
 const textOf = (node) => node.text !== undefined ? node.text : node.children.map(textOf).join("");
 const BR = { name: "br", children: [] };
 const LIST = /^(ul|ol)$/;
+const WORD = /[\p{L}\p{N}]/u;
 
 // -- rendering ----------------------------------------------------------------
 function makeRenderer(spec) {
@@ -111,28 +123,33 @@ function makeRenderer(spec) {
   // Inline content: <br> is a hard break, source newlines are spaces (marked
   // emits a <br> for every kept break), unknown tags reduce to their text.
   function inline(nodes) {
-    const walk = (n) => {
+    // before/after: the characters either side of n in the rendered line, so a
+    // wordBound dialect can tell a span inside a word from one at its edge.
+    // marked: an enclosing span already wrote markers (for flatNest).
+    const walk = (n, before = "", after = "", marked = false) => {
       if (n.text !== undefined) return decodeEntities(n.text.replace(/\n/g, " "));
-      const inner = () => n.children.map(walk).join("");
+      const kids = n.children;
+      const inner = (m = false) => {
+        const texts = kids.map(textOf);
+        return kids.map((c, i) => walk(c, (i && texts[i - 1].slice(-1)) || before,
+          (i < kids.length - 1 && texts[i + 1].charAt(0)) || after, marked || m)).join("");
+      };
+      const markersFor = (m) => ((spec.wordBound && (WORD.test(before) || WORD.test(after))) ||
+        (spec.flatNest && marked) ? null : m);
+      const span = (m) => { const k = markersFor(m); return wrap(k, inner(!!k)); };
       switch (n.name) {
         case "br": return "\n";
         case "img": return attr(n.tag, "alt");
-        case "strong": case "b": return wrap(spec.bold, inner());
-        case "em": case "i": return wrap(spec.italic, inner());
-        case "del": case "s": case "strike": return wrap(spec.strike, inner());
-        case "u": return wrap(spec.underline, inner());
-        case "code": return wrap(spec.code, decodeEntities(textOf(n)));
-        case "a": {
-          const href = attr(n.tag, "href");
-          const t = inner().trim();
-          if (!href || t === href) return t;
-          if (!t) return href;
-          return spec.link === "markdown" ? `[${t}](${href})` : `${t} (${href})`;
-        }
+        case "strong": case "b": return span(spec.bold);
+        case "em": case "i": return span(spec.italic);
+        case "del": case "s": case "strike": return span(spec.strike);
+        case "u": return span(spec.underline);
+        case "code": return wrap(markersFor(spec.code), decodeEntities(textOf(n)));
+        case "a": return linkText(inner().trim(), attr(n.tag, "href"), spec.link === "markdown");
         default: return LIST.test(n.name) ? "" : inner();
       }
     };
-    return nodes.map(walk).join("").replace(/ *\n */g, "\n").trim().replace(/\n/g, spec.hardBreak);
+    return walk({ name: "span", children: nodes }).replace(/ *\n */g, "\n").trim().replace(/\n/g, spec.hardBreak);
   }
 
   function renderList(list, indent) {

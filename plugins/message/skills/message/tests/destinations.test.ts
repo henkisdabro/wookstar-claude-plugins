@@ -3,8 +3,8 @@ import { writeFile, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DESTINATIONS, destinationById, EMAIL_CHANNELS } from "../scripts/client/destinations.js";
+import { isAllowedOpenUrl, isAllowedWebFallback } from "../scripts/open-url";
 import { DIALECTS } from "../scripts/client/dialects.js";
-import { isAllowedOpenUrl } from "../scripts/open-url";
 import { parseFragment, validateFragment } from "../scripts/parse";
 import { build } from "../scripts/build";
 
@@ -33,11 +33,11 @@ describe("destination registry", () => {
     }
   });
 
-  test("every Open URL is one the server allows", () => {
+  test("every Open and web URL is one the server allows", () => {
     const fields = { to: "a@example.com", subject: "Hi", cc: "", bcc: "" };
     for (const d of DESTINATIONS) {
-      if (!d.openUrl) continue;
-      expect(isAllowedOpenUrl(d.openUrl("Hello & welcome 🎉", fields))).toBe(true);
+      if (d.openUrl) expect(isAllowedOpenUrl(d.openUrl("Hello & welcome 🎉", fields))).toBe(true);
+      if (d.webUrl) expect(isAllowedWebFallback(d.webUrl("Hello & welcome 🎉", fields))).toBe(true);
     }
   });
 
@@ -73,6 +73,32 @@ describe("destination registry", () => {
     const wa = destinationById("whatsapp")!;
     expect(wa.openUrl("a".repeat(700))).toBe("whatsapp://send?text=" + "a".repeat(700));
     expect(wa.openUrl("a".repeat(701))).toBe("whatsapp://send");
+  });
+
+  test("chat apps open the desktop app and have a web version", () => {
+    const want: Record<string, [string, string]> = {
+      slack: ["slack://open", "https://app.slack.com/client"],
+      telegram: ["tg://", "https://web.telegram.org/"],
+      discord: ["discord://", "https://discord.com/app"],
+      teams: ["msteams:", "https://teams.microsoft.com/"],
+    };
+    for (const [id, [app, web]] of Object.entries(want)) {
+      expect(destinationById(id)!.openUrl("hello")).toBe(app);
+      expect(destinationById(id)!.webUrl("hello")).toBe(web);
+    }
+  });
+
+  test("WhatsApp Web prefills on the same 700-character rule as the app", () => {
+    const wa = destinationById("whatsapp")!;
+    expect(wa.webUrl("hi there")).toBe("https://web.whatsapp.com/send?text=hi%20there");
+    expect(wa.webUrl("a".repeat(701))).toBe("https://web.whatsapp.com/");
+  });
+
+  test("iMessage pastes rich text into Messages; Messenger opens on the web", () => {
+    expect(destinationById("imessage")!.openUrl("hi there")).toBe("sms:");
+    expect(destinationById("imessage")!.payload).toBe("rich");
+    expect(destinationById("imessage")!.flatRich).toBe(true);
+    expect(destinationById("messenger")!.openUrl("hi")).toBe("https://www.messenger.com/");
   });
 
   test("legacy shortcuts stay mapped", () => {

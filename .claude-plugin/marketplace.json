@@ -398,7 +398,7 @@
       "name": "message",
       "source": "./plugins/message",
       "description": "Message drafts for Gmail, mail apps, WhatsApp, Slack, X and 17 more destinations, with a live Copy/Open preview",
-      "version": "4.1.0",
+      "version": "4.2.0",
       "author": {
         "name": "henkisdabro",
         "email": "whom-wealthy.2z@icloud.com"
