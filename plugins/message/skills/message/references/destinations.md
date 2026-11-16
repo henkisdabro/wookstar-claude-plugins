@@ -16,7 +16,8 @@ takes the safe choice: plain text, and an "about" label on the counter.
 
 - **Typed markup that converts on send** is the only "markup" we emit: WhatsApp, Slack,
   Telegram, Discord, Teams (desktop and web), Reddit (Markdown editor), YouTube comments.
-- **Menu-only or no formatting** gets plain text: Signal, iMessage, Messenger, X,
+- **Rich paste** keeps formatting in iMessage (Messages on macOS 15+), so it gets rich text.
+- **Menu-only or no formatting** gets plain text: Signal, Messenger, X,
   LinkedIn, Facebook, Instagram, Threads, Bluesky, Mastodon, TikTok. We never fake
   formatting with Unicode "bold" letters, which break search and screen readers.
 - **Rich HTML paste**: Gmail, desktop mail clients (Outlook, Apple Mail, Thunderbird).
@@ -58,8 +59,9 @@ takes the safe choice: plain text, and an "about" label on the counter.
   - `* ` or `- ` bulleted list, `1. ` numbered list
 - **Not supported:** headings, links (URLs auto-link), tables.
 - **Newlines:** literal.
-- **Compose URL:** `https://wa.me/?text=<urlencoded>` (pick a contact), or
-  `whatsapp://send?text=` (app). [Click to chat](https://faq.whatsapp.com/5913398998672934)
+- **Compose URL:** `whatsapp://send?text=` (app), or `https://web.whatsapp.com/send?text=` on the
+  web, which Open uses when no desktop app is registered. Both prefill only up to 700 characters.
+  [Click to chat](https://faq.whatsapp.com/5913398998672934)
 - **Limit:** unknown (no primary source). No counter.
 - **Tables:** a padded monospace grid while the table fits `TABLE_WIDTH_BUDGET`, stacked
   rows beyond it (`references/whatsapp-formatting.md`).
@@ -72,6 +74,9 @@ takes the safe choice: plain text, and an "about" label on the counter.
   - `` `code` ``, ```` ``` ```` blocks
   - `>` quote
   - Lists via `- ` / `1. `
+- **Pasted text** is read as Markdown instead: `**bold**`, `*italic*` or `_italic_`,
+  `~~strike~~`, also inside a word. A pasted `*bold*` arrives italic and `~strike~` keeps its
+  tildes (tested 2026-11-16), so the registry writes Markdown markers for Slack.
 - **Not supported:** headings, tables, masked links typed by hand (links are made through
   the UI).
 - **Sources:** [Format your messages](https://slack.com/help/articles/202288908-Format-your-messages-in-Slack),
@@ -80,7 +85,7 @@ takes the safe choice: plain text, and an "about" label on the counter.
   [Truncating long messages](https://docs.slack.dev/changelog/2018-truncating-really-long-messages/)
   The composer's own limit is unknown, so the counter shows "about 40,000".
 - **Compose URL:** none for prefilled text. `slack://open` opens the app only, which is
-  what Open uses.
+  what Open uses; without the app, `https://app.slack.com/client` (the last workspace).
 
 ### Telegram
 
@@ -96,11 +101,17 @@ takes the safe choice: plain text, and an "about" label on the counter.
   `__underline__`). That is for bots only.
 - **Not supported:** headings, tables, lists (no list entity, so `- ` stays literal
   text).
+- **Pasted on desktop** (tested 2026-11-16): single spans convert, but only at a word edge
+  (`un**bold**ed` stays literal), nested markers do not combine (only the outermost applies,
+  the inner ones show), and `[text](url)` stays literal. So the registry writes mid-word spans
+  plain, keeps only the outermost of nested formats (`flatNest`) and writes links as
+  `text (url)`.
 - **Typed markup on mobile:** unknown whether it converts on every client. Desktop and
   Android show the hint.
 - **Limit:** 4,096 characters per message, counted after entity parsing.
   [sendMessage](https://core.telegram.org/bots/api#sendmessage)
-- **Compose URL:** `tg://msg?text=` (unknown on desktop; Open launches the app).
+- **Compose URL:** `tg://msg?text=` is unverified on desktop, so Open uses `tg://`, which
+  launches the app; without it, `https://web.telegram.org/`.
 
 ### Discord
 
@@ -116,7 +127,8 @@ takes the safe choice: plain text, and an "about" label on the counter.
 - **Limit:** 2,000 characters; 4,000 with Nitro.
   [Sending messages](https://support.discord.com/hc/en-us/articles/360034632292),
   [account caps](https://support.discord.com/hc/en-us/articles/33694251638295)
-- **Compose URL:** none (`discord://` opens the app).
+- **Compose URL:** none. Open uses `discord://`, which launches the app; without it,
+  `https://discord.com/app`.
 
 ### Microsoft Teams
 
@@ -128,7 +140,8 @@ takes the safe choice: plain text, and an "about" label on the counter.
 - **Mobile:** views Markdown messages but cannot write them.
 - **Rich HTML paste works,** including tables, so the registry uses the Rich Text payload.
 - **Limit:** unknown (no primary source for the user composer).
-- **Compose URL:** `msteams:` deep links need a recipient; Open is not offered.
+- **Compose URL:** `msteams:` deep links that prefill need a recipient, so Open uses bare
+  `msteams:`, which launches the app; without it, `https://teams.microsoft.com/`.
 
 ### Signal
 
@@ -146,9 +159,18 @@ takes the safe choice: plain text, and an "about" label on the counter.
   convert.
   [Format text (iPhone)](https://support.apple.com/guide/iphone/iphe5c5af4d4/ios),
   [Mac](https://support.apple.com/guide/messages/format-and-animate-text-icht7316c157/mac)
-- **Registry:** plain text.
+- **Pasted rich text keeps** bold, italic, underline, strikethrough and every combination,
+  bullet and numbered lists (nesting flattens) and line breaks; headings arrive as bold lines
+  (tested on macOS 27.2, 2026-11-16). Colour, size, highlight, super/subscript, code styling
+  and quote styling drop to plain text.
+- **Pasted rich text breaks** links, which Messages rewrites as "text (url)" (a bare URL shows
+  twice), and tables, which arrive one cell per line.
+- **Registry:** rich text, flattened (`flatRich`): links become their text plus the address once,
+  tables become the stacked "Header: value" rows of the WhatsApp dialect.
 - **Limit:** none practical.
-- **Compose URL:** `sms:&body=` behaviour on macOS is unknown, so Open is not offered.
+- **Compose URL:** `sms:&body=` prefills plain text only, so Open uses bare `sms:` to bring
+  Messages forward for the rich paste. Where nothing handles `sms:` (most Windows and Linux
+  machines), Open says so instead of failing silently.
 
 ### Messenger
 
@@ -157,7 +179,7 @@ takes the safe choice: plain text, and an "about" label on the counter.
 - **Limit:** the Send API takes text under 2,000 characters.
   [Send API](https://developers.facebook.com/docs/messenger-platform/reference/send-api/)
   The app composer limit is unknown, so the counter shows "about 2,000".
-- **Compose URL:** none.
+- **Compose URL:** none that prefills. Open uses `https://www.messenger.com/`.
 
 ## Social
 
@@ -258,6 +280,10 @@ takes the safe choice: plain text, and an "about" label on the counter.
 - **Old Reddit** needs two trailing spaces for a hard line break.
 - **Mobile:** the legacy Markdown editor is being retired there.
   [Formatting Guide](https://support.reddithelp.com/hc/en-us/articles/360043033952-Formatting-Guide)
+- **Paste into the Markdown editor** (tested 2026-11-16): every format, link, heading, list,
+  quote, code block and table converts. The Rich Text editor, given a rich paste, drops
+  strikethrough along with the spaces around it ("onestruckword"), flattens headings and quotes,
+  and adds blank lines, so switch the composer to Markdown before pasting.
 - **Registry:** Reddit Markdown, with single newlines written as two trailing spaces.
 - **Limit:** unknown (no primary source reachable; reddit.com refuses automated fetches).
 - **Compose URL:** none without a subreddit.

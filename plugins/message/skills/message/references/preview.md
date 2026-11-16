@@ -11,6 +11,7 @@ The preview is one picker of **destinations**, grouped Email / Generic / Messagi
 Keyboard shortcuts:
 
 - **C / O** - copy / open for the selected destination (in a thread, C copies the next post)
+- **B** - open the selected destination's web version in the browser (WhatsApp, Slack, Telegram, Discord, Teams)
 - **[ / ]** - previous / next destination (arrow keys work on a focused chip)
 - **G / T / M / P** - select and copy Gmail / Rich Text / WhatsApp / Plain text
 - **E / W** - open the mail app / WhatsApp
@@ -18,7 +19,9 @@ Keyboard shortcuts:
 
 **Gmail** copies the Gmail-native HTML (`scripts/transform-gmail.ts`) from an off-screen body, so its payload stays faithful. **Rich Text** (the mail app, and Teams) is the inline-styled HTML that pastes cleanly into any desktop mail client, not just Outlook. Both copy with the Clipboard API's HTML MIME type, so paste into Gmail/Outlook/Thunderbird keeps the formatting in one clean operation. Every other destination copies `text/plain` only, converted by `renderDialect()` in `scripts/client/dialects.js` from the same marked HTML; when the Clipboard API is refused, text copies fall back to a hidden textarea.
 
-**Open ↗ launches the system default apps.** Each Open action POSTs to the preview server's `/open` endpoint, which hands the URL to the OS (see **Platform support**), so compose windows open in the user's real browser or app even when the preview is viewed inside an embedded webview (VS Code / Zed in-app browsers, terminal-app browser panes). Open is offered only where a destination has a real compose URL; the endpoint allowlists exactly those (`scripts/open-url.ts`) and answers 502 when no handler could be launched. If the page is opened as a static file with no server, or the server refuses, the buttons fall back to in-page `window.open`.
+**Open ↗ launches the system default apps.** Each Open action POSTs to the preview server's `/open` endpoint, which hands the URL to the OS (see **Platform support**), so compose windows open in the user's real browser or app even when the preview is viewed inside an embedded webview (VS Code / Zed in-app browsers, terminal-app browser panes). Open is offered where a destination has a compose URL or an app link; the endpoint allowlists exactly those (`scripts/open-url.ts`) and answers 502 when no handler could be launched. Slack, Telegram, Discord and Teams have no prefill link, so Open brings the desktop app forward and the message waits on the clipboard.
+
+**Desktop app or web version.** WhatsApp, Slack, Telegram, Discord and Teams also have a web version (the row's `webUrl`). Before opening one of their app links, the server asks the OS whether an app is registered for it - macOS through NSWorkspace, Windows and WSL through `AssocQueryString` in PowerShell, Linux through `xdg-mime` (`handlerProbe()` in `scripts/open-command.ts`). When none is, it opens the web version in the default browser instead, or - with no web version, as for iMessage off a Mac - opens nothing; either way the toast says so. An unknown answer (no probe, a timeout) still tries the app. Answers are cached per scheme and warmed in the background when the server starts, so a click does not wait for the check. Registration is a hint, not proof, so **Open in browser** (**B**) is always offered beside Open as the manual route. With no server to ask (remote mode, a static file), or when the server refuses, the page opens the web version where there is one, and otherwise falls back to in-page `window.open`.
 
 Features: light and dark via `prefers-color-scheme`, live WebSocket hot reload (typically <100 ms; atomic-save editors reload via a 300 ms mtime poll), a tooltip on every control, keyboard focus outlines, works at phone width. Build errors render as a red overlay with the exact message instead of a silent failure.
 
@@ -28,8 +31,8 @@ Features: light and dark via `prefers-color-scheme`, live WebSocket hot reload (
 |---|---|---|
 | Email | Gmail, Mail app | Gmail-native HTML; inline-styled rich text |
 | Messaging | WhatsApp, Slack, Telegram, Discord | each app's own typed markup |
-| Messaging | Teams | rich text |
-| Messaging | Signal, iMessage, Messenger | plain text (their formatting is menu-only) |
+| Messaging | Teams, iMessage | rich text |
+| Messaging | Signal, Messenger | plain text (their formatting is menu-only) |
 | Social | Reddit | Reddit Markdown |
 | Social | X, LinkedIn, Facebook, Instagram, Threads, Bluesky, Mastodon, TikTok, YouTube | plain text |
 | Generic | Plain text, Markdown | no markup; clean GFM |

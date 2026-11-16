@@ -12,9 +12,11 @@ Gmail and Rich Text are unaffected by anything on this page.
 | `<strong>` / `<b>` | `*bold*` |
 | `<em>` / `<i>` | `_italic_` |
 | `<del>` | `~strike~` |
-| `<a href>` | `text (url)`, or just the url when the text is the url |
+| `<a href>` | `text (url)`, or just the url when the text is the url, ignoring `https://` and a trailing slash |
 | headings | `*bold line*` |
 | `<pre><code>` | fenced ``` block, flush against its neighbours |
+
+WhatsApp formats a marker only at a word boundary: `un*bold*ed` arrives with the asterisks showing (tested 2026-11-16). So a span that starts or ends inside a word is written plain, and spans at a word's edge keep their markers (`wordBound` in `scripts/client/dialects.js`).
 
 ## Code blocks: flush fences
 

@@ -14,7 +14,12 @@
 //                        thread (scripts/client/thread.js)
 //   tiers              - account tiers that change the limit, e.g. X Free and
 //                        Premium: { id: { label, max, thread } }; the first is the default
-//   openUrl(text, f)   - the compose URL, or absent when none exists
+//   openUrl(text, f)   - the compose URL, or absent when none exists. An app link
+//                        (slack://, msteams:) may only bring the app forward
+//   flatRich           - rich text with links as text and tables as stacked rows,
+//                        for an app that mangles both on paste (iMessage)
+//   webUrl(text, f)    - the web version, opened when the desktop app is not
+//                        installed, and by "Open in browser"
 //   key                - the copy shortcut, where one is kept from the old lanes
 //   openKey            - the open shortcut (select the destination, then Open)
 //   aliases            - other names for the destination: each is also a serve.ts
@@ -40,18 +45,30 @@ export const DESTINATIONS = [
   { id: "whatsapp", aliases: ["wa"], label: "WhatsApp", group: "Messaging", icon: "chat", payload: "text", dialect: "whatsapp", key: "m",
     // whatsapp:// prefill truncates or mangles long, multi-paragraph text, so
     // only short messages are prefilled; longer ones open the app to paste into.
-    openKey: "w", openUrl: (t) => (t.length <= WHATSAPP_PREFILL_MAX ? "whatsapp://send?text=" + enc(t) : "whatsapp://send") },
+    openKey: "w", openUrl: (t) => (t.length <= WHATSAPP_PREFILL_MAX ? "whatsapp://send?text=" + enc(t) : "whatsapp://send"),
+    webUrl: (t) => (t.length <= WHATSAPP_PREFILL_MAX ? "https://web.whatsapp.com/send?text=" + enc(t) : "https://web.whatsapp.com/") },
+  // Slack, Telegram, Discord and Teams have no prefill link: Open brings the app forward to paste into.
   { id: "slack", label: "Slack", group: "Messaging", icon: "chat", payload: "text", dialect: "slack",
-    counter: { kind: "graphemes", max: 40000, about: true } },
+    counter: { kind: "graphemes", max: 40000, about: true },
+    openUrl: () => "slack://open", webUrl: () => "https://app.slack.com/client" },
   { id: "telegram", aliases: ["tg"], label: "Telegram", group: "Messaging", icon: "chat", payload: "text", dialect: "telegram",
-    counter: { kind: "graphemes", max: 4096, about: true, note: "counted after formatting is applied" } },
+    counter: { kind: "graphemes", max: 4096, about: true, note: "counted after formatting is applied" },
+    openUrl: () => "tg://", webUrl: () => "https://web.telegram.org/" },
   { id: "discord", label: "Discord", group: "Messaging", icon: "chat", payload: "text", dialect: "discord",
-    counter: { kind: "graphemes", max: 2000, note: "4,000 with Nitro" } },
-  { id: "teams", label: "Teams", group: "Messaging", icon: "chat", payload: "rich" },
+    counter: { kind: "graphemes", max: 2000, note: "4,000 with Nitro" },
+    openUrl: () => "discord://", webUrl: () => "https://discord.com/app" },
+  { id: "teams", label: "Teams", group: "Messaging", icon: "chat", payload: "rich",
+    openUrl: () => "msteams:", webUrl: () => "https://teams.microsoft.com/" },
   { id: "signal", label: "Signal", group: "Messaging", icon: "chat", payload: "text", dialect: "plain" },
-  { id: "imessage", aliases: ["sms"], label: "iMessage", group: "Messaging", icon: "chat", payload: "text", dialect: "plain" },
+  // Messages keeps pasted bold, italic, underline and strikethrough (macOS 15+,
+  // tested on 27.2), so it takes rich text, flattened (flatRich: links as text,
+  // tables as stacked rows - shell.html flatten()). Open brings Messages forward
+  // to paste into; with no app for sms: (most Windows and Linux machines) it says so.
+  { id: "imessage", aliases: ["sms"], label: "iMessage", group: "Messaging", icon: "chat", payload: "rich",
+    flatRich: true, openUrl: () => "sms:" },
+  // Messenger has no link that prefills, so Open is the web version.
   { id: "messenger", label: "Messenger", group: "Messaging", icon: "chat", payload: "text", dialect: "plain",
-    counter: { kind: "graphemes", max: 2000, about: true } },
+    counter: { kind: "graphemes", max: 2000, about: true }, openUrl: () => "https://www.messenger.com/" },
 
   { id: "x", aliases: ["twitter", "tweet"], label: "X", group: "Social", icon: "post", payload: "text", dialect: "plain",
     counter: { kind: "x" },   // max comes from the active tier

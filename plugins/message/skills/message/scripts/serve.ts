@@ -3,8 +3,9 @@ import { watch, statSync, readFileSync, existsSync, readdirSync } from "node:fs"
 import { basename, dirname, resolve } from "node:path";
 import type { ServerWebSocket } from "bun";
 import { build } from "./build";
-import { isAllowedOpenUrl } from "./open-url";
-import { openCommand, wslMountRoot } from "./open-command";
+import { isAllowedOpenUrl, isAllowedWebFallback } from "./open-url";
+import { openCommand, handlerProbe, appScheme, wslMountRoot, type HandlerState, type ProbeEnv } from "./open-command";
+import { DESTINATIONS } from "./client/destinations.js";
 import { remoteState, remoteNote, isLoopbackHost, isAllowedOrigin } from "./remote";
 import { parseServeArgs, listChannels, USAGE, type ServeArgs } from "./cli-args";
 
@@ -43,15 +44,54 @@ function wslDrives(): string[] {
 // Hand a URL to the OS default handler. Returns false when nothing could be
 // launched, so /open can answer with an error and the page falls back to
 // window.open instead of the request throwing.
-function openBrowser(url: string): boolean {
+// What the open and probe commands need to know about this machine. None of
+// it changes while the server runs, so it is read once, on first use.
+let env: ProbeEnv | null = null;
+function openEnv(): ProbeEnv {
+  if (env) return env;
   const wsl = isWSL();
-  const cmd = openCommand(url, {
+  env = {
     platform: process.platform,
     isWSL: wsl,
-    which: (name) => Bun.which(name),
-    exists: (p) => existsSync(p),
+    which: (name: string) => Bun.which(name),
+    exists: (p: string) => existsSync(p),
     drives: wsl ? wslDrives() : [],
-  });
+    hasDisplay: !!(process.env.DISPLAY || process.env.WAYLAND_DISPLAY),
+  };
+  return env;
+}
+
+// Ask the OS whether an app handles this link (scripts/open-command.ts), once
+// per scheme: an answer holds for the server's life, which ends after 30 idle
+// minutes. No probe, a spawn error or a slow answer all read as "unknown".
+const PROBE_TIMEOUT_MS = 2500;
+const handlerCache = new Map<string, Promise<HandlerState>>();
+function handlerState(url: string): Promise<HandlerState> {
+  const scheme = appScheme(url);
+  if (!scheme) return Promise.resolve("unknown");
+  let state = handlerCache.get(scheme);
+  if (!state) handlerCache.set(scheme, (state = probeHandler(url)));
+  return state;
+}
+
+async function probeHandler(url: string): Promise<HandlerState> {
+  const probe = handlerProbe(url, openEnv());
+  if (!probe) return "unknown";
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const proc = Bun.spawn(probe.argv, { stdout: "pipe", stderr: "ignore" });
+    timer = setTimeout(() => proc.kill(), PROBE_TIMEOUT_MS);
+    const [out, code] = await Promise.all([new Response(proc.stdout).text(), proc.exited]);
+    return proc.signalCode ? "unknown" : probe.read(code, out);
+  } catch {
+    return "unknown";
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function openBrowser(url: string): boolean {
+  const cmd = openCommand(url, openEnv());
   if (!cmd) return false;
   try {
     Bun.spawn(cmd, { stdout: "ignore", stderr: "ignore" });
@@ -116,7 +156,7 @@ async function main(): Promise<void> {
   const server = Bun.serve<WsData, Record<string, never>>({
     port: 0,
     hostname: "127.0.0.1",
-    fetch(req, srv) {
+    async fetch(req, srv) {
       lastRequest = Date.now();
       const url = new URL(req.url);
 
@@ -148,13 +188,19 @@ async function main(): Promise<void> {
         // opens the link itself (see openExternal in templates/shell.html).
         if (remoteOn) return new Response("Remote mode", { status: 403 });
         const target = url.searchParams.get("url") ?? "";
-        if (!isAllowedOpenUrl(target)) {
+        const web = url.searchParams.get("web");
+        if (!isAllowedOpenUrl(target) || (web !== null && !isAllowedWebFallback(web))) {
           return new Response("URL not allowed", { status: 400 });
         }
-        if (!openBrowser(target)) {
+        // An app link the OS says nothing handles opens the web version when
+        // there is one, and nothing otherwise. "unknown" still tries the app.
+        const handler = await handlerState(target);
+        const dest = handler === "absent" ? web : target;
+        if (!dest) return Response.json({ attempted: "none", handler });
+        if (!openBrowser(dest)) {
           return new Response("Could not launch a handler for this URL", { status: 502 });
         }
-        return new Response(null, { status: 204 });
+        return Response.json({ attempted: dest === target ? "app" : "web", handler });
       }
 
       if (url.pathname === "/" || url.pathname === "/index.html") {
@@ -190,6 +236,14 @@ async function main(): Promise<void> {
   });
 
   const url = `http://127.0.0.1:${server.port}/`;
+  // Answer the app checks before the first click, one at a time so Windows
+  // does not start several PowerShells at once. Remote mode never asks.
+  if (!remoteOn) {
+    (async () => {
+      const blank = { to: "", subject: "", cc: "", bcc: "" };
+      for (const d of DESTINATIONS) if (d.openUrl) await handlerState(d.openUrl("", blank));
+    })();
+  }
   if (remote) note = remoteNote(remote, server.port as number);
   // One write, so a reader of this output never sees the URL without its note.
   console.log(note ? `${url}\n${note}` : url);
