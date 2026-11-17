@@ -830,7 +830,7 @@
   // WebSocket hot reload with polling fallback
   function connect() {
     var ws;
-    try { ws = new WebSocket('ws://' + location.host + '/ws'); }
+    try { ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws'); }
     catch (e) { pollFallback(); return; }
     ws.onopen = function () { setStatus('live', 'Live'); };
     ws.onmessage = function (e) {

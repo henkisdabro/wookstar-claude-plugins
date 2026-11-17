@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+
+- `message` 4.3.0: previews can be published on your Tailscale tailnet. With `MESSAGE_TAILNET=1`, each preview server also runs a foreground `tailscale serve` and Claude hands over a `https://<node>.<tailnet>.ts.net:<port>/` link that opens on any tailnet device, phone included, with no port forwarding. Opt-in, because every device on the tailnet can then reach the draft; unset, a remote session where Tailscale runs gets a one-line hint, and `MESSAGE_TAILNET=0` skips Tailscale. The server accepts the node's tailnet name as a `Host` only once published.
+
 ### Fixed
 
 - `google-analytics` 3.0.1: the 3.0.0 startup notice failed with a `SessionStart` hook error instead of showing, because an apostrophe in its text broke the shell quoting.
