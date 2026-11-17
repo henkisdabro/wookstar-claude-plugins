@@ -59,6 +59,7 @@ Edit the `.fragment.md` file. The running server detects the change (`fs.watch` 
 
 - `MESSAGE_NO_OPEN=1` - skip auto-opening the browser (useful in headless contexts)
 - `MESSAGE_REMOTE=1` (or `serve.ts --remote`) - remote mode, below. `MESSAGE_REMOTE=0` silences the remote guess.
+- `MESSAGE_TAILNET=1` - also publish the preview on the tailnet with a foreground `tailscale serve` (`https://<node>.<tailnet>.ts.net:<port>/`, tailnet devices only, gone when the server stops); `MESSAGE_TAILNET=0` skips Tailscale; unset, a remote session only gets a hint (see **Remote sessions** in SKILL.md)
 
 ## Remote sessions
 
@@ -69,7 +70,9 @@ The server binds `127.0.0.1` on the machine it runs on, so a browser on another 
 
 The note is also the `remote` field of `/check-modified`; the hook writes it to `.claude/.message-preview-note` and removes that file for a local session. The forwarding command binds loopback on both ends and leaves the SSH host as a placeholder, because `SSH_CONNECTION` holds addresses, not the alias or jump host the user connects with. The port is random per server, so the command is per draft.
 
-**Requests.** The server refuses any request whose `Host` is not `127.0.0.1`, `localhost` or `[::1]` (any port, so a forwarded port that differs still works), and `/open` and `/ws` refuse an `Origin` that is not loopback.
+**Tailnet.** With `MESSAGE_TAILNET=1` and Tailscale running, the server also publishes itself with a foreground `tailscale serve` on the same port, once the local URL is out, and adds a `tailnet: https://<node>.<tailnet>.ts.net:<port>/` line to the note (`tailnet: pending` until Tailscale answers; the hook waits up to 5 s for it). The serve ends with the server. Unset, a remote session where Tailscale runs gets a `tailnet: available` hint instead; `MESSAGE_TAILNET=0` skips Tailscale entirely. A page viewed over the tailnet opens compose links itself, as in remote mode. Logic: `scripts/tailnet.ts`.
+
+**Requests.** The server refuses any request whose `Host` is not `127.0.0.1`, `localhost` or `[::1]` (any port, so a forwarded port that differs still works) or, once published, this node's tailnet name, and `/open` and `/ws` refuse any other `Origin`.
 
 ## Platform support
 

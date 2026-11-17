@@ -109,6 +109,8 @@ ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:PORT:127.0.0.1:PORT <ssh-host>
 
 When the session looks remote (SSH variables, or Linux with no display) the server prints that command with its port and Claude passes it on; VS Code, Cursor and similar remote editors forward the port themselves. Set `MESSAGE_REMOTE=1` on a machine you only ever reach remotely: the server then skips the browser launch there, and Open links open in the browser showing the preview. `MESSAGE_REMOTE=0` silences the note.
 
+With [Tailscale](https://tailscale.com), set `MESSAGE_TAILNET=1` before starting Claude Code and each preview is also published on your tailnet at `https://<node>.<tailnet>.ts.net:<port>/`, which opens on any of your tailnet devices, phone included, until the preview server stops - no port forwarding. It is opt-in because every device on the tailnet can then reach the draft. Unset, a remote session where Tailscale runs gets a one-line hint; `MESSAGE_TAILNET=0` skips Tailscale entirely.
+
 ## Preview UI
 
 One destination picker drives one **Copy** and one **Open ↗** button; the preview shows exactly what Copy will paste. To, CC, BCC and Subject show for the Email group only. Keyboard shortcuts:

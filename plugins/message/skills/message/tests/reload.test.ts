@@ -38,7 +38,7 @@ async function startServer(): Promise<Server> {
   await writeFile(path, FRAGMENT, "utf-8");
 
   const proc = Bun.spawn(["bun", "run", SERVE, path], {
-    env: { ...process.env, MESSAGE_NO_OPEN: "1" },
+    env: { ...process.env, MESSAGE_NO_OPEN: "1", MESSAGE_TAILNET: "0" },
     stdout: "pipe",
     stderr: "ignore",
   });

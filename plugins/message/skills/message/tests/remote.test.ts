@@ -2,7 +2,8 @@ import { test, expect, describe } from "bun:test";
 import { writeFile, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { remoteState, remoteNote, isLoopbackHost, isAllowedOrigin } from "../scripts/remote";
+import { dirname } from "node:path";
+import { remoteState, remoteNote, isLoopbackHost, isAllowedHost, isAllowedOrigin, tailnetMode, tailnetNote } from "../scripts/remote";
 import { parseServeArgs } from "../scripts/cli-args";
 
 const SERVE = join(import.meta.dir, "..", "scripts", "serve.ts");
@@ -68,6 +69,37 @@ describe("loopback checks", () => {
   });
 });
 
+describe("tailnet", () => {
+  const NODE = "box.tail1234.ts.net";
+
+  test("MESSAGE_TAILNET: 1 publishes, 0 is off, unset only hints", () => {
+    expect(tailnetMode({ MESSAGE_TAILNET: "1" })).toBe("on");
+    expect(tailnetMode({ MESSAGE_TAILNET: "0" })).toBe("off");
+    expect(tailnetMode({})).toBe("hint");
+  });
+
+  test("the node's tailnet name is accepted as Host and Origin only once published", () => {
+    expect(isAllowedHost(`${NODE}:5000`)).toBe(false);
+    expect(isAllowedHost(`${NODE}:5000`, NODE)).toBe(true);
+    expect(isAllowedHost(`BOX.tail1234.ts.net`, NODE)).toBe(true);
+    expect(isAllowedHost(`other.tail1234.ts.net:5000`, NODE)).toBe(false);
+    expect(isAllowedHost(`${NODE}.evil.example`, NODE)).toBe(false);
+    expect(isAllowedHost("127.0.0.1:5000", NODE)).toBe(true);
+    expect(isAllowedOrigin(`https://${NODE}:5000`)).toBe(false);
+    expect(isAllowedOrigin(`https://${NODE}:5000`, NODE)).toBe(true);
+    expect(isAllowedOrigin("https://evil.example", NODE)).toBe(false);
+  });
+
+  test("notes", () => {
+    expect(tailnetNote({ phase: "pending" }, 5000)).toBe("tailnet: pending");
+    expect(tailnetNote({ phase: "ready", url: `https://${NODE}:5000/` }, 5000)).toStartWith(`tailnet: https://${NODE}:5000/\n`);
+    expect(tailnetNote({ phase: "failed", reason: "no" }, 5000)).toBe("tailnet: failed - no");
+    const hint = tailnetNote({ phase: "available", name: NODE }, 5000);
+    expect(hint).toContain("MESSAGE_TAILNET=1");
+    expect(hint).toContain(`https://${NODE}:5000/`);
+  });
+});
+
 test("--remote parses, and is off by default", () => {
   expect(parseServeArgs(["d.fragment.md"]).remote).toBe(false);
   expect(parseServeArgs(["d.fragment.md", "--remote"]).remote).toBe(true);
@@ -82,8 +114,8 @@ async function startServer(env: Record<string, string>, extraArgs: string[] = []
   // A clean slate: no inherited SSH variables, and a display on Linux so the
   // test machine itself (CI is headless) does not look remote.
   const base: Record<string, string> = { ...(process.env as Record<string, string>), DISPLAY: ":0" };
-  for (const k of ["SSH_CONNECTION", "SSH_TTY", "SSH_CLIENT", "MESSAGE_REMOTE"]) delete base[k];
-  const proc = Bun.spawn(["bun", "run", SERVE, path, "--no-open", ...extraArgs], {
+  for (const k of ["SSH_CONNECTION", "SSH_TTY", "SSH_CLIENT", "MESSAGE_REMOTE", "MESSAGE_TAILNET"]) delete base[k];
+  const proc = Bun.spawn([process.execPath, "run", SERVE, path, "--no-open", ...extraArgs], {
     env: { ...base, ...env }, stdout: "pipe", stderr: "ignore",
   });
   const reader = proc.stdout.getReader();
@@ -136,6 +168,21 @@ describe("serve.ts", () => {
     const s = await startServer({}, ["--remote"]);
     try {
       expect(s.out).toContain("remote-preview: on");
+    } finally { await s.stop(); }
+  }, 15000);
+
+  test("MESSAGE_TAILNET=1 without Tailscale: the local URL is unchanged and the note says why", async () => {
+    // A PATH holding only bun, so no tailscale CLI is found.
+    const s = await startServer({ MESSAGE_TAILNET: "1", PATH: dirname(process.execPath) });
+    try {
+      expect(s.out).toContain("tailnet: pending");
+      let remote = "";
+      for (let i = 0; i < 50 && !remote.includes("failed"); i++) {
+        remote = ((await (await fetch(s.url + "check-modified")).json()) as { remote: string }).remote;
+        await Bun.sleep(100);
+      }
+      expect(remote).toBe("tailnet: failed - the tailscale CLI is not installed here");
+      expect(await (await fetch(s.url)).text()).not.toContain("window.__MESSAGE_REMOTE=1");
     } finally { await s.stop(); }
   }, 15000);
 
