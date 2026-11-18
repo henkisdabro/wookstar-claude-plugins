@@ -7,6 +7,7 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 ### Added
 
 - `message` 4.3.0: previews can be published on your Tailscale tailnet. With `MESSAGE_TAILNET=1`, each preview server also runs a foreground `tailscale serve` and Claude hands over a `https://<node>.<tailnet>.ts.net:<port>/` link that opens on any tailnet device, phone included, with no port forwarding. Opt-in, because every device on the tailnet can then reach the draft; unset, a remote session where Tailscale runs gets a one-line hint, and `MESSAGE_TAILNET=0` skips Tailscale. The server accepts the node's tailnet name as a `Host` only once published.
+- `prune-tests` 1.0.0: a user-invoked skill that removes tests guarding no behaviour - tests of removed code, skipped and never-run tests, tests that cannot fail, tautological and implementation-coupled assertions, and copies of another test - and rewrites the ones that cover real behaviour. It runs the suite before and after, breaks the code once to settle close calls, and reports a ledger. Built on caldoai's `/prune-tests`.
 
 ### Fixed
 

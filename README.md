@@ -4,8 +4,10 @@
 [![Licence: MIT](https://img.shields.io/github/license/henkisdabro/wookstar-claude-plugins?color=green)](./LICENSE)
 [![Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-d97757)](https://code.claude.com/docs)
 
-A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **31 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
+A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **32 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
 
+> 🧪 **New:** `prune-tests` finds and removes tests that guard no behaviour - dead, tautological, implementation-coupled or duplicated - in one cheap pass. Type `/prune-tests:prune-tests` to run it.
+>
 > ✨ **New in 8.0.0:** the `google-tagmanager` and `google-analytics` skills are rebuilt as guardrails - a glossary of the terms models blur, the mistakes they typically make, and what changed recently (GTM's optimised container and 2026 install snippet, Data Manager in Analytics) - and both can now drive a command-line tool as well as their MCP server. Every other skill was fact-checked against vendor docs and tightened. See the [CHANGELOG](./CHANGELOG.md).
 >
 > 🔌 **8.1.0:** `google-analytics` and `google-tagmanager` no longer bundle an MCP server. They work with the `ga` and `gtm` command-line tools, or with Google's and Stape's own MCP servers, which you add from the vendor's guide. If you used the bundled servers, see [Upgrading](#upgrading).
@@ -22,7 +24,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 | Category | Plugins | What you get |
 |---|---:|---|
-| 🛠️ [Development](#development) | 6 | PRP planning and containerisation, git and GitHub Actions with releases, React/Next.js rules, Shopify themes, browser userscripts, Google Apps Script |
+| 🛠️ [Development](#development) | 7 | PRP planning and containerisation, git and GitHub Actions with releases, test-suite pruning, React/Next.js rules, Shopify themes, browser userscripts, Google Apps Script |
 | 📊 [Analytics](#analytics) | 3 | GTM and GA4 guardrails that work with a CLI or the vendor's MCP server, GA4 BigQuery querying, Google Ads automation |
 | 🤖 [AI](#ai) | 2 | Claude model ID upgrades, Perplexity search MCP server |
 | ⚡ [Productivity](#productivity) | 4 | Rich-text email drafts, Gmail/Drive/Calendar, n8n, Excalidraw |
@@ -45,6 +47,7 @@ A curated collection of [Claude Code](https://code.claude.com/docs) plugins, pub
 
 - **`developer`** - PRP planning (`prp-generator`, `/execute-prp`), `/containerize`, and the Fifteen-Factor App methodology.
 - **`git-github`** - Commits, workflows and a user-triggered `/release`, with a script that resolves the current version of every GitHub Action from the GitHub API.
+- **`prune-tests`** - `/prune-tests:prune-tests` removes tests that guard no behaviour - dead and skipped tests, tautologies, implementation-coupled assertions and copies - in one cheap pass, with a green suite before and after and a ledger of every deletion.
 - **`react-best-practices`** - Vercel Engineering's 70 React and Next.js performance rules, with local notes for React Compiler and Next.js 16 caching.
 - **`shopify-developer`** - Liquid, theme development (OS 2.0), Hydrogen (the 2026.10 framework-agnostic release, with a migration table from the earlier one), Functions and debugging. Live API lookup goes to Shopify's official `shopify-ai-toolkit`.
 - **`tampermonkey`** - Userscript development with 19 reference files - browser automation, page modification, web enhancement.
@@ -189,6 +192,7 @@ A few more things to ask once the matching plugin is installed:
 | `media-tools` | *"Find the three most-viewed YouTube videos on sGTM this year and transcribe the first."* |
 | `humanise` | *"Humanise this draft."* |
 | `model-id-upgrade` | *"A new Claude model is out - upgrade the model IDs in this repo."* |
+| `prune-tests` | `/prune-tests:prune-tests src/billing` |
 | `quarto-revealjs` | *"Turn these meeting notes into a slide deck."* |
 
 If a plugin needs an API key or URL, Claude Code asks for it when you enable the plugin - see [Credentials](#credentials).
@@ -197,7 +201,7 @@ If a plugin needs an API key or URL, Claude Code asks for it when you enable the
 
 ### Prerequisites
 
-Skill-only plugins such as `shopify-developer`, `tampermonkey`, `humanise`, `react-best-practices` and the Google scripting and analytics references need nothing installed. The rest call tools on your machine:
+Skill-only plugins such as `shopify-developer`, `tampermonkey`, `humanise`, `prune-tests`, `react-best-practices` and the Google scripting and analytics references need nothing installed. The rest call tools on your machine:
 
 | Plugin | Needs |
 |---|---|
@@ -418,7 +422,7 @@ For contributor guidelines (manifest rules, where servers are declared, version 
 
 Per-plugin READMEs:
 
-- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [git-github](./plugins/git-github/README.md) · [model-id-upgrade](./plugins/model-id-upgrade/README.md) · [typst](./plugins/typst/README.md) · [quarto-revealjs](./plugins/quarto-revealjs/README.md) · [media-tools](./plugins/media-tools/README.md)
+- **Toolkits** - [developer](./plugins/developer/README.md) · [documents](./plugins/documents/README.md) · [shopify-developer](./plugins/shopify-developer/README.md) · [humanise](./plugins/humanise/README.md) · [message](./plugins/message/README.md) · [react-best-practices](./plugins/react-best-practices/README.md) · [ffmpeg](./plugins/ffmpeg/README.md) · [google-tagmanager](./plugins/google-tagmanager/README.md) · [google-analytics](./plugins/google-analytics/README.md) · [google-ads-scripts](./plugins/google-ads-scripts/README.md) · [google-apps-script](./plugins/google-apps-script/README.md) · [tampermonkey](./plugins/tampermonkey/README.md) · [git-github](./plugins/git-github/README.md) · [model-id-upgrade](./plugins/model-id-upgrade/README.md) · [prune-tests](./plugins/prune-tests/README.md) · [typst](./plugins/typst/README.md) · [quarto-revealjs](./plugins/quarto-revealjs/README.md) · [media-tools](./plugins/media-tools/README.md)
 - **MCP servers** - [mcp-excalidraw](./plugins/mcp-excalidraw/README.md) · [mcp-google-workspace](./plugins/mcp-google-workspace/README.md) · [mcp-mikrotik](./plugins/mcp-mikrotik/README.md) · [mcp-n8n](./plugins/mcp-n8n/README.md) · [mcp-open-meteo](./plugins/mcp-open-meteo/README.md) · [mcp-perplexity](./plugins/mcp-perplexity/README.md) · [mcp-alphavantage](./plugins/mcp-alphavantage/README.md) · [mcp-coingecko](./plugins/mcp-coingecko/README.md) · [mcp-currency-conversion](./plugins/mcp-currency-conversion/README.md)
 - **LSP servers** - [lsp-bash](./plugins/lsp-bash/README.md) · [lsp-css](./plugins/lsp-css/README.md) · [lsp-html](./plugins/lsp-html/README.md) · [lsp-json](./plugins/lsp-json/README.md) · [lsp-yaml](./plugins/lsp-yaml/README.md)
 
