@@ -4,6 +4,10 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+
+- `prune-tests` 1.0.0: a user-invoked skill that removes tests guarding no behaviour - tests of removed code, skipped and never-run tests, tests that cannot fail, tautological and implementation-coupled assertions, and copies of another test - and rewrites the ones that cover real behaviour. It runs the suite before and after, breaks the code once to settle close calls, and reports a ledger. Built on caldoai's `/prune-tests`.
+
 ### Fixed
 
 - `google-analytics` 3.0.1: the 3.0.0 startup notice failed with a `SessionStart` hook error instead of showing, because an apostrophe in its text broke the shell quoting.

@@ -1,0 +1,10 @@
+{
+  "name": "prune-tests",
+  "description": "Prune tests that guard no behaviour - dead, tautological, implementation-coupled or duplicated - in one cheap read-and-judge pass, with a green suite before and after and a ledger of every deletion.",
+  "author": {
+    "name": "henkisdabro",
+    "email": "whom-wealthy.2z@icloud.com"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}
