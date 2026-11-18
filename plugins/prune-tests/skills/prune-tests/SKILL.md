@@ -11,7 +11,7 @@ effort: high
 
 A test earns its place when it is **anchored**: it depends on intended behaviour, so it changes only when that behaviour changes and goes **red** only when it regresses. Prune every test that is not anchored.
 
-This is the 80/20 pass: the test, the code under it and its callers, plus a break-it check on each close call.
+This is the 80/20 pass: the test, the code under it and its callers, plus a break on each close call and on every deletion.
 
 ## Steps
 
@@ -23,7 +23,7 @@ This is the 80/20 pass: the test, the code under it and its callers, plus a brea
    - a copy whose partner runs other inputs (another call, method, entry, type or value, or a field left out), or whose partner you doubt;
    - a test you would keep whose assertion looks weaker than its name.
 
-   Break the production line its call reaches, so that only its case changes, the way its assertion would notice - an edge moved (`>` to `>=`), its one member dropped from a set or range, a failure swallowed into an empty result, a configured value hard-coded, the bug its ticket names. A break runs real code: a broken guard in front of a client the test does not stub reaches live services on whatever credentials the code finds, so break it only where the client is stubbed. Reading that two inputs share a path does not settle a close call; the break does, and a script that applies, runs and reverses each break makes it cheap. Check the break applied and reaches the test's own input (a crash that reddens unrelated tests is no break), run the scoped suite and any outside partner, then reverse just the break with an edit - `git checkout` would drop this prune's edits.
+   Break the production line its call reaches, so that only its case changes, the way its assertion would notice - an edge moved (`>` to `>=`), its one member dropped from a set or range, a failure swallowed into an empty result, a configured value hard-coded, the bug its ticket names. A break runs real code: a broken guard in front of a client the test does not stub reaches live services on whatever credentials the code finds, so break it only where the client is stubbed. Script the breaks: apply one, check the diff reaches the test's own input, run the scoped suite and any outside partner, then reverse just that edit - `git checkout` would drop this prune's edits. A crash that reddens unrelated tests is no break.
    - No such break turns it red: it guards nothing. Delete it, or rewrite it if the behaviour it names is real and nothing else guards it.
    - Red with a partner: delete it.
    - Red alone: it is the sole guard, so keep it - unless no caller can tell the broken result from the right one (a break that only slows it, such as a dropped index, they can). A branch no production caller reaches is older dead code (step 5).
@@ -31,10 +31,10 @@ This is the 80/20 pass: the test, the code under it and its callers, plus a brea
    - Before deleting or rewriting a test, check each of its assertions against the tests that stay: move any that no survivor makes into one with the same setup, or trim the test down to it. Leave the assertions inside a test you keep.
    - Rewrite each _rewrite_ test against the behaviour at its seam, with an exact, independent expected value - a literal, a worked example, the spec - that goes red on every break the old test caught.
    - Delete this prune's **orphans**: production code whose only callers were the removed tests (test-only resets, getters, exports), and the fixtures and helpers it left unused; repoint comments and docs that name a deleted test. Older dead code is listed, not deleted, and so are the tests whose only subject it is.
-6. **Verify.** Run the scoped suite again: green, with the count of test ids the runner executes for the scope (parametrised cases expanded) down by exactly what the ledger removes. If the prune touched code outside the test files in scope, also run everything that can reach it, the type-check included.
+6. **Verify.** Run the scoped suite again: green, with the count of test ids the runner executes for the scope (parametrised cases expanded) down by exactly what the ledger removes. Then self-check every deletion with the step-4 script: against the pruned tree, apply the break the deleted test's own assertion catches, one per deleted case; when the pruned suite stays green, restore that test. If the prune touched code outside the test files in scope, also run everything that can reach it, the type-check included.
 7. **Report** in these sections, writing "none" in an empty one:
    - **Ledger** - one line per pruned or rewritten test, with its category and a few words of evidence (group parametrised cases and long ledgers), then the counts, taken from the ledger: before, after, deleted and rewritten.
-   - **Break-its** - each check: the break, which tests went red, and the verdict.
+   - **Break-its** - each step-4 check (the break, which tests went red, the verdict), then the step-6 self-checks as a count, naming every test they restored.
    - **Listed** - every item the rules below say to list, grouped as decisions left in place, follow-ups, older dead code, and weaker partners outside the scope.
 
 ## Categories
@@ -75,4 +75,5 @@ A check on a fixture, list, sample or helper that other tests rely on is not Not
 
 ## Done
 
+- Every deleted test's own break turns a surviving test red.
 - Apart from listed follow-ups, no test left asserts absent code, a mock's own return value or a value derived from the code under test, and no two tests guard the same behaviour at the same seam. No orphans remain.
