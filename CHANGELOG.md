@@ -11,6 +11,7 @@ All notable changes to this marketplace. Format: [Keep a Changelog](https://keep
 
 ### Fixed
 
+- `prune-tests` 1.0.1: fewer wrong deletions. The break-it check breaks the line the doubted test asserts on, the way that test would notice, and keeps the test when it goes red alone. A copy's partner must catch every regression the copy catches and survive the prune itself, and an assertion only one test makes moves to a surviving test before that test goes. The two seam rules that contradicted are now one, and the report's Close calls section is now Break-its, one line per check.
 - `google-analytics` 3.0.1: the 3.0.0 startup notice failed with a `SessionStart` hook error instead of showing, because an apostrophe in its text broke the shell quoting.
 
 ## [8.1.0] - 2026-11-13
