@@ -11,23 +11,23 @@ A test stays when it is **anchored**: it changes only when intended behaviour ch
 | Category | Examples |
 |---|---|
 | **The past** | Asserts a removed feature is gone or a module left its old path; tests a spent one-off migration or backfill; a refactor's equivalence suite once the refactor has shipped; skipped, commented-out or `.only`-shadowed tests; test files the runner never picks up |
-| **Nothing** | Tests the browser, framework or type system; mocks the unit under test and asserts the mock; only `toBeDefined` or `not.toThrow` on code that cannot fail that way |
+| **Nothing** | Tests the browser, framework or type system; mocks the unit under test and asserts the mock; only `toBeDefined` or `not.toThrow` on code that cannot fail that way; bounds too loose for any plausible bug to cross |
 | **The implementation** | Tautological expected values; private state, call order or internal mocks; large snapshots updated wholesale |
-| **A copy** | Another test guards the same behaviour - the one closest to what a caller sees is kept |
+| **A copy** | Another test guards the same behaviour - the one closest to what a caller sees is kept, once that partner is shown to catch the regression |
 
-It also deletes production code, fixtures and helpers that existed only for the removed tests.
+It also deletes production code, fixtures and helpers that the removed tests leave unused. Dead code that was already there is reported, not deleted.
 
 ## How a run goes
 
 1. **Scope** - the path you give, or the whole suite. Over about 30 test files with no path, it proposes a scope and asks first.
 2. **Baseline** - runs the suite. A suite that is already failing stops the run: a pruned test and a broken one would look the same.
 3. **Classify** every test in scope as keep, rewrite or delete. Lint rules the repo already has for skipped, focused or assertion-less tests run first, so judgement goes only where a reader is needed.
-4. **Break-it check** for close calls only: break the behaviour once at its boundary (`>` to `>=`, off by one), see whether the test fails, revert.
+4. **Break-it check** for close calls only - a suspected sole guard, or a copy's doubtful partner: break the behaviour once at its boundary (`>` to `>=`, off by one), see whether the test fails, revert.
 5. **Prune** and rewrite.
 6. **Verify** - suite green, and the test count down by exactly the deletions.
 7. **Report** a ledger of every deletion and rewrite, with the close calls listed separately and the lint rules that would stop each category coming back.
 
-Changes are left uncommitted so you review the diff before keeping it.
+Changes are left uncommitted so you review the diff before keeping it, unless you ask for a commit.
 
 ## Install
 

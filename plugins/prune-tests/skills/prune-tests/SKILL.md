@@ -20,12 +20,12 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 1. **Scope.** Use the path given. With none, take the whole suite; when it has more than about 30 test files, propose a scope (one package or directory) and confirm it before reading. Done when the list of test files is fixed.
 2. **Baseline.** Run the suite for that scope and record the pass count. If it is already red, stop and report: pruning against a red suite cannot tell a broken test from a pruned one.
 3. **Classify.** Where the repo's linter has rules for skipped, focused or assertion-less tests (`no-disabled-tests`, `no-focused-tests` and `expect-expect` in the jest and vitest ESLint plugins; ruff's `PT` rules), run them first: their hits are settled, so judgement goes on the rest. Read every test in scope and give it one verdict from the categories below: _keep_, _rewrite_ or _delete_. Done when every test has a verdict and a category.
-4. **Break-it check**, only for a test you would delete but suspect is the sole guard of something callers rely on. Break that behaviour once - at its boundary where it has one (`>` to `>=`, off by one), since that is the break a weak test misses - then run the test and revert. Red: it is anchored - keep or rewrite it. Green: delete it.
+4. **Break-it check**, only for close calls: a test you would delete but suspect is the sole guard of something callers rely on, or a copy's partner you are not sure would catch the regression. Break that behaviour once - at its boundary where it has one (`>` to `>=`, off by one), since that is the break a weak test misses - then run the test and revert. Red: it guards the behaviour. Green: it does not, so delete the test, or keep the copy whose partner failed the check.
 5. **Prune.**
-   - Delete each _delete_ test, and empty `describe` blocks and files it leaves behind.
+   - Delete each _delete_ test, and the empty `describe` blocks, section comments and files it leaves behind.
    - Rewrite each _rewrite_ test against the behaviour at its seam, with an independent expected value: a literal, a worked example, the spec.
-   - Delete production code that only existed for the removed tests (test-only resets, getters, exports), and fixtures and helpers nothing uses any more.
-6. **Verify.** Run the scoped suite again: green, with the count down by exactly the tests you deleted. Leave the changes uncommitted for review.
+   - Delete production code that only existed for the removed tests (test-only resets, getters, exports), and fixtures and helpers this prune left unused. Dead code that was already there goes in the report, not the bin.
+6. **Verify.** Run the scoped suite again: green, with the count down by exactly the tests you deleted. Leave the changes uncommitted for review, unless the user asked for a commit.
 7. **Report** a ledger: one line per pruned or rewritten test (cases of one parametrised test share a line per category, listing the case ids), with its category and a few words of evidence, then the before and after counts. List tests you kept after a break-it check separately, since those are the close calls. Close with the lint rules that would stop each category you found from coming back.
 
 ## Categories
@@ -34,13 +34,14 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 
 - Asserts a removed feature is gone, a file is absent, or a module left its old path.
 - Tests a spent one-off: a data migration or backfill already applied, a flag that is permanently off. A schema migration replayed on every fresh database still runs; its tests stay.
-- Skipped, commented-out or `.only`-shadowed tests, and test files the runner never picks up (outside its glob, missing the suffix). Dead weight that reads like coverage. Delete, or rewrite if the behaviour it names still exists and nothing else guards it.
+- Skipped, commented-out or `.only`-shadowed tests, and test files the runner never picks up (outside its glob, missing the suffix). Dead weight that reads like coverage. Delete, or rewrite if the behaviour it names still exists and nothing else guards it. A skip with a stated reason (a comment, an issue link, a platform guard, a skip-list entry) is a decision, not dead weight: leave it and list it.
 
 **Nothing** - no change to the code can make it fail.
 
 - Tests the browser, framework or language: a `<button>` renders, a click fires, a type the compiler already guarantees.
 - Mocks the unit under test, then asserts what the mock returns.
 - Asserts only existence or no-throw (`toBeDefined`, truthy, `not.toThrow`) on code that cannot return nothing or throw.
+- Bounds so loose no plausible bug crosses them (`x >= 0`, `x < 1000`), or an expected set that admits every outcome (`exit in (0, 1)`).
 
 **The implementation** - it changes whenever the code does, even when behaviour did not.
 
@@ -50,8 +51,10 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 
 **A copy** - another test already guards the same behaviour.
 
+- The partner counts only if it would go red on this regression: it asserts the behaviour succeeding (read the snapshot lines that cover it - a snapshot can record a crash), with inputs that tell the cases apart (a fixture equal to the default cannot). When unsure, run the break-it check on the partner.
 - Keep the one at the higher seam, closest to what a caller or user sees; at the same seam, keep the one with an independent expected value (a literal, a worked example), then the easier one to read. Delete the rest.
 - A partner outside the scope still counts as a guard, so the in-scope copy can go. Where the outside one is the weaker copy, list it in the report rather than widening the scope.
+- A wiring test at a thin outer layer (a command line, a route) and rule tests at the service beneath it guard different things. Neither is a copy; keep both.
 - Table-driven cases that only repeat the same path with different numbers count as one; keep the boundaries and one ordinary case.
 
 When a rewrite needs more than the test itself - a seam that does not exist, a new fixture - keep the test as it is and list it in the report as a follow-up. A missing seam is a design problem for `/codebase-design`, not a pruning one.
@@ -62,7 +65,7 @@ When a rewrite needs more than the test itself - a seam that does not exist, a n
 - The scoped suite is green, and the count dropped by exactly the deletions.
 - No test left asserts absent code, a mock's own return value, or a value derived from the code under test, other than the follow-ups the report lists.
 - No two tests left guard the same behaviour at the same seam.
-- No production code, fixture or helper exists only for tests.
+- Nothing this prune left unused remains: production code, fixtures, helpers.
 
 ## Example
 
