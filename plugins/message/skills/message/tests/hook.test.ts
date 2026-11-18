@@ -9,7 +9,8 @@ import { join, resolve } from "node:path";
 // the live server (without relaunching) on a second invocation.
 //
 // MESSAGE_NO_OPEN=1 is passed through the hook's inherited env so serve.ts
-// never opens a real browser during the test. CLAUDE_PLUGIN_ROOT is left
+// never opens a real browser during the test, and MESSAGE_TAILNET=0 keeps
+// Tailscale out of it. CLAUDE_PLUGIN_ROOT is left
 // unset - the hook's import.meta.dirname fallback must resolve it.
 
 const HOOK = resolve(import.meta.dir, "..", "..", "..", "hooks", "auto-serve-fragment.ts");
@@ -28,7 +29,7 @@ Test
 async function runHook(projectDir: string, fragmentPath: string, remote = "0"): Promise<number> {
   const input = JSON.stringify({ tool_input: { file_path: fragmentPath } });
   const proc = Bun.spawn(["bun", "run", HOOK], {
-    env: { ...process.env, CLAUDE_PROJECT_DIR: projectDir, MESSAGE_NO_OPEN: "1", MESSAGE_REMOTE: remote },
+    env: { ...process.env, CLAUDE_PROJECT_DIR: projectDir, MESSAGE_NO_OPEN: "1", MESSAGE_REMOTE: remote, MESSAGE_TAILNET: "0" },
     stdin: Buffer.from(input),
     stdout: "ignore",
     stderr: "ignore",

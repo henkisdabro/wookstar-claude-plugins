@@ -27,7 +27,7 @@ Fragments are Markdown; the build converts them to each destination's format. Th
    Done when you hold a URL. If the URL file is empty or missing, the hook started no server - run the **Fallback**.
 4. **Reply** with only the preview URL and a one-line summary:
    `Draft ready: email to Sam re invoice follow-up → http://127.0.0.1:XXXX`
-   No output after the URL means a local session: add nothing. A `remote-preview:` note means the server is on a machine the user may not be sitting at - see **Remote sessions**.
+   No output after the URL means a local session: add nothing. A `remote-preview:` note means the server is on a machine the user may not be sitting at, and a `tailnet:` line carries a tailnet link - see **Remote sessions**. When the note has a `tailnet: https://...` link, give that link instead of the local one.
 5. **Offer follow-ups.** Ask: "Would you like me to run the humanise skill on this draft to make it sound more natural?" After a client-facing draft, also ask whether the user wants any follow-up their project defines for sent messages.
 
 **One server per fragment, started by the hook.** Never run `serve.ts` or `open <url>` yourself while the hook is working - that launches a second server and a second tab.
@@ -38,7 +38,17 @@ Fragments are Markdown; the build converts them to each destination's format. Th
 
 ## Remote sessions
 
-The server always binds loopback on the machine the agent runs on. Act only when step 3 printed a `remote-preview:` note:
+The server always binds loopback on the machine the agent runs on. Act only when step 3 printed a `remote-preview:` or `tailnet:` note.
+
+**Tailnet** (Tailscale), the easy way to reach a remote preview:
+
+- **`tailnet: https://<node>.<tailnet>.ts.net:<port>/`** - the server is also published on the tailnet (`MESSAGE_TAILNET=1`). Give that link instead of the local URL and skip the SSH command; it opens on any of the user's tailnet devices, phone included, until the server stops.
+- **`tailnet: available`** - Tailscale runs here but publishing is off. Give the local URL as below and add one line: set `MESSAGE_TAILNET=1` in the shell profile on this machine and restart the agent to get a tailnet link next time.
+- **`tailnet: failed - <reason>`** - say why in one line and fall back to the steps below.
+
+Publishing is opt-in because it makes the draft reachable from every device on the tailnet, which on a shared or company tailnet is more than the user. It is a foreground `tailscale serve` that ends with the server, and starts only after the local URL is out, so the local preview never waits on it. `MESSAGE_TAILNET=0` skips Tailscale entirely; the hint only appears in a remote session. Logic: `scripts/tailnet.ts`.
+
+**SSH forwarding**, without Tailscale:
 
 - **`suspected`** (SSH variables, or Linux with no display): the guess can be wrong, and nothing was changed. Give the URL as usual and add one line: if it does not load, run the note's `ssh -N ... -L` command on your own computer, replacing `<ssh-host>` with the host you connect to, then open the same URL. Remote editors (VS Code, Cursor) forward the port themselves.
 - **`on`** (`MESSAGE_REMOTE=1` or `--remote`): no browser was opened, so never say one was. Give the URL and the same command.
@@ -59,7 +69,7 @@ Then serve with `run_in_background: true`, using the bun path the preflight prin
 bun run "${CLAUDE_PLUGIN_ROOT}/skills/message/scripts/serve.ts" /path/to/name.fragment.md
 ```
 
-The server prints the output HTML path, then the URL. Done when you have relayed that URL. Later edits hot-reload - one run serves the fragment for the whole session.
+The server prints the output HTML path, then the URL, then any remote note; with tailnet on, a `tailnet:` line follows a second or two later. Done when you have relayed the URL (the tailnet one when there is one). Later edits hot-reload - one run serves the fragment for the whole session.
 
 ## Choosing the destination
 

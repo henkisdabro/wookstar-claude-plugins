@@ -101,6 +101,19 @@ async function probeServer(url: string): Promise<string | null | false> {
   }
 }
 
+// With MESSAGE_TAILNET=1 (or a remote session's tailnet hint) the server's
+// note says "tailnet: pending" until Tailscale answers, usually within two
+// seconds. Wait that out, so the note the agent relays carries the tailnet
+// link. The browser is already open on the local URL, so nothing local waits.
+async function settledNote(url: string): Promise<string | null | false> {
+  let note = await probeServer(url);
+  for (let i = 0; i < 50 && typeof note === "string" && note.includes("tailnet: pending"); i++) {
+    await Bun.sleep(100);
+    note = await probeServer(url);
+  }
+  return note;
+}
+
 async function ensureDependencies(): Promise<boolean> {
   // Plugin ships without node_modules to keep the pack small. Install on first
   // use so the build pipeline can resolve `marked`.
@@ -188,7 +201,7 @@ async function main(): Promise<void> {
   if (!url) return;
 
   writeState(absPath, url);
-  const note = await probeServer(url);
+  const note = await settledNote(url);
   writeNote(note === false ? null : note);
 }
 

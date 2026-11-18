@@ -1,12 +1,13 @@
 #!/usr/bin/env bun
 import { watch, statSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
-import type { ServerWebSocket } from "bun";
+import type { ServerWebSocket, Subprocess } from "bun";
 import { build } from "./build";
 import { isAllowedOpenUrl, isAllowedWebFallback } from "./open-url";
 import { openCommand, handlerProbe, appScheme, wslMountRoot, type HandlerState, type ProbeEnv } from "./open-command";
 import { DESTINATIONS } from "./client/destinations.js";
-import { remoteState, remoteNote, isLoopbackHost, isAllowedOrigin } from "./remote";
+import { remoteState, remoteNote, isLoopbackHost, isAllowedHost, isAllowedOrigin, tailnetMode, tailnetNote, type TailnetState } from "./remote";
+import { startTailnet } from "./tailnet";
 import { parseServeArgs, listChannels, USAGE, type ServeArgs } from "./cli-args";
 
 function parseArgs(): ServeArgs {
@@ -151,7 +152,15 @@ async function main(): Promise<void> {
   // behaviour; a suspected remote session gets a note and nothing else.
   const remote = remoteState(process.env, { platform: process.platform, isWSL: isWSL(), flag: args.remote });
   const remoteOn = remote?.mode === "on";
-  let note: string | null = null;
+  // Tailnet (scripts/tailnet.ts): published with MESSAGE_TAILNET=1, otherwise
+  // only looked for, as a hint, when the session is remote.
+  const tsMode = tailnetMode(process.env);
+  let tailnet: TailnetState | null = null;
+  let tailnetHost: string | null = null;
+  let tailnetProc: Subprocess | null = null;
+  let port = 0;
+  const note = (): string | null =>
+    [remote && remoteNote(remote, port), tailnet && tailnetNote(tailnet, port)].filter(Boolean).join("\n") || null;
 
   const server = Bun.serve<WsData, Record<string, never>>({
     port: 0,
@@ -163,10 +172,14 @@ async function main(): Promise<void> {
       // Loopback only, by name as well as by socket: a page on another host
       // name that resolves here (DNS rebinding) must not read the draft, and
       // another site must not drive /open or the reload socket.
-      if (!isLoopbackHost(req.headers.get("host"))) {
+      const host = req.headers.get("host");
+      if (!isAllowedHost(host, tailnetHost)) {
         return new Response("Forbidden", { status: 403 });
       }
-      const sameSite = isAllowedOrigin(req.headers.get("origin"));
+      const sameSite = isAllowedOrigin(req.headers.get("origin"), tailnetHost);
+      // A page viewed over the tailnet is on another device, so it opens
+      // compose links itself, as in remote mode.
+      const remoteView = remoteOn || !isLoopbackHost(host);
 
       if (url.pathname === "/ws") {
         if (!sameSite) return new Response("Forbidden", { status: 403 });
@@ -175,7 +188,7 @@ async function main(): Promise<void> {
       }
 
       if (url.pathname === "/check-modified") {
-        return Response.json({ mtime: lastBuildAt / 1000, error: buildError, remote: note });
+        return Response.json({ mtime: lastBuildAt / 1000, error: buildError, remote: note() });
       }
 
       // Open a destination URL via the HOST's default handler (browser, mail
@@ -186,7 +199,7 @@ async function main(): Promise<void> {
         if (!sameSite) return new Response("Forbidden", { status: 403 });
         // Remote mode: this machine's handlers are not the user's. The page
         // opens the link itself (see openExternal in templates/shell.html).
-        if (remoteOn) return new Response("Remote mode", { status: 403 });
+        if (remoteView) return new Response("Remote mode", { status: 403 });
         const target = url.searchParams.get("url") ?? "";
         const web = url.searchParams.get("web");
         if (!isAllowedOpenUrl(target) || (web !== null && !isAllowedWebFallback(web))) {
@@ -210,7 +223,7 @@ async function main(): Promise<void> {
             headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
           });
         }
-        if (remoteOn) {
+        if (remoteView) {
           const html = readFileSync(initialOutput, "utf8").replace("<head>", "<head><script>window.__MESSAGE_REMOTE=1</script>");
           return new Response(html, {
             headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" },
@@ -235,7 +248,8 @@ async function main(): Promise<void> {
     },
   });
 
-  const url = `http://127.0.0.1:${server.port}/`;
+  port = server.port as number;
+  const url = `http://127.0.0.1:${port}/`;
   // Answer the app checks before the first click, one at a time so Windows
   // does not start several PowerShells at once. Remote mode never asks.
   if (!remoteOn) {
@@ -244,11 +258,31 @@ async function main(): Promise<void> {
       for (const d of DESTINATIONS) if (d.openUrl) await handlerState(d.openUrl("", blank));
     })();
   }
-  if (remote) note = remoteNote(remote, server.port as number);
+  const wantTailnet = tsMode === "on" || (tsMode === "hint" && remote !== null);
+  if (wantTailnet) tailnet = { phase: "pending" };
   // One write, so a reader of this output never sees the URL without its note.
-  console.log(note ? `${url}\n${note}` : url);
+  const first = note();
+  console.log(first ? `${url}\n${first}` : url);
 
   if (!noOpen && !remoteOn) openBrowser(url);
+
+  // After the local URL is out, so the local preview never waits on it.
+  if (wantTailnet) {
+    startTailnet(port, tsMode === "on", isWSL()).then((t) => {
+      if (!t) { tailnet = null; return; }
+      tailnet = t.state;
+      tailnetHost = t.host;
+      tailnetProc = t.proc;
+      console.log(tailnetNote(t.state, port));
+      // The mapping ends with the child; if it dies first, stop accepting the name.
+      t.proc?.exited.then(() => {
+        if (tailnetProc !== t.proc) return;
+        tailnetProc = null;
+        tailnetHost = null;
+        tailnet = { phase: "failed", reason: "tailscale serve stopped" };
+      });
+    });
+  }
 
   // Live-reload pipeline. Two triggers feed one debounced, mtime-deduped
   // rebuild:
@@ -326,6 +360,9 @@ async function main(): Promise<void> {
     clearInterval(pollTimer);
     watcher.close();
     for (const ws of sockets) ws.close();
+    const ts = tailnetProc;
+    tailnetProc = null;
+    ts?.kill();
     server.stop();
     process.exit(0);
   }
@@ -342,7 +379,7 @@ h1{color:#e74c3c;margin:0 0 12px 0;font-size:18px}
 pre{background:#000;padding:16px;border-radius:4px;overflow:auto;margin:0;color:#ff8a80;font-size:13px;line-height:1.5}
 .hint{color:#aaa;margin-top:16px;font-size:13px}
 </style><script>
-const ws=new WebSocket('ws://'+location.host+'/ws');
+const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws');
 ws.onmessage=e=>{try{const d=JSON.parse(e.data);if(d.type==='reload')location.reload()}catch{}};
 </script></head><body><div class="card"><h1>Build error</h1><pre>${msg.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c] as string)}</pre><div class="hint">Fix the fragment and save - this page auto-reloads.</div></div></body></html>`;
 }
