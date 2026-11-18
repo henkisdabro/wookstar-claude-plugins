@@ -15,25 +15,25 @@ This is the 80/20 pass: the test, the code under it and its callers, plus a brea
 
 ## Steps
 
-1. **Scope.** Use the path given. With none, take the whole suite; over about 30 test files, propose one package or directory and confirm it before reading. Done when the list of test files is fixed.
-2. **Baseline.** Run the suite for that scope and record the pass count. If it is already red, stop and report: pruning against a red suite cannot tell a broken test from a pruned one.
+1. **Scope.** Use the path given. With none, take the whole suite; over about 30 test files or 5,000 lines, propose one package or directory and confirm it before reading.
+2. **Baseline.** Run the suite for that scope and record the pass count. If it is already red, stop and report: a red suite cannot tell a broken test from a pruned one.
 3. **Classify.** Read every test in scope and give it one verdict from the categories below: _keep_, _rewrite_ or _delete_. Done when every test has a verdict and a category.
 4. **Break-it check** on each close call:
    - a test you would delete but suspect is the sole guard of something callers rely on;
    - a copy whose partner runs other inputs (another call, method, entry, type or value, or a field left out), or whose partner you doubt;
    - a test you would keep whose assertion looks weaker than its name.
 
-   Break the production line its call reaches, so that only its case changes, the way its assertion would notice - an edge moved (`>` to `>=`), its one member dropped from a set or range, a failure swallowed into an empty result, a configured value hard-coded, the bug its ticket names. Reading that two inputs share a path does not settle a close call; the break does, and a script that applies, runs and reverses each break makes it cheap. Check the break applied and reaches the test's own input (a crash that reddens unrelated tests is no break), run the scoped suite and any outside partner, then reverse just the break with an edit - `git checkout` would drop this prune's edits.
+   Break the production line its call reaches, so that only its case changes, the way its assertion would notice - an edge moved (`>` to `>=`), its one member dropped from a set or range, a failure swallowed into an empty result, a configured value hard-coded, the bug its ticket names. A break runs real code: a broken guard in front of a client the test does not stub reaches live services on whatever credentials the code finds, so break it only where the client is stubbed. Reading that two inputs share a path does not settle a close call; the break does, and a script that applies, runs and reverses each break makes it cheap. Check the break applied and reaches the test's own input (a crash that reddens unrelated tests is no break), run the scoped suite and any outside partner, then reverse just the break with an edit - `git checkout` would drop this prune's edits.
    - No such break turns it red: it guards nothing. Delete it, or rewrite it if the behaviour it names is real and nothing else guards it.
-   - Red with a partner, through a **seam**: delete it.
-   - Red alone: it is the sole guard, so keep it - unless no caller can tell the broken result from the right one. A branch no production caller reaches is older dead code (step 5).
+   - Red with a partner: delete it.
+   - Red alone: it is the sole guard, so keep it - unless no caller can tell the broken result from the right one (a break that only slows it, such as a dropped index, they can). A branch no production caller reaches is older dead code (step 5).
 5. **Prune.**
    - Before deleting or rewriting a test, check each of its assertions against the tests that stay: move any that no survivor makes into one with the same setup, or trim the test down to it. Leave the assertions inside a test you keep.
    - Rewrite each _rewrite_ test against the behaviour at its seam, with an exact, independent expected value - a literal, a worked example, the spec - that goes red on every break the old test caught.
    - Delete this prune's **orphans**: production code whose only callers were the removed tests (test-only resets, getters, exports), and the fixtures and helpers it left unused; repoint comments and docs that name a deleted test. Older dead code is listed, not deleted, and so are the tests whose only subject it is.
-6. **Verify.** Run the scoped suite again: green, with the collected count (parametrised cases included) down by exactly what the ledger removes. If the prune touched code outside the test files in scope, also run everything that can reach it, the type-check included.
+6. **Verify.** Run the scoped suite again: green, with the count of test ids the runner executes for the scope (parametrised cases expanded) down by exactly what the ledger removes. If the prune touched code outside the test files in scope, also run everything that can reach it, the type-check included.
 7. **Report** in these sections, writing "none" in an empty one:
-   - **Ledger** - one line per pruned or rewritten test, with its category and a few words of evidence (parametrised cases share a line, listing their ids; group a long ledger by file), then the counts, taken from the ledger: before, after, deleted and rewritten.
+   - **Ledger** - one line per pruned or rewritten test, with its category and a few words of evidence (group parametrised cases and long ledgers), then the counts, taken from the ledger: before, after, deleted and rewritten.
    - **Break-its** - each check: the break, which tests went red, and the verdict.
    - **Listed** - every item the rules below say to list, grouped as decisions left in place, follow-ups, older dead code, and weaker partners outside the scope.
 
@@ -64,10 +64,10 @@ A check on a fixture, list, sample or helper that other tests rely on is not Not
   - expect a value not derived the way the code derives it.
 
   Where the guarding assertion is incidental to the partner's subject, add a comment beside it naming what it guards, so a later prune keeps it.
-- Keep the one at the higher seam, closest to what a caller or user sees; at the same seam, keep the one with an independent expected value (a literal, a worked example), then the easier one to read. Delete the rest. Except: a lower function with production callers besides that seam is a seam of its own, so its tests are not copies; and where a layer adds no branch of its own for a rule (a command line, a route, a wrapper method, a loader that only gathers the service's inputs), keep the layer's wiring tests (any that alone go red when the layer hard-codes what it forwards) and the rule tests at the service - layer tests that re-check those rules are copies.
+- Keep the one at the higher seam, closest to what a caller sees; at the same seam, the one with an independent expected value, then the easier to read. Delete the rest. Except: a lower function with production callers besides that seam is a seam of its own, so its tests are not copies; and where a layer adds no branch of its own for a rule (a command line, a route, a wrapper method, a loader that only gathers the service's inputs), keep the layer's wiring tests (any that alone go red when the layer hard-codes what it forwards) and the rule tests at the service - layer tests that re-check those rules are copies.
 - A test that holds two implementations equal (two copies of a pattern, a port and its source) is no copy of either side's tests: only it goes red when one side changes alone.
 - A partner outside the scope counts as a guard when the checks that run on a change to the in-scope code run it too. Where the outside one is the weaker copy, list it rather than widening the scope.
-- Table-driven cases that run one path with interchangeable values count as one; keep the boundaries and one ordinary case on each side. Each member of a set a condition admits (`status in (warning, critical, missing)`) is a boundary. Failure inputs that fall straight into the same catch with no code of their own (a rejected fetch, a throwing parse) count as one; a failure with its own branch is its own case. A case per entry of a lookup table guards that entry; keep each, unless a partner guards it.
+- Table-driven cases that run one path with interchangeable values count as one; keep the boundaries and one ordinary case on each side. Each member of a set a condition admits (`status in (warning, critical, missing)`) is a boundary. Failures of the same call that fall straight into the same catch (a rejected fetch, a throwing parse) count as one; another call's failure is its own case, as is a failure with its own branch. A case per entry of a lookup table guards that entry; keep each, unless a partner guards it.
 
 **Decisions.** A skip or expected-fail with a comment or ticket, a platform guard, a skip-list entry, or a snapshot the repo keeps on purpose to flag changes is a decision, not waste: leave it and list it. A comment or ticket explaining an ordinary test is not; judge the test.
 
