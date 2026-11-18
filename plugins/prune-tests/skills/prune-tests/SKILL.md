@@ -11,7 +11,7 @@ effort: high
 
 A test earns its place when it is **anchored**: it depends on intended behaviour, so it changes only when that behaviour changes and goes **red** only when it regresses. Prune every test that is not anchored.
 
-This is the 80/20 pass: the evidence is the test, the code it names, and at most one break-it check for a test you are unsure of. It removes the obvious waste quickly. Mutation campaigns, kill matrices and new property or E2E suites are separate work, done when the user asks for them.
+This is the 80/20 pass: the evidence is the test, the code under it and that code's callers, and at most one break-it check for a test you are unsure of. It removes the obvious waste quickly. Mutation campaigns, kill matrices and new property or E2E suites are separate work, done when the user asks for them.
 
 Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is observed), **tautological**, **implementation-coupled**. When a rewrite is not obvious, read the `tdd` skill's `tests.md`, which shows good and bad tests side by side.
 
@@ -24,8 +24,8 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 5. **Prune.**
    - Delete each _delete_ test, and the empty `describe` blocks, section comments and files it leaves behind.
    - Rewrite each _rewrite_ test against the behaviour at its seam, with an independent expected value: a literal, a worked example, the spec.
-   - Delete production code that only existed for the removed tests (test-only resets, getters, exports), and fixtures and helpers this prune left unused. Dead code that was already there goes in the report, not the bin.
-6. **Verify.** Run the scoped suite again: green, with the count down by exactly the tests you deleted. Leave the changes uncommitted for review, unless the user asked for a commit.
+   - Delete production code whose only callers were the removed tests (test-only resets, getters, exports), and fixtures and helpers this prune left unused. Dead code that was already there goes in the report, not the bin.
+6. **Verify.** Run the scoped suite again: green, with the count down by exactly the tests you deleted. If the prune touched anything outside the test files in scope (production code, shared fixtures or helpers), run the full suite too. Leave the changes uncommitted for review, unless the user asked for a commit.
 7. **Report** a ledger: one line per pruned or rewritten test (cases of one parametrised test share a line per category, listing the case ids), with its category and a few words of evidence, then the before and after counts. List tests you kept after a break-it check separately, since those are the close calls. Close with the lint rules that would stop each category you found from coming back.
 
 ## Categories
@@ -34,9 +34,9 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 
 - Asserts a removed feature is gone, a file is absent, or a module left its old path.
 - Tests a spent one-off: a data migration or backfill already applied, a flag that is permanently off. A schema migration replayed on every fresh database still runs; its tests stay.
-- Skipped, commented-out or `.only`-shadowed tests, and test files the runner never picks up (outside its glob, missing the suffix). Dead weight that reads like coverage. Delete, or rewrite if the behaviour it names still exists and nothing else guards it. A skip with a stated reason (a comment, an issue link, a platform guard, a skip-list entry) is a decision, not dead weight: leave it and list it.
+- Skipped, commented-out or `.only`-shadowed tests, and test files the runner never picks up (outside its glob, missing the suffix). Dead weight that reads like coverage. Delete, or rewrite if the behaviour it names still exists and nothing else guards it.
 
-**Nothing** - no change to the code can make it fail.
+**Nothing** - no change to the production code can make it fail.
 
 - Tests the browser, framework or language: a `<button>` renders, a click fires, a type the compiler already guarantees.
 - Mocks the unit under test, then asserts what the mock returns.
@@ -46,23 +46,27 @@ Speak the `/tdd` vocabulary: **seam** (the public boundary where behaviour is ob
 **The implementation** - it changes whenever the code does, even when behaviour did not.
 
 - Tautological: the expected value is computed the way the code computes it.
-- Asserts private state, internal call order, which helper ran, or mocks a collaborator the project owns. Mocks belong at system boundaries only: network, clock, randomness, third-party services.
-- A large snapshot of whatever the code currently emits, updated wholesale whenever it changes. Rewrite to assert the few values a caller depends on. A characterisation or equivalence suite pinned while a refactor runs is the exception: it is the right tool while the refactor is open and becomes the past once it has shipped. Check the git log or the plan to see which, not the test file.
+- Asserts private state, internal call order, which helper ran, or mocks a collaborator the project owns. Mocks belong at system boundaries only: network, clock, randomness, third-party services - including the project's own thin wrapper around one.
+- A large snapshot of whatever the code currently emits, updated wholesale whenever it changes. Rewrite to assert the few values a caller depends on.
+- A characterisation or equivalence suite pinned for a refactor goes only once the refactor has shipped (check the git log or the plan, not the test file) and other tests guard what it pinned. While it is the only guard, keep it.
 
 **A copy** - another test already guards the same behaviour.
 
 - The partner counts only if it would go red on this regression: it asserts the behaviour succeeding (read the snapshot lines that cover it - a snapshot can record a crash), with inputs that tell the cases apart (a fixture equal to the default cannot). When unsure, run the break-it check on the partner.
-- Keep the one at the higher seam, closest to what a caller or user sees; at the same seam, keep the one with an independent expected value (a literal, a worked example), then the easier one to read. Delete the rest.
+- Keep the one at the higher seam, closest to what a caller or user sees; at the same seam, keep the one with an independent expected value (a literal, a worked example), then the easier one to read. Delete the rest. A lower function that other code calls directly is a seam of its own, so its tests are not copies.
+- A test that is only partly a copy: trim it to its unique assertions.
 - A partner outside the scope still counts as a guard, so the in-scope copy can go. Where the outside one is the weaker copy, list it in the report rather than widening the scope.
 - A wiring test at a thin outer layer (a command line, a route) and rule tests at the service beneath it guard different things. Neither is a copy; keep both.
-- Table-driven cases that only repeat the same path with different numbers count as one; keep the boundaries and one ordinary case.
+- Table-driven cases that run one path with interchangeable numbers count as one; keep the boundaries and one ordinary case. A case per entry of a lookup table guards that entry; keep each.
 
-When a rewrite needs more than the test itself - a seam that does not exist, a new fixture - keep the test as it is and list it in the report as a follow-up. A missing seam is a design problem for `/codebase-design`, not a pruning one.
+**Decisions.** Anything with a stated reason - a skip or expected-fail with a comment or ticket, a platform guard, a skip-list entry, a snapshot the repo keeps on purpose to flag changes - is a decision, not waste: leave it and list it.
+
+**Follow-ups.** When a rewrite needs more than the test itself - a seam that does not exist, a new fixture - keep the test as it is and list it in the report as a follow-up. A missing seam is a design problem for `/codebase-design`, not a pruning one.
 
 ## Done
 
 - Every test in scope has a verdict; the ledger accounts for every deletion and rewrite.
-- The scoped suite is green, and the count dropped by exactly the deletions.
+- The scoped suite is green, and the full suite too where the prune touched code outside it; the count dropped by exactly the deletions.
 - No test left asserts absent code, a mock's own return value, or a value derived from the code under test, other than the follow-ups the report lists.
 - No two tests left guard the same behaviour at the same seam.
 - Nothing this prune left unused remains: production code, fixtures, helpers.

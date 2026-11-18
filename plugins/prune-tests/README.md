@@ -24,7 +24,7 @@ It also deletes production code, fixtures and helpers that the removed tests lea
 3. **Classify** every test in scope as keep, rewrite or delete. Lint rules the repo already has for skipped, focused or assertion-less tests run first, so judgement goes only where a reader is needed.
 4. **Break-it check** for close calls only - a suspected sole guard, or a copy's doubtful partner: break the behaviour once at its boundary (`>` to `>=`, off by one), see whether the test fails, revert.
 5. **Prune** and rewrite.
-6. **Verify** - suite green, and the test count down by exactly the deletions.
+6. **Verify** - suite green (the full suite too when production code or shared helpers changed), and the test count down by exactly the deletions.
 7. **Report** a ledger of every deletion and rewrite, with the close calls listed separately and the lint rules that would stop each category coming back.
 
 Changes are left uncommitted so you review the diff before keeping it, unless you ask for a commit.
