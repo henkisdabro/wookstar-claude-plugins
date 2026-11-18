@@ -6,7 +6,7 @@
 
 A curated collection of [Claude Code](https://code.claude.com/docs) plugins, published as a plugin marketplace - **32 active plugins** across development, analytics, content, data and ops. 🎯 Pick what you need; every plugin installs on its own.
 
-> 🧪 **New:** `prune-tests` finds and removes tests that guard no behaviour - dead, tautological, implementation-coupled or duplicated - in one cheap pass. Type `/prune-tests:prune-tests` to run it.
+> 🧪 **New in 8.2.0:** `prune-tests` finds and removes tests that guard no behaviour - dead, tautological, implementation-coupled or duplicated - in one cheap pass. Type `/prune-tests:prune-tests` to run it.
 >
 > ✨ **New in 8.0.0:** the `google-tagmanager` and `google-analytics` skills are rebuilt as guardrails - a glossary of the terms models blur, the mistakes they typically make, and what changed recently (GTM's optimised container and 2026 install snippet, Data Manager in Analytics) - and both can now drive a command-line tool as well as their MCP server. Every other skill was fact-checked against vendor docs and tightened. See the [CHANGELOG](./CHANGELOG.md).
 >
@@ -309,6 +309,7 @@ Then restart Claude Code. Inside a session, `/plugin` does steps 2 and 3 from it
 
 | Coming from | What needs action | Details |
 |---|---|---|
+| **8.1.x to 8.2.0** | Nothing. `prune-tests` is a new plugin - install it if you want it. | [CHANGELOG.md](./CHANGELOG.md#820---2026-11-18) |
 | **8.0.x to 8.1.0** | Only if you used the MCP server that came with `google-analytics` or `google-tagmanager`: add it yourself with one `claude mcp add` command. Otherwise nothing. | [MIGRATION.md](./MIGRATION.md#to-810-from-80x) |
 | **7.x to 8.0.0** | `google-analytics` credentials moved to plugin configuration (and in 8.1.0 to `mcp-google-analytics`). If you used `mcp-google-workspace` for Docs or Sheets, add the server yourself (it now loads Gmail, Drive and Calendar only). Uninstall `timezone-tools`. Uninstall any of `codex`, `gemini`, `mcp-gemini-bridge`, `mcp-notion`, `mcp-cloudflare`, `mcp-fetch` still installed. | [MIGRATION.md](./MIGRATION.md#to-800-from-7x) |
 | **6.x to 7.0.0** | Replace the retired plugins with their official equivalents. Configure the MCP plugins that moved to prompted credentials. Install official plugins for the parts of `developer`, `documents` and `shopify-developer` that moved. | [MIGRATION.md](./MIGRATION.md#to-700-from-6x) |
