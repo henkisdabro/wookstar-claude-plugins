@@ -19,12 +19,14 @@ It also deletes production code, fixtures and helpers that the removed tests lea
 
 ## How a run goes
 
+It is Chesterton's fence with a test harness: rather than asking why a test was written, it breaks the code to see whether the test still guards anything - and where a fix commit added the test, the bug that commit fixed is the first break it tries.
+
 1. **Scope** - the path you give, or the whole suite. Over about 30 test files with no path, it proposes a scope and asks first.
 2. **Baseline** - runs the suite. A suite that is already failing stops the run: a pruned test and a broken one would look the same.
 3. **Classify** every test in scope as keep, rewrite or delete. Lint rules the repo already has for skipped, focused or assertion-less tests run first, so judgement goes only where a reader is needed.
-4. **Break-it check** for close calls only - a suspected sole guard, or a copy's doubtful partner: break the behaviour once at its boundary (`>` to `>=`, off by one), see whether the test fails, revert.
+4. **Break-it check** for close calls only - a suspected sole guard, a test a fix commit added, or a copy's doubtful partner: break the behaviour once at its boundary (`>` to `>=`, off by one), see whether the test fails, revert.
 5. **Prune** and rewrite.
-6. **Verify** - suite green (the full suite too when production code or shared helpers changed), and the test count down by exactly the deletions.
+6. **Verify** - suite green (the full suite too when production code or shared helpers changed), the test count down by exactly the deletions, the coverage gate still passing, and every deletion attacked once more: a surviving test must catch its break, or the ledger must show why nothing could.
 7. **Report** a ledger of every deletion and rewrite, with the close calls listed separately and the lint rules that would stop each category coming back.
 
 Changes are left uncommitted so you review the diff before keeping it, unless you ask for a commit.
